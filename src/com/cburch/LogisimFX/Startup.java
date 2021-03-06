@@ -4,9 +4,9 @@
 package com.cburch.LogisimFX;
 
 import com.cburch.LogisimFX.newgui.LoadingFrame.LoadingScreen;
-import com.cburch.logisim.gui.start.TtyInterface;
-import com.cburch.logisim.proj.Project;
-import com.cburch.logisim.file.Loader;
+import com.cburch.LogisimFX.TtyInterface;
+import com.cburch.LogisimFX.proj.Project;
+import com.cburch.LogisimFX.file.Loader;
 
 import com.cburch.logisim.file.LoadFailedException;
 
@@ -14,21 +14,16 @@ import com.cburch.logisim.gui.main.Print;
 import com.cburch.logisim.gui.menu.LogisimMenuBar;
 import com.cburch.logisim.gui.menu.WindowManagers;
 
-//import com.cburch.logisim.gui.start.MacOsAdapter;
-
-
 import com.cburch.logisim.prefs.AppPreferences;
 import com.cburch.logisim.proj.ProjectActions;
-
-
 import com.cburch.logisim.util.MacCompatibility;
-//import LogisimFX.util.StringUtil;
+import com.cburch.logisim.util.StringUtil;
 
 import java.io.File;
 import java.util.*;
 
 public class Startup {
-/*
+
     private static final Localizer lc = new Localizer("LogisimFX/resources/localization/start");
 
     private static Startup startupTemp = null;
@@ -80,7 +75,7 @@ public class Startup {
 	}
 
 	 */
-/*
+
     // based on command line
     boolean isTty;
     private File templFile = null;
@@ -292,7 +287,7 @@ public class Startup {
 
 
 		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			//UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception ex) { }
 
         // parse arguments
@@ -460,5 +455,5 @@ public class Startup {
     }
 
 
-*/
+
 }

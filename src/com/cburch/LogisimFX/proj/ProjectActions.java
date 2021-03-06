@@ -1,31 +1,27 @@
 /* Copyright (c) 2010, Carl Burch. License information is located in the
  * com.cburch.logisim.Main source code and at www.cburch.com/logisim/. */
 
-package com.cburch.logisim.proj;
+package com.cburch.LogisimFX.proj;
 
-import java.awt.Component;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-
-import com.cburch.LogisimFX.newgui.LoadingFrame.LoadingScreen;
-import com.cburch.logisim.circuit.Circuit;
 import com.cburch.LogisimFX.file.LoadFailedException;
 import com.cburch.LogisimFX.file.Loader;
 import com.cburch.LogisimFX.file.LogisimFile;
+import com.cburch.logisim.circuit.Circuit;
 import com.cburch.logisim.gui.main.Frame;
 import com.cburch.logisim.gui.start.SplashScreen;
 import com.cburch.logisim.prefs.AppPreferences;
 import com.cburch.logisim.tools.Tool;
 import com.cburch.logisim.util.JFileChoosers;
 import com.cburch.logisim.util.StringUtil;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 public class ProjectActions {
 	private ProjectActions() { }
@@ -34,13 +30,13 @@ public class ProjectActions {
 		private Loader loader;
 		private Project proj;
 		private boolean isStartupScreen;
-		
+
 		public CreateFrame(Loader loader, Project proj, boolean isStartup) {
 			this.loader = loader;
 			this.proj = proj;
 			this.isStartupScreen = isStartup;
 		}
-		
+
 		public void run() {
 			Frame frame = createFrame(null, proj);
 			frame.setVisible(true);
@@ -51,11 +47,13 @@ public class ProjectActions {
 		}
 	}
 
+	public static Project doNew(SplashScreen monitor) {
+		return doNew(monitor, false);
+	}
 
-	public static Project doNew(boolean isStartupScreen) {
-
-		LoadingScreen.nextStep();
-		Loader loader = new Loader();
+	public static Project doNew(SplashScreen monitor, boolean isStartupScreen) {
+		if (monitor != null) monitor.setProgress(SplashScreen.FILE_CREATE);
+		Loader loader = new Loader(monitor);
 		InputStream templReader = AppPreferences.getTemplate().createStream();
 		LogisimFile file = null;
 		try {
@@ -70,14 +68,14 @@ public class ProjectActions {
 		if (file == null) file = createEmptyFile(loader);
 		return completeProject(monitor, loader, file, isStartupScreen);
 	}
-	
+
 	private static void displayException(Component parent, Exception ex) {
 		String msg = StringUtil.format(Strings.get("templateOpenError"),
 				ex.toString());
 		String ttl = Strings.get("templateOpenErrorTitle");
 		JOptionPane.showMessageDialog(parent, msg, ttl, JOptionPane.ERROR_MESSAGE);
 	}
-	
+
 	private static LogisimFile createEmptyFile(Loader loader) {
 		InputStream templReader = AppPreferences.getEmptyTemplate().createStream();
 		LogisimFile file;
@@ -91,12 +89,12 @@ public class ProjectActions {
 		}
 		return file;
 	}
-	
+
 	private static Project completeProject(SplashScreen monitor, Loader loader,
-			LogisimFile file, boolean isStartup) {
+                                           LogisimFile file, boolean isStartup) {
 		if (monitor != null) monitor.setProgress(SplashScreen.PROJECT_CREATE);
 		Project ret = new Project(file);
-		
+
 		if (monitor != null) monitor.setProgress(SplashScreen.FRAME_CREATE);
 		SwingUtilities.invokeLater(new CreateFrame(loader, ret, isStartup));
 		return ret;
@@ -121,7 +119,7 @@ public class ProjectActions {
 		}
 		return file;
 	}
-	
+
 	private static Frame createFrame(Project sourceProject, Project newProject) {
 		if (sourceProject != null) {
 			Frame frame = sourceProject.getFrame();
@@ -133,7 +131,7 @@ public class ProjectActions {
 		newProject.setFrame(newFrame);
 		return newFrame;
 	}
-	
+
 	public static Project doNew(Project baseProject) {
 		LogisimFile file = createNewFile(baseProject);
 		Project newProj = new Project(file);
@@ -143,14 +141,14 @@ public class ProjectActions {
 		newProj.getLogisimFile().getLoader().setParent(frame);
 		return newProj;
 	}
-	
+
 	public static Project doOpen(SplashScreen monitor, File source,
-			Map<File,File> substitutions) throws LoadFailedException {
+                                 Map<File,File> substitutions) throws LoadFailedException {
 		if (monitor != null) monitor.setProgress(SplashScreen.FILE_LOAD);
 		Loader loader = new Loader(monitor);
 		LogisimFile file = loader.openLogisimFile(source, substitutions);
 		AppPreferences.updateRecentFile(source);
-		
+
 		return completeProject(monitor, loader, file, false);
 	}
 
@@ -166,7 +164,7 @@ public class ProjectActions {
 			chooser = JFileChoosers.create();
 		}
 		chooser.setFileFilter(Loader.LOGISIM_FILTER);
-					
+
 		int returnVal = chooser.showOpenDialog(parent);
 		if (returnVal != JFileChooser.APPROVE_OPTION) return;
 		File selected = chooser.getSelectedFile();
@@ -176,7 +174,7 @@ public class ProjectActions {
 	}
 
 	public static Project doOpen(Component parent,
-			Project baseProject, File f) {
+                                 Project baseProject, File f) {
 		Project proj = Projects.findProjectFor(f);
 		Loader loader = null;
 		if (proj != null) {
@@ -231,7 +229,7 @@ public class ProjectActions {
 			}
 			return null;
 		}
-		
+
 		Frame frame = proj.getFrame();
 		if (frame == null) {
 			frame = createFrame(baseProject, proj);
@@ -242,7 +240,7 @@ public class ProjectActions {
 		proj.getLogisimFile().getLoader().setParent(frame);
 		return proj;
 	}
-	
+
 
 	// returns true if save is completed
 	public static boolean doSaveAs(Project proj) {
@@ -275,7 +273,7 @@ public class ProjectActions {
 				dlog.setMessageType(JOptionPane.QUESTION_MESSAGE);
 				dlog.setOptions(options);
 				dlog.createDialog(proj.getFrame(), ttl).setVisible(true);
-				
+
 				Object result = dlog.getValue();
 				if (result == options[0]) {
 					String name = old.substring(0, ext0) + circExt;
@@ -285,7 +283,7 @@ public class ProjectActions {
 				}
 			}
 		}
-		
+
 		if (f.exists()) {
 			int confirm = JOptionPane.showConfirmDialog(proj.getFrame(),
 				Strings.get("confirmOverwriteMessage"),
@@ -302,7 +300,7 @@ public class ProjectActions {
 		if (f == null) return doSaveAs(proj);
 		else return doSave(proj, f);
 	}
-	
+
 	private static boolean doSave(Project proj, File f) {
 		Loader loader = proj.getLogisimFile().getLoader();
 		Tool oldTool = proj.getTool();
@@ -319,7 +317,7 @@ public class ProjectActions {
 	public static void doQuit() {
 		Frame top = Projects.getTopFrame();
 		top.savePreferences();
-		
+
 		for (Project proj : new ArrayList<Project>(Projects.getOpenProjects())) {
 			if (!proj.confirmClose(Strings.get("confirmQuitTitle"))) return;
 		}

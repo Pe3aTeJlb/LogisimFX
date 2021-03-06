@@ -2,7 +2,7 @@ package com.cburch.LogisimFX;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import com.cburch.logisim.gui.start.Startup;
+import com.cburch.LogisimFX.Startup;
 
 public class Main extends Application {
 
