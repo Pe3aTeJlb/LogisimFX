@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="Root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cburch.LogisimFX.newgui.PreferencesFrame.PreferencesController">
+   <children>
+      <TabPane fx:id="TabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <tabs>
+          <Tab fx:id="TemplateTab" text="1">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <RadioButton fx:id="PlainTemplRB" layoutX="15.0" layoutY="125.0" mnemonicParsing="false" text="RadioButton" />
+                        <RadioButton fx:id="EmptyTemplRB" layoutX="15.0" layoutY="150.0" mnemonicParsing="false" text="RadioButton" />
+                        <RadioButton fx:id="CustomTemplRB" layoutX="15.0" layoutY="175.0" mnemonicParsing="false" text="RadioButton" />
+                        <TextField fx:id="FilePathTextField" editable="false" layoutX="15.0" layoutY="205.0" prefHeight="25.0" prefWidth="300.0" />
+                        <Button fx:id="FilePathSelectBtn" layoutX="325.0" layoutY="205.0" mnemonicParsing="false" text="Button" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab fx:id="InternalizationTab" text="2">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label fx:id="ShapeLbl" layoutX="145.0" layoutY="27.0" text="Label" />
+                        <ListView fx:id="LocaleListView" layoutX="145.0" layoutY="75.0" prefHeight="200.0" prefWidth="200.0" />
+                        <Label fx:id="LocaleLbl" layoutX="145.0" layoutY="58.0" text="Label" />
+                        <CheckBox fx:id="SpecificSymbolsChbx" layoutX="145.0" layoutY="290.0" mnemonicParsing="false" text="CheckBox" />
+                        <ComboBox fx:id="GateShapeCmbx" layoutX="195.0" layoutY="23.0" prefWidth="150.0" />
+                     </children></AnchorPane>
+            </content>
+          </Tab>
+            <Tab fx:id="LayoutTab" text="3">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <ChoiceBox fx:id="AfterAddingCmbx" layoutX="125.0" layoutY="196.0" prefWidth="150.0" />
+                        <Label fx:id="AfterAddingLbl" layoutX="35.0" layoutY="200.0" text="Label" />
+                        <CheckBox fx:id="ShowTickRateChbx" layoutX="35.0" layoutY="27.0" mnemonicParsing="false" text="CheckBox" />
+                        <CheckBox fx:id="PrinterViewChbx" layoutX="35.0" layoutY="52.0" mnemonicParsing="false" text="CheckBox" />
+                        <CheckBox fx:id="ShowAttrHaloChbx" layoutX="35.0" layoutY="77.0" mnemonicParsing="false" text="CheckBox" />
+                        <CheckBox fx:id="ShowComponentTipsChbx" layoutX="35.0" layoutY="102.0" mnemonicParsing="false" text="CheckBox" />
+                        <CheckBox fx:id="KeepConnectionsChbx" layoutX="35.0" layoutY="127.0" mnemonicParsing="false" text="CheckBox" />
+                        <CheckBox fx:id="ShowGhostChbx" layoutX="35.0" layoutY="152.0" mnemonicParsing="false" text="CheckBox" />
+                        <ChoiceBox fx:id="FirstRadixCmbx" layoutX="125.0" layoutY="231.0" prefWidth="150.0" />
+                        <ChoiceBox fx:id="SecondRadixCmbx" layoutX="125.0" layoutY="266.0" prefWidth="150.0" />
+                        <Label fx:id="FirstRadixLbl" layoutX="35.0" layoutY="235.0" text="Label" />
+                        <Label fx:id="SecondRadixLbl" layoutX="35.0" layoutY="270.0" text="Label" />
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+            <Tab fx:id="ExperimentalTab" text="4">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label fx:id="GraphicsAccelLabel" layoutX="139.0" layoutY="118.0" text="Label" />
+                        <Label fx:id="RestartLogisimLabel" layoutX="145.0" layoutY="194.0" text="Label" />
+                        <ComboBox fx:id="AcceleratorCmbx" layoutX="193.0" layoutY="148.0" prefWidth="150.0" />
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>
