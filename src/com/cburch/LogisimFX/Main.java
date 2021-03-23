@@ -1,8 +1,11 @@
 package com.cburch.LogisimFX;
 
+import com.cburch.LogisimFX.newgui.DialogManager;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import com.cburch.LogisimFX.Startup;
+
+import java.io.FileNotFoundException;
 
 public class Main extends Application {
 
@@ -20,7 +23,8 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        //FrameManager.CreateNewFrame("LogisimFX/gui/AboutFrame/About.fxml");
+        //FrameManager.CreateNewFrame("LogisimFX/newgui/AboutFrame/About.fxml");
+       // FrameManager.CreateNewFrame("LogisimFX/newgui/PrintFrame/Print.fxml");
         FrameManager.CreateMainFrame();
         //FrameManager.CreateSplashScreen();
 

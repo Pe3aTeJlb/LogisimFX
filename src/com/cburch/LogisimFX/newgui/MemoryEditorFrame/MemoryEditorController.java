@@ -1,17 +1,20 @@
 package com.cburch.LogisimFX.newgui.MemoryEditorFrame;
 
 import com.cburch.LogisimFX.newgui.AbstractController;
+import com.cburch.LogisimFX.proj.Project;
 import javafx.stage.Stage;
 
 public class MemoryEditorController extends AbstractController {
 
+    private Stage stage;
+
     @Override
-    public void prepareFrame(Stage s) {
+    public void postInitialization(Stage s) {
 
     }
 
     @Override
-    public void setStageTitle() {
+    public void linkProjectReference(Project project) {
 
     }
 

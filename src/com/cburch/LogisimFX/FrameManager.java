@@ -2,11 +2,12 @@ package com.cburch.LogisimFX;
 
 import com.cburch.LogisimFX.newgui.AbstractController;
 import com.cburch.LogisimFX.newgui.HelpFrame.HelpController;
+import com.cburch.LogisimFX.proj.Project;
+
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -18,17 +19,29 @@ these classes implements AbstractController in purpose to Title binding and fram
 
 public class FrameManager {
 
-    private static Stage splashScreen;
-
-    private static Stage helpFrame;
-    private static HelpController helpController;
-
     private static FXMLLoader loader;
 
+    private static AbstractController c;
+
     //ToDo: replace String with project reference
-    private static final HashMap<String, Stage> OpenedOptionsFrames = new HashMap<>();
-    private static final HashMap<String, Stage> OpenedFiles = new HashMap<>();
-    //private static HashMap<> OpenedMemoryEditors = new HashMap();
+    private static final HashMap<String, Stage> OpenedThreadsFrames = new HashMap<>();
+
+    private static final HashMap<String, Data> OpenedThreadlessFrames = new HashMap<>();
+
+    //ToDo: replace String with memory object reference
+    //private static final HashMap<String, Stage> OpenedMemoryEditors = new HashMap();
+
+    private static class Data{
+
+        public Stage stage;
+        public AbstractController controller;
+
+        Data(Stage s, AbstractController c){
+            this.stage = s;
+            this.controller = c;
+        }
+
+    }
 
     public static void CreateMainFrame(){
 
@@ -50,11 +63,12 @@ public class FrameManager {
             newStage.setScene(new Scene(root, 800, 600));
 
             AbstractController c = loader.getController();
-            c.prepareFrame(newStage);
+            c.postInitialization(newStage);
+            //c.setProject(proj);
 
             newStage.setOnCloseRequest(event -> {
 
-                if(OpenedFiles.size()==1){
+                if(OpenedThreadsFrames.size()==1){
                     //OpenedOptionsFrames.re
                     System.exit(0);
                 }else{
@@ -72,9 +86,12 @@ public class FrameManager {
 
     }
 
+
+    /////
+
     public static void CreateNewFrame(String resourcePath){
 
-        if(!OpenedOptionsFrames.containsKey(resourcePath)){
+        if(!OpenedThreadlessFrames.containsKey(resourcePath)){
 
             loader = new FXMLLoader(ClassLoader.getSystemResource("com/cburch/"+resourcePath));
             Parent root = null;
@@ -88,91 +105,70 @@ public class FrameManager {
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root, 450, 350));
 
-            AbstractController c = loader.getController();
-            c.prepareFrame(newStage);
+            c = loader.getController();
+            c.postInitialization(newStage);
 
             newStage.setOnCloseRequest(event -> {
-                OpenedOptionsFrames.remove(resourcePath);
+                OpenedThreadlessFrames.remove(resourcePath);
                 c.onClose();
             });
 
-            //newStage.initOwner(primaryStage);
-
             newStage.show();
 
-            OpenedOptionsFrames.put(resourcePath, newStage);
+            OpenedThreadlessFrames.put(resourcePath, new Data(newStage, c));
 
         }else{
-            FocusOnFrame(OpenedOptionsFrames.get(resourcePath));
+            FocusOnFrame(OpenedThreadlessFrames.get(resourcePath).stage);
         }
 
     }
 
-    public static void CreateSplashScreen(){
+    public static void CreatePreferencesFrame(){
+        CreateNewFrame("LogisimFX/newgui/PreferencesFrame/Preferences.fxml");
+    }
 
-        Stage newStage = new Stage();
+    public static void CreateOptionsFrame(){
+        CreateNewFrame("LogisimFX/newgui/OptionsFrame/Oprions.fxml");
+    }
 
-        loader = new FXMLLoader(ClassLoader.getSystemResource("com/cburch/LogisimFX/newgui/LoadingFrame/Loading.fxml"));
-        Parent root = null;
+    public static void CreateCircLogFrame(){
+        CreateNewFrame("LogisimFX/newgui/CircLogFrame/CircLog.fxml");
+    }
 
-        try {
-            root = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static void CreateAboutFrame(){
+        CreateNewFrame("LogisimFX/newgui/AboutFrame/About.fxml");
+    }
 
-        newStage.setScene(new Scene(root, 450, 350));
-        newStage.initStyle(StageStyle.UNDECORATED);
-        newStage.setResizable(false);
-        newStage.show();
+    public static void CreateLoadingScreen(){
+        CreateNewFrame("LogisimFX/newgui/LoadingFrame/Loading.fxml");
+    }
 
-        splashScreen = newStage;
-
+    public static void CreatePrintFrame(Project proj){
+        CreateNewFrame("LogisimFX/newgui/PrintFrame/Print.fxml");
+        c.linkProjectReference(proj);
+        c = null;
     }
 
     public static void CreateHelpFrame(String chapter){
 
-        if(helpFrame==null){
+        String resourcepath = "LogisimFX/newgui/HelpFrame/Help.fxml";
 
-            loader = new FXMLLoader(ClassLoader.getSystemResource("com/cburch/LogisimFX/newgui/HelpFrame/Help.fxml"));
-            Parent root = null;
+        if(!OpenedThreadlessFrames.containsKey(resourcepath)){
 
-            try {
-                root = loader.load();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            Stage newStage = new Stage();
-            newStage.setScene(new Scene(root, 800, 600));
-
-            helpController = loader.getController();
-            helpController.prepareFrame(newStage);
-            helpController.openChapter(chapter);
-
-            newStage.setOnCloseRequest(event -> {helpFrame = null; helpController.onClose();});
-
-            //newStage.initOwner(primaryStage);
-
-            newStage.show();
-
-            helpFrame = newStage;
+            CreateNewFrame("LogisimFX/newgui/HelpFrame/Help.fxml");
+            ((HelpController) c).openChapter(chapter);
 
         }else{
-            helpController.openChapter(chapter);
-            FocusOnFrame(helpFrame);
+
+            FocusOnFrame(OpenedThreadlessFrames.get(resourcepath).stage);
+            ((HelpController)OpenedThreadlessFrames.get(resourcepath).controller).openChapter(chapter);
+
         }
 
     }
 
     public static void CreateHexEditorFrame(){
         //ToDO: hex editor lol
-    }
-
-    public static void CloseSplashScreen(){
-
-        splashScreen.close();
-
     }
 
     private static void FocusOnFrame(Stage s){

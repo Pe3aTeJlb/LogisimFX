@@ -2,6 +2,7 @@ package com.cburch.LogisimFX.newgui.AboutFrame;
 
 import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.newgui.AbstractController;
+import com.cburch.LogisimFX.proj.Project;
 import com.cburch.logisim.Main;
 import com.cburch.logisim.data.Value;
 import javafx.animation.AnimationTimer;
@@ -118,6 +119,15 @@ public class About extends AbstractController {
         };
 
         update.start();
+
+    }
+
+    @Override
+    public void postInitialization(Stage s) {
+
+        stage = s;
+        stage.setTitle("Logisim " + Main.VERSION_NAME);
+        stage.setResizable(false);
 
     }
 
@@ -480,18 +490,10 @@ public class About extends AbstractController {
         g.fillRect(0,0,(cv.getWidth())*2,(cv.getHeight())*2);
     }
 
-    @Override
-    public void prepareFrame(Stage s) {
-
-        stage = s;
-        setStageTitle();
-        stage.setResizable(false);
-
-    }
 
     @Override
-    public void setStageTitle() {
-        stage.setTitle("Logisim " + Main.VERSION_NAME);
+    public void linkProjectReference(Project project) {
+
     }
 
     @Override

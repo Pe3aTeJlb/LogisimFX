@@ -1,6 +1,7 @@
 package com.cburch.LogisimFX.newgui.PreferencesFrame;
 
 import com.cburch.LogisimFX.newgui.AbstractController;
+import com.cburch.LogisimFX.proj.Project;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -17,13 +18,13 @@ import java.util.Locale;
 
 public class PreferencesController extends AbstractController {
 
+    private Stage stage;
+
     @FXML
     private AnchorPane Root;
 
     @FXML
     private TabPane TabPane;
-
-    private Stage stage;
 
     @FXML
     private Tab TemplateTab;
@@ -147,6 +148,12 @@ public class PreferencesController extends AbstractController {
         initLayoutTab();
         initExperimentalTab();
 
+    }
+
+    @Override
+    public void postInitialization(Stage s) {
+        stage = s;
+        stage.titleProperty().bind(lc.createStringBinding("preferencesFrameTitle"));
     }
 
     private void initTemplateTab(){
@@ -383,14 +390,11 @@ public class PreferencesController extends AbstractController {
 
     }
 
-    @Override
-    public void prepareFrame(Stage s) {
-        stage = s;
-        setStageTitle();
-    }
 
-    public void setStageTitle(){
-        stage.titleProperty().bind(lc.createStringBinding("preferencesFrameTitle"));
+
+    @Override
+    public void linkProjectReference(Project project) {
+
     }
 
     @Override

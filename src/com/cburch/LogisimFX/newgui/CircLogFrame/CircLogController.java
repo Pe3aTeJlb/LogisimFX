@@ -2,6 +2,7 @@ package com.cburch.LogisimFX.newgui.CircLogFrame;
 
 import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.newgui.AbstractController;
+import com.cburch.LogisimFX.proj.Project;
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
 
@@ -18,16 +19,15 @@ public class CircLogController extends AbstractController {
 
     }
 
-
     @Override
-    public void prepareFrame(Stage s) {
+    public void postInitialization(Stage s) {
         stage = s;
-        setStageTitle();
+        stage.titleProperty().bind(lc.createStringBinding("logFrameTitle"));
     }
 
     @Override
-    public void setStageTitle() {
-        stage.titleProperty().bind(lc.createStringBinding("logFrameTitle"));
+    public void linkProjectReference(Project project) {
+
     }
 
     @Override

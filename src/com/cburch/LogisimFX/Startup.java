@@ -8,14 +8,14 @@ import com.cburch.LogisimFX.TtyInterface;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.file.Loader;
 
-import com.cburch.logisim.file.LoadFailedException;
+import com.cburch.LogisimFX.file.LoadFailedException;
 
-import com.cburch.logisim.gui.main.Print;
+import com.cburch.LogisimFX.newgui.PrintFrame.PrintController;
 import com.cburch.logisim.gui.menu.LogisimMenuBar;
 import com.cburch.logisim.gui.menu.WindowManagers;
 
 import com.cburch.logisim.prefs.AppPreferences;
-import com.cburch.logisim.proj.ProjectActions;
+import com.cburch.LogisimFX.proj.ProjectActions;
 import com.cburch.logisim.util.MacCompatibility;
 import com.cburch.logisim.util.StringUtil;
 
@@ -47,7 +47,7 @@ public class Startup {
     private void doPrintFile(File file) {
         if (initialized) {
             Project toPrint = ProjectActions.doOpen(null, null, file);
-            Print.doPrint(toPrint);
+            FrameManager.CreatePrintFrame(toPrint);
             toPrint.getFrame().dispose();
         } else {
             filesToPrint.add(file);
@@ -115,7 +115,7 @@ public class Startup {
 
     public void run() {
 
-        FrameManager.CreateSplashScreen();
+        FrameManager.CreateLoadingScreen();
 
         if (isTty) {
             try {
@@ -135,7 +135,7 @@ public class Startup {
         if (showSplash) {
 
             try {
-                FrameManager.CreateSplashScreen();
+                FrameManager.CreateLoadingScreen();
                 //monitor = new SplashScreen();
                 //monitor.setVisible(true);
             } catch (Throwable t) {
@@ -193,7 +193,7 @@ public class Startup {
             ProjectActions.doNew(true);
 
             if (showSplash) {
-                FrameManager.CloseSplashScreen();
+                LoadingScreen.Close();
                 //monitor.close();
             }
 
@@ -213,7 +213,7 @@ public class Startup {
                 if (first) {
                     first = false;
                     if (showSplash) {
-                        FrameManager.CloseSplashScreen();
+                        LoadingScreen.Close();
                         //monitor.close();
                     }
                     //monitor = null;

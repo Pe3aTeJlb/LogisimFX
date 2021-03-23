@@ -1,16 +1,18 @@
 package com.cburch.LogisimFX.newgui.LoadingFrame;
 
-/*This frame shows loading progress
-U cant call it during work with LogisimFx so, it won't implements AbstractController, so do MainFrame
- */
-
-
+import com.cburch.LogisimFX.newgui.AbstractController;
+import com.cburch.LogisimFX.proj.Project;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ProgressBar;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
-public class LoadingScreen {
+public class LoadingScreen extends AbstractController {
+
+    private static Stage stage;
 
     @FXML
     private Canvas cv;
@@ -18,15 +20,24 @@ public class LoadingScreen {
     @FXML
     private ProgressBar ProgressBar;
 
-    //private static double progress = 0;
     private static final SimpleDoubleProperty progress = new SimpleDoubleProperty();
 
     @FXML
     public void initialize(){
 
         progress.set(0f);
-        //ProgressBar.setProgress(progress);
         ProgressBar.progressProperty().bind(progress);
+
+    }
+
+    @Override
+    public void postInitialization(Stage s) {
+
+        stage = s;
+
+        stage.initStyle(StageStyle.UNDECORATED);
+        stage.setResizable(false);
+        stage.show();
 
     }
 
@@ -37,9 +48,18 @@ public class LoadingScreen {
     }
 
     public static void Close(){
+        stage.close();
+    }
 
 
+    @Override
+    public void linkProjectReference(Project project) {
 
     }
+
+    @Override
+    public void onClose() {
+    }
+
 
 }

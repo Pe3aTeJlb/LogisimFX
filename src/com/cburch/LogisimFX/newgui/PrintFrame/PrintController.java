@@ -1,0 +1,391 @@
+package com.cburch.LogisimFX.newgui.PrintFrame;
+
+import com.cburch.LogisimFX.Localizer;
+import com.cburch.LogisimFX.newgui.AbstractController;
+import com.cburch.logisim.circuit.Circuit;
+import com.cburch.logisim.circuit.CircuitState;
+import com.cburch.logisim.comp.Component;
+import com.cburch.logisim.comp.ComponentDrawContext;
+import com.cburch.logisim.data.Bounds;
+import com.cburch.logisim.gui.main.Frame;
+import com.cburch.LogisimFX.proj.Project;
+import com.cburch.logisim.util.StringUtil;
+
+import javafx.print.PrinterJob;
+import javafx.scene.Node;
+import javafx.collections.ObservableSet;
+import javafx.fxml.FXML;
+import javafx.print.Printer;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+
+
+public class PrintController extends AbstractController {
+
+    private Stage stage;
+
+    @FXML
+    private Label CircuitsLbl;
+
+    @FXML
+    private ComboBox<?> CircuitsCmbx;
+
+    @FXML
+    private Label HeaderLbl;
+
+    @FXML
+    private TextField HeaderTxtFld;
+
+    @FXML
+    private CheckBox RotateToFitChkbx;
+
+    @FXML
+    private CheckBox PrinterViewChkbx;
+
+    @FXML
+    private Button OkBtn;
+
+    @FXML
+    private Button CancleBtn;
+
+    private Localizer lc = new Localizer("LogisimFX/resources/localization/gui");
+
+    private PrinterJob job;
+    private Project proj;
+
+    private void PrintControler() { }
+
+    @FXML
+    public void initialize(){
+
+        CircuitsLbl.textProperty().bind(lc.createStringBinding("labelCircuits"));
+
+
+        HeaderLbl.textProperty().bind(lc.createStringBinding("labelHeader"));
+        HeaderTxtFld.setText("%n (%p of %P)");
+
+        RotateToFitChkbx.textProperty().bind(lc.createStringBinding("labelRotateToFit"));
+        RotateToFitChkbx.setSelected(true);
+
+        PrinterViewChkbx.textProperty().bind(lc.createStringBinding("labelPrinterView"));
+        PrinterViewChkbx.setSelected(true);
+
+
+        OkBtn.setText("Ok");
+        OkBtn.setOnAction(event -> {
+            //todo: add reference to canvas
+            pageSetup(OkBtn,stage);
+        });
+
+        CancleBtn.setText("Cancel");
+        CancleBtn.setOnAction(event -> {
+            stage.close();
+        });
+
+
+    }
+
+    @Override
+    public void postInitialization(Stage s) {
+        stage = s;
+        stage.titleProperty().bind(lc.createStringBinding("printParmsTitle"));
+
+        // TODO: 23.03.2021 force focus; 
+    }
+
+    @Override
+    public void linkProjectReference(Project project) {
+        proj = project;
+    }
+
+    private void pageSetup(Node node, Stage owner)
+    {
+        // Create the PrinterJob
+        job = PrinterJob.createPrinterJob();
+
+        if (job == null)
+        {
+            return;
+        }
+
+        // Show the print setup dialog
+        boolean proceed = job.showPageSetupDialog(owner);
+
+        if (proceed)
+        {
+            printSetup(node,stage);
+        }
+    }
+
+    private void printSetup(Node node, Stage owner){
+
+        if (job == null)
+        {
+            return;
+        }
+
+        // Show the print setup dialog
+        boolean proceed = job.showPrintDialog(owner);
+
+        if (proceed)
+        {
+            print(job, node);
+        }
+
+    }
+
+    private void print(PrinterJob job, Node node)
+    {
+
+        // Print the node
+        boolean printed = job.printPage(node);
+
+        if (printed)
+        {
+            job.endJob();
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public void doPrint(Project proj) {
+
+        CircuitJList list = new CircuitJList(proj, true);
+        Frame frame = proj.getFrame();
+        if (list.getModel().getSize() == 0) {
+            JOptionPane.showMessageDialog(proj.getFrame(),
+                    lc.get("printEmptyCircuitsMessage"),
+                    lc.get("printEmptyCircuitsTitle"),
+                    JOptionPane.YES_NO_OPTION);
+            return;
+        }
+        ParmsPanel parmsPanel = new ParmsPanel(list);
+        int action = JOptionPane.showConfirmDialog(frame,
+                parmsPanel, Strings.get("printParmsTitle"),
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+        if (action != JOptionPane.OK_OPTION) return;
+        List<Circuit> circuits = list.getSelectedCircuits();
+        if (circuits.isEmpty()) return;
+
+        PageFormat format = new PageFormat();
+        Printable print = new MyPrintable(proj, circuits,
+                parmsPanel.getHeader(),
+                parmsPanel.getRotateToFit(),
+                parmsPanel.getPrinterView());
+
+        PrinterJob job = PrinterJob.getPrinterJob();
+        job.setPrintable(print, format);
+        if (job.printDialog() == false) return;
+        try {
+            job.print();
+        } catch (PrinterException e) {
+            JOptionPane.showMessageDialog(proj.getFrame(),
+                    StringUtil.format(Strings.get("printError"), e.toString()),
+                    Strings.get("printErrorTitle"),
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private static class ParmsPanel extends JPanel {
+        JCheckBox rotateToFit;
+        JCheckBox printerView;
+        JTextField header;
+        GridBagLayout gridbag;
+        GridBagConstraints gbc;
+
+        ParmsPanel(JList list) {
+            // set up components
+            rotateToFit = new JCheckBox();
+            rotateToFit.setSelected(true);
+            printerView = new JCheckBox();
+            printerView.setSelected(true);
+            header = new JTextField(20);
+            header.setText("%n (%p of %P)");
+
+            // set up panel
+            gridbag = new GridBagLayout();
+            gbc = new GridBagConstraints();
+            setLayout(gridbag);
+
+            // now add components into panel
+            gbc.gridy = 0;
+            gbc.gridx = GridBagConstraints.RELATIVE;
+            gbc.anchor = GridBagConstraints.NORTHWEST;
+            gbc.insets = new Insets(5, 0, 5, 0);
+            gbc.fill = GridBagConstraints.NONE;
+            addGb(new JLabel(Strings.get("labelCircuits") + " "));
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            addGb(new JScrollPane(list));
+            gbc.fill = GridBagConstraints.NONE;
+
+            gbc.gridy++;
+            addGb(new JLabel(Strings.get("labelHeader") + " "));
+            addGb(header);
+
+            gbc.gridy++;
+            addGb(new JLabel(Strings.get("labelRotateToFit") + " "));
+            addGb(rotateToFit);
+
+            gbc.gridy++;
+            addGb(new JLabel(Strings.get("labelPrinterView") + " "));
+            addGb(printerView);
+        }
+
+        private void addGb(JComponent comp) {
+            gridbag.setConstraints(comp, gbc);
+            add(comp);
+        }
+
+        boolean getRotateToFit() { return rotateToFit.isSelected(); }
+        boolean getPrinterView() { return printerView.isSelected(); }
+        String getHeader() { return header.getText(); }
+    }
+
+    private static class MyPrintable implements Printable {
+        Project proj;
+        List<Circuit> circuits;
+        String header;
+        boolean rotateToFit;
+        boolean printerView;
+
+        MyPrintable(Project proj, List<Circuit> circuits, String header,
+                    boolean rotateToFit, boolean printerView) {
+            this.proj = proj;
+            this.circuits = circuits;
+            this.header = header;
+            this.rotateToFit = rotateToFit;
+            this.printerView = printerView;
+        }
+
+        public int print(Graphics base, PageFormat format, int pageIndex) {
+            if (pageIndex >= circuits.size()) return Printable.NO_SUCH_PAGE;
+
+            Circuit circ = circuits.get(pageIndex);
+            CircuitState circState = proj.getCircuitState(circ);
+            Graphics g = base.create();
+            Graphics2D g2 = g instanceof Graphics2D ? (Graphics2D) g : null;
+            FontMetrics fm = g.getFontMetrics();
+            String head = (header != null && !header.equals(""))
+                    ? format(header, pageIndex + 1, circuits.size(),
+                    circ.getName())
+                    : null;
+            int headHeight = (head == null ? 0 : fm.getHeight());
+
+            // Compute image size
+            double imWidth = format.getImageableWidth();
+            double imHeight = format.getImageableHeight();
+
+            // Correct coordinate system for page, including
+            // translation and possible rotation.
+            Bounds bds = circ.getBounds(g).expand(4);
+            double scale = Math.min(imWidth / bds.getWidth(),
+                    (imHeight - headHeight) / bds.getHeight());
+            if (g2 != null) {
+                g2.translate(format.getImageableX(), format.getImageableY());
+                if (rotateToFit && scale < 1.0 / 1.1) {
+                    double scale2 = Math.min(imHeight / bds.getWidth(),
+                            (imWidth - headHeight) / bds.getHeight());
+                    if (scale2 >= scale * 1.1) { // will rotate
+                        scale = scale2;
+                        if (imHeight > imWidth) { // portrait -> landscape
+                            g2.translate(0, imHeight);
+                            g2.rotate(-Math.PI / 2);
+                        } else { // landscape -> portrait
+                            g2.translate(imWidth, 0);
+                            g2.rotate(Math.PI / 2);
+                        }
+                        double t = imHeight;
+                        imHeight = imWidth;
+                        imWidth = t;
+                    }
+                }
+            }
+
+            // Draw the header line if appropriate
+            if (head != null) {
+                g.drawString(head,
+                        (int) Math.round((imWidth - fm.stringWidth(head)) / 2),
+                        fm.getAscent());
+                if (g2 != null) {
+                    imHeight -= headHeight;
+                    g2.translate(0, headHeight);
+                }
+            }
+
+            // Now change coordinate system for circuit, including
+            // translation and possible scaling
+            if (g2 != null) {
+                if (scale < 1.0) {
+                    g2.scale(scale, scale);
+                    imWidth /= scale;
+                    imHeight /= scale;
+                }
+                double dx = Math.max(0.0, (imWidth - bds.getWidth()) / 2);
+                g2.translate(-bds.getX() + dx, -bds.getY());
+            }
+
+            // Ensure that the circuit is eligible to be drawn
+            Rectangle clip = g.getClipBounds();
+            clip.add(bds.getX(), bds.getY());
+            clip.add(bds.getX() + bds.getWidth(),
+                    bds.getY() + bds.getHeight());
+            g.setClip(clip);
+
+            // And finally draw the circuit onto the page
+            ComponentDrawContext context = new ComponentDrawContext(
+                    proj.getFrame().getCanvas(), circ, circState,
+                    base, g, printerView);
+            Collection<Component> noComps = Collections.emptySet();
+            circ.draw(context, noComps);
+            g.dispose();
+            return Printable.PAGE_EXISTS;
+        }
+    }
+
+    private static String format(String header, int index, int max,
+                                 String circName) {
+        int mark = header.indexOf('%');
+        if (mark < 0) return header;
+        StringBuilder ret = new StringBuilder();
+        int start = 0;
+        for (; mark >= 0 && mark + 1 < header.length();
+             start = mark + 2, mark = header.indexOf('%', start)) {
+            ret.append(header.substring(start, mark));
+            switch (header.charAt(mark + 1)) {
+                case 'n': ret.append(circName); break;
+                case 'p': ret.append("" + index); break;
+                case 'P': ret.append("" + max); break;
+                case '%': ret.append("%"); break;
+                default:  ret.append("%" + header.charAt(mark + 1));
+            }
+        }
+        if (start < header.length()) {
+            ret.append(header.substring(start));
+        }
+        return ret.toString();
+    }
+
+
+
+    @Override
+    public void onClose() {
+
+    }
+
+
+}

@@ -17,9 +17,9 @@ import javax.swing.SwingUtilities;
 
 import com.cburch.LogisimFX.newgui.LoadingFrame.LoadingScreen;
 import com.cburch.logisim.circuit.Circuit;
-import com.cburch.LogisimFX.file.LoadFailedException;
-import com.cburch.LogisimFX.file.Loader;
-import com.cburch.LogisimFX.file.LogisimFile;
+import com.cburch.logisim.file.LoadFailedException;
+import com.cburch.logisim.file.Loader;
+import com.cburch.logisim.file.LogisimFile;
 import com.cburch.logisim.gui.main.Frame;
 import com.cburch.logisim.gui.start.SplashScreen;
 import com.cburch.logisim.prefs.AppPreferences;
@@ -52,10 +52,10 @@ public class ProjectActions {
 	}
 
 
-	public static Project doNew(boolean isStartupScreen) {
+	public static Project doNew(SplashScreen monitor, boolean isStartupScreen) {
 
 		LoadingScreen.nextStep();
-		Loader loader = new Loader();
+		Loader loader = new Loader(monitor);
 		InputStream templReader = AppPreferences.getTemplate().createStream();
 		LogisimFile file = null;
 		try {

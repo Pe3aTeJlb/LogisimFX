@@ -1,11 +1,14 @@
 package com.cburch.LogisimFX.newgui;
 
+import com.cburch.LogisimFX.proj.Project;
 import javafx.stage.Stage;
 
 public abstract class AbstractController {
 
-    public abstract void prepareFrame(Stage s);
-    public abstract void setStageTitle();
+    private Stage stage;
+
+    public abstract void postInitialization(Stage s);
+    public abstract void linkProjectReference(Project project);
     public abstract void onClose();
 
 }

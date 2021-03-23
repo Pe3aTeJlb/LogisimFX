@@ -97,7 +97,7 @@ public class CustomMenuBar extends MenuBar {
         MenuItem Preferences = new MenuItem();
         Preferences.textProperty().bind(localizer.createStringBinding("filePreferencesItem"));
         Preferences.setOnAction(event -> {
-            FrameManager.CreateNewFrame("LogisimFX/newgui/PreferencesFrame/Preferences.fxml");
+            FrameManager.CreatePreferencesFrame();
         });
 
 
@@ -323,7 +323,7 @@ public class CustomMenuBar extends MenuBar {
         MenuItem Options = new MenuItem();
         Options.textProperty().bind(localizer.createStringBinding("projectOptionsItem"));
         Options.setOnAction(event -> {
-            FrameManager.CreateNewFrame("LogisimFX/newgui/OptionsFrame/Options.fxml");
+            FrameManager.CreateOptionsFrame();
         });
 
         Project.getItems().addAll(
@@ -484,7 +484,7 @@ public class CustomMenuBar extends MenuBar {
         MenuItem SimLog = new MenuItem();
         SimLog.textProperty().bind(localizer.createStringBinding("simulateLogItem"));
         SimLog.setOnAction(event -> {
-            FrameManager.CreateNewFrame("LogisimFX/newgui/CircLogFrame/CircLog.fxml");
+            FrameManager.CreateCircLogFrame();
         });
 
         Simulate.getItems().addAll(
@@ -580,7 +580,7 @@ public class CustomMenuBar extends MenuBar {
         MenuItem About = new MenuItem();
         About.textProperty().bind(localizer.createStringBinding("helpAboutItem"));
         About.setOnAction(event -> {
-            FrameManager.CreateNewFrame("LogisimFX/newgui/AboutFrame/About.fxml");
+            FrameManager.CreateAboutFrame();
         });
 
         Help.getItems().addAll(

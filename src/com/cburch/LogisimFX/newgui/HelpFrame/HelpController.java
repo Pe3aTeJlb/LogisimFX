@@ -3,6 +3,7 @@ package com.cburch.LogisimFX.newgui.HelpFrame;
 import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.newgui.AbstractController;
 import com.cburch.LogisimFX.newgui.DialogManager;
+import com.cburch.LogisimFX.proj.Project;
 import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
 import javafx.scene.layout.AnchorPane;
@@ -71,6 +72,12 @@ public class HelpController extends AbstractController {
 
     }
 
+    @Override
+    public void postInitialization(Stage s) {
+        stage = s;
+        stage.titleProperty().bind(lc.createStringBinding("helpWindowTitle"));
+    }
+
     private void createSwingContent(final SwingNode swingNode) {
         SwingUtilities.invokeLater(() -> swingNode.setContent(helpComponent));
     }
@@ -79,15 +86,10 @@ public class HelpController extends AbstractController {
         helpComponent.setCurrentID(chapter);
     }
 
-    @Override
-    public void prepareFrame(Stage s) {
-        stage = s;
-        setStageTitle();
-    }
 
     @Override
-    public void setStageTitle() {
-        stage.titleProperty().bind(lc.createStringBinding("helpWindowTitle"));
+    public void linkProjectReference(Project project) {
+
     }
 
     @Override

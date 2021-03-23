@@ -2,6 +2,7 @@ package com.cburch.LogisimFX.newgui.MainFrame;
 
 import com.cburch.LogisimFX.newgui.AbstractController;
 import com.cburch.LogisimFX.Localizer;
+import com.cburch.LogisimFX.proj.Project;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -12,7 +13,7 @@ import javafx.stage.Stage;
 
 public class MainFrameController extends AbstractController {
 
-    private Stage Stage;
+    private Stage stage;
 
     @FXML
     private AnchorPane Root;
@@ -70,6 +71,12 @@ public class MainFrameController extends AbstractController {
 
     }
 
+    @Override
+    public void postInitialization(javafx.stage.Stage s) {
+        stage = s;
+        stage.setTitle(lc.get("frameTitle"));
+    }
+
     private void Update() {
         cv.draw();
     }
@@ -81,15 +88,9 @@ public class MainFrameController extends AbstractController {
         AnchorPane.setBottomAnchor(n,bottom);
     }
 
-
     @Override
-    public void prepareFrame(Stage s) {
-        Stage = s;
-        setStageTitle();
-    }
+    public void linkProjectReference(Project project) {
 
-    public void setStageTitle() {
-        Stage.setTitle(lc.get("frameTitle"));
     }
 
     @Override
