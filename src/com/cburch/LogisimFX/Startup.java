@@ -115,7 +115,7 @@ public class Startup {
 
     public void run() {
 
-        FrameManager.CreateLoadingScreen();
+        //FrameManager.CreateLoadingScreen();
 
         if (isTty) {
             try {
@@ -193,7 +193,7 @@ public class Startup {
             ProjectActions.doNew(true);
 
             if (showSplash) {
-                LoadingScreen.Close();
+                //LoadingScreen.Close();
                 //monitor.close();
             }
 
@@ -213,7 +213,7 @@ public class Startup {
                 if (first) {
                     first = false;
                     if (showSplash) {
-                        LoadingScreen.Close();
+                        //LoadingScreen.Close();
                         //monitor.close();
                     }
                     //monitor = null;

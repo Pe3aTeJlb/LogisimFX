@@ -4,12 +4,12 @@
 package com.cburch.LogisimFX.proj;
 
 import com.cburch.LogisimFX.file.*;
-import com.cburch.logisim.circuit.*;
+import com.cburch.LogisimFX.circuit.*;
 import com.cburch.logisim.gui.log.LogFrame;
-import com.cburch.logisim.gui.main.Canvas;
-import com.cburch.logisim.gui.main.Frame;
-import com.cburch.logisim.gui.main.Selection;
-import com.cburch.logisim.gui.main.SelectionActions;
+import com.cburch.LogisimFX.gui.main.Canvas;
+import com.cburch.LogisimFX.gui.main.Frame;
+import com.cburch.LogisimFX.gui.main.Selection;
+import com.cburch.LogisimFX.gui.main.SelectionActions;
 import com.cburch.logisim.gui.opts.OptionsFrame;
 import com.cburch.logisim.tools.AddTool;
 import com.cburch.logisim.tools.Library;
@@ -250,6 +250,7 @@ public class Project {
 	}
 
 	public void setLogisimFile(LogisimFile value) {
+
 		LogisimFile old = this.file;
 		if (old != null) {
 			for (LibraryListener l : fileListeners) {
@@ -270,19 +271,22 @@ public class Project {
 		}
 		file.setDirty(true); // toggle it so that everybody hears the file is fresh
 		file.setDirty(false);
+
 	}
 
 	public void setCircuitState(CircuitState value) {
+
 		if (value == null || circuitState == value) return;
 
 		CircuitState old = circuitState;
 		Circuit oldCircuit = old == null ? null : old.getCircuit();
 		Circuit newCircuit = value.getCircuit();
 		boolean circuitChanged = old == null || oldCircuit != newCircuit;
+
 		if (circuitChanged) {
 			Canvas canvas = frame == null ? null : frame.getCanvas();
 			if (canvas != null) {
-				if (tool != null) tool.deselect(canvas);
+				//if (tool != null) tool.deselect(canvas);
 				Selection selection = canvas.getSelection();
 				if (selection != null) {
 					Action act = SelectionActions.dropAll(selection);
@@ -290,7 +294,7 @@ public class Project {
 						doAction(act);
 					}
 				}
-				if (tool != null) tool.select(canvas);
+				//if (tool != null) tool.select(canvas);
 			}
 			if (oldCircuit != null) {
 				for (CircuitListener l : circuitListeners) {
@@ -298,9 +302,11 @@ public class Project {
 				}
 			}
 		}
+
 		circuitState = value;
 		stateMap.put(circuitState.getCircuit(), circuitState);
 		simulator.setCircuitState(circuitState);
+
 		if (circuitChanged) {
 			fireEvent(ProjectEvent.ACTION_SET_CURRENT, oldCircuit, newCircuit);
 			if (newCircuit != null) {
@@ -309,16 +315,21 @@ public class Project {
 				}
 			}
 		}
+
 		fireEvent(ProjectEvent.ACTION_SET_STATE, old, circuitState);
+
 	}
 
 	public void setCurrentCircuit(Circuit circuit) {
+
 		CircuitState circState = stateMap.get(circuit);
 		if (circState == null) circState = new CircuitState(this, circuit);
 		setCircuitState(circState);
+
 	}
 
 	public void setTool(Tool value) {
+
 		if (tool == value) return;
 		Tool old = tool;
 		Canvas canvas = frame.getCanvas();
@@ -344,9 +355,11 @@ public class Project {
 		tool = value;
 		if (tool != null) tool.select(frame.getCanvas());
 		fireEvent(ProjectEvent.ACTION_SET_TOOL, old, tool);
+
 	}
 
 	public void doAction(Action act) {
+
 		if (act == null) return;
 		Action toAdd = act;
 		startupScreen = false;
@@ -375,9 +388,11 @@ public class Project {
 		if (toAdd.isModification()) ++undoMods;
 		file.setDirty(isFileDirty());
 		fireEvent(new ProjectEvent(ProjectEvent.ACTION_COMPLETE, this, act));
+
 	}
 
 	public void undoAction() {
+
 		if (undoLog != null && undoLog.size() > 0) {
 			ActionData data = undoLog.removeLast();
 			setCircuitState(data.circuitState);
@@ -388,6 +403,7 @@ public class Project {
 			file.setDirty(isFileDirty());
 			fireEvent(new ProjectEvent(ProjectEvent.UNDO_COMPLETE, this, action));
 		}
+
 	}
 
 	public void setFileAsClean() {
@@ -396,9 +412,11 @@ public class Project {
 	}
 
 	public void repaintCanvas() {
+
 		// for actions that ought not be logged (i.e., those that
 		// change nothing, except perhaps the current values within
 		// the circuit)
 		fireEvent(new ProjectEvent(ProjectEvent.REPAINT_REQUEST, this, null));
+
 	}
 }

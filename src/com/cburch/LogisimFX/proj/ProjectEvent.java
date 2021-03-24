@@ -4,7 +4,7 @@
 package com.cburch.LogisimFX.proj;
 
 import com.cburch.LogisimFX.file.LogisimFile;
-import com.cburch.logisim.circuit.Circuit;
+import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.logisim.tools.Tool;
 
 

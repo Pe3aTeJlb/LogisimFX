@@ -2,6 +2,7 @@ package com.cburch.LogisimFX;
 
 import com.cburch.LogisimFX.newgui.DialogManager;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import com.cburch.LogisimFX.Startup;
 
@@ -15,7 +16,6 @@ public class Main extends Application {
     private static String[] arguments;
 
     public static void main(String[] args) {
-
         arguments = args;
         launch(args);
     }
@@ -23,12 +23,10 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        //FrameManager.CreateNewFrame("LogisimFX/newgui/AboutFrame/About.fxml");
-       // FrameManager.CreateNewFrame("LogisimFX/newgui/PrintFrame/Print.fxml");
-        FrameManager.CreateMainFrame();
-        //FrameManager.CreateSplashScreen();
+        //FrameManager.CreateMainFrame();
+        //FrameManager.CreateLoadingScreen();
+        FrameManager.CreateLoadingScreen();
 
-/*
         Startup startup = Startup.parseArgs(arguments);
 
         if (startup == null) {
@@ -36,6 +34,6 @@ public class Main extends Application {
         } else {
             startup.run();
         }
-*/
+
     }
 }

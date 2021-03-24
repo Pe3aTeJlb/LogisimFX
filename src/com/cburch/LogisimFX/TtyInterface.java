@@ -3,20 +3,20 @@
 
 package com.cburch.LogisimFX;
 
-import com.cburch.logisim.circuit.Analyze;
-import com.cburch.logisim.circuit.Circuit;
-import com.cburch.logisim.circuit.CircuitState;
-import com.cburch.logisim.circuit.Propagator;
+import com.cburch.LogisimFX.circuit.Analyze;
+import com.cburch.LogisimFX.circuit.Circuit;
+import com.cburch.LogisimFX.circuit.CircuitState;
+import com.cburch.LogisimFX.circuit.Propagator;
 import com.cburch.logisim.comp.Component;
 import com.cburch.logisim.data.Value;
-import com.cburch.logisim.file.FileStatistics;
-import com.cburch.logisim.file.LoadFailedException;
-import com.cburch.logisim.file.Loader;
-import com.cburch.logisim.file.LogisimFile;
+import com.cburch.LogisimFX.file.FileStatistics;
+import com.cburch.LogisimFX.file.LoadFailedException;
+import com.cburch.LogisimFX.file.Loader;
+import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.Startup;
 import com.cburch.logisim.instance.Instance;
 import com.cburch.logisim.instance.InstanceState;
-import com.cburch.logisim.proj.Project;
+import com.cburch.LogisimFX.proj.Project;
 import com.cburch.logisim.std.io.Keyboard;
 import com.cburch.logisim.std.io.Tty;
 import com.cburch.logisim.std.memory.Ram;
@@ -57,7 +57,7 @@ public class TtyInterface {
 	
 	public static void run(Startup args) {
 		File fileToOpen = args.getFilesToOpen().get(0);
-		Loader loader = new Loader(null);
+		Loader loader = new Loader();
 		LogisimFile file;
 		try {
 			file = loader.openLogisimFile(fileToOpen, args.getSubstitutions());

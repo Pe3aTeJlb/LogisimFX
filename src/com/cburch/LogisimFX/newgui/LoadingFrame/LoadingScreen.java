@@ -37,7 +37,6 @@ public class LoadingScreen extends AbstractController {
 
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setResizable(false);
-        stage.show();
 
     }
 
@@ -48,6 +47,7 @@ public class LoadingScreen extends AbstractController {
     }
 
     public static void Close(){
+        progress.set(1);
         stage.close();
     }
 

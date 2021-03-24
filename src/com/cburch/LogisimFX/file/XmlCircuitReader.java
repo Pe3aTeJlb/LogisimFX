@@ -4,10 +4,10 @@
 package com.cburch.LogisimFX.file;
 
 import com.cburch.draw.model.AbstractCanvasObject;
-import com.cburch.logisim.circuit.Circuit;
-import com.cburch.logisim.circuit.CircuitMutator;
-import com.cburch.logisim.circuit.CircuitTransaction;
-import com.cburch.logisim.circuit.Wire;
+import com.cburch.LogisimFX.circuit.Circuit;
+import com.cburch.LogisimFX.circuit.CircuitMutator;
+import com.cburch.LogisimFX.circuit.CircuitTransaction;
+import com.cburch.LogisimFX.circuit.Wire;
 import com.cburch.logisim.comp.Component;
 import com.cburch.logisim.comp.ComponentFactory;
 import com.cburch.logisim.data.AttributeSet;

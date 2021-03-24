@@ -10,13 +10,14 @@ import com.cburch.LogisimFX.file.Loader;
 import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.newgui.LoadingFrame.LoadingScreen;
-import com.cburch.logisim.circuit.Circuit;
+import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.logisim.gui.main.Frame;
 import com.cburch.logisim.gui.start.SplashScreen;
 import com.cburch.logisim.prefs.AppPreferences;
 import com.cburch.logisim.tools.Tool;
 import com.cburch.logisim.util.JFileChoosers;
 import com.cburch.logisim.util.StringUtil;
+import javafx.application.Platform;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,16 +43,18 @@ public class ProjectActions {
 			this.loader = loader;
 			this.proj = proj;
 			this.isStartupScreen = isStartup;
+			run();
 		}
 
 		public void run() {
 
+			LoadingScreen.Close();
 			FrameManager.CreateMainFrame(proj);
 
-			Frame frame = createFrame(null, proj);
-			frame.setVisible(true);
-			frame.toFront();
-			frame.getCanvas().requestFocus();
+			//Frame frame = createFrame(null, proj);
+			//frame.setVisible(true);
+			//frame.toFront();
+			//frame.getCanvas().requestFocus();
 			if (isStartupScreen) proj.setStartupScreen(true);
 		}
 	}
@@ -61,10 +64,14 @@ public class ProjectActions {
 	}
 
 	public static Project doNew(boolean isStartupScreen) {
+
 		LoadingScreen.nextStep();
+
 		Loader loader = new Loader();
+
 		InputStream templReader = AppPreferences.getTemplate().createStream();
 		LogisimFile file = null;
+
 		try {
 			file = loader.openLogisimFile(templReader);
 		} catch (IOException ex) {
@@ -75,7 +82,9 @@ public class ProjectActions {
 			try { templReader.close(); } catch (IOException e) { }
 		}
 		if (file == null) file = createEmptyFile(loader);
+
 		return completeProject(loader, file, isStartupScreen);
+
 	}
 
 	private static void displayException(Exception ex) {
@@ -100,13 +109,17 @@ public class ProjectActions {
 	}
 
 	private static Project completeProject(Loader loader, LogisimFile file, boolean isStartup) {
+
 		LoadingScreen.nextStep();
 
 		Project ret = new Project(file);
 
 		LoadingScreen.nextStep();
-		SwingUtilities.invokeLater(new CreateFrame(loader, ret, isStartup));
+
+		Platform.runLater(()->new CreateFrame(loader, ret, isStartup));
+		//SwingUtilities.invokeLater(new CreateFrame(loader, ret, isStartup));
 		return ret;
+
 	}
 
 	public static LogisimFile createNewFile(Project baseProject) {

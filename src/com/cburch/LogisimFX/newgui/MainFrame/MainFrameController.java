@@ -72,14 +72,30 @@ public class MainFrameController extends AbstractController {
     }
 
     @Override
-    public void postInitialization(javafx.stage.Stage s) {
+    public void postInitialization(Stage s) {
         stage = s;
         stage.setTitle(lc.get("frameTitle"));
+    }
+
+    @Override
+    public void linkProjectReference(Project project) {
+
     }
 
     private void Update() {
         cv.draw();
     }
+
+
+
+
+
+
+
+
+
+
+
 
     private void setAnchor(double left,double top, double right, double bottom, Node n){
         AnchorPane.setLeftAnchor(n,left);
@@ -88,10 +104,6 @@ public class MainFrameController extends AbstractController {
         AnchorPane.setBottomAnchor(n,bottom);
     }
 
-    @Override
-    public void linkProjectReference(Project project) {
-
-    }
 
     @Override
     public void onClose() {

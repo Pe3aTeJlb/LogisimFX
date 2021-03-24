@@ -7,29 +7,29 @@ import com.cburch.LogisimFX.proj.Project;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import java.io.IOException;
 import java.util.HashMap;
 
 /*
-FrameManager controls next frames: Options, Preferences, AboutFrame, LogFrame, CircAnalyzeFrame;
-these classes implements AbstractController in purpose to Title binding and frame duplicating blocking
+FrameManager controls all frames generated during program execution.
+These classes implements AbstractController in purpose to postInitialization process (title binding etc.) and frame duplicating blocking.
  */
 
 public class FrameManager {
 
     private static FXMLLoader loader;
-
     private static AbstractController c;
 
-    //ToDo: replace String with project reference
-    private static final HashMap<String, Stage> OpenedThreadsFrames = new HashMap<>();
+    private static final HashMap<Project, Data> OpenedThreadsFrames = new HashMap<>();
 
     private static final HashMap<String, Data> OpenedThreadlessFrames = new HashMap<>();
 
     //ToDo: replace String with memory object reference
-    //private static final HashMap<String, Stage> OpenedMemoryEditors = new HashMap();
+    private static final HashMap<String, Stage> OpenedMemoryEditors = new HashMap();
 
     private static class Data{
 
@@ -43,11 +43,57 @@ public class FrameManager {
 
     }
 
+
+    //Thread-depending frame
     public static void CreateMainFrame(){
 
         //ToDO: add opened file reference as hashmap key and as function parameter
 
         //if(!usedResources.containsKey(resourcePath)){
+
+        loader = new FXMLLoader(ClassLoader.getSystemResource(
+                "com/cburch/LogisimFX/newgui/MainFrame/LogisimFx.fxml"));
+        Parent root = null;
+
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Stage newStage = new Stage();
+        newStage.setScene(new Scene(root, 800, 600));
+
+        AbstractController c = loader.getController();
+        c.postInitialization(newStage);
+        //c.setProject(proj);
+
+        newStage.setOnCloseRequest(event -> {
+
+            if(OpenedThreadsFrames.size()==1){
+                //OpenedOptionsFrames.re
+                System.exit(0);
+            }else{
+
+            }
+
+        });
+
+        newStage.show();
+
+        //usedResources.put(resourcePath, newStage);
+        //primaryStage = newStage;
+
+        //}
+
+    }
+
+    //Thread-depending frame
+    public static void CreateMainFrame(Project proj){
+
+        //ToDO: add opened file reference as hashmap key and as function parameter
+
+        if(!OpenedThreadsFrames.containsKey(proj)){
 
             loader = new FXMLLoader(ClassLoader.getSystemResource(
                     "com/cburch/LogisimFX/newgui/MainFrame/LogisimFx.fxml"));
@@ -64,7 +110,7 @@ public class FrameManager {
 
             AbstractController c = loader.getController();
             c.postInitialization(newStage);
-            //c.setProject(proj);
+            c.linkProjectReference(proj);
 
             newStage.setOnCloseRequest(event -> {
 
@@ -72,24 +118,26 @@ public class FrameManager {
                     //OpenedOptionsFrames.re
                     System.exit(0);
                 }else{
-
+                    OpenedThreadsFrames.remove(proj);
                 }
 
             });
 
             newStage.show();
 
-            //usedResources.put(resourcePath, newStage);
-            //primaryStage = newStage;
+            OpenedThreadsFrames.put(proj, new Data(newStage,c));
 
-        //}
+        }
+        else{
+            FocusOnFrame(OpenedThreadsFrames.get(proj).stage);
+        }
 
     }
 
 
-    /////
+    //Threadless frames
 
-    public static void CreateNewFrame(String resourcePath){
+    public static void CreateNewFrame(String resourcePath, Modality modality){
 
         if(!OpenedThreadlessFrames.containsKey(resourcePath)){
 
@@ -109,9 +157,11 @@ public class FrameManager {
             c.postInitialization(newStage);
 
             newStage.setOnCloseRequest(event -> {
-                OpenedThreadlessFrames.remove(resourcePath);
                 c.onClose();
+                OpenedThreadlessFrames.remove(resourcePath);
             });
+
+            newStage.initModality(modality);
 
             newStage.show();
 
@@ -124,29 +174,28 @@ public class FrameManager {
     }
 
     public static void CreatePreferencesFrame(){
-        CreateNewFrame("LogisimFX/newgui/PreferencesFrame/Preferences.fxml");
+        CreateNewFrame("LogisimFX/newgui/PreferencesFrame/Preferences.fxml", Modality.NONE);
     }
 
     public static void CreateOptionsFrame(){
-        CreateNewFrame("LogisimFX/newgui/OptionsFrame/Oprions.fxml");
+        CreateNewFrame("LogisimFX/newgui/OptionsFrame/Options.fxml", Modality.NONE);
     }
 
     public static void CreateCircLogFrame(){
-        CreateNewFrame("LogisimFX/newgui/CircLogFrame/CircLog.fxml");
+        CreateNewFrame("LogisimFX/newgui/CircLogFrame/CircLog.fxml", Modality.NONE);
     }
 
     public static void CreateAboutFrame(){
-        CreateNewFrame("LogisimFX/newgui/AboutFrame/About.fxml");
+        CreateNewFrame("LogisimFX/newgui/AboutFrame/About.fxml", Modality.APPLICATION_MODAL);
     }
 
     public static void CreateLoadingScreen(){
-        CreateNewFrame("LogisimFX/newgui/LoadingFrame/Loading.fxml");
+        CreateNewFrame("LogisimFX/newgui/LoadingFrame/Loading.fxml", Modality.NONE);
     }
 
     public static void CreatePrintFrame(Project proj){
-        CreateNewFrame("LogisimFX/newgui/PrintFrame/Print.fxml");
+        CreateNewFrame("LogisimFX/newgui/PrintFrame/Print.fxml", Modality.APPLICATION_MODAL);
         c.linkProjectReference(proj);
-        c = null;
     }
 
     public static void CreateHelpFrame(String chapter){
@@ -155,7 +204,7 @@ public class FrameManager {
 
         if(!OpenedThreadlessFrames.containsKey(resourcepath)){
 
-            CreateNewFrame("LogisimFX/newgui/HelpFrame/Help.fxml");
+            CreateNewFrame("LogisimFX/newgui/HelpFrame/Help.fxml", Modality.NONE);
             ((HelpController) c).openChapter(chapter);
 
         }else{
@@ -166,6 +215,9 @@ public class FrameManager {
         }
 
     }
+
+
+    //Memory based frames
 
     public static void CreateHexEditorFrame(){
         //ToDO: hex editor lol
