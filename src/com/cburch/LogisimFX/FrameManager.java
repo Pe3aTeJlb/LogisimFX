@@ -109,8 +109,8 @@ public class FrameManager {
             newStage.setScene(new Scene(root, 800, 600));
 
             AbstractController c = loader.getController();
-            c.postInitialization(newStage);
             c.linkProjectReference(proj);
+            c.postInitialization(newStage);
 
             newStage.setOnCloseRequest(event -> {
 
@@ -173,6 +173,45 @@ public class FrameManager {
 
     }
 
+    public static void CreateNewFrame(String resourcePath, Project proj, Modality modality){
+
+        if(!OpenedThreadlessFrames.containsKey(resourcePath)){
+
+            loader = new FXMLLoader(ClassLoader.getSystemResource("com/cburch/"+resourcePath));
+            Parent root = null;
+
+            try {
+                root = loader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root, 450, 350));
+
+            c = loader.getController();
+            c.linkProjectReference(proj);
+            c.postInitialization(newStage);
+
+            newStage.setOnCloseRequest(event -> {
+                c.onClose();
+                OpenedThreadlessFrames.remove(resourcePath);
+            });
+
+            newStage.initModality(modality);
+
+            newStage.show();
+
+            OpenedThreadlessFrames.put(resourcePath, new Data(newStage, c));
+
+        }else{
+            FocusOnFrame(OpenedThreadlessFrames.get(resourcePath).stage);
+        }
+
+    }
+
+
+
     public static void CreatePreferencesFrame(){
         CreateNewFrame("LogisimFX/newgui/PreferencesFrame/Preferences.fxml", Modality.NONE);
     }
@@ -194,8 +233,11 @@ public class FrameManager {
     }
 
     public static void CreatePrintFrame(Project proj){
-        CreateNewFrame("LogisimFX/newgui/PrintFrame/Print.fxml", Modality.APPLICATION_MODAL);
-        c.linkProjectReference(proj);
+        CreateNewFrame("LogisimFX/newgui/PrintFrame/Print.fxml", proj, Modality.APPLICATION_MODAL);
+    }
+
+    public static void CreateExportImageFrame(Project proj){
+        CreateNewFrame("LogisimFX/newgui/ExportImageFrame/ExportImage.fxml", proj, Modality.APPLICATION_MODAL);
     }
 
     public static void CreateHelpFrame(String chapter){

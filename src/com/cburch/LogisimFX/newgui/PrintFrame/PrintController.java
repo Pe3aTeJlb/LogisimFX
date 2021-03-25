@@ -2,26 +2,28 @@ package com.cburch.LogisimFX.newgui.PrintFrame;
 
 import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.newgui.AbstractController;
-import com.cburch.logisim.circuit.Circuit;
-import com.cburch.logisim.circuit.CircuitState;
+import com.cburch.LogisimFX.newgui.DialogManager;
+import com.cburch.LogisimFX.circuit.Circuit;
+import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.logisim.comp.Component;
 import com.cburch.logisim.comp.ComponentDrawContext;
 import com.cburch.logisim.data.Bounds;
-import com.cburch.logisim.gui.main.Frame;
+import com.cburch.LogisimFX.file.LogisimFile;
+import com.cburch.LogisimFX.gui.main.Frame;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.logisim.util.StringUtil;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.print.PrintColor;
+import javafx.print.PrinterAttributes;
 import javafx.print.PrinterJob;
 import javafx.scene.Node;
-import javafx.collections.ObservableSet;
 import javafx.fxml.FXML;
-import javafx.print.Printer;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
+
+import javax.print.attribute.standard.PrinterMakeAndModel;
 
 
 public class PrintController extends AbstractController {
@@ -32,19 +34,13 @@ public class PrintController extends AbstractController {
     private Label CircuitsLbl;
 
     @FXML
-    private ComboBox<?> CircuitsCmbx;
+    private ListView<String> CircuitLstVw;
 
     @FXML
     private Label HeaderLbl;
 
     @FXML
     private TextField HeaderTxtFld;
-
-    @FXML
-    private CheckBox RotateToFitChkbx;
-
-    @FXML
-    private CheckBox PrinterViewChkbx;
 
     @FXML
     private Button OkBtn;
@@ -57,27 +53,18 @@ public class PrintController extends AbstractController {
     private PrinterJob job;
     private Project proj;
 
-    private void PrintControler() { }
+    private ObservableList<String> circuits = FXCollections.observableArrayList("1","2","1","1","1","1","1","1","1");
 
     @FXML
     public void initialize(){
 
         CircuitsLbl.textProperty().bind(lc.createStringBinding("labelCircuits"));
 
-
         HeaderLbl.textProperty().bind(lc.createStringBinding("labelHeader"));
         HeaderTxtFld.setText("%n (%p of %P)");
 
-        RotateToFitChkbx.textProperty().bind(lc.createStringBinding("labelRotateToFit"));
-        RotateToFitChkbx.setSelected(true);
-
-        PrinterViewChkbx.textProperty().bind(lc.createStringBinding("labelPrinterView"));
-        PrinterViewChkbx.setSelected(true);
-
-
         OkBtn.setText("Ok");
         OkBtn.setOnAction(event -> {
-            //todo: add reference to canvas
             pageSetup(OkBtn,stage);
         });
 
@@ -86,15 +73,6 @@ public class PrintController extends AbstractController {
             stage.close();
         });
 
-
-    }
-
-    @Override
-    public void postInitialization(Stage s) {
-        stage = s;
-        stage.titleProperty().bind(lc.createStringBinding("printParmsTitle"));
-
-        // TODO: 23.03.2021 force focus; 
     }
 
     @Override
@@ -102,8 +80,55 @@ public class PrintController extends AbstractController {
         proj = project;
     }
 
-    private void pageSetup(Node node, Stage owner)
-    {
+    @Override
+    public void postInitialization(Stage s) {
+
+        stage = s;
+        stage.titleProperty().bind(lc.createStringBinding("printParmsTitle"));
+        stage.setHeight(300);
+        stage.setWidth(300);
+
+        setCircuitList(true);
+
+        if(circuits.size()==0){
+            DialogManager.CreateErrorDialog( lc.get("printEmptyCircuitsTitle"), lc.get("printEmptyCircuitsMessage"));
+        }
+
+
+    }
+
+
+
+    public void setCircuitList(boolean includeEmpty) {
+
+        MultipleSelectionModel<String> langsSelectionModel = CircuitLstVw.getSelectionModel();
+        langsSelectionModel.setSelectionMode(SelectionMode.MULTIPLE);
+
+/*
+        LogisimFile file = proj.getLogisimFile();
+        Circuit current = proj.getCurrentCircuit();
+
+        boolean currentFound = false;
+
+        for (Circuit circ : file.getCircuits()) {
+            if (!includeEmpty || circ.getBounds() != Bounds.EMPTY_BOUNDS) {
+                if (circ == current) currentFound = true;
+                //circuits.add(circ);
+            }
+        }
+
+*/
+        CircuitLstVw.setItems(circuits);
+
+        //if (currentFound) CircuitLstVw.getSelectionModel().select(current);
+
+    }
+
+
+
+
+    private void pageSetup(Node node, Stage owner) {
+
         // Create the PrinterJob
         job = PrinterJob.createPrinterJob();
 
@@ -119,6 +144,7 @@ public class PrintController extends AbstractController {
         {
             printSetup(node,stage);
         }
+
     }
 
     private void printSetup(Node node, Stage owner){
@@ -138,8 +164,7 @@ public class PrintController extends AbstractController {
 
     }
 
-    private void print(PrinterJob job, Node node)
-    {
+    private void print(PrinterJob job, Node node) {
 
         // Print the node
         boolean printed = job.printPage(node);
@@ -148,16 +173,8 @@ public class PrintController extends AbstractController {
         {
             job.endJob();
         }
+
     }
-
-
-
-
-
-
-
-
-
 
 
 
@@ -166,6 +183,8 @@ public class PrintController extends AbstractController {
 
         CircuitJList list = new CircuitJList(proj, true);
         Frame frame = proj.getFrame();
+
+        /*
         if (list.getModel().getSize() == 0) {
             JOptionPane.showMessageDialog(proj.getFrame(),
                     lc.get("printEmptyCircuitsMessage"),
@@ -173,11 +192,16 @@ public class PrintController extends AbstractController {
                     JOptionPane.YES_NO_OPTION);
             return;
         }
+
+         */
+
         ParmsPanel parmsPanel = new ParmsPanel(list);
+
         int action = JOptionPane.showConfirmDialog(frame,
                 parmsPanel, Strings.get("printParmsTitle"),
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
+
         if (action != JOptionPane.OK_OPTION) return;
         List<Circuit> circuits = list.getSelectedCircuits();
         if (circuits.isEmpty()) return;
@@ -379,6 +403,7 @@ public class PrintController extends AbstractController {
         }
         return ret.toString();
     }
+
 
 
 

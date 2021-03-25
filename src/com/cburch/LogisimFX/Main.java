@@ -24,8 +24,10 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
 
         //FrameManager.CreateMainFrame();
-        //FrameManager.CreateLoadingScreen();
         FrameManager.CreateLoadingScreen();
+        //FrameManager.CreatePrintFrame(null);
+        //FrameManager.CreateLoadingScreen();
+
 
         Startup startup = Startup.parseArgs(arguments);
 
@@ -34,6 +36,7 @@ public class Main extends Application {
         } else {
             startup.run();
         }
+
 
     }
 }

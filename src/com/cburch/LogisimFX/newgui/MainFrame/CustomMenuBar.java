@@ -2,6 +2,7 @@ package com.cburch.LogisimFX.newgui.MainFrame;
 
 import com.cburch.LogisimFX.FrameManager;
 import com.cburch.LogisimFX.OpenRecentMenu;
+import com.cburch.LogisimFX.proj.Project;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import com.cburch.LogisimFX.FileSelector;
@@ -18,11 +19,15 @@ public class CustomMenuBar extends MenuBar {
 
     private final FileSelector fileSelector = new FileSelector();
 
-    public CustomMenuBar(){
+    private Project proj;
+
+    public CustomMenuBar(Project project){
 
         super();
 
         prefHeight(prefHeight);
+
+        proj = project;
 
         AnchorPane.setLeftAnchor(this,0.0);
         AnchorPane.setTopAnchor(this,0.0);
@@ -84,11 +89,15 @@ public class CustomMenuBar extends MenuBar {
 
         MenuItem ExportImage = new MenuItem();
         ExportImage.textProperty().bind(localizer.createStringBinding("fileExportImageItem"));
-        ExportImage.setOnAction(event -> {});
+        ExportImage.setOnAction(event -> {
+            FrameManager.CreateExportImageFrame(proj);
+        });
 
         MenuItem Print = new MenuItem();
         Print.textProperty().bind(localizer.createStringBinding("filePrintItem"));
-        Print.setOnAction(event -> {});
+        Print.setOnAction(event -> {
+            FrameManager.CreatePrintFrame(proj);
+        });
 
 
         SeparatorMenuItem sp3 = new SeparatorMenuItem();

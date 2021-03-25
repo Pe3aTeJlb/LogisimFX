@@ -26,6 +26,8 @@ public class MainFrameController extends AbstractController {
 
     private Localizer lc = new Localizer("LogisimFX/resources/localization/menu");
 
+    private Project proj;
+
 //monolith - strength in unity
     @FXML
     public void initialize(){
@@ -41,7 +43,7 @@ public class MainFrameController extends AbstractController {
         TreeView<CustomButton> t = new TreeView<>();
         setAnchor(0,40,0,0,t);
 
-        CustomMenuBar menubar = new CustomMenuBar();
+        CustomMenuBar menubar = new CustomMenuBar(proj);
 
         MainToolBar mainToolBar = new MainToolBar();
         AdditionalToolBar additionalToolBar = new AdditionalToolBar();
@@ -79,7 +81,7 @@ public class MainFrameController extends AbstractController {
 
     @Override
     public void linkProjectReference(Project project) {
-
+        proj = project;
     }
 
     private void Update() {

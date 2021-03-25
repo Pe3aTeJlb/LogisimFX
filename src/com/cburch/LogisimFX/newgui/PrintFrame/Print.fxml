@@ -6,16 +6,13 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cburch.LogisimFX.newgui.PrintFrame.PrintController">
+<AnchorPane prefHeight="271.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cburch.LogisimFX.newgui.PrintFrame.PrintController">
    <children>
-      <Label fx:id="CircuitsLbl" layoutX="126.0" layoutY="73.0" text="Label" />
-      <Label fx:id="HeaderLbl" layoutX="126.0" layoutY="110.0" text="Label" />
-      <TextField fx:id="HeaderTxtFld" layoutX="237.0" layoutY="106.0" />
-      <CheckBox fx:id="RotateToFitChkbx" layoutX="126.0" layoutY="161.0" mnemonicParsing="false" text="CheckBox" />
-      <CheckBox fx:id="PrinterViewChkbx" layoutX="126.0" layoutY="192.0" mnemonicParsing="false" text="CheckBox" />
-      <ComboBox fx:id="CircuitsCmbx" layoutX="237.0" layoutY="69.0" prefWidth="150.0" />
-      <Button fx:id="OkBtn" layoutX="163.0" layoutY="326.0" mnemonicParsing="false" text="Button" />
-      <Button fx:id="CancleBtn" layoutX="334.0" layoutY="326.0" mnemonicParsing="false" text="Button" />
+      <Label fx:id="CircuitsLbl" layoutX="10.0" layoutY="20.0" text="Label" AnchorPane.leftAnchor="10.0" />
+      <Label fx:id="HeaderLbl" layoutX="10.0" layoutY="189.0" text="Label" AnchorPane.leftAnchor="10.0" />
+      <TextField fx:id="HeaderTxtFld" layoutX="75.0" layoutY="185.0" prefHeight="25.0" prefWidth="200.0" />
+      <Button fx:id="OkBtn" layoutX="50.0" layoutY="230.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Ok" />
+      <Button fx:id="CancleBtn" layoutX="175.0" layoutY="230.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Cancel" />
+      <ListView fx:id="CircuitLstVw" layoutX="75.0" layoutY="20.0" prefHeight="150.0" prefWidth="200.0" />
    </children>
 </AnchorPane>
