@@ -265,8 +265,16 @@ public class FrameManager {
         //ToDO: hex editor lol
     }
 
+    //Tools
+
     private static void FocusOnFrame(Stage s){
         s.toFront();
+    }
+
+    public static void FocusOnFrame(Project project){
+
+        OpenedThreadsFrames.get(project).stage.toFront();
+
     }
 
 }

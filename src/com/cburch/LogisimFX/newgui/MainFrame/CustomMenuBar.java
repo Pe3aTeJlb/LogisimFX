@@ -3,6 +3,9 @@ package com.cburch.LogisimFX.newgui.MainFrame;
 import com.cburch.LogisimFX.FrameManager;
 import com.cburch.LogisimFX.OpenRecentMenu;
 import com.cburch.LogisimFX.proj.Project;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import com.cburch.LogisimFX.FileSelector;
@@ -20,6 +23,8 @@ public class CustomMenuBar extends MenuBar {
     private final FileSelector fileSelector = new FileSelector();
 
     private Project proj;
+    private ObservableList<MenuItem> baseWindowMenuProjects = FXCollections.observableArrayList();
+    private ObservableList<MenuItem> buffWindowMenuProjects = FXCollections.observableArrayList();
 
     public CustomMenuBar(Project project){
 
@@ -515,8 +520,9 @@ public class CustomMenuBar extends MenuBar {
 
     private void initWindowMenu(){
 
-        Menu Help = new Menu();
-        Help.textProperty().bind(localizer.createStringBinding("windowMenu"));
+        Menu Window = new Menu();
+        Window.textProperty().bind(localizer.createStringBinding("windowMenu"));
+
 
         MenuItem Minimize = new MenuItem();
         Minimize.textProperty().bind(localizer.createStringBinding("windowMinimizeItem"));
@@ -538,24 +544,33 @@ public class CustomMenuBar extends MenuBar {
         CombAnalyse.textProperty().bind(localizer.createStringBinding("analyzerWindowTitle"));
         CombAnalyse.setOnAction(event -> {});
 
-        /*
+
         MenuItem Preferences = new MenuItem();
         Preferences.textProperty().bind(localizer.createStringBinding("preferencesFrameMenuItem"));
-        Preferences.setOnAction(event -> {});
-*/
+        Preferences.setOnAction(event -> {
+            FrameManager.CreatePreferencesFrame();
+        });
+
 
         SeparatorMenuItem sp2 = new SeparatorMenuItem();
 
-        Help.getItems().addAll(
-                Minimize,
+
+        baseWindowMenuProjects.addAll(Minimize,
                 Maximize,
                 Close,
                 sp1,
                 CombAnalyse,
-                //Preferences,
-                sp2
+                Preferences,
+                sp2);
+
+        Window.getItems().addAll(
+              baseWindowMenuProjects
         );
-        this.getMenus().add(Help);
+        Window.getItems().addAll(
+                buffWindowMenuProjects
+        );
+
+        this.getMenus().add(Window);
 
     }
 
@@ -602,6 +617,7 @@ public class CustomMenuBar extends MenuBar {
         this.getMenus().add(Help);
 
     }
+
 
 
 }
