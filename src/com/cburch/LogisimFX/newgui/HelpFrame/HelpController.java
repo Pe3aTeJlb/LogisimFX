@@ -32,7 +32,7 @@ public class HelpController extends AbstractController {
 
     @FXML
     public void initialize(){
-
+        
         String helpUrl = "com/cburch/"+lc.get("helpsetUrl");
         if (helpUrl == null) helpUrl = "com/cburch/LogisimFX/resources/doc/doc_en.hs";
 

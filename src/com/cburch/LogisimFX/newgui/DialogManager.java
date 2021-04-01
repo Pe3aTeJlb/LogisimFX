@@ -1,9 +1,9 @@
 package com.cburch.LogisimFX.newgui;
 
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+
+import com.cburch.LogisimFX.Localizer;
+import com.cburch.LogisimFX.proj.Project;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
@@ -97,6 +97,33 @@ public class DialogManager {
         alert.getDialogPane().setExpandableContent(expContent);
 
         alert.showAndWait();
+
+    }
+
+    public static int CreateConfirmCloseDialog(Project proj){
+
+        Localizer lc = new Localizer("LogisimFX/resources/localization/gui");
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(lc.get("confirmCloseTitle"));
+        //alert.setContentText(StringUtil.format(lc.get("confirmDiscardMessage"),
+         //       proj.getLogisimFile().getName()));
+        alert.setContentText(lc.get("confirmDiscardMessage"));
+
+        ButtonType buttonTypeSave = new ButtonType( lc.get("saveOption"));
+        ButtonType buttonTypeDiscard = new ButtonType(lc.get("discardOption"));
+        ButtonType buttonTypeCancel = new ButtonType(lc.get("cancelOption"), ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(buttonTypeSave, buttonTypeDiscard, buttonTypeCancel);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == buttonTypeSave){
+            return 2;
+        } else if (result.get() == buttonTypeDiscard) {
+            return 1;
+        }else{
+            return 0;
+        }
 
     }
 

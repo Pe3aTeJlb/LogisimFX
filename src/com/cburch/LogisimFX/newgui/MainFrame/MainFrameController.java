@@ -3,6 +3,8 @@ package com.cburch.LogisimFX.newgui.MainFrame;
 import com.cburch.LogisimFX.newgui.AbstractController;
 import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.proj.Project;
+import com.cburch.LogisimFX.circuit.Circuit;
+import com.cburch.logisim.util.StringUtil;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -12,6 +14,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 public class MainFrameController extends AbstractController {
+
+    //Check Frame of com.cburch.logisim.gui.main
 
     private Stage stage;
 
@@ -47,7 +51,7 @@ public class MainFrameController extends AbstractController {
 
         MainToolBar mainToolBar = new MainToolBar();
         AdditionalToolBar additionalToolBar = new AdditionalToolBar();
-        ControlToolBar controlToolBar = new ControlToolBar(mainToolBar,additionalToolBar);
+        ExplorerToolBar controlToolBar = new ExplorerToolBar(mainToolBar,additionalToolBar);
 
         treeRoot.getChildren().addAll(controlToolBar,additionalToolBar,t);
 
@@ -76,7 +80,7 @@ public class MainFrameController extends AbstractController {
     @Override
     public void postInitialization(Stage s) {
         stage = s;
-        stage.setTitle(lc.get("frameTitle"));
+        computeTitle();
     }
 
     @Override
@@ -84,11 +88,30 @@ public class MainFrameController extends AbstractController {
         proj = project;
     }
 
+    public Project getProj(){
+        return proj;
+    }
+
     private void Update() {
         cv.draw();
     }
 
+    private void computeTitle(){
 
+        String s;
+        Circuit circuit = proj.getCurrentCircuit();
+        String name = proj.getLogisimFile().getName();
+
+        if (circuit != null) {
+            s = StringUtil.format(lc.get("titleCircFileKnown"),
+                    circuit.getName(), name);
+        } else {
+            s = StringUtil.format(lc.get("titleFileKnown"), name);
+        }
+        stage.titleProperty().bind(lc.createStringBinding(""));
+        stage.setTitle(s);
+
+    }
 
 
 

@@ -10,7 +10,9 @@ import com.cburch.LogisimFX.Localizer;
 
 import java.util.Locale;
 
-public class ControlToolBar extends ToolBar {
+public class ExplorerToolBar extends ToolBar {
+
+    //Check ExplorerToolbarModel of com.cburch.logisim.gui.main
 
     private AdditionalToolBar  AdditionalToolBar;
     private MainToolBar MainToolBar;
@@ -18,7 +20,7 @@ public class ControlToolBar extends ToolBar {
     private int prefHeight = 15;
     private ObservableList<Node> ControlBtnsList;
 
-    public ControlToolBar(MainToolBar main, AdditionalToolBar additional){
+    public ExplorerToolBar(MainToolBar main, AdditionalToolBar additional){
 
         super();
 

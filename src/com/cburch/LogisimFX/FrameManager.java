@@ -1,9 +1,12 @@
 package com.cburch.LogisimFX;
 
 import com.cburch.LogisimFX.newgui.AbstractController;
+import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.newgui.HelpFrame.HelpController;
 import com.cburch.LogisimFX.proj.Project;
 
+import com.cburch.LogisimFX.proj.ProjectActions;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -47,10 +50,6 @@ public class FrameManager {
     //Thread-depending frame
     public static void CreateMainFrame(){
 
-        //ToDO: add opened file reference as hashmap key and as function parameter
-
-        //if(!usedResources.containsKey(resourcePath)){
-
         loader = new FXMLLoader(ClassLoader.getSystemResource(
                 "com/cburch/LogisimFX/newgui/MainFrame/LogisimFx.fxml"));
         Parent root = null;
@@ -69,29 +68,46 @@ public class FrameManager {
         //c.setProject(proj);
 
         newStage.setOnCloseRequest(event -> {
+            event.consume();
 
-            if(OpenedThreadsFrames.size()==1){
-                //OpenedOptionsFrames.re
-                System.exit(0);
-            }else{
+            c.onClose();
 
-            }
+            //Todo: possible problem on exit https://stackoverflow.com/questions/46053974/using-platform-exit-and-system-exitint-together
+
+
+
+                int type = DialogManager.CreateConfirmCloseDialog(null);
+
+                if (type == 2) {
+
+                    if (OpenedThreadsFrames.size() == 1) {
+                        Platform.exit();
+                        System.exit(0);
+                    }
+
+                } else if (type == 1) {
+
+                    newStage.close();
+
+                    if (OpenedThreadsFrames.size() == 1) {
+                        Platform.exit();
+                        System.exit(0);
+                    }
+
+                } else if (type == 0) {
+
+                }
+
+
 
         });
 
         newStage.show();
 
-        //usedResources.put(resourcePath, newStage);
-        //primaryStage = newStage;
-
-        //}
-
     }
 
     //Thread-depending frame
     public static void CreateMainFrame(Project proj){
-
-        //ToDO: add opened file reference as hashmap key and as function parameter
 
         if(!OpenedThreadsFrames.containsKey(proj)){
 
@@ -114,12 +130,51 @@ public class FrameManager {
 
             newStage.setOnCloseRequest(event -> {
 
-                if(OpenedThreadsFrames.size()==1){
-                    //OpenedOptionsFrames.re
-                    System.exit(0);
-                }else{
-                    OpenedThreadsFrames.remove(proj);
+                event.consume();
+
+                c.onClose();
+
+                //Todo: possible problem on exit https://stackoverflow.com/questions/46053974/using-platform-exit-and-system-exitint-together
+
+                if (!proj.isFileDirty()){
+
+                    if(OpenedThreadsFrames.size()==1){
+                        Platform.exit();
+                        System.exit(0);
+                    }else{
+                        OpenedThreadsFrames.remove(proj);
+                    }
+
+                }else {
+
+                    int type = DialogManager.CreateConfirmCloseDialog(proj);
+
+                    if (type == 2) {
+                        ProjectActions.doSave(proj);
+
+                        if (OpenedThreadsFrames.size() == 1) {
+                            Platform.exit();
+                            System.exit(0);
+                        } else {
+                            OpenedThreadsFrames.remove(proj);
+                        }
+
+                    } else if (type == 1) {
+
+                        newStage.close();
+
+                        if (OpenedThreadsFrames.size() == 1) {
+                            Platform.exit();
+                            System.exit(0);
+                        } else {
+                            OpenedThreadsFrames.remove(proj);
+                        }
+
+                    } else if (type == 0) {
+
+                    }
                 }
+
 
             });
 
