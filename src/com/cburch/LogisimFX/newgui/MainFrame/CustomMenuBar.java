@@ -2,9 +2,12 @@ package com.cburch.LogisimFX.newgui.MainFrame;
 
 import com.cburch.LogisimFX.FrameManager;
 import com.cburch.LogisimFX.OpenRecentMenu;
+import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.proj.Project;
+import com.cburch.LogisimFX.circuit.Circuit;
+import com.cburch.LogisimFX.file.LogisimFileActions;
+
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
@@ -26,13 +29,11 @@ public class CustomMenuBar extends MenuBar {
     private ObservableList<MenuItem> baseWindowMenuProjects = FXCollections.observableArrayList();
     private ObservableList<MenuItem> buffWindowMenuProjects = FXCollections.observableArrayList();
 
-    public CustomMenuBar(Project project){
+    public CustomMenuBar(){
 
         super();
 
         prefHeight(prefHeight);
-
-        proj = project;
 
         AnchorPane.setLeftAnchor(this,0.0);
         AnchorPane.setTopAnchor(this,0.0);
@@ -247,7 +248,17 @@ public class CustomMenuBar extends MenuBar {
 
         MenuItem AddCircuit = new MenuItem();
         AddCircuit.textProperty().bind(localizer.createStringBinding("projectAddCircuitItem"));
-        AddCircuit.setOnAction(event -> {});
+        AddCircuit.setOnAction(event -> {
+
+            String circuitName = DialogManager.CreateInputDialog(proj.getLogisimFile());
+
+            if (circuitName != null) {
+                Circuit circuit = new Circuit(circuitName);
+                //proj.doAction(LogisimFileActions.addCircuit(circuit));
+                proj.setCurrentCircuit(circuit);
+            }
+
+        });
 
 
 
@@ -618,6 +629,8 @@ public class CustomMenuBar extends MenuBar {
 
     }
 
-
+    public void linkProjectReference(Project project){
+        proj = project;
+    }
 
 }

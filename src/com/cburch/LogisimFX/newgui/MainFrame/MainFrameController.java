@@ -32,6 +32,9 @@ public class MainFrameController extends AbstractController {
 
     private Project proj;
 
+    //UI
+    CustomMenuBar menubar;
+
 //monolith - strength in unity
     @FXML
     public void initialize(){
@@ -47,7 +50,7 @@ public class MainFrameController extends AbstractController {
         TreeView<CustomButton> t = new TreeView<>();
         setAnchor(0,40,0,0,t);
 
-        CustomMenuBar menubar = new CustomMenuBar(proj);
+        menubar = new CustomMenuBar();
 
         MainToolBar mainToolBar = new MainToolBar();
         AdditionalToolBar additionalToolBar = new AdditionalToolBar();
@@ -80,12 +83,16 @@ public class MainFrameController extends AbstractController {
     @Override
     public void postInitialization(Stage s) {
         stage = s;
-        computeTitle();
+        //computeTitle();
+
     }
 
     @Override
     public void linkProjectReference(Project project) {
+
         proj = project;
+        menubar.linkProjectReference(proj);
+
     }
 
     public Project getProj(){

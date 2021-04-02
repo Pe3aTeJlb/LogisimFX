@@ -25,10 +25,10 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
 
         //FrameManager.CreateMainFrame();
-
+        //String s = DialogManager.CreateInputDialog(null);
         //DialogManager.CreateConfirmCloseDialog(null);
 
-        /*
+
         Startup startup = Startup.parseArgs(arguments);
 
         if (startup == null) {
@@ -36,7 +36,7 @@ public class Main extends Application {
         } else {
             startup.run();
         }
-*/
+
 
     }
 }

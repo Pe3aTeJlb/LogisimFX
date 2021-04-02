@@ -3,6 +3,7 @@ package com.cburch.LogisimFX.newgui;
 
 import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.proj.Project;
+import com.cburch.logisim.tools.Library;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -123,6 +124,43 @@ public class DialogManager {
             return 1;
         }else{
             return 0;
+        }
+
+    }
+
+    public static String CreateInputDialog(Library lib){
+
+        Localizer lc = new Localizer("LogisimFX/resources/localization/menu");
+
+        TextInputDialog inputDialog = new TextInputDialog();
+        inputDialog.setTitle(lc.get("circuitNameDialogTitle"));
+        inputDialog.setHeaderText(lc.get("circuitNameDialogTitle"));
+        inputDialog.setContentText(lc.get("circuitNamePrompt"));
+
+        Optional<String> result = inputDialog.showAndWait();
+
+        if (result.isPresent()){
+
+            String buff = result.get();
+            buff.trim();
+            System.out.println(buff);
+
+            if (buff.equals("")) {
+                CreateErrorDialog("Error",lc.get("circuitNameMissingError"));
+                return null;
+            } else {
+
+                if (lib.getTool(buff) == null) {
+                    return buff;
+                } else {
+                    CreateErrorDialog("Error",lc.get("circuitNameDuplicateError"));
+                    return null;
+                }
+
+            }
+
+        }else {
+            return null;
         }
 
     }
