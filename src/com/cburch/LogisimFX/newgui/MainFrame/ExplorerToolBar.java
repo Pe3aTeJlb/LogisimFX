@@ -1,5 +1,7 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -14,18 +16,27 @@ public class ExplorerToolBar extends ToolBar {
 
     //Check ExplorerToolbarModel of com.cburch.logisim.gui.main
 
-    private AdditionalToolBar  AdditionalToolBar;
-    private MainToolBar MainToolBar;
+    public AdditionalToolBar  AdditionalToolBar;
+    public MainToolBar MainToolBar;
+    public ProjectTreeExplorer ProjectTreeExplorer;
+
     private int prefWidth = 15;
     private int prefHeight = 15;
     private ObservableList<Node> ControlBtnsList;
 
-    public ExplorerToolBar(MainToolBar main, AdditionalToolBar additional){
+    public SimpleBooleanProperty ShowProjectExplorer = new SimpleBooleanProperty(true);
+    public SimpleBooleanProperty ShowSimulationHierarchy = new SimpleBooleanProperty(false);
+    public SimpleBooleanProperty EditCircuitLayout = new SimpleBooleanProperty(true);
+    public SimpleBooleanProperty EditCircuitAppearance = new SimpleBooleanProperty(false);
+
+
+    public ExplorerToolBar(MainToolBar main, AdditionalToolBar additional, ProjectTreeExplorer explorer){
 
         super();
 
         MainToolBar = main;
         AdditionalToolBar = additional;
+        ProjectTreeExplorer = explorer;
 
         ControlBtnsList = FXCollections.observableArrayList();
 
@@ -43,32 +54,44 @@ public class ExplorerToolBar extends ToolBar {
 
         CustomButton ShowToolLibraryBtn = new CustomButton(prefWidth,prefHeight,"resources/logisim/icons/projtool.gif");
         ShowToolLibraryBtn.setOnAction(event -> {
+
+            ShowProjectExplorer.set(true);
+            ShowSimulationHierarchy.set(false);
+
             AdditionalToolBar.SetAdditionalToolBarItems("ControlCircuitOrder");
-            Localizer.setLocale(Locale.forLanguageTag("ru"));
-            System.out.println("ru");
-            //TODO: add controll method for tree hierarcy
+            ProjectTreeExplorer.updateAndShowProjectTree();
         });
 
         CustomButton ShowCurcuitHierarchyBtn = new CustomButton(prefWidth,prefHeight,"resources/logisim/icons/projsim.gif");
         ShowCurcuitHierarchyBtn.setOnAction(event -> {
+
+            ShowProjectExplorer.set(false);
+            ShowSimulationHierarchy.set(true);
+
             AdditionalToolBar.SetAdditionalToolBarItems("ControlCircuitTicks");
-            Localizer.setLocale(Locale.forLanguageTag("en"));
-            System.out.println("en");
-            //TODO: add controll method for tree hierarcy
+            ProjectTreeExplorer.updateAndShowSimulationTree();
         });
 
         Separator sep = new Separator();
 
         CustomButton RedactCircuitBtn = new CustomButton(prefWidth,prefHeight,"resources/logisim/icons/projlayo.gif");
         RedactCircuitBtn.setOnAction(event -> {
+
+            EditCircuitLayout.set(true);
+            EditCircuitAppearance.set(false);
+
             MainToolBar.SetMainToolBarItems("RedactCircuit");
-            //TODO: add controll method for tree hierarcy
+            //TODO: add controll method for canvas
         });
 
         CustomButton RedactBlackBoxBtn = new CustomButton(prefWidth,prefHeight,"resources/logisim/icons/projapp.gif");
         RedactBlackBoxBtn.setOnAction(event -> {
+
+            EditCircuitLayout.set(false);
+            EditCircuitAppearance.set(true);
+
             MainToolBar.SetMainToolBarItems("RedactBlackBox");
-            //TODO: add controll method for tree hierarcy
+            //TODO: add controll method for canvas
         });
 
         ControlBtnsList.addAll(

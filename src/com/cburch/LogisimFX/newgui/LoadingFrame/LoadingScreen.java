@@ -51,12 +51,6 @@ public class LoadingScreen extends AbstractController {
         stage.close();
     }
 
-
-    @Override
-    public void linkProjectReference(Project project) {
-
-    }
-
     @Override
     public void onClose() {
     }

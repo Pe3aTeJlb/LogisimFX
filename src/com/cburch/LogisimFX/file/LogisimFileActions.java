@@ -6,7 +6,7 @@ package com.cburch.LogisimFX.file;
 import com.cburch.LogisimFX.proj.Action;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.proj.ProjectActions;
-import com.cburch.logisim.circuit.Circuit;
+import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.logisim.data.Attribute;
 import com.cburch.logisim.data.AttributeSet;
 import com.cburch.logisim.tools.AddTool;
@@ -15,8 +15,8 @@ import com.cburch.logisim.tools.Tool;
 
 import java.util.ArrayList;
 
-
 public class LogisimFileActions {
+
 	private LogisimFileActions() { }
 
 	public static Action addCircuit(Circuit circuit) {
@@ -316,4 +316,5 @@ public class LogisimFileActions {
 			}
 		}
 	}
+
 }

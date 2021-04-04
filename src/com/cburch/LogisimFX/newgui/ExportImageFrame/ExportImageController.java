@@ -74,12 +74,14 @@ public class ExportImageController extends AbstractController {
     }
 
     @Override
-    public void postInitialization(Stage s) {
+    public void postInitialization(Stage s, Project project) {
 
         stage = s;
         stage.titleProperty().bind(lc.createStringBinding("printParmsTitle"));
         stage.setHeight(300);
         stage.setWidth(300);
+
+        proj = project;
 
         //setCircuitList(true);
 
@@ -87,11 +89,6 @@ public class ExportImageController extends AbstractController {
             DialogManager.CreateErrorDialog( lc.get("printEmptyCircuitsTitle"), lc.get("printEmptyCircuitsMessage"));
         }
 
-    }
-
-    @Override
-    public void linkProjectReference(Project project) {
-        proj = project;
     }
 
     @Override

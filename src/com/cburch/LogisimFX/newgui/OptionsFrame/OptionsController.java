@@ -14,9 +14,6 @@ public class OptionsController extends AbstractController {
 
     @FXML
     public void initialize(){
-
-
-
     }
 
     @Override
@@ -25,10 +22,6 @@ public class OptionsController extends AbstractController {
         stage.titleProperty().bind(lc.createStringBinding("optionsFrameTitle"));
     }
 
-    @Override
-    public void linkProjectReference(Project project) {
-
-    }
 
     @Override
     public void onClose() {

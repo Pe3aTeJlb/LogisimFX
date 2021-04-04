@@ -14,6 +14,10 @@ import com.cburch.logisim.tools.Tool;
 import com.cburch.logisim.util.EventSourceWeakSupport;
 import com.cburch.logisim.util.ListUtil;
 import com.cburch.logisim.util.StringUtil;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -62,6 +66,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 	private Circuit main = null;
 	private String name;
 	private boolean dirty = false;
+	private SimpleStringProperty obsPos = new SimpleStringProperty("undefined2");
 
 	LogisimFile(Loader loader) {
 		this.loader = loader;
@@ -122,6 +127,26 @@ public class LogisimFile extends Library implements LibraryEventSource {
 			if (name.equals(factory.getName())) return factory.getSubcircuit();
 		}
 		return null;
+	}
+
+	public SimpleStringProperty getMainCircuitPos(){
+
+		System.out.println(tools.size());
+
+		if(tools.size()==1){
+			obsPos.setValue("first&last");
+			return obsPos;
+		}
+		if(tools.indexOf(main)==0){
+			obsPos.setValue("first");
+			return obsPos;
+		}else if(tools.indexOf(main)==tools.size()-1){
+			obsPos.setValue("last");
+			return obsPos;
+		}else{
+			return obsPos;
+		}
+
 	}
 
 	public boolean contains(Circuit circ) {

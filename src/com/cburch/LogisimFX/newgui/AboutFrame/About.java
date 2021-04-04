@@ -490,12 +490,6 @@ public class About extends AbstractController {
         g.fillRect(0,0,(cv.getWidth())*2,(cv.getHeight())*2);
     }
 
-
-    @Override
-    public void linkProjectReference(Project project) {
-
-    }
-
     @Override
     public void onClose() {
         update.stop();

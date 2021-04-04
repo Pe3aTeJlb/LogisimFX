@@ -1,5 +1,6 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
+import com.cburch.LogisimFX.proj.Project;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -11,12 +12,17 @@ public class MainToolBar extends ToolBar {
 
     private ObservableList<Node> RedactCircuitBtnsList;
     private ObservableList<Node> RedactBlackBoxBtnsList;
+
     private int prefWidth = 15;
     private int prefHeight = 15;
 
-    public MainToolBar(){
+    private Project proj;
+
+    public MainToolBar(Project project){
 
         super();
+
+        proj = project;
 
         AnchorPane.setLeftAnchor(this,0.0);
         AnchorPane.setTopAnchor(this,25.0);
@@ -151,5 +157,6 @@ public class MainToolBar extends ToolBar {
             getItems().clear();
             getItems().addAll(RedactBlackBoxBtnsList);
         }
+
     }
 }

@@ -5,8 +5,8 @@ import com.cburch.LogisimFX.OpenRecentMenu;
 import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.circuit.Circuit;
-import com.cburch.LogisimFX.file.LogisimFileActions;
 
+import com.cburch.LogisimFX.proj.ProjectActions;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
@@ -29,9 +29,18 @@ public class CustomMenuBar extends MenuBar {
     private ObservableList<MenuItem> baseWindowMenuProjects = FXCollections.observableArrayList();
     private ObservableList<MenuItem> buffWindowMenuProjects = FXCollections.observableArrayList();
 
-    public CustomMenuBar(){
+    private MainFrameController mainFrameController;
+    private ExplorerToolBar explorerToolBar;
+
+
+    public CustomMenuBar(MainFrameController mfc, ExplorerToolBar etb, Project project){
 
         super();
+
+        mainFrameController = mfc;
+        explorerToolBar = etb;
+
+        proj = project;
 
         prefHeight(prefHeight);
 
@@ -61,7 +70,9 @@ public class CustomMenuBar extends MenuBar {
 
         MenuItem New = new MenuItem();
         New.textProperty().bind(localizer.createStringBinding("fileNewItem"));
-        New.setOnAction(event -> {});
+        New.setOnAction(event -> {
+            ProjectActions.doNew(proj);
+        });
 
         MenuItem Open = new MenuItem();
         Open.textProperty().bind(localizer.createStringBinding("fileOpenItem"));
@@ -79,7 +90,9 @@ public class CustomMenuBar extends MenuBar {
 
         MenuItem Close = new MenuItem();
         Close.textProperty().bind(localizer.createStringBinding("fileCloseItem"));
-        Close.setOnAction(event -> {});
+        Close.setOnAction(event -> {
+            mainFrameController.getStage().close();
+        });
 
         MenuItem Save = new MenuItem();
         Save.textProperty().bind(localizer.createStringBinding("fileSaveItem"));
@@ -121,7 +134,9 @@ public class CustomMenuBar extends MenuBar {
 
         MenuItem Exit = new MenuItem();
         Exit.textProperty().bind(localizer.createStringBinding("fileQuitItem"));
-        Exit.setOnAction(event -> {System.exit(0);});
+        Exit.setOnAction(event -> {
+            FrameManager.CloseAllFrames();
+        });
 
         File.getItems().addAll(
                 New,
@@ -254,6 +269,7 @@ public class CustomMenuBar extends MenuBar {
 
             if (circuitName != null) {
                 Circuit circuit = new Circuit(circuitName);
+                //ToDO:
                 //proj.doAction(LogisimFileActions.addCircuit(circuit));
                 proj.setCurrentCircuit(circuit);
             }
@@ -294,6 +310,7 @@ public class CustomMenuBar extends MenuBar {
 
 
         MenuItem MoveCircuitUp = new MenuItem();
+        //MoveCircuitUp.disableProperty().bind();
         MoveCircuitUp.textProperty().bind(localizer.createStringBinding("projectMoveCircuitUpItem"));
         MoveCircuitUp.setOnAction(event -> {});
 
@@ -317,31 +334,67 @@ public class CustomMenuBar extends MenuBar {
         SeparatorMenuItem sp2 = new SeparatorMenuItem();
 
         MenuItem ShowTools = new MenuItem();
+        ShowTools.disableProperty().bind(explorerToolBar.ShowProjectExplorer);
         ShowTools.textProperty().bind(localizer.createStringBinding("projectViewToolboxItem"));
-        ShowTools.setOnAction(event -> {});
+        ShowTools.setOnAction(event -> {
+
+            explorerToolBar.ShowProjectExplorer.set(true);
+            explorerToolBar.ShowSimulationHierarchy.set(false);
+
+            explorerToolBar.AdditionalToolBar.SetAdditionalToolBarItems("ControlCircuitOrder");
+            //TODO: add controll method for tree hierarcy
+        });
 
         MenuItem ViewSimulationTree = new MenuItem();
+        ViewSimulationTree.disableProperty().bind(explorerToolBar.ShowSimulationHierarchy);
         ViewSimulationTree.textProperty().bind(localizer.createStringBinding("projectViewSimulationItem"));
-        ViewSimulationTree.setOnAction(event -> {});
+        ViewSimulationTree.setOnAction(event -> {
+
+            explorerToolBar.ShowProjectExplorer.set(false);
+            explorerToolBar.ShowSimulationHierarchy.set(true);
+
+            explorerToolBar.AdditionalToolBar.SetAdditionalToolBarItems("ControlCircuitTicks");
+            //TODO: add controll method for tree hierarcy
+        });
 
         MenuItem EditCircuitLayout = new MenuItem();
+        EditCircuitLayout.disableProperty().bind(explorerToolBar.EditCircuitLayout);
         EditCircuitLayout.textProperty().bind(localizer.createStringBinding("projectEditCircuitLayoutItem"));
-        EditCircuitLayout.setOnAction(event -> {});
+        EditCircuitLayout.setOnAction(event -> {
+
+            explorerToolBar.EditCircuitLayout.set(true);
+            explorerToolBar.EditCircuitAppearance.set(false);
+
+            explorerToolBar.MainToolBar.SetMainToolBarItems("RedactCircuit");
+            //TODO: add controll method for canvas
+        });
 
         MenuItem EditCircuitAppearance = new MenuItem();
+        EditCircuitAppearance.disableProperty().bind(explorerToolBar.EditCircuitAppearance);
         EditCircuitAppearance.textProperty().bind(localizer.createStringBinding("projectEditCircuitAppearanceItem"));
-        EditCircuitAppearance.setOnAction(event -> {});
+        EditCircuitAppearance.setOnAction(event -> {
+
+            explorerToolBar.EditCircuitLayout.set(false);
+            explorerToolBar.EditCircuitAppearance.set(true);
+
+            explorerToolBar.MainToolBar.SetMainToolBarItems("RedactBlackBox");
+            //TODO: add controll method for canvas
+        });
 
 
         SeparatorMenuItem sp3 = new SeparatorMenuItem();
 
         MenuItem AnalyzeCircuit = new MenuItem();
         AnalyzeCircuit.textProperty().bind(localizer.createStringBinding("projectAnalyzeCircuitItem"));
-        AnalyzeCircuit.setOnAction(event -> {});
+        AnalyzeCircuit.setOnAction(event -> {
+            FrameManager.CreateCircuitAnalysisFrame(proj);
+        });
 
         MenuItem GetCircuitStatistics = new MenuItem();
         GetCircuitStatistics.textProperty().bind(localizer.createStringBinding("projectGetCircuitStatisticsItem"));
-        GetCircuitStatistics.setOnAction(event -> {});
+        GetCircuitStatistics.setOnAction(event -> {
+            FrameManager.CreateCircuitStatisticFrame(proj);
+        });
 
         SeparatorMenuItem sp4 = new SeparatorMenuItem();
 
@@ -553,7 +606,9 @@ public class CustomMenuBar extends MenuBar {
 
         MenuItem CombAnalyse = new MenuItem();
         CombAnalyse.textProperty().bind(localizer.createStringBinding("analyzerWindowTitle"));
-        CombAnalyse.setOnAction(event -> {});
+        CombAnalyse.setOnAction(event -> {
+            FrameManager.CreateCircuitAnalysisFrame(proj);
+        });
 
 
         MenuItem Preferences = new MenuItem();
@@ -627,10 +682,6 @@ public class CustomMenuBar extends MenuBar {
         );
         this.getMenus().add(Help);
 
-    }
-
-    public void linkProjectReference(Project project){
-        proj = project;
     }
 
 }

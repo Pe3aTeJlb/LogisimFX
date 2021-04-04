@@ -76,17 +76,14 @@ public class PrintController extends AbstractController {
     }
 
     @Override
-    public void linkProjectReference(Project project) {
-        proj = project;
-    }
-
-    @Override
-    public void postInitialization(Stage s) {
+    public void postInitialization(Stage s, Project project) {
 
         stage = s;
         stage.titleProperty().bind(lc.createStringBinding("printParmsTitle"));
         stage.setHeight(300);
         stage.setWidth(300);
+
+        proj = project;
 
         setCircuitList(true);
 

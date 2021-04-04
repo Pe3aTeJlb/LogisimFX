@@ -7,8 +7,13 @@ public abstract class AbstractController {
 
     private Stage stage;
 
-    public abstract void postInitialization(Stage s);
-    public abstract void linkProjectReference(Project project);
+    public void postInitialization(Stage s){
+        stage = s;
+    }
+    public void postInitialization(Stage s,Project p){
+        stage = s;
+    }
+
     public abstract void onClose();
 
 }

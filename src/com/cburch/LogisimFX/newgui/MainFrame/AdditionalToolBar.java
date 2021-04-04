@@ -1,5 +1,11 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
+import com.cburch.LogisimFX.circuit.Circuit;
+import com.cburch.LogisimFX.file.LogisimFileActions;
+import com.cburch.LogisimFX.newgui.DialogManager;
+import com.cburch.LogisimFX.proj.Project;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -10,11 +16,21 @@ public class AdditionalToolBar extends ToolBar {
 
     private ObservableList<Node> CircuitOrderControlBtnsList;
     private ObservableList<Node> CircuitTicksControlBtnsList;
+
     private int prefWidth = 15;
     private int prefHeight = 15;
 
-    public AdditionalToolBar() {
+    private ProjectTreeExplorer projectTreeExplorer;
+
+    private Project proj;
+
+    public AdditionalToolBar(Project project, ProjectTreeExplorer explorer){
+
         super();
+
+        proj = project;
+
+        projectTreeExplorer = explorer;
 
         AnchorPane.setLeftAnchor(this,0.0);
         AnchorPane.setTopAnchor(this,20.0);
@@ -22,37 +38,57 @@ public class AdditionalToolBar extends ToolBar {
 
         prefHeight(20);
 
-        initItems();
+        CircuitOrderControlBtnsList = FXCollections.observableArrayList();
+        CircuitTicksControlBtnsList = FXCollections.observableArrayList();
 
         SetCircuitOrderControlItems();
         SetCircuitTicksControlItems();
 
         SetAdditionalToolBarItems("ControlCircuitOrder");
-    }
 
-    private void initItems(){
-
-        CircuitOrderControlBtnsList = FXCollections.observableArrayList();
-        CircuitTicksControlBtnsList = FXCollections.observableArrayList();
-
-        SetAdditionalToolBarItems("ControlCircuitOrder");
     }
 
     private void SetCircuitOrderControlItems(){
 
         CustomButton AddCircuitBtn = new CustomButton(prefWidth,prefHeight,"resources/logisim/icons/projadd.gif");
         AddCircuitBtn.setOnAction(event -> {
+
+            String circuitName = DialogManager.CreateInputDialog(proj.getLogisimFile());
+
+            if (circuitName != null) {
+                Circuit circuit = new Circuit(circuitName);
+                proj.doAction(LogisimFileActions.addCircuit(circuit));
+                proj.setCurrentCircuit(circuit);
+                projectTreeExplorer.updateCurrentSections();
+            }
+
         });
 
+
         CustomButton PullCircuitUpBtn = new  CustomButton(prefWidth,prefHeight,"resources/logisim/icons/projup.gif");
+        PullCircuitUpBtn.disableProperty().bind(
+                proj.getLogisimFile().getMainCircuitPos().isEqualTo("first")
+        );
+        PullCircuitUpBtn.disableProperty().bind(
+                proj.getLogisimFile().getMainCircuitPos().isEqualTo("first&last")
+        );
         PullCircuitUpBtn.setOnAction(event -> {
         });
 
         CustomButton PullCircuitDownIBtn = new CustomButton(prefWidth,prefHeight,"resources/logisim/icons/projdown.gif");
+        PullCircuitDownIBtn.disableProperty().bind(
+                proj.getLogisimFile().getMainCircuitPos().isEqualTo("last")
+        );
+        PullCircuitDownIBtn.disableProperty().bind(
+                proj.getLogisimFile().getMainCircuitPos().isEqualTo("first&last")
+        );
         PullCircuitDownIBtn.setOnAction(event -> {
         });
 
         CustomButton DeleteCircuitBtn = new CustomButton(prefWidth,prefHeight,"resources/logisim/icons/projdel.gif");
+        DeleteCircuitBtn.disableProperty().bind(
+                proj.getLogisimFile().getMainCircuitPos().isNotEqualTo("fist&last")
+        );
         DeleteCircuitBtn.setOnAction(event -> {
         });
 

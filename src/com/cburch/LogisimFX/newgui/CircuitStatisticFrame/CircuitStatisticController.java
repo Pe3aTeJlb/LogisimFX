@@ -1,21 +1,24 @@
-package com.cburch.LogisimFX.newgui.MemoryEditorFrame;
+package com.cburch.LogisimFX.newgui.CircuitStatisticFrame;
 
 import com.cburch.LogisimFX.newgui.AbstractController;
 import com.cburch.LogisimFX.proj.Project;
+import javafx.fxml.FXML;
 import javafx.stage.Stage;
 
-public class MemoryEditorController extends AbstractController {
+public class CircuitStatisticController extends AbstractController {
 
-    private Stage stage;
+    @FXML
+    public void initialize(){
+
+    }
 
     @Override
     public void postInitialization(Stage s) {
-        stage = s;
+
     }
 
     @Override
     public void onClose() {
 
     }
-
 }

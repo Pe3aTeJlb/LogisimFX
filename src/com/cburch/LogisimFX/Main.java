@@ -1,13 +1,7 @@
 package com.cburch.LogisimFX;
 
-import com.cburch.LogisimFX.newgui.DialogManager;
-import com.cburch.LogisimFX.proj.Project;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.stage.Stage;
-import com.cburch.LogisimFX.Startup;
-
-import java.io.FileNotFoundException;
 
 public class Main extends Application {
 

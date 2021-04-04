@@ -391,12 +391,6 @@ public class PreferencesController extends AbstractController {
     }
 
 
-
-    @Override
-    public void linkProjectReference(Project project) {
-
-    }
-
     @Override
     public void onClose() {
 

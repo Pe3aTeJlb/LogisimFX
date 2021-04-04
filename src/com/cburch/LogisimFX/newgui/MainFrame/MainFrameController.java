@@ -22,22 +22,30 @@ public class MainFrameController extends AbstractController {
     @FXML
     private AnchorPane Root;
 
-    @FXML
-    private TreeView<?> TreeHierarchy;
-
-    private CustomCanvas cv;
-    private AnimationTimer update;
-
-    private Localizer lc = new Localizer("LogisimFX/resources/localization/menu");
+    private Localizer lc = new Localizer("LogisimFX/resources/localization/gui");
 
     private Project proj;
 
     //UI
     CustomMenuBar menubar;
+    ProjectTreeExplorer projectTreeExplorer;
+    AdditionalToolBar additionalToolBar;
+    MainToolBar mainToolBar;
+
+    private CustomCanvas cv;
+    private AnimationTimer update;
 
 //monolith - strength in unity
     @FXML
     public void initialize(){
+        //Nothing to see here lol//
+    }
+
+    public void postInitialization(Stage s,Project p) {
+
+        stage = s;
+        proj = p;
+        computeTitle();
 
         AnchorPane canvasRoot = new AnchorPane();
         canvasRoot.setMinWidth(200);
@@ -47,16 +55,14 @@ public class MainFrameController extends AbstractController {
 
         AnchorPane tableRoot = new AnchorPane();
 
-        TreeView<CustomButton> t = new TreeView<>();
-        setAnchor(0,40,0,0,t);
+        projectTreeExplorer = new ProjectTreeExplorer(proj);
+        setAnchor(0,40,0,0,projectTreeExplorer);
 
-        menubar = new CustomMenuBar();
+        mainToolBar = new MainToolBar(proj);
+        additionalToolBar = new AdditionalToolBar(proj, projectTreeExplorer);
+        ExplorerToolBar controlToolBar = new ExplorerToolBar(mainToolBar,additionalToolBar,projectTreeExplorer);
 
-        MainToolBar mainToolBar = new MainToolBar();
-        AdditionalToolBar additionalToolBar = new AdditionalToolBar();
-        ExplorerToolBar controlToolBar = new ExplorerToolBar(mainToolBar,additionalToolBar);
-
-        treeRoot.getChildren().addAll(controlToolBar,additionalToolBar,t);
+        treeRoot.getChildren().addAll(controlToolBar,additionalToolBar,projectTreeExplorer);
 
         cv = new CustomCanvas(canvasRoot);
 
@@ -66,6 +72,8 @@ public class MainFrameController extends AbstractController {
         SplitPane mainSplitPane = new SplitPane(toolSplitPane,canvasRoot);
         mainSplitPane.setOrientation(Orientation.HORIZONTAL);
         setAnchor(0,50,0,0,mainSplitPane);
+
+        menubar = new CustomMenuBar(this, controlToolBar,proj);
 
         Root.getChildren().addAll(menubar,mainToolBar,mainSplitPane);
 
@@ -80,24 +88,6 @@ public class MainFrameController extends AbstractController {
 
     }
 
-    @Override
-    public void postInitialization(Stage s) {
-        stage = s;
-        //computeTitle();
-
-    }
-
-    @Override
-    public void linkProjectReference(Project project) {
-
-        proj = project;
-        menubar.linkProjectReference(proj);
-
-    }
-
-    public Project getProj(){
-        return proj;
-    }
 
     private void Update() {
         cv.draw();
@@ -115,7 +105,7 @@ public class MainFrameController extends AbstractController {
         } else {
             s = StringUtil.format(lc.get("titleFileKnown"), name);
         }
-        stage.titleProperty().bind(lc.createStringBinding(""));
+        //stage.titleProperty().bind(lc.createStringBinding(""));
         stage.setTitle(s);
 
     }
@@ -127,7 +117,13 @@ public class MainFrameController extends AbstractController {
 
 
 
+    public Project getProj(){
+        return proj;
+    }
 
+    public Stage getStage(){
+        return stage;
+    }
 
     private void setAnchor(double left,double top, double right, double bottom, Node n){
         AnchorPane.setLeftAnchor(n,left);
@@ -136,9 +132,8 @@ public class MainFrameController extends AbstractController {
         AnchorPane.setBottomAnchor(n,bottom);
     }
 
-
     @Override
     public void onClose() {
-
     }
+
 }

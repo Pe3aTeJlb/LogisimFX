@@ -26,11 +26,6 @@ public class CircLogController extends AbstractController {
     }
 
     @Override
-    public void linkProjectReference(Project project) {
-
-    }
-
-    @Override
     public void onClose() {
 
     }

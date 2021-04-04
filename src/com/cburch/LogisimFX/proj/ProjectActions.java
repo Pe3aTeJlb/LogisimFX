@@ -142,25 +142,28 @@ public class ProjectActions {
 		return file;
 	}
 
-	private static Frame createFrame(Project sourceProject, Project newProject) {
+	private static void createFrame(Project sourceProject, Project newProject) {
+
+		/*
 		if (sourceProject != null) {
 			Frame frame = sourceProject.getFrame();
 			if (frame != null) {
 				frame.savePreferences();
 			}
 		}
-		Frame newFrame = new Frame(newProject);
-		newProject.setFrame(newFrame);
-		return newFrame;
+		*/
+
+		FrameManager.CreateMainFrame(newProject);
+
 	}
 
 	public static Project doNew(Project baseProject) {
 
 		LogisimFile file = createNewFile(baseProject);
 		Project newProj = new Project(file);
-		Frame frame = createFrame(baseProject, newProj);
-		frame.setVisible(true);
-		frame.getCanvas().requestFocus();
+
+		createFrame(baseProject, newProj);
+
 		return newProj;
 	}
 

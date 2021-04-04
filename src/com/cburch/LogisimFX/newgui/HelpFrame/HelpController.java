@@ -88,13 +88,7 @@ public class HelpController extends AbstractController {
 
 
     @Override
-    public void linkProjectReference(Project project) {
-
-    }
-
-    @Override
     public void onClose() {
-
     }
 
 }
