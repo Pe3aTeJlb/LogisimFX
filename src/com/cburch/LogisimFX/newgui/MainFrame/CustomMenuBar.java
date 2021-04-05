@@ -2,11 +2,13 @@ package com.cburch.LogisimFX.newgui.MainFrame;
 
 import com.cburch.LogisimFX.FrameManager;
 import com.cburch.LogisimFX.OpenRecentMenu;
+import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.circuit.Circuit;
 
 import com.cburch.LogisimFX.proj.ProjectActions;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
@@ -26,6 +28,7 @@ public class CustomMenuBar extends MenuBar {
     private final FileSelector fileSelector = new FileSelector();
 
     private Project proj;
+    private LogisimFile logisimFile;
     private ObservableList<MenuItem> baseWindowMenuProjects = FXCollections.observableArrayList();
     private ObservableList<MenuItem> buffWindowMenuProjects = FXCollections.observableArrayList();
 
@@ -41,6 +44,7 @@ public class CustomMenuBar extends MenuBar {
         explorerToolBar = etb;
 
         proj = project;
+        logisimFile = proj.getLogisimFile();
 
         prefHeight(prefHeight);
 
@@ -310,23 +314,35 @@ public class CustomMenuBar extends MenuBar {
 
 
         MenuItem MoveCircuitUp = new MenuItem();
-        //MoveCircuitUp.disableProperty().bind();
+        MoveCircuitUp.disableProperty().bind(
+                Bindings.or(logisimFile.obsPos.isEqualTo("first"),logisimFile.obsPos.isEqualTo("first&last"))
+        );
         MoveCircuitUp.textProperty().bind(localizer.createStringBinding("projectMoveCircuitUpItem"));
         MoveCircuitUp.setOnAction(event -> {});
 
         MenuItem MoveCircuitDown = new MenuItem();
+        MoveCircuitDown.disableProperty().bind(
+                Bindings.or(logisimFile.obsPos.isEqualTo("last"),logisimFile.obsPos.isEqualTo("first&last"))
+        );
         MoveCircuitDown.textProperty().bind(localizer.createStringBinding("projectMoveCircuitDownItem"));
         MoveCircuitDown.setOnAction(event -> {});
 
         MenuItem SetAsMain = new MenuItem();
+        SetAsMain.disableProperty().bind(
+                logisimFile.obsPos.isEqualTo("first&last")
+        );
         SetAsMain.textProperty().bind(localizer.createStringBinding("projectSetAsMainItem"));
         SetAsMain.setOnAction(event -> {});
 
         MenuItem RemoveCirc = new MenuItem();
+        RemoveCirc.disableProperty().bind(
+                logisimFile.obsPos.isEqualTo("first&last")
+        );
         RemoveCirc.textProperty().bind(localizer.createStringBinding("projectRemoveCircuitItem"));
         RemoveCirc.setOnAction(event -> {});
 
         MenuItem RevertAppearance = new MenuItem();
+
         RevertAppearance.textProperty().bind(localizer.createStringBinding("projectRevertAppearanceItem"));
         RevertAppearance.setOnAction(event -> {});
 

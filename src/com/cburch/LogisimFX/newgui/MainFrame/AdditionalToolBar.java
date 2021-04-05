@@ -1,11 +1,11 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
 import com.cburch.LogisimFX.circuit.Circuit;
+import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.file.LogisimFileActions;
 import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.proj.Project;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.StringBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -23,12 +23,14 @@ public class AdditionalToolBar extends ToolBar {
     private ProjectTreeExplorer projectTreeExplorer;
 
     private Project proj;
+    private LogisimFile logisimFile;
 
     public AdditionalToolBar(Project project, ProjectTreeExplorer explorer){
 
         super();
 
         proj = project;
+        logisimFile = proj.getLogisimFile();
 
         projectTreeExplorer = explorer;
 
@@ -67,29 +69,29 @@ public class AdditionalToolBar extends ToolBar {
 
         CustomButton PullCircuitUpBtn = new  CustomButton(prefWidth,prefHeight,"resources/logisim/icons/projup.gif");
         PullCircuitUpBtn.disableProperty().bind(
-                proj.getLogisimFile().getMainCircuitPos().isEqualTo("first")
-        );
-        PullCircuitUpBtn.disableProperty().bind(
-                proj.getLogisimFile().getMainCircuitPos().isEqualTo("first&last")
+                Bindings.or(logisimFile.obsPos.isEqualTo("first"),logisimFile.obsPos.isEqualTo("first&last"))
         );
         PullCircuitUpBtn.setOnAction(event -> {
+            //logisimFile.moveCircuit(proj.getTool(),);
+            projectTreeExplorer.updateCurrentSections();
         });
 
         CustomButton PullCircuitDownIBtn = new CustomButton(prefWidth,prefHeight,"resources/logisim/icons/projdown.gif");
         PullCircuitDownIBtn.disableProperty().bind(
-                proj.getLogisimFile().getMainCircuitPos().isEqualTo("last")
-        );
-        PullCircuitDownIBtn.disableProperty().bind(
-                proj.getLogisimFile().getMainCircuitPos().isEqualTo("first&last")
+                Bindings.or(logisimFile.obsPos.isEqualTo("last"),logisimFile.obsPos.isEqualTo("first&last"))
         );
         PullCircuitDownIBtn.setOnAction(event -> {
+                //logisimFile.moveCircuit();
+                projectTreeExplorer.updateCurrentSections();
         });
 
         CustomButton DeleteCircuitBtn = new CustomButton(prefWidth,prefHeight,"resources/logisim/icons/projdel.gif");
         DeleteCircuitBtn.disableProperty().bind(
-                proj.getLogisimFile().getMainCircuitPos().isNotEqualTo("fist&last")
+                logisimFile.obsPos.isEqualTo("first&last")
         );
         DeleteCircuitBtn.setOnAction(event -> {
+                logisimFile.removeCircuit(proj.getCurrentCircuit());
+                projectTreeExplorer.updateCurrentSections();
         });
 
         CircuitOrderControlBtnsList.addAll(

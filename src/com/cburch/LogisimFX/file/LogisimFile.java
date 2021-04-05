@@ -66,7 +66,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 	private Circuit main = null;
 	private String name;
 	private boolean dirty = false;
-	private SimpleStringProperty obsPos = new SimpleStringProperty("undefined2");
+	public SimpleStringProperty obsPos = new SimpleStringProperty("undefined2");
 
 	LogisimFile(Loader loader) {
 		this.loader = loader;
@@ -127,26 +127,6 @@ public class LogisimFile extends Library implements LibraryEventSource {
 			if (name.equals(factory.getName())) return factory.getSubcircuit();
 		}
 		return null;
-	}
-
-	public SimpleStringProperty getMainCircuitPos(){
-
-		System.out.println(tools.size());
-
-		if(tools.size()==1){
-			obsPos.setValue("first&last");
-			return obsPos;
-		}
-		if(tools.indexOf(main)==0){
-			obsPos.setValue("first");
-			return obsPos;
-		}else if(tools.indexOf(main)==tools.size()-1){
-			obsPos.setValue("last");
-			return obsPos;
-		}else{
-			return obsPos;
-		}
-
 	}
 
 	public boolean contains(Circuit circ) {
@@ -231,9 +211,11 @@ public class LogisimFile extends Library implements LibraryEventSource {
 		tools.add(index, tool);
 		if (tools.size() == 1) setMainCircuit(circuit);
 		fireEvent(LibraryEvent.ADD_TOOL, tool);
+		updateCircuitPos(circuit);
 	}
 
 	public void removeCircuit(Circuit circuit) {
+
 		if (tools.size() <= 1) {
 			throw new RuntimeException("Cannot remove last circuit");
 		}
@@ -249,9 +231,13 @@ public class LogisimFile extends Library implements LibraryEventSource {
 			}
 			fireEvent(LibraryEvent.REMOVE_TOOL, circuitTool);
 		}
+
+		updateCircuitPos(circuit);
+
 	}
 
 	public void moveCircuit(AddTool tool, int index) {
+
 		int oldIndex = tools.indexOf(tool);
 		if (oldIndex < 0) {
 			tools.add(index, tool);
@@ -261,6 +247,9 @@ public class LogisimFile extends Library implements LibraryEventSource {
 			tools.add(index, value);
 			fireEvent(LibraryEvent.MOVE_TOOL, tool);
 		}
+
+		updateCircuitPos(tool);
+
 	}
 
 	public void addLibrary(Library lib) {
@@ -361,6 +350,42 @@ public class LogisimFile extends Library implements LibraryEventSource {
 			if (tool.equals(query)) return tool;
 		}
 		return null;
+	}
+
+	public void updateCircuitPos(Circuit cur){
+
+		System.out.println("tool size: "+tools.size());
+
+		if(tools.size()==1){
+			obsPos.setValue("first&last");
+		}
+		else if(getCircuits().indexOf(cur)==0){
+			obsPos.setValue("first");
+		}else if(tools.indexOf(main)==tools.size()-1){
+			obsPos.setValue("last");
+		}else{
+			obsPos.setValue("undefined");
+		}
+		System.out.println(obsPos.getValue());
+
+	}
+
+	public void updateCircuitPos(AddTool cur){
+
+		System.out.println("tool size: "+tools.size());
+
+		if(tools.size()==1){
+			obsPos.setValue("first&last");
+		}
+		else if(tools.indexOf(cur)==0){
+			obsPos.setValue("first");
+		}else if(tools.indexOf(main)==tools.size()-1){
+			obsPos.setValue("last");
+		}else{
+			obsPos.setValue("undefined");
+		}
+		System.out.println(obsPos.getValue());
+
 	}
 
 	//

@@ -3,15 +3,18 @@ package com.cburch.LogisimFX.newgui.MainFrame;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.proj.Project;
+import com.cburch.logisim.tools.AddTool;
 import com.cburch.logisim.tools.Library;
 import com.cburch.logisim.tools.Tool;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 
 public class ProjectTreeExplorer extends TreeView {
 
@@ -27,35 +30,35 @@ public class ProjectTreeExplorer extends TreeView {
 
         MultipleSelectionModel<TreeItem> selectionModel = this.getSelectionModel();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
-/*
+
         this.setCellFactory(tree -> {
 
             TreeCell<Object> cell = new TreeCell<Object>() {
 
                 public void updateItem(Object item, boolean empty) {
+
                     super.updateItem(item, empty) ;
 
                     if (empty) {
                         setText(null);
+                        setGraphic(null);
                     } else {
 
-                        if(item instanceof Circuit){
-                            this.setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/subcirc.gif")));
-                            setText(((Circuit)item).getName());
-                        }
-
-                        else if(item instanceof Library){
+                        if(item instanceof Library){
                             setText(((Library)item).getName());
+                            setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/poke.gif")));
                         }
-
                         else if(item instanceof Tool){
                             setText(((Tool)item).getName());
+                            //setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/poke.gif")));
                         }
                         else{
                             setText(proj.getLogisimFile().getName());
+                            //setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/poke.gif")));
                         }
 
                     }
+
                 }
 
             };
@@ -86,11 +89,17 @@ public class ProjectTreeExplorer extends TreeView {
 
                 }
             });
+
+            cell.setOnMouseEntered(event -> {
+                System.out.println("entered");
+            });
+
             return cell ;
+
         });
 
 
- */
+
 
         //todo: create update binding to proj tool.size
 
@@ -119,6 +128,14 @@ public class ProjectTreeExplorer extends TreeView {
         this.setRoot(root);
         root.expandedProperty().set(true);
 
+        for (Tool tool: proj.getLogisimFile().getTools()) {
+
+            TreeItem<Object> l = new TreeItem<>(tool);
+            l.setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/subcirc.gif")));
+            root.getChildren().add(l);
+
+        }
+        /*
         for (Circuit circ: proj.getLogisimFile().getCircuits()) {
 
             TreeItem<Object> l = new TreeItem<>(circ);
@@ -126,6 +143,7 @@ public class ProjectTreeExplorer extends TreeView {
             root.getChildren().add(l);
 
         }
+*/
 
         for (Library lib: proj.getLogisimFile().getLibraries()) {
 
@@ -137,6 +155,7 @@ public class ProjectTreeExplorer extends TreeView {
                 TreeItem<Object> t = new TreeItem<>(tool);
                 //t.setGraphic(new ToolIcon(tool));
                 l.getChildren().add(t);
+
             }
 
         }
