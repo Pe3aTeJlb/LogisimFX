@@ -1,5 +1,6 @@
 package com.cburch.LogisimFX;
 
+import com.cburch.logisim.util.StringUtil;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ObjectProperty;
@@ -55,6 +56,10 @@ public class Localizer {
 
     public StringBinding createStringBinding(final String key, Object... args) {
         return Bindings.createStringBinding(() -> get(key, args), locale);
+    }
+
+    public StringBinding createComplexTitleBinding(final String key, String... strings) {
+        return Bindings.createStringBinding(() -> StringUtil.format(get(key),strings), locale);
     }
 
     public String get(final String key, final Object... args) {

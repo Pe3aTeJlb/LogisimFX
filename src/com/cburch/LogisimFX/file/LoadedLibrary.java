@@ -5,9 +5,9 @@ package com.cburch.LogisimFX.file;
 
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.proj.Projects;
-import com.cburch.logisim.circuit.Circuit;
-import com.cburch.logisim.circuit.CircuitMutation;
-import com.cburch.logisim.circuit.SubcircuitFactory;
+import com.cburch.LogisimFX.circuit.Circuit;
+import com.cburch.LogisimFX.circuit.CircuitMutation;
+import com.cburch.LogisimFX.circuit.SubcircuitFactory;
 import com.cburch.logisim.comp.Component;
 import com.cburch.logisim.comp.ComponentFactory;
 import com.cburch.logisim.data.Attribute;

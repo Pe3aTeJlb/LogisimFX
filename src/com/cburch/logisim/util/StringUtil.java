@@ -4,10 +4,28 @@
 package com.cburch.logisim.util;
 
 public class StringUtil {
+
 	private StringUtil() { }
 	
 	public static String capitalize(String a) {
 		return Character.toTitleCase(a.charAt(0)) + a.substring(1);
+	}
+
+	public static String format(String fmt, String... args){
+
+		switch (args.length){
+
+			case 1:
+				return format(fmt, args[0], null, null);
+			case 2:
+				return format(fmt, args[0], args[1], null);
+			case 3:
+				return format(fmt, args[0],args[1],args[2]);
+			default:
+				return null;
+
+		}
+
 	}
 
 	public static String format(String fmt, String a1) {

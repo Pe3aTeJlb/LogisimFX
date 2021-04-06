@@ -2,6 +2,7 @@ package com.cburch.LogisimFX.newgui.MainFrame;
 
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.circuit.CircuitState;
+import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.logisim.tools.AddTool;
 import com.cburch.logisim.tools.Library;
@@ -52,9 +53,12 @@ public class ProjectTreeExplorer extends TreeView {
                             setText(((Tool)item).getName());
                             //setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/poke.gif")));
                         }
-                        else{
+                        else if(item instanceof LogisimFile){
                             setText(proj.getLogisimFile().getName());
                             //setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/poke.gif")));
+                        }
+                        else{
+                            setText("???");
                         }
 
                     }
@@ -123,7 +127,7 @@ public class ProjectTreeExplorer extends TreeView {
         //this.getChildren().clear();
         showingProjectTree = true;
 
-        TreeItem<Object> root = new TreeItem<>(proj.getLogisimFile().getName());
+        TreeItem<Object> root = new TreeItem<>(proj.getLogisimFile());
         root.setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/projadd.gif")));
         this.setRoot(root);
         root.expandedProperty().set(true);

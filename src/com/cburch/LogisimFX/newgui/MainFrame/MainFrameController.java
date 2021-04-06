@@ -5,6 +5,7 @@ import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.logisim.util.StringUtil;
+import javafx.beans.binding.StringBinding;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -95,18 +96,16 @@ public class MainFrameController extends AbstractController {
 
     private void computeTitle(){
 
-        String s;
+        stage.titleProperty().unbind();
+
         Circuit circuit = proj.getCurrentCircuit();
         String name = proj.getLogisimFile().getName();
 
         if (circuit != null) {
-            s = StringUtil.format(lc.get("titleCircFileKnown"),
-                    circuit.getName(), name);
+            stage.titleProperty().bind(lc.createComplexTitleBinding("titleCircFileKnown",circuit.getName(), name));
         } else {
-            s = StringUtil.format(lc.get("titleFileKnown"), name);
+            stage.titleProperty().bind(lc.createComplexTitleBinding("titleCircFileKnown", name));
         }
-        //stage.titleProperty().bind(lc.createStringBinding(""));
-        stage.setTitle(s);
 
     }
 

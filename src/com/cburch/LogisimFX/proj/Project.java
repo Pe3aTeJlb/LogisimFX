@@ -322,6 +322,7 @@ public class Project {
 
 	public void setCurrentCircuit(Circuit circuit) {
 
+		System.out.println("lol");
 		CircuitState circState = stateMap.get(circuit);
 		if (circState == null) circState = new CircuitState(this, circuit);
 		setCircuitState(circState);
