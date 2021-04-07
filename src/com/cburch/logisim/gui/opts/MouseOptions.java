@@ -308,4 +308,5 @@ class MouseOptions extends OptionsPanel {
 			mappings.getSelectionModel().setSelectionInterval(row, row);
 		}
 	}
+
 }

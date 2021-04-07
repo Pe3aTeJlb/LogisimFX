@@ -14,10 +14,7 @@ import com.cburch.logisim.tools.Tool;
 import com.cburch.logisim.util.EventSourceWeakSupport;
 import com.cburch.logisim.util.ListUtil;
 import com.cburch.logisim.util.StringUtil;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;

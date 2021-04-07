@@ -2,8 +2,10 @@ package com.cburch.LogisimFX.newgui.MainFrame;
 
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.circuit.CircuitState;
+import com.cburch.LogisimFX.circuit.SubcircuitFactory;
 import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.proj.Project;
+import com.cburch.logisim.gui.main.ProjectExplorer;
 import com.cburch.logisim.tools.AddTool;
 import com.cburch.logisim.tools.Library;
 import com.cburch.logisim.tools.Tool;
@@ -17,11 +19,21 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
-public class ProjectTreeExplorer extends TreeView {
+import javax.swing.*;
+
+public class ProjectTreeExplorer extends AbstractTreeExplorer {
 
     private Project proj;
 
-    boolean showingProjectTree;
+    private ProjectExplorer.Listener listener = null;
+
+    public static interface Listener {
+        public void selectionChanged(ProjectExplorer.Event event);
+        public void doubleClicked(ProjectExplorer.Event event);
+        public void moveRequested(ProjectExplorer.Event event, AddTool dragged, AddTool target);
+        public void deleteRequested(ProjectExplorer.Event event);
+        public JPopupMenu menuRequested(ProjectExplorer.Event event);
+    }
 
     public ProjectTreeExplorer(Project project){
 
@@ -58,7 +70,7 @@ public class ProjectTreeExplorer extends TreeView {
                             //setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/poke.gif")));
                         }
                         else{
-                            setText("???");
+                            setText("you fucked up");
                         }
 
                     }
@@ -76,9 +88,15 @@ public class ProjectTreeExplorer extends TreeView {
                         System.out.println("double click");
                         event.consume();
 
+                        if(treeItem.getValue() instanceof SubcircuitFactory){
+                            //(SubcircuitFactory)treeItem.getValue().
+                        }
+                        /*
                         if(treeItem.getValue() instanceof Circuit){
                             project.setCurrentCircuit((Circuit) treeItem.getValue());
                         }
+
+                         */
 
                     }else if (event.getButton().equals(MouseButton.PRIMARY)){
                         System.out.println("Left click");
@@ -103,29 +121,18 @@ public class ProjectTreeExplorer extends TreeView {
         });
 
 
-
-
         //todo: create update binding to proj tool.size
 
-        updateAndShowProjectTree();
+        updateTree();
 
     }
 
     //not best solution, but yes
     public void updateCurrentSections(){
 
-        if(showingProjectTree){
-            updateAndShowProjectTree();
-        }else{
-            updateAndShowSimulationTree();
-        }
-
     }
 
-    public void updateAndShowProjectTree(){
-
-        //this.getChildren().clear();
-        showingProjectTree = true;
+    public void updateTree(){
 
         TreeItem<Object> root = new TreeItem<>(proj.getLogisimFile());
         root.setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/projadd.gif")));
@@ -166,27 +173,9 @@ public class ProjectTreeExplorer extends TreeView {
 
     }
 
-    public void updateAndShowSimulationTree(){
-
-        //this.getChildren().clear();
-
-        showingProjectTree = false;
-
-        TreeItem<Circuit> root = new TreeItem<>(proj.getCurrentCircuit());
-        root.setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/subcirc.gif")));
-        this.setRoot(root);
-        root.expandedProperty().set(true);
-
-        for (CircuitState cState: proj.getCircuitState().getSubstates()) {
-
-            TreeItem<Circuit> c = new TreeItem<>(cState.getCircuit());
-            c.setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/subcirc.gif")));
-            root.getChildren().add(c);
-
-        }
-
+    public void setListener(ProjectExplorer.Listener value) {
+        listener = value;
     }
-
 
 }
 

@@ -358,6 +358,7 @@ public class CustomMenuBar extends MenuBar {
             explorerToolBar.ShowSimulationHierarchy.set(false);
 
             explorerToolBar.AdditionalToolBar.SetAdditionalToolBarItems("ControlCircuitOrder");
+
             //TODO: add controll method for tree hierarcy
         });
 

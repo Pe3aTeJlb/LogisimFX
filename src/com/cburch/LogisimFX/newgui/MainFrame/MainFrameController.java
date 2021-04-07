@@ -4,8 +4,7 @@ import com.cburch.LogisimFX.newgui.AbstractController;
 import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.circuit.Circuit;
-import com.cburch.logisim.util.StringUtil;
-import javafx.beans.binding.StringBinding;
+
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -29,9 +28,9 @@ public class MainFrameController extends AbstractController {
 
     //UI
     CustomMenuBar menubar;
-    ProjectTreeExplorer projectTreeExplorer;
     AdditionalToolBar additionalToolBar;
     MainToolBar mainToolBar;
+    TreeExplorerAggregation treeExplorerAggregation;
 
     private CustomCanvas cv;
     private AnimationTimer update;
@@ -39,7 +38,7 @@ public class MainFrameController extends AbstractController {
 //monolith - strength in unity
     @FXML
     public void initialize(){
-        //Nothing to see here lol//
+        //Nothing to see here lol
     }
 
     public void postInitialization(Stage s,Project p) {
@@ -56,14 +55,14 @@ public class MainFrameController extends AbstractController {
 
         AnchorPane tableRoot = new AnchorPane();
 
-        projectTreeExplorer = new ProjectTreeExplorer(proj);
-        setAnchor(0,40,0,0,projectTreeExplorer);
+        treeExplorerAggregation = new TreeExplorerAggregation(proj);
+        setAnchor(0,40,0,0, treeExplorerAggregation.getTree());
 
         mainToolBar = new MainToolBar(proj);
-        additionalToolBar = new AdditionalToolBar(proj, projectTreeExplorer);
-        ExplorerToolBar controlToolBar = new ExplorerToolBar(mainToolBar,additionalToolBar,projectTreeExplorer);
+        additionalToolBar = new AdditionalToolBar(proj, treeExplorerAggregation);
+        ExplorerToolBar controlToolBar = new ExplorerToolBar(mainToolBar,additionalToolBar, treeExplorerAggregation);
 
-        treeRoot.getChildren().addAll(controlToolBar,additionalToolBar,projectTreeExplorer);
+        treeRoot.getChildren().addAll(controlToolBar,additionalToolBar, treeExplorerAggregation.getTree());
 
         cv = new CustomCanvas(canvasRoot);
 

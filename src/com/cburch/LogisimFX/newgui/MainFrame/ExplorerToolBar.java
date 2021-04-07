@@ -1,16 +1,12 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Separator;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.AnchorPane;
-import com.cburch.LogisimFX.Localizer;
-
-import java.util.Locale;
 
 public class ExplorerToolBar extends ToolBar {
 
@@ -18,7 +14,7 @@ public class ExplorerToolBar extends ToolBar {
 
     public AdditionalToolBar  AdditionalToolBar;
     public MainToolBar MainToolBar;
-    public ProjectTreeExplorer ProjectTreeExplorer;
+    public TreeExplorerAggregation TreeExplorerAggregation;
 
     private int prefWidth = 15;
     private int prefHeight = 15;
@@ -30,13 +26,14 @@ public class ExplorerToolBar extends ToolBar {
     public SimpleBooleanProperty EditCircuitAppearance = new SimpleBooleanProperty(false);
 
 
-    public ExplorerToolBar(MainToolBar main, AdditionalToolBar additional, ProjectTreeExplorer explorer){
+    public ExplorerToolBar(MainToolBar main, AdditionalToolBar additional, TreeExplorerAggregation explorer){
 
         super();
 
         MainToolBar = main;
         AdditionalToolBar = additional;
-        ProjectTreeExplorer = explorer;
+        //ProjectTreeExplorer = explorer;
+        TreeExplorerAggregation = explorer;
 
         ControlBtnsList = FXCollections.observableArrayList();
 
@@ -59,7 +56,7 @@ public class ExplorerToolBar extends ToolBar {
             ShowSimulationHierarchy.set(false);
 
             AdditionalToolBar.SetAdditionalToolBarItems("ControlCircuitOrder");
-            ProjectTreeExplorer.updateAndShowProjectTree();
+            TreeExplorerAggregation.setProjectView();
         });
 
         CustomButton ShowCurcuitHierarchyBtn = new CustomButton(prefWidth,prefHeight,"resources/logisim/icons/projsim.gif");
@@ -69,7 +66,7 @@ public class ExplorerToolBar extends ToolBar {
             ShowSimulationHierarchy.set(true);
 
             AdditionalToolBar.SetAdditionalToolBarItems("ControlCircuitTicks");
-            ProjectTreeExplorer.updateAndShowSimulationTree();
+            TreeExplorerAggregation.setSimulationView();
         });
 
         Separator sep = new Separator();

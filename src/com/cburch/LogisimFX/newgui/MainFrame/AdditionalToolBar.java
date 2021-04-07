@@ -5,6 +5,7 @@ import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.file.LogisimFileActions;
 import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.proj.Project;
+
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,19 +21,20 @@ public class AdditionalToolBar extends ToolBar {
     private int prefWidth = 15;
     private int prefHeight = 15;
 
-    private ProjectTreeExplorer projectTreeExplorer;
+    private TreeExplorerAggregation treeExplorerAggregation;
 
     private Project proj;
     private LogisimFile logisimFile;
 
-    public AdditionalToolBar(Project project, ProjectTreeExplorer explorer){
+    public AdditionalToolBar(Project project, TreeExplorerAggregation explorer){
 
         super();
 
         proj = project;
         logisimFile = proj.getLogisimFile();
 
-        projectTreeExplorer = explorer;
+        treeExplorerAggregation = explorer;
+        treeExplorerAggregation = explorer;
 
         AnchorPane.setLeftAnchor(this,0.0);
         AnchorPane.setTopAnchor(this,20.0);
@@ -61,7 +63,7 @@ public class AdditionalToolBar extends ToolBar {
                 Circuit circuit = new Circuit(circuitName);
                 proj.doAction(LogisimFileActions.addCircuit(circuit));
                 proj.setCurrentCircuit(circuit);
-                projectTreeExplorer.updateCurrentSections();
+                treeExplorerAggregation.updateTree();
             }
 
         });
@@ -73,7 +75,7 @@ public class AdditionalToolBar extends ToolBar {
         );
         PullCircuitUpBtn.setOnAction(event -> {
             //logisimFile.moveCircuit(proj.getTool(),);
-            projectTreeExplorer.updateCurrentSections();
+            treeExplorerAggregation.updateTree();
         });
 
         CustomButton PullCircuitDownIBtn = new CustomButton(prefWidth,prefHeight,"resources/logisim/icons/projdown.gif");
@@ -82,7 +84,7 @@ public class AdditionalToolBar extends ToolBar {
         );
         PullCircuitDownIBtn.setOnAction(event -> {
                 //logisimFile.moveCircuit();
-                projectTreeExplorer.updateCurrentSections();
+                treeExplorerAggregation.updateTree();
         });
 
         CustomButton DeleteCircuitBtn = new CustomButton(prefWidth,prefHeight,"resources/logisim/icons/projdel.gif");
@@ -91,7 +93,7 @@ public class AdditionalToolBar extends ToolBar {
         );
         DeleteCircuitBtn.setOnAction(event -> {
                 logisimFile.removeCircuit(proj.getCurrentCircuit());
-                projectTreeExplorer.updateCurrentSections();
+                treeExplorerAggregation.updateTree();
         });
 
         CircuitOrderControlBtnsList.addAll(

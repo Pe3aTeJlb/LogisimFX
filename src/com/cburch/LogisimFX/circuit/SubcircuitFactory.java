@@ -20,6 +20,7 @@ import java.awt.event.ActionListener;
 import java.util.Map;
 
 public class SubcircuitFactory extends InstanceFactory {
+
 	private class CircuitFeature implements StringGetter, MenuExtender, ActionListener {
 		private Instance instance;
 		private Project proj;
@@ -49,6 +50,7 @@ public class SubcircuitFactory extends InstanceFactory {
 			if (subState == null) return;
 			proj.setCircuitState(subState);
 		}
+
 	}
 
 	private Circuit source;
