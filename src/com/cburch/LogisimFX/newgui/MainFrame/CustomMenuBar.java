@@ -81,12 +81,14 @@ public class CustomMenuBar extends MenuBar {
         MenuItem Open = new MenuItem();
         Open.textProperty().bind(localizer.createStringBinding("fileOpenItem"));
         Open.setOnAction(event -> {
-            File f = fileSelector.OpenCircFile(this.getScene().getWindow());
+            ProjectActions.doOpen(proj);
+            //File f = fileSelector.OpenCircFile(this.getScene().getWindow());
         });
 
         //see gui/menu/OpenRecent
-        OpenRecentMenu OpenRecent = new OpenRecentMenu(localizer);
+        OpenRecentMenu OpenRecent = new OpenRecentMenu(proj);
         OpenRecent.textProperty().bind(localizer.createStringBinding("fileOpenRecentItem"));
+        //OpenRecent.setOnShowing(event -> {OpenRecent.renewItems();});
 
 
         SeparatorMenuItem sp1 = new SeparatorMenuItem();
@@ -100,11 +102,15 @@ public class CustomMenuBar extends MenuBar {
 
         MenuItem Save = new MenuItem();
         Save.textProperty().bind(localizer.createStringBinding("fileSaveItem"));
-        Save.setOnAction(event -> {});
+        Save.setOnAction(event -> {
+            ProjectActions.doSave(proj);
+        });
 
         MenuItem SaveAs = new MenuItem();
         SaveAs.textProperty().bind(localizer.createStringBinding("fileSaveAsItem"));
-        SaveAs.setOnAction(event -> {});
+        SaveAs.setOnAction(event -> {
+            ProjectActions.doSave(proj);
+        });
 
 
         SeparatorMenuItem sp2 = new SeparatorMenuItem();
@@ -604,18 +610,23 @@ public class CustomMenuBar extends MenuBar {
         Menu Window = new Menu();
         Window.textProperty().bind(localizer.createStringBinding("windowMenu"));
 
+        MenuItem Maximize = new MenuItem();
+        Maximize.textProperty().bind(localizer.createStringBinding("windowZoomItem"));
+        Maximize.setOnAction(event -> {
+            mainFrameController.getStage().setMaximized(true);
+        });
 
         MenuItem Minimize = new MenuItem();
         Minimize.textProperty().bind(localizer.createStringBinding("windowMinimizeItem"));
-        Minimize.setOnAction(event -> {});
-
-        MenuItem Maximize = new MenuItem();
-        Maximize.textProperty().bind(localizer.createStringBinding("windowZoomItem"));
-        Maximize.setOnAction(event -> {});
+        Minimize.setOnAction(event -> {
+            mainFrameController.getStage().setIconified(true);
+        });
 
         MenuItem Close = new MenuItem();
         Close.textProperty().bind(localizer.createStringBinding("windowCloseItem"));
-        Close.setOnAction(event -> {});
+        Close.setOnAction(event -> {
+            mainFrameController.getStage().close();
+        });
 
 
         SeparatorMenuItem sp1 = new SeparatorMenuItem();
@@ -638,8 +649,9 @@ public class CustomMenuBar extends MenuBar {
         SeparatorMenuItem sp2 = new SeparatorMenuItem();
 
 
-        baseWindowMenuProjects.addAll(Minimize,
+        baseWindowMenuProjects.addAll(
                 Maximize,
+                Minimize,
                 Close,
                 sp1,
                 CombAnalyse,
@@ -647,7 +659,7 @@ public class CustomMenuBar extends MenuBar {
                 sp2);
 
         Window.getItems().addAll(
-              baseWindowMenuProjects
+                baseWindowMenuProjects
         );
         Window.getItems().addAll(
                 buffWindowMenuProjects
@@ -701,4 +713,85 @@ public class CustomMenuBar extends MenuBar {
 
     }
 
+    private class WindowMenu extends Menu{
+
+        public WindowMenu(){
+
+            super();
+
+            init();
+
+            this.setOnShowing(event -> {
+                recalculateFrames();
+            });
+
+        }
+
+        private void init(){
+
+            MenuItem Maximize = new MenuItem();
+            Maximize.textProperty().bind(localizer.createStringBinding("windowZoomItem"));
+            Maximize.setOnAction(event -> {
+                mainFrameController.getStage().setMaximized(true);
+            });
+
+            MenuItem Minimize = new MenuItem();
+            Minimize.textProperty().bind(localizer.createStringBinding("windowMinimizeItem"));
+            Minimize.setOnAction(event -> {
+                mainFrameController.getStage().setIconified(true);
+            });
+
+            MenuItem Close = new MenuItem();
+            Close.textProperty().bind(localizer.createStringBinding("windowCloseItem"));
+            Close.setOnAction(event -> {
+                mainFrameController.getStage().close();
+            });
+
+
+            SeparatorMenuItem sp1 = new SeparatorMenuItem();
+
+
+            MenuItem CombAnalyse = new MenuItem();
+            CombAnalyse.textProperty().bind(localizer.createStringBinding("analyzerWindowTitle"));
+            CombAnalyse.setOnAction(event -> {
+                FrameManager.CreateCircuitAnalysisFrame(proj);
+            });
+
+
+            MenuItem Preferences = new MenuItem();
+            Preferences.textProperty().bind(localizer.createStringBinding("preferencesFrameMenuItem"));
+            Preferences.setOnAction(event -> {
+                FrameManager.CreatePreferencesFrame();
+            });
+
+
+            SeparatorMenuItem sp2 = new SeparatorMenuItem();
+
+
+            baseWindowMenuProjects.addAll(
+                    Maximize,
+                    Minimize,
+                    Close,
+                    sp1,
+                    CombAnalyse,
+                    Preferences,
+                    sp2);
+
+            this.getItems().addAll(
+                    baseWindowMenuProjects
+            );
+            this.getItems().addAll(
+                    buffWindowMenuProjects
+            );
+
+        }
+
+        private void recalculateFrames(){
+
+        }
+
+    }
+
 }
+
+

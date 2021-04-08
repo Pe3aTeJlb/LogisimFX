@@ -84,7 +84,7 @@ public class MainFrameController extends AbstractController {
             }
         };
 
-        update.start();
+        //update.start();
 
     }
 

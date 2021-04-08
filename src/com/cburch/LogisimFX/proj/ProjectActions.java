@@ -177,7 +177,7 @@ public class ProjectActions {
 		return completeProject(loader, file, false);
 	}
 
-	public static void doOpen(Component parent, Project baseProject) {
+	public static void doOpen(Project baseProject) {
 		JFileChooser chooser;
 		if (baseProject != null) {
 			Loader oldLoader = baseProject.getLogisimFile().getLoader();
@@ -194,17 +194,20 @@ public class ProjectActions {
 		if (returnVal != JFileChooser.APPROVE_OPTION) return;
 		File selected = chooser.getSelectedFile();
 		if (selected != null) {
-			doOpen(parent, baseProject, selected);
+			doOpen(baseProject, selected);
 		}
 	}
 
-	public static Project doOpen(Component parent,
-                                 Project baseProject, File f) {
+	public static Project doOpen(Project baseProject, File f) {
+
 		Project proj = Projects.findProjectFor(f);
 		Loader loader = null;
+
 		if (proj != null) {
+
 			proj.getFrame().toFront();
 			loader = proj.getLogisimFile().getLoader();
+
 			if (proj.isFileDirty()) {
 				String message = StringUtil.format(lc.get("openAlreadyMessage"),
 						proj.getLogisimFile().getName());
@@ -225,6 +228,7 @@ public class ProjectActions {
 					return proj;
 				}
 			}
+
 		}
 
 		if (proj == null && baseProject != null && baseProject.isStartupScreen()) {
@@ -260,6 +264,7 @@ public class ProjectActions {
 		frame.toFront();
 		frame.getCanvas().requestFocus();
 		return proj;
+
 	}
 
 
@@ -336,12 +341,16 @@ public class ProjectActions {
 	}
 
 	public static void doQuit() {
+
 		Frame top = Projects.getTopFrame();
 		top.savePreferences();
 
 		for (Project proj : new ArrayList<Project>(Projects.getOpenProjects())) {
 			if (!proj.confirmClose(lc.get("confirmQuitTitle"))) return;
 		}
+
 		System.exit(0);
+
 	}
+
 }

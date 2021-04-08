@@ -344,6 +344,11 @@ public class FrameManager {
         //ToDO: hex editor lol
     }
 
+    //Getters
+    public static HashMap<Project, Data> getOpenedFrames(){
+        return OpenedProjectAssociatedFrames;
+    }
+
     //Tools
 
     private static void FocusOnFrame(Stage s){

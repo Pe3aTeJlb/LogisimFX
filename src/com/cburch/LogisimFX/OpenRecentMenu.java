@@ -4,9 +4,10 @@
 package com.cburch.LogisimFX;
 
 
+import com.cburch.LogisimFX.proj.Project;
+import com.cburch.LogisimFX.proj.ProjectActions;
 import com.cburch.logisim.prefs.AppPreferences;
-//import LogisimFX.proj.Project;
-//import LogisimFX.proj.ProjectActions;
+
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 
@@ -19,9 +20,12 @@ import java.util.List;
 
 public class OpenRecentMenu extends Menu implements PropertyChangeListener {
 
-	private Localizer lc;
-
 	private final int MAX_ITEM_LENGTH = 50;
+
+	private Localizer lc
+			= new Localizer("LogisimFX/resources/localization/menu");
+
+	private Project proj;
 	
 	private class RecentItem extends MenuItem {
 
@@ -32,9 +36,7 @@ public class OpenRecentMenu extends Menu implements PropertyChangeListener {
 			super(getFileText(file));
 			this.file = file;
 			this.setOnAction(event -> {
-				//ToDO: implement dis shit
-				//Component par = proj == null ? null : proj.getFrame().getCanvas();
-				//ProjectActions.doOpen(par, proj, file);
+				ProjectActions.doOpen(proj, file);
 			});
 
 		}
@@ -44,9 +46,9 @@ public class OpenRecentMenu extends Menu implements PropertyChangeListener {
 
 	private List<RecentItem> recentItems;
 	
-	public OpenRecentMenu(Localizer l) {
+	public OpenRecentMenu(Project project) {
 
-		lc = l;
+		proj = project;
 
 		this.recentItems = new ArrayList<>();
 		AppPreferences.addPropertyChangeListener(AppPreferences.RECENT_PROJECTS, this);
@@ -54,7 +56,7 @@ public class OpenRecentMenu extends Menu implements PropertyChangeListener {
 
 	}
 	
-	private void renewItems() {
+	public void renewItems() {
 
 		this.getItems().clear();
 		recentItems.clear();
@@ -108,11 +110,13 @@ public class OpenRecentMenu extends Menu implements PropertyChangeListener {
 
 	}
 
+
 	public void propertyChange(PropertyChangeEvent event) {
 		//ToDO: remove dis shit
 		if (event.getPropertyName().equals(AppPreferences.RECENT_PROJECTS)) {
 			renewItems();
 		}
 	}
+
 
 }
