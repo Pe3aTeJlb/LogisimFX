@@ -70,7 +70,7 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
                             //setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/poke.gif")));
                         }
                         else{
-                            setText("you fucked up");
+                            setText("you fucked up2");
                         }
 
                     }
@@ -135,27 +135,18 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
     public void updateTree(){
 
         TreeItem<Object> root = new TreeItem<>(proj.getLogisimFile());
-        root.setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/projadd.gif")));
         this.setRoot(root);
         root.expandedProperty().set(true);
 
+        //Circuits
         for (Tool tool: proj.getLogisimFile().getTools()) {
 
             TreeItem<Object> l = new TreeItem<>(tool);
-            l.setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/subcirc.gif")));
             root.getChildren().add(l);
 
         }
-        /*
-        for (Circuit circ: proj.getLogisimFile().getCircuits()) {
 
-            TreeItem<Object> l = new TreeItem<>(circ);
-            l.setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/subcirc.gif")));
-            root.getChildren().add(l);
-
-        }
-*/
-
+        //Libs and tools
         for (Library lib: proj.getLogisimFile().getLibraries()) {
 
             TreeItem<Object> l = new TreeItem<>(lib);

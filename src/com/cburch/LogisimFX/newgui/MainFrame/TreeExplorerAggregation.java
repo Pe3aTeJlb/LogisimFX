@@ -17,8 +17,6 @@ public class TreeExplorerAggregation {
         projectTreeExplorer = new ProjectTreeExplorer(proj);
         simulationTreeExplorer = new SimulationTreeExplorer(proj);
 
-        //projectTreeExplorer.setListener(new ToolboxManip(proj, projectTreeExplorer));
-
         currTreeExplorer = new AbstractTreeExplorer() {
             @Override
             public void updateTree() {
@@ -26,7 +24,8 @@ public class TreeExplorerAggregation {
             }
         };
 
-        setProjectView();
+        setSimulationView();
+        //setProjectView();
 
     }
 
@@ -35,14 +34,16 @@ public class TreeExplorerAggregation {
     }
 
     public void setSimulationView(){
+        //currTreeExplorer = simulationTreeExplorer;
+        currTreeExplorer.setCellFactory(simulationTreeExplorer.getCellFactory());
         currTreeExplorer.setRoot(simulationTreeExplorer.getRoot());
-        currTreeExplorer = simulationTreeExplorer;
         updateTree();
     }
 
     public void setProjectView(){
+        //currTreeExplorer = projectTreeExplorer;
+        currTreeExplorer.setCellFactory(projectTreeExplorer.getCellFactory());
         currTreeExplorer.setRoot(projectTreeExplorer.getRoot());
-        currTreeExplorer = projectTreeExplorer;
         updateTree();
     }
 

@@ -28,6 +28,7 @@ import com.cburch.logisim.util.Icons;
 import com.cburch.logisim.util.StringGetter;
 
 public class SplitterFactory extends AbstractComponentFactory {
+
 	public static final SplitterFactory instance = new SplitterFactory();
 
 	private static final Icon toolIcon = Icons.getIcon("splitter.gif");
@@ -46,7 +47,7 @@ public class SplitterFactory extends AbstractComponentFactory {
 	public AttributeSet createAttributeSet() {
 		return new SplitterAttributes();
 	}
-	
+
 	@Override
 	public Object getDefaultAttributeValue(Attribute<?> attr, LogisimVersion ver) {
 		if (attr == SplitterAttributes.ATTR_APPEARANCE) {

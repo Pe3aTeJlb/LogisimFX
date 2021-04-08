@@ -2,18 +2,20 @@ package com.cburch.LogisimFX.newgui.MainFrame;
 
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.circuit.CircuitState;
-import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.proj.Project;
-import com.cburch.logisim.tools.Library;
 import com.cburch.logisim.tools.Tool;
+
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 
+import java.util.Set;
+
 public class SimulationTreeExplorer extends AbstractTreeExplorer {
 
     private Project proj;
+    private TreeItem<CircuitState> root;
 
     public SimulationTreeExplorer(Project project){
 
@@ -37,17 +39,9 @@ public class SimulationTreeExplorer extends AbstractTreeExplorer {
                         setGraphic(null);
                     } else {
 
-                        if(item instanceof Library){
-                            setText(((Library)item).getName());
+                        if(item instanceof CircuitState){
+                            setText(((CircuitState)item).getCircuit().getName());
                             setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/poke.gif")));
-                        }
-                        else if(item instanceof Tool){
-                            setText(((Tool)item).getName());
-                            //setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/poke.gif")));
-                        }
-                        else if(item instanceof LogisimFile){
-                            setText(proj.getLogisimFile().getName());
-                            //setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/poke.gif")));
                         }
                         else{
                             setText("???");
@@ -94,7 +88,6 @@ public class SimulationTreeExplorer extends AbstractTreeExplorer {
 
         });
 
-
         //todo: create update binding to proj tool.size
 
         updateTree();
@@ -107,19 +100,43 @@ public class SimulationTreeExplorer extends AbstractTreeExplorer {
 
         //showingProjectTree = false;
 
-        TreeItem<Circuit> root = new TreeItem<>(proj.getCurrentCircuit());
-        root.setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/subcirc.gif")));
+        TreeItem<CircuitState> root = new TreeItem<>(proj.getSimulator().getCircuitState());
+        root.setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/poke.gif")));
         this.setRoot(root);
         root.expandedProperty().set(true);
 
         for (CircuitState cState: proj.getCircuitState().getSubstates()) {
 
-            TreeItem<Circuit> c = new TreeItem<>(cState.getCircuit());
+            TreeItem<CircuitState> c = new TreeItem<>(cState);
+            c.setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/subcirc.gif")));
+            root.getChildren().add(c);
+
+        }
+/*
+        for (CircuitState cState: upd(proj.getCircuitState())) {
+
+            TreeItem<CircuitState> c = new TreeItem<>(cState);
             c.setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/subcirc.gif")));
             root.getChildren().add(c);
 
         }
 
+ */
+
+    }
+
+    public Set<CircuitState> upd(CircuitState state){
+
+        for (CircuitState st: state.getSubstates()) {
+
+            TreeItem<CircuitState> subRoot = new TreeItem<>(st);
+            subRoot.setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/subcirc.gif")));
+            root.getChildren().add(subRoot);
+
+            upd(st);
+        }
+
+        return state.getSubstates();
     }
 
 }

@@ -57,6 +57,7 @@ public class ExplorerToolBar extends ToolBar {
 
             AdditionalToolBar.SetAdditionalToolBarItems("ControlCircuitOrder");
             TreeExplorerAggregation.setProjectView();
+
         });
 
         CustomButton ShowCurcuitHierarchyBtn = new CustomButton(prefWidth,prefHeight,"resources/logisim/icons/projsim.gif");
@@ -67,6 +68,7 @@ public class ExplorerToolBar extends ToolBar {
 
             AdditionalToolBar.SetAdditionalToolBarItems("ControlCircuitTicks");
             TreeExplorerAggregation.setSimulationView();
+
         });
 
         Separator sep = new Separator();
