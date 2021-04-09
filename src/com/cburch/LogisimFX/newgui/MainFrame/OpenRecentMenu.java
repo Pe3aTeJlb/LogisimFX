@@ -1,9 +1,10 @@
 /* Copyright (c) 2010, Carl Burch. License information is located in the
  * com.cburch.logisim.Main source code and at www.cburch.com/logisim/. */
 
-package com.cburch.LogisimFX;
+package com.cburch.LogisimFX.newgui.MainFrame;
 
 
+import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.proj.ProjectActions;
 import com.cburch.logisim.prefs.AppPreferences;

@@ -1,22 +1,19 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
-import com.cburch.LogisimFX.FrameManager;
-import com.cburch.LogisimFX.OpenRecentMenu;
+import com.cburch.LogisimFX.newgui.FrameManager;
 import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.circuit.Circuit;
-
 import com.cburch.LogisimFX.proj.ProjectActions;
+import com.cburch.LogisimFX.FileSelector;
+import com.cburch.LogisimFX.Localizer;
+
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import com.cburch.LogisimFX.FileSelector;
-import com.cburch.LogisimFX.Localizer;
-
-import java.io.File;
 
 public class CustomMenuBar extends MenuBar {
 
@@ -29,8 +26,6 @@ public class CustomMenuBar extends MenuBar {
 
     private Project proj;
     private LogisimFile logisimFile;
-    private ObservableList<MenuItem> baseWindowMenuProjects = FXCollections.observableArrayList();
-    private ObservableList<MenuItem> buffWindowMenuProjects = FXCollections.observableArrayList();
 
     private MainFrameController mainFrameController;
     private ExplorerToolBar explorerToolBar;
@@ -74,16 +69,11 @@ public class CustomMenuBar extends MenuBar {
 
         MenuItem New = new MenuItem();
         New.textProperty().bind(localizer.createStringBinding("fileNewItem"));
-        New.setOnAction(event -> {
-            ProjectActions.doNew(proj);
-        });
+        New.setOnAction(event -> ProjectActions.doNew(proj));
 
         MenuItem Open = new MenuItem();
         Open.textProperty().bind(localizer.createStringBinding("fileOpenItem"));
-        Open.setOnAction(event -> {
-            ProjectActions.doOpen(proj);
-            //File f = fileSelector.OpenCircFile(this.getScene().getWindow());
-        });
+        Open.setOnAction(event -> ProjectActions.doOpen(proj));
 
         //see gui/menu/OpenRecent
         OpenRecentMenu OpenRecent = new OpenRecentMenu(proj);
@@ -96,21 +86,15 @@ public class CustomMenuBar extends MenuBar {
 
         MenuItem Close = new MenuItem();
         Close.textProperty().bind(localizer.createStringBinding("fileCloseItem"));
-        Close.setOnAction(event -> {
-            mainFrameController.getStage().close();
-        });
+        Close.setOnAction(event -> mainFrameController.getStage().close());
 
         MenuItem Save = new MenuItem();
         Save.textProperty().bind(localizer.createStringBinding("fileSaveItem"));
-        Save.setOnAction(event -> {
-            ProjectActions.doSave(proj);
-        });
+        Save.setOnAction(event -> ProjectActions.doSave(proj));
 
         MenuItem SaveAs = new MenuItem();
         SaveAs.textProperty().bind(localizer.createStringBinding("fileSaveAsItem"));
-        SaveAs.setOnAction(event -> {
-            ProjectActions.doSave(proj);
-        });
+        SaveAs.setOnAction(event -> ProjectActions.doSave(proj));
 
 
         SeparatorMenuItem sp2 = new SeparatorMenuItem();
@@ -118,15 +102,11 @@ public class CustomMenuBar extends MenuBar {
 
         MenuItem ExportImage = new MenuItem();
         ExportImage.textProperty().bind(localizer.createStringBinding("fileExportImageItem"));
-        ExportImage.setOnAction(event -> {
-            FrameManager.CreateExportImageFrame(proj);
-        });
+        ExportImage.setOnAction(event -> FrameManager.CreateExportImageFrame(proj));
 
         MenuItem Print = new MenuItem();
         Print.textProperty().bind(localizer.createStringBinding("filePrintItem"));
-        Print.setOnAction(event -> {
-            FrameManager.CreatePrintFrame(proj);
-        });
+        Print.setOnAction(event -> FrameManager.CreatePrintFrame(proj));
 
 
         SeparatorMenuItem sp3 = new SeparatorMenuItem();
@@ -134,9 +114,7 @@ public class CustomMenuBar extends MenuBar {
 
         MenuItem Preferences = new MenuItem();
         Preferences.textProperty().bind(localizer.createStringBinding("filePreferencesItem"));
-        Preferences.setOnAction(event -> {
-            FrameManager.CreatePreferencesFrame();
-        });
+        Preferences.setOnAction(event -> FrameManager.CreatePreferencesFrame());
 
 
         SeparatorMenuItem sp4 = new SeparatorMenuItem();
@@ -144,9 +122,7 @@ public class CustomMenuBar extends MenuBar {
 
         MenuItem Exit = new MenuItem();
         Exit.textProperty().bind(localizer.createStringBinding("fileQuitItem"));
-        Exit.setOnAction(event -> {
-            FrameManager.CloseAllFrames();
-        });
+        Exit.setOnAction(event -> FrameManager.CloseAllFrames());
 
         File.getItems().addAll(
                 New,
@@ -409,23 +385,17 @@ public class CustomMenuBar extends MenuBar {
 
         MenuItem AnalyzeCircuit = new MenuItem();
         AnalyzeCircuit.textProperty().bind(localizer.createStringBinding("projectAnalyzeCircuitItem"));
-        AnalyzeCircuit.setOnAction(event -> {
-            FrameManager.CreateCircuitAnalysisFrame(proj);
-        });
+        AnalyzeCircuit.setOnAction(event -> FrameManager.CreateCircuitAnalysisFrame(proj));
 
         MenuItem GetCircuitStatistics = new MenuItem();
         GetCircuitStatistics.textProperty().bind(localizer.createStringBinding("projectGetCircuitStatisticsItem"));
-        GetCircuitStatistics.setOnAction(event -> {
-            FrameManager.CreateCircuitStatisticFrame(proj);
-        });
+        GetCircuitStatistics.setOnAction(event -> FrameManager.CreateCircuitStatisticFrame(proj));
 
         SeparatorMenuItem sp4 = new SeparatorMenuItem();
 
         MenuItem Options = new MenuItem();
         Options.textProperty().bind(localizer.createStringBinding("projectOptionsItem"));
-        Options.setOnAction(event -> {
-            FrameManager.CreateOptionsFrame();
-        });
+        Options.setOnAction(event -> FrameManager.CreateOptionsFrame(proj));
 
         Project.getItems().addAll(
                 AddCircuit,
@@ -584,9 +554,7 @@ public class CustomMenuBar extends MenuBar {
 
         MenuItem SimLog = new MenuItem();
         SimLog.textProperty().bind(localizer.createStringBinding("simulateLogItem"));
-        SimLog.setOnAction(event -> {
-            FrameManager.CreateCircLogFrame();
-        });
+        SimLog.setOnAction(event -> FrameManager.CreateCircLogFrame(proj));
 
         Simulate.getItems().addAll(
                 EnableSimulation,
@@ -607,63 +575,8 @@ public class CustomMenuBar extends MenuBar {
 
     private void initWindowMenu(){
 
-        Menu Window = new Menu();
+        Menu Window = new WindowMenu();
         Window.textProperty().bind(localizer.createStringBinding("windowMenu"));
-
-        MenuItem Maximize = new MenuItem();
-        Maximize.textProperty().bind(localizer.createStringBinding("windowZoomItem"));
-        Maximize.setOnAction(event -> {
-            mainFrameController.getStage().setMaximized(true);
-        });
-
-        MenuItem Minimize = new MenuItem();
-        Minimize.textProperty().bind(localizer.createStringBinding("windowMinimizeItem"));
-        Minimize.setOnAction(event -> {
-            mainFrameController.getStage().setIconified(true);
-        });
-
-        MenuItem Close = new MenuItem();
-        Close.textProperty().bind(localizer.createStringBinding("windowCloseItem"));
-        Close.setOnAction(event -> {
-            mainFrameController.getStage().close();
-        });
-
-
-        SeparatorMenuItem sp1 = new SeparatorMenuItem();
-
-
-        MenuItem CombAnalyse = new MenuItem();
-        CombAnalyse.textProperty().bind(localizer.createStringBinding("analyzerWindowTitle"));
-        CombAnalyse.setOnAction(event -> {
-            FrameManager.CreateCircuitAnalysisFrame(proj);
-        });
-
-
-        MenuItem Preferences = new MenuItem();
-        Preferences.textProperty().bind(localizer.createStringBinding("preferencesFrameMenuItem"));
-        Preferences.setOnAction(event -> {
-            FrameManager.CreatePreferencesFrame();
-        });
-
-
-        SeparatorMenuItem sp2 = new SeparatorMenuItem();
-
-
-        baseWindowMenuProjects.addAll(
-                Maximize,
-                Minimize,
-                Close,
-                sp1,
-                CombAnalyse,
-                Preferences,
-                sp2);
-
-        Window.getItems().addAll(
-                baseWindowMenuProjects
-        );
-        Window.getItems().addAll(
-                buffWindowMenuProjects
-        );
 
         this.getMenus().add(Window);
 
@@ -676,21 +589,15 @@ public class CustomMenuBar extends MenuBar {
 
         MenuItem Tutorial = new MenuItem();
         Tutorial.textProperty().bind(localizer.createStringBinding("helpTutorialItem"));
-        Tutorial.setOnAction(event -> {
-            FrameManager.CreateHelpFrame("tutorial");
-        });
+        Tutorial.setOnAction(event -> FrameManager.CreateHelpFrame("tutorial"));
 
         MenuItem UserGuide = new MenuItem();
         UserGuide.textProperty().bind(localizer.createStringBinding("helpGuideItem"));
-        UserGuide.setOnAction(event -> {
-            FrameManager.CreateHelpFrame("guide");
-        });
+        UserGuide.setOnAction(event -> FrameManager.CreateHelpFrame("guide"));
 
         MenuItem LibraryReference = new MenuItem();
         LibraryReference.textProperty().bind(localizer.createStringBinding("helpLibraryItem"));
-        LibraryReference.setOnAction(event -> {
-            FrameManager.CreateHelpFrame("libs");
-        });
+        LibraryReference.setOnAction(event -> FrameManager.CreateHelpFrame("libs"));
 
 
         SeparatorMenuItem sp1 = new SeparatorMenuItem();
@@ -698,9 +605,7 @@ public class CustomMenuBar extends MenuBar {
 
         MenuItem About = new MenuItem();
         About.textProperty().bind(localizer.createStringBinding("helpAboutItem"));
-        About.setOnAction(event -> {
-            FrameManager.CreateAboutFrame();
-        });
+        About.setOnAction(event -> FrameManager.CreateAboutFrame());
 
         Help.getItems().addAll(
                 Tutorial,
@@ -713,7 +618,10 @@ public class CustomMenuBar extends MenuBar {
 
     }
 
+
     private class WindowMenu extends Menu{
+
+        private ObservableList<MenuItem> defaultWindowMenuItems = FXCollections.observableArrayList();
 
         public WindowMenu(){
 
@@ -722,7 +630,7 @@ public class CustomMenuBar extends MenuBar {
             init();
 
             this.setOnShowing(event -> {
-                recalculateFrames();
+                recalculateItems();
             });
 
         }
@@ -731,21 +639,15 @@ public class CustomMenuBar extends MenuBar {
 
             MenuItem Maximize = new MenuItem();
             Maximize.textProperty().bind(localizer.createStringBinding("windowZoomItem"));
-            Maximize.setOnAction(event -> {
-                mainFrameController.getStage().setMaximized(true);
-            });
+            Maximize.setOnAction(event -> mainFrameController.getStage().setMaximized(true));
 
             MenuItem Minimize = new MenuItem();
             Minimize.textProperty().bind(localizer.createStringBinding("windowMinimizeItem"));
-            Minimize.setOnAction(event -> {
-                mainFrameController.getStage().setIconified(true);
-            });
+            Minimize.setOnAction(event -> mainFrameController.getStage().setIconified(true));
 
             MenuItem Close = new MenuItem();
             Close.textProperty().bind(localizer.createStringBinding("windowCloseItem"));
-            Close.setOnAction(event -> {
-                mainFrameController.getStage().close();
-            });
+            Close.setOnAction(event -> mainFrameController.getStage().close());
 
 
             SeparatorMenuItem sp1 = new SeparatorMenuItem();
@@ -753,40 +655,44 @@ public class CustomMenuBar extends MenuBar {
 
             MenuItem CombAnalyse = new MenuItem();
             CombAnalyse.textProperty().bind(localizer.createStringBinding("analyzerWindowTitle"));
-            CombAnalyse.setOnAction(event -> {
-                FrameManager.CreateCircuitAnalysisFrame(proj);
-            });
+            CombAnalyse.setOnAction(event -> FrameManager.CreateCircuitAnalysisFrame(proj));
 
 
             MenuItem Preferences = new MenuItem();
             Preferences.textProperty().bind(localizer.createStringBinding("preferencesFrameMenuItem"));
-            Preferences.setOnAction(event -> {
-                FrameManager.CreatePreferencesFrame();
-            });
-
+            Preferences.setOnAction(event -> FrameManager.CreatePreferencesFrame());
 
             SeparatorMenuItem sp2 = new SeparatorMenuItem();
 
-
-            baseWindowMenuProjects.addAll(
+            defaultWindowMenuItems.addAll(
                     Maximize,
                     Minimize,
                     Close,
                     sp1,
                     CombAnalyse,
                     Preferences,
-                    sp2);
+                    sp2
+            );
 
-            this.getItems().addAll(
-                    baseWindowMenuProjects
-            );
-            this.getItems().addAll(
-                    buffWindowMenuProjects
-            );
+            this.getItems().addAll(defaultWindowMenuItems);
 
         }
 
-        private void recalculateFrames(){
+        private void recalculateItems(){
+
+            this.getItems().clear();
+            this.getItems().addAll(defaultWindowMenuItems);
+
+            for (Project project: FrameManager.getOpenedProjects()) {
+
+                RadioMenuItem menuItem = new RadioMenuItem();
+                menuItem.setText(project.getLogisimFile().getName());
+                if(project == proj){menuItem.setSelected(true);}
+                menuItem.setOnAction(event -> FrameManager.FocusOnFrame(project));
+
+                this.getItems().add(menuItem);
+
+            }
 
         }
 

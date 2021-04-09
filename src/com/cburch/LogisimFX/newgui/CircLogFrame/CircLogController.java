@@ -27,7 +27,7 @@ public class CircLogController extends AbstractController {
 
     @Override
     public void onClose() {
-
+        System.out.println("Circ log closed");
     }
 
 }

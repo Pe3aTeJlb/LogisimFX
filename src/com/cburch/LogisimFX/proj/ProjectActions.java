@@ -3,7 +3,7 @@
 
 package com.cburch.LogisimFX.proj;
 
-import com.cburch.LogisimFX.FrameManager;
+import com.cburch.LogisimFX.newgui.FrameManager;
 import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.file.LoadFailedException;
 import com.cburch.LogisimFX.file.Loader;
@@ -12,7 +12,6 @@ import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.newgui.LoadingFrame.LoadingScreen;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.logisim.gui.main.Frame;
-import com.cburch.logisim.gui.start.SplashScreen;
 import com.cburch.logisim.prefs.AppPreferences;
 import com.cburch.logisim.tools.Tool;
 import com.cburch.logisim.util.JFileChoosers;
@@ -20,7 +19,6 @@ import com.cburch.logisim.util.StringUtil;
 import javafx.application.Platform;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

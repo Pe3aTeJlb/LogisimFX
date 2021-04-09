@@ -81,7 +81,7 @@ public class SimulationTreeExplorer extends AbstractTreeExplorer {
             });
 
             cell.setOnMouseEntered(event -> {
-                System.out.println("entered");
+               // System.out.println("entered");
             });
 
             return cell ;

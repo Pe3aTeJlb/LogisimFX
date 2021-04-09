@@ -21,11 +21,10 @@ public class OptionsController extends AbstractController {
         stage = s;
         stage.titleProperty().bind(lc.createStringBinding("optionsFrameTitle"));
     }
-
-
+    
     @Override
     public void onClose() {
-
+        System.out.println("test options");
     }
 
 }

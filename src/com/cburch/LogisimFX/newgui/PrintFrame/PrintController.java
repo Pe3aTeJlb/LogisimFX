@@ -406,7 +406,7 @@ public class PrintController extends AbstractController {
 
     @Override
     public void onClose() {
-
+        System.out.println("Print closed");
     }
 
 

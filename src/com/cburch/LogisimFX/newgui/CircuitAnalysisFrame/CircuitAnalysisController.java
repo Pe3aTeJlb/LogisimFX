@@ -23,6 +23,6 @@ public class CircuitAnalysisController extends AbstractController {
 
     @Override
     public void onClose() {
-
+        System.out.println("Circuit analysis closed");
     }
 }

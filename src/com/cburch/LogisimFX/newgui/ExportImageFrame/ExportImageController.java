@@ -93,6 +93,6 @@ public class ExportImageController extends AbstractController {
 
     @Override
     public void onClose() {
-
+        System.out.println("Export image closed");
     }
 }

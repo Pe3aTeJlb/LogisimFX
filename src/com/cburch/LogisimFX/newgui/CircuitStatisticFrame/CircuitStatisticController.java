@@ -19,6 +19,6 @@ public class CircuitStatisticController extends AbstractController {
 
     @Override
     public void onClose() {
-
+        System.out.println("Circuit statistic closed");
     }
 }

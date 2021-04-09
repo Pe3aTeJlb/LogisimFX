@@ -132,6 +132,7 @@ public class MainFrameController extends AbstractController {
 
     @Override
     public void onClose() {
+        System.out.println("main close. requested by:" + this);
     }
 
 }

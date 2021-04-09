@@ -492,7 +492,9 @@ public class About extends AbstractController {
 
     @Override
     public void onClose() {
+
         update.stop();
+        System.out.println("About closed");
     }
 
 }

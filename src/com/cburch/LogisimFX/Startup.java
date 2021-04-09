@@ -3,14 +3,13 @@
 
 package com.cburch.LogisimFX;
 
+import com.cburch.LogisimFX.newgui.FrameManager;
 import com.cburch.LogisimFX.newgui.LoadingFrame.LoadingScreen;
-import com.cburch.LogisimFX.TtyInterface;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.file.Loader;
 
 import com.cburch.LogisimFX.file.LoadFailedException;
 
-import com.cburch.LogisimFX.newgui.PrintFrame.PrintController;
 import com.cburch.logisim.gui.menu.LogisimMenuBar;
 import com.cburch.logisim.gui.menu.WindowManagers;
 
