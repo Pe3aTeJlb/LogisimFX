@@ -3,6 +3,7 @@
 
 package com.cburch.LogisimFX.proj;
 
+import com.cburch.LogisimFX.FileSelector;
 import com.cburch.LogisimFX.newgui.FrameManager;
 import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.file.LoadFailedException;
@@ -17,6 +18,7 @@ import com.cburch.logisim.tools.Tool;
 import com.cburch.logisim.util.JFileChoosers;
 import com.cburch.logisim.util.StringUtil;
 import javafx.application.Platform;
+import javafx.stage.Window;
 
 import javax.swing.*;
 import java.io.File;
@@ -33,6 +35,7 @@ public class ProjectActions {
 	private ProjectActions() { }
 	
 	private static class CreateFrame implements Runnable {
+
 		private Loader loader;
 		private Project proj;
 		private boolean isStartupScreen;
@@ -54,8 +57,11 @@ public class ProjectActions {
 			//frame.toFront();
 			//frame.getCanvas().requestFocus();
 			if (isStartupScreen) proj.setStartupScreen(true);
+
 		}
+
 	}
+
 
 	public static Project doNew() {
 		return doNew(false);
@@ -84,6 +90,8 @@ public class ProjectActions {
 		return completeProject(loader, file, isStartupScreen);
 
 	}
+
+
 
 	private static void displayException(Exception ex) {
 		String msg = StringUtil.format(lc.get("templateOpenError"),
@@ -121,6 +129,7 @@ public class ProjectActions {
 	}
 
 	public static LogisimFile createNewFile(Project baseProject) {
+
 		Loader loader = new Loader();
 		InputStream templReader = AppPreferences.getTemplate().createStream();
 		LogisimFile file;
@@ -138,20 +147,6 @@ public class ProjectActions {
 			try { templReader.close(); } catch (IOException e) { }
 		}
 		return file;
-	}
-
-	private static void createFrame(Project sourceProject, Project newProject) {
-
-		/*
-		if (sourceProject != null) {
-			Frame frame = sourceProject.getFrame();
-			if (frame != null) {
-				frame.savePreferences();
-			}
-		}
-		*/
-
-		FrameManager.CreateMainFrame(newProject);
 
 	}
 
@@ -160,23 +155,39 @@ public class ProjectActions {
 		LogisimFile file = createNewFile(baseProject);
 		Project newProj = new Project(file);
 
-		createFrame(baseProject, newProj);
+		FrameManager.CreateMainFrame(newProj);
 
 		return newProj;
+
 	}
+
+
 
 	public static Project doOpen(File source, Map<File,File> substitutions) throws LoadFailedException {
 
 		LoadingScreen.nextStep();
+
 		Loader loader = new Loader();
 		LogisimFile file = loader.openLogisimFile(source, substitutions);
 		AppPreferences.updateRecentFile(source);
 
 		return completeProject(loader, file, false);
+
 	}
 
-	public static void doOpen(Project baseProject) {
+	public static void doOpen(Project baseProject, Window stage) {
+
+		FileSelector fs = new FileSelector(stage);
+
+		File selected = fs.OpenCircFile();
+
+		if(selected != null){
+			doOpen(baseProject, selected);
+		}else{ return;}
+
+		/*
 		JFileChooser chooser;
+
 		if (baseProject != null) {
 			Loader oldLoader = baseProject.getLogisimFile().getLoader();
 			chooser = oldLoader.createChooser();
@@ -186,27 +197,49 @@ public class ProjectActions {
 		} else {
 			chooser = JFileChoosers.create();
 		}
+
 		chooser.setFileFilter(Loader.LOGISIM_FILTER);
 
 		int returnVal = chooser.showOpenDialog(parent);
+
 		if (returnVal != JFileChooser.APPROVE_OPTION) return;
+
 		File selected = chooser.getSelectedFile();
+
 		if (selected != null) {
 			doOpen(baseProject, selected);
 		}
+
+		 */
+
 	}
 
 	public static Project doOpen(Project baseProject, File f) {
 
-		Project proj = Projects.findProjectFor(f);
+		//Project proj = Projects.findProjectFor(f);
+
+		Project proj = FrameManager.FindProjectForFile(f);
+		System.out.println("proj "+proj);
+
 		Loader loader = null;
 
 		if (proj != null) {
 
-			proj.getFrame().toFront();
-			loader = proj.getLogisimFile().getLoader();
-
 			if (proj.isFileDirty()) {
+
+				System.out.println("tersr");
+
+				int type = DialogManager.CreateFileReloadDialog(proj);
+
+				if(type == 2){
+
+				}else if(type == 1){
+					proj = null;
+				}else if(type == 0){
+					return proj;
+				}
+
+				/*
 				String message = StringUtil.format(lc.get("openAlreadyMessage"),
 						proj.getLogisimFile().getName());
 				String[] options = {
@@ -225,6 +258,12 @@ public class ProjectActions {
 				} else {
 					return proj;
 				}
+				*/
+
+			}else {
+				System.out.println("test2");
+				FrameManager.FocusOnFrame(proj);
+				return proj;
 			}
 
 		}
@@ -238,14 +277,20 @@ public class ProjectActions {
 		}
 
 		try {
+
 			LogisimFile lib = loader.openLogisimFile(f);
 			AppPreferences.updateRecentFile(f);
+
 			if (lib == null) return null;
+
 			if (proj == null) {
 				proj = new Project(lib);
+				FrameManager.CreateMainFrame(proj);
 			} else {
 				proj.setLogisimFile(lib);
+				FrameManager.CreateMainFrame(proj);
 			}
+
 		} catch (LoadFailedException ex) {
 			if (!ex.isShown()) {
 				DialogManager.CreateStackTraceDialog(lc.get("fileOpenErrorTitle"),StringUtil.format(lc.get("fileOpenError"),
@@ -254,23 +299,31 @@ public class ProjectActions {
 			return null;
 		}
 
+		/*
 		Frame frame = proj.getFrame();
 		if (frame == null) {
 			frame = createFrame(baseProject, proj);
 		}
+
 		frame.setVisible(true);
 		frame.toFront();
 		frame.getCanvas().requestFocus();
+		 */
+
 		return proj;
 
 	}
 
 
+
 	// returns true if save is completed
 	public static boolean doSaveAs(Project proj) {
+
 		Loader loader = proj.getLogisimFile().getLoader();
+
 		JFileChooser chooser = loader.createChooser();
 		chooser.setFileFilter(Loader.LOGISIM_FILTER);
+
 		if (loader.getMainFile() != null) {
 			chooser.setSelectedFile(loader.getMainFile());
 		}
@@ -315,29 +368,43 @@ public class ProjectActions {
 				JOptionPane.YES_NO_OPTION);
 			if (confirm != JOptionPane.YES_OPTION) return false;
 		}
+
 		return doSave(proj, f);
+
 	}
 
 	public static boolean doSave(Project proj) {
+
 		Loader loader = proj.getLogisimFile().getLoader();
+
 		File f = loader.getMainFile();
+
 		if (f == null) return doSaveAs(proj);
 		else return doSave(proj, f);
+
 	}
 
 	private static boolean doSave(Project proj, File f) {
+
 		Loader loader = proj.getLogisimFile().getLoader();
+
 		Tool oldTool = proj.getTool();
 		proj.setTool(null);
+
 		boolean ret = loader.save(proj.getLogisimFile(), f);
+
 		if (ret) {
 			AppPreferences.updateRecentFile(f);
 			proj.setFileAsClean();
 		}
+
 		proj.setTool(oldTool);
+
 		return ret;
+
 	}
 
+	/*
 	public static void doQuit() {
 
 		Frame top = Projects.getTopFrame();
@@ -350,5 +417,6 @@ public class ProjectActions {
 		System.exit(0);
 
 	}
+	 */
 
 }

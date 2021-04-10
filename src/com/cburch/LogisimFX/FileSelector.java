@@ -17,7 +17,11 @@ public class FileSelector {
     private FileChooser.ExtensionFilter circ = new FileChooser.ExtensionFilter(lc.get("logisimFilter"),"*.circ");
     private FileChooser.ExtensionFilter jar =  new FileChooser.ExtensionFilter(lc.get("jarFilter"),"*.jar");
 
-    public FileSelector(){
+    private Window ownerWindow;
+
+    public FileSelector(Window owner){
+
+        ownerWindow = owner;
 
         fileChooser = new FileChooser();
 
@@ -28,7 +32,7 @@ public class FileSelector {
 
     }
 
-    public File OpenCircFile(final Window ownerWindow){
+    public File OpenCircFile(){
 
         UpdateLocale();
 
@@ -44,7 +48,7 @@ public class FileSelector {
 
     }
 
-    public File OpenJarFile(final Window ownerWindow){
+    public File OpenJarFile(){
 
         UpdateLocale();
 
@@ -66,6 +70,7 @@ public class FileSelector {
 
         fileChooser.setSelectedExtensionFilter(null);
         return fileChooser.showOpenDialog(ownerWindow);
+
     }
 
     private void UpdateLocale(){

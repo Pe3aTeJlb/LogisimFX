@@ -79,7 +79,10 @@ public class HelpController extends AbstractController {
     }
 
     private void createSwingContent(final SwingNode swingNode) {
-        SwingUtilities.invokeLater(() -> swingNode.setContent(helpComponent));
+        SwingUtilities.invokeLater(() -> {
+            swingNode.setContent(helpComponent);
+            swingNode.requestFocus();
+        });
     }
 
     public void openChapter(String chapter){

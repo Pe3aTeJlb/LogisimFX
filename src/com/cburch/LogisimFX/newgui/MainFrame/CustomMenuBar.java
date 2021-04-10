@@ -15,14 +15,14 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 
+import java.io.File;
+
 public class CustomMenuBar extends MenuBar {
 
     private int prefHeight = 25;
 
     private Localizer localizer
             = new Localizer("LogisimFX/resources/localization/menu");
-
-    private final FileSelector fileSelector = new FileSelector();
 
     private Project proj;
     private LogisimFile logisimFile;
@@ -73,7 +73,9 @@ public class CustomMenuBar extends MenuBar {
 
         MenuItem Open = new MenuItem();
         Open.textProperty().bind(localizer.createStringBinding("fileOpenItem"));
-        Open.setOnAction(event -> ProjectActions.doOpen(proj));
+        Open.setOnAction(event -> {
+            ProjectActions.doOpen(proj, mainFrameController.getStage());
+        });
 
         //see gui/menu/OpenRecent
         OpenRecentMenu OpenRecent = new OpenRecentMenu(proj);
@@ -389,7 +391,7 @@ public class CustomMenuBar extends MenuBar {
 
         MenuItem GetCircuitStatistics = new MenuItem();
         GetCircuitStatistics.textProperty().bind(localizer.createStringBinding("projectGetCircuitStatisticsItem"));
-        GetCircuitStatistics.setOnAction(event -> FrameManager.CreateCircuitStatisticFrame(proj));
+        GetCircuitStatistics.setOnAction(event -> FrameManager.CreateCircuitStatisticFrame(proj, proj.getCurrentCircuit()));
 
         SeparatorMenuItem sp4 = new SeparatorMenuItem();
 

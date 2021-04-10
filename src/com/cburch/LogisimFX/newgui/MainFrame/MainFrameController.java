@@ -56,13 +56,13 @@ public class MainFrameController extends AbstractController {
         AnchorPane tableRoot = new AnchorPane();
 
         treeExplorerAggregation = new TreeExplorerAggregation(proj);
-        setAnchor(0,40,0,0, treeExplorerAggregation.getTree());
+        setAnchor(0,40,0,0, treeExplorerAggregation);
 
         mainToolBar = new MainToolBar(proj);
         additionalToolBar = new AdditionalToolBar(proj, treeExplorerAggregation);
         ExplorerToolBar controlToolBar = new ExplorerToolBar(mainToolBar,additionalToolBar, treeExplorerAggregation);
 
-        treeRoot.getChildren().addAll(controlToolBar,additionalToolBar, treeExplorerAggregation.getTree());
+        treeRoot.getChildren().addAll(controlToolBar,additionalToolBar, treeExplorerAggregation);
 
         cv = new CustomCanvas(canvasRoot);
 

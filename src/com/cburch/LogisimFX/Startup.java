@@ -37,7 +37,7 @@ public class Startup {
 
     private void doOpenFile(File file) {
         if (initialized) {
-            ProjectActions.doOpen(null, null, file);
+            ProjectActions.doOpen(null, file);
         } else {
             filesToOpen.add(file);
         }
@@ -45,7 +45,7 @@ public class Startup {
 
     private void doPrintFile(File file) {
         if (initialized) {
-            Project toPrint = ProjectActions.doOpen(null, null, file);
+            Project toPrint = ProjectActions.doOpen(null, file);
             FrameManager.CreatePrintFrame(toPrint);
             toPrint.getFrame().dispose();
         } else {

@@ -1,8 +1,8 @@
 package com.cburch.LogisimFX.newgui.CircLogFrame;
 
 import com.cburch.LogisimFX.Localizer;
+import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.newgui.AbstractController;
-import com.cburch.LogisimFX.proj.Project;
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
 
@@ -14,15 +14,19 @@ public class CircLogController extends AbstractController {
 
     @FXML
     public void initialize(){
-
-
-
     }
 
     @Override
     public void postInitialization(Stage s) {
         stage = s;
+        stage.setTitle("LogisimFX: Logging");
+    }
+
+    public void setCircuit(Circuit circ){
+
+        //setText(StringUtil.format(Strings.get("logFrameMenuItem"), title));
         stage.titleProperty().bind(lc.createStringBinding("logFrameTitle"));
+
     }
 
     @Override

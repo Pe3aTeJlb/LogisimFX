@@ -1,6 +1,9 @@
 package com.cburch.LogisimFX.newgui;
 
+import com.cburch.LogisimFX.circuit.Circuit;
+import com.cburch.LogisimFX.file.Loader;
 import com.cburch.LogisimFX.instance.Instance;
+import com.cburch.LogisimFX.newgui.CircuitStatisticFrame.CircuitStatisticController;
 import com.cburch.LogisimFX.newgui.HelpFrame.HelpController;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.proj.ProjectActions;
@@ -12,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,13 +29,18 @@ These classes implements AbstractController in purpose to postInitialization pro
 public class FrameManager {
 
     private static FXMLLoader loader;
-    //private static AbstractController c;
+
+    /*
+    A reference to the current AbstractController, if you need to call an additional initialization method (not postInit).
+    Guaranteed to work only within the Create...Frame, I can't guarantee the rest
+     */
+    private static AbstractController curr;
 
     private static final HashMap<Project, Data> OpenedMainFrames = new HashMap<>();
 
     private static final HashMap<String, Data> OpenedProjectIndependentFrames = new HashMap<>();
 
-    //ToDo: replace String with memory object reference
+    //ToDo: replace String with memory object reference. Should be in Data class?
     private static final HashMap<Instance, Stage> OpenedMemoryEditors = new HashMap<>();
 
     private static class Data{
@@ -52,7 +61,7 @@ public class FrameManager {
 
     public static void CreateMainFrame(Project proj){
 
-        if(!OpenedMainFrames.containsKey(proj)){
+       // if(!OpenedMainFrames.containsKey(proj)){
 
             loader = new FXMLLoader(ClassLoader.getSystemResource(
                     "com/cburch/LogisimFX/newgui/MainFrame/LogisimFx.fxml"));
@@ -70,7 +79,7 @@ public class FrameManager {
             AbstractController c = loader.getController();
             c.postInitialization(newStage, proj);
 
-            newStage.setOnHidden(event -> {
+            newStage.setOnHiding(event -> {
 
                 event.consume();
 
@@ -125,6 +134,8 @@ public class FrameManager {
                         }
 
                     } else if (type == 0) {
+                        System.out.println("cancel");
+                        newStage.showAndWait();
                         //todo: check out what to do
                     }
 
@@ -158,13 +169,13 @@ public class FrameManager {
 
             OpenedMainFrames.put(proj, new Data(newStage,c));
 
-            System.out.println(OpenedMainFrames.size());
-            System.out.println(proj.getLogisimFile().getName());
+            //System.out.println(OpenedMainFrames.size());
+            //System.out.println(proj.getLogisimFile().getName());
 
-        }
-        else{
-            FocusOnFrame(OpenedMainFrames.get(proj).stage);
-        }
+       // }
+        //else{
+         //   FocusOnFrame(OpenedMainFrames.get(proj).stage);
+       // }
 
     }
 
@@ -189,6 +200,7 @@ public class FrameManager {
             newStage.setScene(new Scene(root, 450, 350));
 
             AbstractController c = loader.getController();
+            curr = c;
             c.postInitialization(newStage, proj);
 
             newStage.setOnHidden(event -> {
@@ -229,8 +241,9 @@ public class FrameManager {
         CreateNewFrame("LogisimFX/newgui/CircuitAnalysisFrame/CircuitAnalysis.fxml", proj, Modality.NONE);
     }
 
-    public static void CreateCircuitStatisticFrame(Project proj){
+    public static void CreateCircuitStatisticFrame(Project proj, Circuit circ){
         CreateNewFrame("LogisimFX/newgui/CircuitStatisticFrame/CircuitStatistic.fxml", proj, Modality.NONE);
+        ((CircuitStatisticController)curr).describeCircuit(circ);
     }
 
 
@@ -315,7 +328,20 @@ public class FrameManager {
         return OpenedMainFrames.keySet();
     }
 
+    public static Project FindProjectForFile(File query){
 
+        for(Project proj: OpenedMainFrames.keySet()){
+
+            Loader loader = proj.getLogisimFile().getLoader();
+            if (loader == null) continue;
+            File f = loader.getMainFile();
+            if (query.equals(f)) return proj;
+
+        }
+
+        return null;
+
+    }
 
     //Tools
 
@@ -334,6 +360,7 @@ public class FrameManager {
         s.toFront();
     }
 
+
     public static void CloseAllFrames(){
 
         ArrayList<Project> projects = new ArrayList<>(OpenedMainFrames.keySet());
@@ -342,6 +369,10 @@ public class FrameManager {
             OpenedMainFrames.get(proj).stage.close();
         }
 
+    }
+
+    public static void CloseFrame(Project project){
+        OpenedMainFrames.get(project).stage.close();
     }
 
     private static void CloseProjectAssociatedFrames(Project project){

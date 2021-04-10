@@ -27,11 +27,13 @@ import java.util.Stack;
 public class Loader implements LibraryLoader {
 
 	private Localizer lc = new Localizer("LogisimFX/resources/localization/file");
+
 	public static final String LOGISIM_EXTENSION = ".circ";
 	public static final FileFilter LOGISIM_FILTER = new LogisimFileFilter();
 	public static final FileFilter JAR_FILTER = new JarFileFilter();
 
 	private static class LogisimFileFilter extends FileFilter {
+
 		@Override
 		public boolean accept(File f) {
 			return f.isDirectory()
@@ -42,9 +44,11 @@ public class Loader implements LibraryLoader {
 		public String getDescription() {
 			return Strings.get("logisimFileFilter");
 		}
+
 	}
 
 	private static class JarFileFilter extends FileFilter {
+
 		@Override
 		public boolean accept(File f) {
 			return f.isDirectory()
@@ -55,6 +59,7 @@ public class Loader implements LibraryLoader {
 		public String getDescription() {
 			return Strings.get("jarFileFilter");
 		}
+
 	}
 
 	// fixed
@@ -74,8 +79,10 @@ public class Loader implements LibraryLoader {
 	}
 
 	private File getSubstitution(File source) {
+
 		File ret = substitutions.get(source);
 		return ret == null ? source : ret;
+
 	}
 
 	//
@@ -376,13 +383,19 @@ public class Loader implements LibraryLoader {
 	// helper methods
 	//
 	File getFileFor(String name, FileFilter filter) {
+
 		// Determine the actual file name.
 		File file = new File(name);
-		if (!file.isAbsolute()) {
+
+		if (!file.isAbsolute())
+		{
 			File currentDirectory = getCurrentDirectory();
 			if (currentDirectory != null) file = new File(currentDirectory, name);
+
 		}
+
 		while (!file.canRead()) {
+
 			// It doesn't exist. Figure it out from the user.
 			DialogManager.CreateInfoDialog("File missing", StringUtil.format(lc.get("fileLibraryMissingError"),
 					file.getName()));
@@ -397,17 +410,21 @@ public class Loader implements LibraryLoader {
 				throw new LoaderException(Strings.get("fileLoadCanceledError"));
 			}
 			file = chooser.getSelectedFile();
+
 		}
 		return file;
+
 	}
 
 	private String toProjectName(File file) {
+
 		String ret = file.getName();
 		if (ret.endsWith(LOGISIM_EXTENSION)) {
 			return ret.substring(0, ret.length() - LOGISIM_EXTENSION.length());
 		} else {
 			return ret;
 		}
+
 	}
 
 }

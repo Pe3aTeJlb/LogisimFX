@@ -128,6 +128,47 @@ public class DialogManager {
 
     }
 
+    public static int CreateFileReloadDialog(Project proj){
+
+        Localizer lc = new Localizer("LogisimFX/resources/localization/proj");
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(lc.get("openAlreadyMessage"));
+        //alert.setContentText(StringUtil.format(lc.get("confirmDiscardMessage"),
+        //       proj.getLogisimFile().getName()));
+        //alert.setContentText(lc.get("confirmDiscardMessage"));
+
+        ButtonType buttonTypeLoseChanges = new ButtonType( lc.get("openAlreadyLoseChangesOption"));
+        ButtonType buttonTypeNewWindow = new ButtonType(lc.get("openAlreadyNewWindowOption"));
+        ButtonType buttonTypeCancel = new ButtonType(lc.get("openAlreadyCancelOption"), ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(buttonTypeLoseChanges, buttonTypeNewWindow, buttonTypeCancel);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == buttonTypeLoseChanges){
+            return 2;
+        } else if (result.get() == buttonTypeNewWindow) {
+            return 1;
+        }else{
+            return 0;
+        }
+
+        /*
+        String message = StringUtil.format(lc.get("openAlreadyMessage"),
+						proj.getLogisimFile().getName());
+				String[] options = {
+						lc.get("openAlreadyLoseChangesOption"),
+						lc.get("openAlreadyNewWindowOption"),
+						lc.get("openAlreadyCancelOption"),
+					};
+				int result = JOptionPane.showOptionDialog(proj.getFrame(),
+						message, lc.get("openAlreadyTitle"), 0,
+						JOptionPane.QUESTION_MESSAGE, null,
+						options, options[2]);
+         */
+
+    }
+
     public static String CreateInputDialog(Library lib){
 
         Localizer lc = new Localizer("LogisimFX/resources/localization/menu");

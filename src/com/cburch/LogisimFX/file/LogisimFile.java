@@ -351,7 +351,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 
 	public void updateCircuitPos(Circuit cur){
 
-		System.out.println("tool size: "+tools.size());
+		//System.out.println("tool size: "+tools.size());
 
 		if(tools.size()==1){
 			obsPos.setValue("first&last");
@@ -363,7 +363,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 		}else{
 			obsPos.setValue("undefined");
 		}
-		System.out.println(obsPos.getValue());
+		//System.out.println(obsPos.getValue());
 
 	}
 

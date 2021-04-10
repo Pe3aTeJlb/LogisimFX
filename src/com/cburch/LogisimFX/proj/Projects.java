@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.WeakHashMap;
 
 public class Projects {
+
 	public static final String projectListProperty = "projectList";
 	
 	private static final WeakHashMap<Window, Point> frameLocations

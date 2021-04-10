@@ -32,7 +32,7 @@ public class ExplorerToolBar extends ToolBar {
 
         MainToolBar = main;
         AdditionalToolBar = additional;
-        //ProjectTreeExplorer = explorer;
+
         TreeExplorerAggregation = explorer;
 
         ControlBtnsList = FXCollections.observableArrayList();
