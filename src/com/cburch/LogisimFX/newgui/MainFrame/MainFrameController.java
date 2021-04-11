@@ -33,7 +33,7 @@ public class MainFrameController extends AbstractController {
     TreeExplorerAggregation treeExplorerAggregation;
 
     private CustomCanvas cv;
-    private AnimationTimer update;
+
 
 //monolith - strength in unity
     @FXML
@@ -44,7 +44,10 @@ public class MainFrameController extends AbstractController {
     public void postInitialization(Stage s,Project p) {
 
         stage = s;
+
         proj = p;
+        proj.setFrameController(this);
+
         computeTitle();
 
         AnchorPane canvasRoot = new AnchorPane();
@@ -73,25 +76,13 @@ public class MainFrameController extends AbstractController {
         mainSplitPane.setOrientation(Orientation.HORIZONTAL);
         setAnchor(0,50,0,0,mainSplitPane);
 
-        menubar = new CustomMenuBar(this, controlToolBar,proj);
+        menubar = new CustomMenuBar(controlToolBar,proj);
 
         Root.getChildren().addAll(menubar,mainToolBar,mainSplitPane);
 
-        update = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                Update();
-            }
-        };
-
-        //update.start();
-
     }
 
 
-    private void Update() {
-        cv.draw();
-    }
 
     private void computeTitle(){
 
@@ -107,11 +98,6 @@ public class MainFrameController extends AbstractController {
         }
 
     }
-
-
-
-
-
 
 
 

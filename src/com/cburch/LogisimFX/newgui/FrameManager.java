@@ -2,12 +2,13 @@ package com.cburch.LogisimFX.newgui;
 
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.file.Loader;
-import com.cburch.LogisimFX.instance.Instance;
 import com.cburch.LogisimFX.newgui.CircuitStatisticFrame.CircuitStatisticController;
 import com.cburch.LogisimFX.newgui.HelpFrame.HelpController;
+import com.cburch.LogisimFX.newgui.MemoryEditorFrame.MemoryEditorController;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.proj.ProjectActions;
 
+import com.cburch.logisim.instance.Instance;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -41,13 +42,16 @@ public class FrameManager {
     private static final HashMap<String, Data> OpenedProjectIndependentFrames = new HashMap<>();
 
     //ToDo: replace String with memory object reference. Should be in Data class?
-    private static final HashMap<Instance, Stage> OpenedMemoryEditors = new HashMap<>();
+    //private static final HashMap<Instance, Stage> OpenedMemoryEditors = new HashMap<>();
 
     private static class Data{
 
         public Stage stage;
         public AbstractController controller;
-        public HashMap<String, Stage> projectAssociatedFrames = new HashMap<>();
+
+        public HashMap<String, Stage> ProjectAssociatedFrames = new HashMap<>();
+        public HashMap<Circuit, Stage> AssociatedCircuitStatisticFrames = new HashMap<>();
+        public HashMap<Instance, Stage> AssociatedMemoryEditors = new HashMap<>();
 
         Data(Stage s, AbstractController c){
             this.stage = s;
@@ -93,72 +97,21 @@ public class FrameManager {
 
                         ProjectActions.doSave(proj);
 
-                        if (OpenedMainFrames.size() == 1) {
-
-                            CloseProjectIndependentFrames();
-                            CloseMemoryEditors();
-                            CloseProjectAssociatedFrames(proj);
-                            c.onClose();
-
-                            Platform.exit();
-                            System.exit(0);
-
-                        } else {
-
-                            CloseProjectAssociatedFrames(proj);
-                            CloseMemoryEditors();
-                            c.onClose();
-                            OpenedMainFrames.remove(proj);
-
-                        }
+                        CloseFrame(proj);
 
                     } else if (type == 1) {
 
-                        if (OpenedMainFrames.size() == 1) {
-
-                            CloseProjectIndependentFrames();
-                            CloseMemoryEditors();
-                            CloseProjectAssociatedFrames(proj);
-                            c.onClose();
-
-                            Platform.exit();
-                            System.exit(0);
-
-                        } else {
-
-                            CloseProjectAssociatedFrames(proj);
-                            CloseMemoryEditors();
-                            c.onClose();
-                            OpenedMainFrames.remove(proj);
-
-                        }
+                        CloseFrame(proj);
 
                     } else if (type == 0) {
-                        System.out.println("cancel");
+
                         newStage.showAndWait();
-                        //todo: check out what to do
+
                     }
 
                 }else{
 
-                    if(OpenedMainFrames.size()==1){
-
-                        CloseProjectIndependentFrames();
-                        CloseMemoryEditors();
-                        CloseProjectAssociatedFrames(proj);
-                        c.onClose();
-
-                        Platform.exit();
-                        System.exit(0);
-
-                    }else{
-
-                        CloseProjectAssociatedFrames(proj);
-                        CloseMemoryEditors();
-                        c.onClose();
-                        OpenedMainFrames.remove(proj);
-
-                    }
+                    CloseFrame(proj);
 
                 }
 
@@ -183,9 +136,9 @@ public class FrameManager {
 
     //Project-depending frames
 
-    public static void CreateNewFrame(String resourcePath, Project proj, Modality modality){
+    private static void CreateNewFrame(String resourcePath, Project proj, Modality modality){
 
-        if(!OpenedMainFrames.get(proj).projectAssociatedFrames.containsKey(resourcePath)){
+        if(!OpenedMainFrames.get(proj).ProjectAssociatedFrames.containsKey(resourcePath)){
 
             loader = new FXMLLoader(ClassLoader.getSystemResource("com/cburch/"+resourcePath));
             Parent root = null;
@@ -205,7 +158,7 @@ public class FrameManager {
 
             newStage.setOnHidden(event -> {
                 c.onClose();
-                OpenedMainFrames.get(proj).projectAssociatedFrames.remove(resourcePath);
+                OpenedMainFrames.get(proj).ProjectAssociatedFrames.remove(resourcePath);
             });
 
             newStage.initModality(modality);
@@ -213,10 +166,10 @@ public class FrameManager {
 
             newStage.show();
 
-            OpenedMainFrames.get(proj).projectAssociatedFrames.put(resourcePath, newStage);
+            OpenedMainFrames.get(proj).ProjectAssociatedFrames.put(resourcePath, newStage);
 
         }else{
-            FocusOnFrame(OpenedMainFrames.get(proj).projectAssociatedFrames.get(resourcePath));
+            FocusOnFrame(OpenedMainFrames.get(proj).ProjectAssociatedFrames.get(resourcePath));
         }
 
     }
@@ -241,16 +194,11 @@ public class FrameManager {
         CreateNewFrame("LogisimFX/newgui/CircuitAnalysisFrame/CircuitAnalysis.fxml", proj, Modality.NONE);
     }
 
-    public static void CreateCircuitStatisticFrame(Project proj, Circuit circ){
-        CreateNewFrame("LogisimFX/newgui/CircuitStatisticFrame/CircuitStatistic.fxml", proj, Modality.NONE);
-        ((CircuitStatisticController)curr).describeCircuit(circ);
-    }
-
 
 
     //Project independent frames
 
-    public static void CreateNewFrame(String resourcePath, Modality modality){
+    private static void CreateNewFrame(String resourcePath, Modality modality){
 
         if(!OpenedProjectIndependentFrames.containsKey(resourcePath)){
 
@@ -314,10 +262,96 @@ public class FrameManager {
 
 
 
+    //Circuit Statistics frames
+
+    private static void CreateNewFrame(String resourcePath, Project proj, Circuit circ, Modality modality) {
+
+        if (!OpenedMainFrames.get(proj).AssociatedCircuitStatisticFrames.containsKey(circ)) {
+
+            loader = new FXMLLoader(ClassLoader.getSystemResource("com/cburch/" + resourcePath));
+            Parent root = null;
+
+            try {
+                root = loader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root, 450, 350));
+
+            AbstractController c = loader.getController();
+            curr = c;
+            c.postInitialization(newStage, proj);
+
+            newStage.setOnHidden(event -> {
+                c.onClose();
+                OpenedMainFrames.get(proj).AssociatedCircuitStatisticFrames.remove(circ);
+            });
+
+            newStage.initModality(modality);
+            //newStage.initOwner(OpenedMainFrames.get(proj).stage);
+
+            newStage.show();
+
+            OpenedMainFrames.get(proj).AssociatedCircuitStatisticFrames.put(circ, newStage);
+
+        } else {
+            FocusOnFrame(OpenedMainFrames.get(proj).AssociatedCircuitStatisticFrames.get(circ));
+        }
+
+    }
+
+    public static void CreateCircuitStatisticFrame(Project proj, Circuit circ){
+        CreateNewFrame("LogisimFX/newgui/CircuitStatisticFrame/CircuitStatistic.fxml", proj, circ, Modality.NONE);
+        ((CircuitStatisticController)curr).describeCircuit(circ);
+    }
+
+
+
     //Memory based frames
 
-    public static void CreateHexEditorFrame(){
-        //ToDO: hex editor lol
+    private static void CreateNewFrame(String resourcePath, Project proj, Instance inst, Modality modality) {
+
+        if (!OpenedMainFrames.get(proj).AssociatedMemoryEditors.containsKey(inst)) {
+
+            loader = new FXMLLoader(ClassLoader.getSystemResource("com/cburch/" + resourcePath));
+            Parent root = null;
+
+            try {
+                root = loader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root, 450, 350));
+
+            AbstractController c = loader.getController();
+            curr = c;
+            c.postInitialization(newStage, proj);
+
+            newStage.setOnHidden(event -> {
+                c.onClose();
+                OpenedMainFrames.get(proj).AssociatedMemoryEditors.remove(inst);
+            });
+
+            newStage.initModality(modality);
+            //newStage.initOwner(OpenedMainFrames.get(proj).stage);
+
+            newStage.show();
+
+            OpenedMainFrames.get(proj).AssociatedMemoryEditors.put(inst, newStage);
+
+        } else {
+            FocusOnFrame(OpenedMainFrames.get(proj).AssociatedMemoryEditors.get(inst));
+        }
+
+    }
+
+    public static void CreateHexEditorFrame(Project proj, Instance inst){
+        CreateNewFrame("LogisimFX/newgui/CircuitStatisticFrame/CircuitStatistic.fxml", proj, inst, Modality.NONE);
+        //((MemoryEditorController)curr).describeCircuit(inst);
     }
 
 
@@ -343,13 +377,15 @@ public class FrameManager {
 
     }
 
+
+
     //Tools
 
     public static void FocusOnFrame(Project project){
 
         OpenedMainFrames.get(project).stage.toFront();
 
-        for (Stage stage: OpenedMainFrames.get(project).projectAssociatedFrames.values()) {
+        for (Stage stage: OpenedMainFrames.get(project).ProjectAssociatedFrames.values()) {
             stage.toFront();
         }
 
@@ -361,27 +397,59 @@ public class FrameManager {
     }
 
 
-    public static void CloseAllFrames(){
+    public static void CloseFrame(Project proj){
 
-        ArrayList<Project> projects = new ArrayList<>(OpenedMainFrames.keySet());
+        if (OpenedMainFrames.size() > 1) {
 
-        for (Project proj: projects) {
-            OpenedMainFrames.get(proj).stage.close();
+            CloseMemoryEditors(proj);
+            CloseProjectAssociatedFrames(proj);
+            CloseCircuitStatisticsFrames(proj);
+            proj.getFrameController().onClose();
+
+            OpenedMainFrames.remove(proj);
+
+
+        } else if(OpenedMainFrames.size() == 1){
+
+            CloseMemoryEditors(proj);
+            CloseProjectIndependentFrames();
+            CloseCircuitStatisticsFrames(proj);
+            CloseProjectAssociatedFrames(proj);
+            proj.getFrameController().onClose();
+
+            Platform.exit();
+            System.exit(0);
+
+        }
+
+
+
+    }
+
+
+    private static void CloseProjectAssociatedFrames(Project project){
+
+        ArrayList<Stage> stages = new ArrayList<>(OpenedMainFrames.get(project).ProjectAssociatedFrames.values());
+
+        for (Stage stage: stages) {
+            stage.close();
         }
 
     }
 
-    public static void CloseFrame(Project project){
-        OpenedMainFrames.get(project).stage.close();
+    private static void CloseCircuitStatisticsFrames(Project project){
+
+        ArrayList<Stage> stages = new ArrayList<>(OpenedMainFrames.get(project).AssociatedCircuitStatisticFrames.values());
+
+        for (Stage stage: stages) {
+            stage.close();
+        }
+
     }
 
-    private static void CloseProjectAssociatedFrames(Project project){
+    private static void CloseMemoryEditors(Project project){
 
-        //ConcurrentModificationException here
-        //cause intellij can't understand
-        //Solution:
-
-        ArrayList<Stage> stages = new ArrayList<>(OpenedMainFrames.get(project).projectAssociatedFrames.values());
+        ArrayList<Stage> stages = new ArrayList<>(OpenedMainFrames.get(project).AssociatedMemoryEditors.values());
 
         for (Stage stage: stages) {
             stage.close();
@@ -399,13 +467,21 @@ public class FrameManager {
 
     }
 
-    private static void CloseMemoryEditors(){
 
-        //ConcurrentModificationException here
+    public static void ExitProgram(){
 
-        for (Instance instance: OpenedMemoryEditors.keySet()) {
-            OpenedMemoryEditors.get(instance).close();
+        ArrayList<Project> projects = new ArrayList<>(OpenedMainFrames.keySet());
+
+        for (Project proj: projects) {
+            OpenedMainFrames.get(proj).stage.close();
         }
+
+    }
+
+    public static void ForceExit(){
+
+        Platform.exit();
+        System.exit(0);
 
     }
 

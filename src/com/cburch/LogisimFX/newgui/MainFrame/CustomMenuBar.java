@@ -1,5 +1,6 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
+import com.cburch.LogisimFX.file.LogisimFileActions;
 import com.cburch.LogisimFX.newgui.FrameManager;
 import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.newgui.DialogManager;
@@ -27,15 +28,13 @@ public class CustomMenuBar extends MenuBar {
     private Project proj;
     private LogisimFile logisimFile;
 
-    private MainFrameController mainFrameController;
     private ExplorerToolBar explorerToolBar;
 
 
-    public CustomMenuBar(MainFrameController mfc, ExplorerToolBar etb, Project project){
+    public CustomMenuBar(ExplorerToolBar etb, Project project){
 
         super();
 
-        mainFrameController = mfc;
         explorerToolBar = etb;
 
         proj = project;
@@ -74,7 +73,7 @@ public class CustomMenuBar extends MenuBar {
         MenuItem Open = new MenuItem();
         Open.textProperty().bind(localizer.createStringBinding("fileOpenItem"));
         Open.setOnAction(event -> {
-            ProjectActions.doOpen(proj, mainFrameController.getStage());
+            ProjectActions.doOpen(proj);
         });
 
         //see gui/menu/OpenRecent
@@ -88,7 +87,7 @@ public class CustomMenuBar extends MenuBar {
 
         MenuItem Close = new MenuItem();
         Close.textProperty().bind(localizer.createStringBinding("fileCloseItem"));
-        Close.setOnAction(event -> mainFrameController.getStage().close());
+        Close.setOnAction(event -> proj.getFrameController().getStage().close());
 
         MenuItem Save = new MenuItem();
         Save.textProperty().bind(localizer.createStringBinding("fileSaveItem"));
@@ -124,7 +123,7 @@ public class CustomMenuBar extends MenuBar {
 
         MenuItem Exit = new MenuItem();
         Exit.textProperty().bind(localizer.createStringBinding("fileQuitItem"));
-        Exit.setOnAction(event -> FrameManager.CloseAllFrames());
+        Exit.setOnAction(event -> FrameManager.ExitProgram());
 
         File.getItems().addAll(
                 New,
@@ -257,8 +256,7 @@ public class CustomMenuBar extends MenuBar {
 
             if (circuitName != null) {
                 Circuit circuit = new Circuit(circuitName);
-                //ToDO:
-                //proj.doAction(LogisimFileActions.addCircuit(circuit));
+                proj.doAction(LogisimFileActions.addCircuit(circuit));
                 proj.setCurrentCircuit(circuit);
             }
 
@@ -641,15 +639,15 @@ public class CustomMenuBar extends MenuBar {
 
             MenuItem Maximize = new MenuItem();
             Maximize.textProperty().bind(localizer.createStringBinding("windowZoomItem"));
-            Maximize.setOnAction(event -> mainFrameController.getStage().setMaximized(true));
+            Maximize.setOnAction(event -> proj.getFrameController().getStage().setMaximized(true));
 
             MenuItem Minimize = new MenuItem();
             Minimize.textProperty().bind(localizer.createStringBinding("windowMinimizeItem"));
-            Minimize.setOnAction(event -> mainFrameController.getStage().setIconified(true));
+            Minimize.setOnAction(event -> proj.getFrameController().getStage().setIconified(true));
 
             MenuItem Close = new MenuItem();
             Close.textProperty().bind(localizer.createStringBinding("windowCloseItem"));
-            Close.setOnAction(event -> mainFrameController.getStage().close());
+            Close.setOnAction(event -> proj.getFrameController().getStage().close());
 
 
             SeparatorMenuItem sp1 = new SeparatorMenuItem();

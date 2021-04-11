@@ -56,7 +56,7 @@ public class ProjectActions {
 			//frame.setVisible(true);
 			//frame.toFront();
 			//frame.getCanvas().requestFocus();
-			if (isStartupScreen) proj.setStartupScreen(true);
+			//if (isStartupScreen) proj.setStartupScreen(true);
 
 		}
 
@@ -175,9 +175,9 @@ public class ProjectActions {
 
 	}
 
-	public static void doOpen(Project baseProject, Window stage) {
+	public static void doOpen(Project baseProject) {
 
-		FileSelector fs = new FileSelector(stage);
+		FileSelector fs = new FileSelector(baseProject.getFrameController().getStage());
 
 		File selected = fs.OpenCircFile();
 
@@ -270,7 +270,7 @@ public class ProjectActions {
 
 		if (proj == null && baseProject != null && baseProject.isStartupScreen()) {
 			proj = baseProject;
-			proj.setStartupScreen(false);
+			//proj.setStartupScreen(false);
 			loader = baseProject.getLogisimFile().getLoader();
 		} else {
 			loader = new Loader();
@@ -320,6 +320,9 @@ public class ProjectActions {
 	public static boolean doSaveAs(Project proj) {
 
 		Loader loader = proj.getLogisimFile().getLoader();
+
+		FileSelector fileSelector = new FileSelector(proj.getFrameController().getStage());
+		fileSelector.setCircFilter();
 
 		JFileChooser chooser = loader.createChooser();
 		chooser.setFileFilter(Loader.LOGISIM_FILTER);

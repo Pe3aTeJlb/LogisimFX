@@ -5,6 +5,7 @@ package com.cburch.LogisimFX.proj;
 
 import com.cburch.LogisimFX.file.*;
 import com.cburch.LogisimFX.circuit.*;
+import com.cburch.LogisimFX.newgui.MainFrame.MainFrameController;
 import com.cburch.logisim.gui.log.LogFrame;
 import com.cburch.LogisimFX.gui.main.Canvas;
 import com.cburch.LogisimFX.gui.main.Frame;
@@ -66,25 +67,31 @@ public class Project {
 	private CircuitState circuitState;
 	private HashMap<Circuit,CircuitState> stateMap
 		= new HashMap<Circuit,CircuitState>();
-	private Frame frame = null;
+	private MainFrameController frameController;
 	private OptionsFrame optionsFrame = null;
 	private LogFrame logFrame = null;
 	private Tool tool = null;
 	private LinkedList<ActionData> undoLog = new LinkedList<ActionData>();
 	private int undoMods = 0;
+
 	private EventSourceWeakSupport<ProjectListener> projectListeners
 		= new EventSourceWeakSupport<ProjectListener>();
 	private EventSourceWeakSupport<LibraryListener> fileListeners
 		= new EventSourceWeakSupport<LibraryListener>();
 	private EventSourceWeakSupport<CircuitListener> circuitListeners
 		= new EventSourceWeakSupport<CircuitListener>();
+
 	private Dependencies depends;
 	private MyListener myListener = new MyListener();
-	private boolean startupScreen = false;
+	//private boolean startupScreen = false;
 
 	public Project(LogisimFile file) {
 		addLibraryListener(myListener);
 		setLogisimFile(file);
+	}
+
+	public void setFrameController(MainFrameController controller){
+		frameController = controller;
 	}
 
 	public void setFrame(Frame value) {
@@ -114,8 +121,8 @@ public class Project {
 		return depends;
 	}
 
-	public Frame getFrame() {
-		return frame;
+	public MainFrameController getFrameController(){
+		return frameController;
 	}
 	
 	public OptionsFrame getOptionsFrame(boolean create) {
@@ -229,26 +236,10 @@ public class Project {
 			l.projectChanged(event);
 		}
 	}
-	
-	// We track whether this project is the empty project opened
-	// at startup by default, because we want to close it
-	// immediately as another project is opened, if there
-	// haven't been any changes to it.
-	public boolean isStartupScreen() {
-		return startupScreen;
-	}
-	
-	public boolean confirmClose(String title) {
-		return frame.confirmClose(title);
-	}
 
 	//
 	// actions
 	//
-	public void setStartupScreen(boolean value) {
-		startupScreen = value;
-	}
-
 	public void setLogisimFile(LogisimFile value) {
 
 		LogisimFile old = this.file;
@@ -284,6 +275,7 @@ public class Project {
 		boolean circuitChanged = old == null || oldCircuit != newCircuit;
 
 		if (circuitChanged) {
+			/*
 			Canvas canvas = frame == null ? null : frame.getCanvas();
 			if (canvas != null) {
 				//if (tool != null) tool.deselect(canvas);
@@ -296,6 +288,7 @@ public class Project {
 				}
 				//if (tool != null) tool.select(canvas);
 			}
+			 */
 			if (oldCircuit != null) {
 				for (CircuitListener l : circuitListeners) {
 					oldCircuit.removeCircuitListener(l);
@@ -351,7 +344,7 @@ public class Project {
 			}
 			if (!xn.isEmpty()) doAction(xn.toAction(null));
 		}
-		startupScreen = false;
+
 		tool = value;
 		if (tool != null) tool.select(frame.getCanvas());
 		fireEvent(ProjectEvent.ACTION_SET_TOOL, old, tool);
@@ -362,7 +355,7 @@ public class Project {
 
 		if (act == null) return;
 		Action toAdd = act;
-		startupScreen = false;
+		//startupScreen = false;
 		if (!undoLog.isEmpty() && act.shouldAppendTo(getLastAction())) {
 			ActionData firstData = undoLog.removeLast();
 			Action first = firstData.action;
@@ -419,4 +412,5 @@ public class Project {
 		fireEvent(new ProjectEvent(ProjectEvent.REPAINT_REQUEST, this, null));
 
 	}
+
 }

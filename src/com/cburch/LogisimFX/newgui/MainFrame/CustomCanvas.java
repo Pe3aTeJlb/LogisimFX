@@ -1,5 +1,6 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
+import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
@@ -13,6 +14,8 @@ public class CustomCanvas extends Canvas {
     private double[] transform;
     private Color background = Color.BLACK;
 
+    private AnimationTimer update;
+
     public CustomCanvas(Pane rt){
 
         root = rt;
@@ -25,6 +28,21 @@ public class CustomCanvas extends Canvas {
         transform = new double[6];
         transform[0] = transform[3] = 1;
         transform[1] = transform[2] = transform[4] = transform[5] = 0;
+
+        update = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                Update();
+            }
+        };
+
+    }
+
+    //Unity Hie!
+    private void Update(){
+
+
+
     }
 
     public void draw(){

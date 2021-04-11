@@ -1,5 +1,6 @@
 package com.cburch.LogisimFX;
 
+import javafx.beans.binding.StringBinding;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
@@ -32,15 +33,24 @@ public class FileSelector {
 
     }
 
+
+
+    public File showOpenDialog(){
+
+        UpdateLocale();
+
+        fileChooser.setSelectedExtensionFilter(null);
+        return fileChooser.showOpenDialog(ownerWindow);
+
+    }
+
     public File OpenCircFile(){
 
         UpdateLocale();
 
         //fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
 
-        fileChooser.getExtensionFilters().clear();
-        fileChooser.getExtensionFilters().add(circ);
-        fileChooser.setSelectedExtensionFilter(circ);
+        setCircFilter();
 
         tempFile = fileChooser.showOpenDialog(ownerWindow);
 
@@ -54,9 +64,7 @@ public class FileSelector {
 
        // fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
 
-        fileChooser.getExtensionFilters().clear();
-        fileChooser.getExtensionFilters().add(jar);
-        fileChooser.setSelectedExtensionFilter(jar);
+        setJarFilter();
 
         tempFile = fileChooser.showOpenDialog(ownerWindow);
 
@@ -64,14 +72,32 @@ public class FileSelector {
 
     }
 
-    public File showOpenDialog(final Window ownerWindow){
 
-        UpdateLocale();
 
-        fileChooser.setSelectedExtensionFilter(null);
-        return fileChooser.showOpenDialog(ownerWindow);
+    public void setCircFilter(){
+
+        fileChooser.getExtensionFilters().clear();
+        fileChooser.getExtensionFilters().add(circ);
+        fileChooser.setSelectedExtensionFilter(circ);
 
     }
+
+    public void setJarFilter(){
+
+        fileChooser.getExtensionFilters().clear();
+        fileChooser.getExtensionFilters().add(jar);
+        fileChooser.setSelectedExtensionFilter(jar);
+
+    }
+
+    public void setSelectedFile(File f){
+        fileChooser.setInitialDirectory(f);
+    }
+
+    public void setInitialDirectory(File f){
+        fileChooser.setInitialDirectory(f);
+    }
+
 
     private void UpdateLocale(){
 
