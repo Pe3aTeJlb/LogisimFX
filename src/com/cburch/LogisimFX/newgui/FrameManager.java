@@ -389,6 +389,14 @@ public class FrameManager {
             stage.toFront();
         }
 
+        for (Stage stage: OpenedMainFrames.get(project).AssociatedCircuitStatisticFrames.values()) {
+            stage.toFront();
+        }
+
+        for (Stage stage: OpenedMainFrames.get(project).AssociatedMemoryEditors.values()) {
+            stage.toFront();
+        }
+
 
     }
 
