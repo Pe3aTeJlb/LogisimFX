@@ -340,7 +340,8 @@ public class CustomMenuBar extends MenuBar {
             explorerToolBar.ShowSimulationHierarchy.set(false);
 
             explorerToolBar.AdditionalToolBar.SetAdditionalToolBarItems("ControlCircuitOrder");
-            //TODO: add controll method for tree hierarcy
+            explorerToolBar.TreeExplorerAggregation.setProjectView();
+
         });
 
         MenuItem ViewSimulationTree = new MenuItem();
@@ -352,7 +353,8 @@ public class CustomMenuBar extends MenuBar {
             explorerToolBar.ShowSimulationHierarchy.set(true);
 
             explorerToolBar.AdditionalToolBar.SetAdditionalToolBarItems("ControlCircuitTicks");
-            //TODO: add controll method for tree hierarcy
+            explorerToolBar.TreeExplorerAggregation.setSimulationView();
+
         });
 
         MenuItem EditCircuitLayout = new MenuItem();

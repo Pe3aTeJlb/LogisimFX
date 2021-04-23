@@ -41,9 +41,6 @@ public class FrameManager {
 
     private static final HashMap<String, Data> OpenedProjectIndependentFrames = new HashMap<>();
 
-    //ToDo: replace String with memory object reference. Should be in Data class?
-    //private static final HashMap<Instance, Stage> OpenedMemoryEditors = new HashMap<>();
-
     private static class Data{
 
         public Stage stage;
