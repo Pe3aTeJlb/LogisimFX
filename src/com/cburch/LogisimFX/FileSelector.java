@@ -1,6 +1,5 @@
 package com.cburch.LogisimFX;
 
-import javafx.beans.binding.StringBinding;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
@@ -33,14 +32,21 @@ public class FileSelector {
 
     }
 
-
-
     public File showOpenDialog(){
 
         UpdateLocale();
 
         fileChooser.setSelectedExtensionFilter(null);
         return fileChooser.showOpenDialog(ownerWindow);
+
+    }
+
+    public File showSaveDialog(){
+
+        UpdateLocale();
+
+        fileChooser.setSelectedExtensionFilter(null);
+        return fileChooser.showSaveDialog(ownerWindow);
 
     }
 
@@ -72,6 +78,33 @@ public class FileSelector {
 
     }
 
+    public File SaveCircFile(){
+
+        UpdateLocale();
+
+        //fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
+
+        setCircFilter();
+
+        tempFile = fileChooser.showSaveDialog(ownerWindow);
+
+        return tempFile;
+
+    }
+
+    public File SaveJarFile(){
+
+        UpdateLocale();
+
+        // fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
+
+        setJarFilter();
+
+        tempFile = fileChooser.showOpenDialog(ownerWindow);
+
+        return tempFile;
+
+    }
 
 
     public void setCircFilter(){

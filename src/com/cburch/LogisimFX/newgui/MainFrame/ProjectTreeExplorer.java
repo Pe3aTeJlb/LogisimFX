@@ -5,7 +5,6 @@ import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.circuit.SubcircuitFactory;
 import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.proj.Project;
-import com.cburch.logisim.gui.main.ProjectExplorer;
 import com.cburch.logisim.tools.AddTool;
 import com.cburch.logisim.tools.Library;
 import com.cburch.logisim.tools.Tool;
@@ -19,21 +18,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
-import javax.swing.*;
 
 public class ProjectTreeExplorer extends AbstractTreeExplorer {
 
     private Project proj;
-
-    private ProjectExplorer.Listener listener = null;
-
-    public static interface Listener {
-        public void selectionChanged(ProjectExplorer.Event event);
-        public void doubleClicked(ProjectExplorer.Event event);
-        public void moveRequested(ProjectExplorer.Event event, AddTool dragged, AddTool target);
-        public void deleteRequested(ProjectExplorer.Event event);
-        public JPopupMenu menuRequested(ProjectExplorer.Event event);
-    }
 
     public ProjectTreeExplorer(Project project){
 
@@ -53,21 +41,22 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
                     super.updateItem(item, empty) ;
 
                     if (empty) {
+
                         setText(null);
                         setGraphic(null);
+
                     } else {
+
 
                         if(item instanceof Library){
                             setText(((Library)item).getName());
-                            setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/poke.gif")));
                         }
                         else if(item instanceof Tool){
                             setText(((Tool)item).getName());
-                            //setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/poke.gif")));
+                            //setGraphic(((Tool)item).getIcon());
                         }
                         else if(item instanceof LogisimFile){
                             setText(proj.getLogisimFile().getName());
-                            //setGraphic(new ImageView(new Image("com/cburch/LogisimFX/resources/icons/poke.gif")));
                         }
                         else{
                             setText("you fucked up2");
@@ -139,7 +128,7 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
         root.expandedProperty().set(true);
 
         //Circuits
-        for (Tool tool: proj.getLogisimFile().getTools()) {
+        for (AddTool tool: proj.getLogisimFile().getTools()) {
 
             TreeItem<Object> l = new TreeItem<>(tool);
             root.getChildren().add(l);
@@ -155,7 +144,6 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
             for (Tool tool: lib.getTools()) {
 
                 TreeItem<Object> t = new TreeItem<>(tool);
-                //t.setGraphic(new ToolIcon(tool));
                 l.getChildren().add(t);
 
             }
@@ -164,9 +152,6 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
 
     }
 
-    public void setListener(ProjectExplorer.Listener value) {
-        listener = value;
-    }
 
 }
 

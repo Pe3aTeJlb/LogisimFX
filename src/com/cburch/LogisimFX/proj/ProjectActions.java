@@ -12,19 +12,15 @@ import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.newgui.LoadingFrame.LoadingScreen;
 import com.cburch.LogisimFX.circuit.Circuit;
-import com.cburch.logisim.gui.main.Frame;
 import com.cburch.logisim.prefs.AppPreferences;
 import com.cburch.logisim.tools.Tool;
-import com.cburch.logisim.util.JFileChoosers;
 import com.cburch.logisim.util.StringUtil;
 import javafx.application.Platform;
-import javafx.stage.Window;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -38,12 +34,10 @@ public class ProjectActions {
 
 		private Loader loader;
 		private Project proj;
-		private boolean isStartupScreen;
 
-		public CreateFrame(Loader loader, Project proj, boolean isStartup) {
+		public CreateFrame(Loader loader, Project proj) {
 			this.loader = loader;
 			this.proj = proj;
-			this.isStartupScreen = isStartup;
 			run();
 		}
 
@@ -52,22 +46,11 @@ public class ProjectActions {
 			LoadingScreen.Close();
 			FrameManager.CreateMainFrame(proj);
 
-			//Frame frame = createFrame(null, proj);
-			//frame.setVisible(true);
-			//frame.toFront();
-			//frame.getCanvas().requestFocus();
-			//if (isStartupScreen) proj.setStartupScreen(true);
-
 		}
 
 	}
 
-
 	public static Project doNew() {
-		return doNew(false);
-	}
-
-	public static Project doNew(boolean isStartupScreen) {
 
 		LoadingScreen.nextStep();
 
@@ -87,7 +70,7 @@ public class ProjectActions {
 		}
 		if (file == null) file = createEmptyFile(loader);
 
-		return completeProject(loader, file, isStartupScreen);
+		return completeProject(loader, file);
 
 	}
 
@@ -114,7 +97,7 @@ public class ProjectActions {
 		return file;
 	}
 
-	private static Project completeProject(Loader loader, LogisimFile file, boolean isStartup) {
+	private static Project completeProject(Loader loader, LogisimFile file) {
 
 		LoadingScreen.nextStep();
 
@@ -122,7 +105,7 @@ public class ProjectActions {
 
 		LoadingScreen.nextStep();
 
-		Platform.runLater(()->new CreateFrame(loader, ret, isStartup));
+		Platform.runLater(()->new CreateFrame(loader, ret));
 		//SwingUtilities.invokeLater(new CreateFrame(loader, ret, isStartup));
 		return ret;
 
@@ -171,7 +154,7 @@ public class ProjectActions {
 		LogisimFile file = loader.openLogisimFile(source, substitutions);
 		AppPreferences.updateRecentFile(source);
 
-		return completeProject(loader, file, false);
+		return completeProject(loader, file);
 
 	}
 
@@ -322,55 +305,12 @@ public class ProjectActions {
 		Loader loader = proj.getLogisimFile().getLoader();
 
 		FileSelector fileSelector = new FileSelector(proj.getFrameController().getStage());
-		fileSelector.setCircFilter();
-
-		JFileChooser chooser = loader.createChooser();
-		chooser.setFileFilter(Loader.LOGISIM_FILTER);
 
 		if (loader.getMainFile() != null) {
-			chooser.setSelectedFile(loader.getMainFile());
-		}
-		int returnVal = chooser.showSaveDialog(proj.getFrame());
-		if (returnVal != JFileChooser.APPROVE_OPTION) return false;
-
-		File f = chooser.getSelectedFile();
-		String circExt = Loader.LOGISIM_EXTENSION;
-		if (!f.getName().endsWith(circExt)) {
-			String old = f.getName();
-			int ext0 = old.lastIndexOf('.');
-			if (ext0 < 0 || !Pattern.matches("\\.\\p{L}{2,}[0-9]?", old.substring(ext0))) {
-				f = new File(f.getParentFile(), old + circExt);
-			} else {
-				String ext = old.substring(ext0);
-				String ttl = lc.get("replaceExtensionTitle");
-				String msg = lc.get("replaceExtensionMessage", ext);
-				Object[] options = {
-						lc.get("replaceExtensionReplaceOpt", ext),
-						lc.get("replaceExtensionAddOpt", circExt),
-						lc.get("replaceExtensionKeepOpt")
-					};
-				JOptionPane dlog = new JOptionPane(msg);
-				dlog.setMessageType(JOptionPane.QUESTION_MESSAGE);
-				dlog.setOptions(options);
-				dlog.createDialog(proj.getFrame(), ttl).setVisible(true);
-
-				Object result = dlog.getValue();
-				if (result == options[0]) {
-					String name = old.substring(0, ext0) + circExt;
-					f = new File(f.getParentFile(), name);
-				} else if (result == options[1]) {
-					f = new File(f.getParentFile(), old + circExt);
-				}
-			}
+			fileSelector.setInitialDirectory(loader.getMainFile());
 		}
 
-		if (f.exists()) {
-			int confirm = JOptionPane.showConfirmDialog(proj.getFrame(),
-					lc.get("confirmOverwriteMessage"),
-					lc.get("confirmOverwriteTitle"),
-				JOptionPane.YES_NO_OPTION);
-			if (confirm != JOptionPane.YES_OPTION) return false;
-		}
+		File f = fileSelector.SaveCircFile();
 
 		return doSave(proj, f);
 
@@ -406,20 +346,5 @@ public class ProjectActions {
 		return ret;
 
 	}
-
-	/*
-	public static void doQuit() {
-
-		Frame top = Projects.getTopFrame();
-		top.savePreferences();
-
-		for (Project proj : new ArrayList<Project>(Projects.getOpenProjects())) {
-			if (!proj.confirmClose(lc.get("confirmQuitTitle"))) return;
-		}
-
-		System.exit(0);
-
-	}
-	 */
 
 }

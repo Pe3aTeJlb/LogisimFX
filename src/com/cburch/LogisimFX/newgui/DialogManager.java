@@ -2,8 +2,10 @@ package com.cburch.LogisimFX.newgui;
 
 
 import com.cburch.LogisimFX.Localizer;
+import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.logisim.tools.Library;
+
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -106,10 +108,9 @@ public class DialogManager {
         Localizer lc = new Localizer("LogisimFX/resources/localization/gui");
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(lc.get("confirmCloseTitle"));
-        //alert.setContentText(StringUtil.format(lc.get("confirmDiscardMessage"),
-         //       proj.getLogisimFile().getName()));
-        alert.setContentText(lc.get("confirmDiscardMessage"));
+        alert.setTitle("");
+        alert.setHeaderText(lc.get("confirmCloseTitle"));
+        alert.setContentText(lc.createComplexString("confirmDiscardMessage",  proj.getLogisimFile().getName()));
 
         ButtonType buttonTypeSave = new ButtonType( lc.get("saveOption"));
         ButtonType buttonTypeDiscard = new ButtonType(lc.get("discardOption"));
@@ -133,10 +134,9 @@ public class DialogManager {
         Localizer lc = new Localizer("LogisimFX/resources/localization/proj");
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(lc.get("openAlreadyMessage"));
-        //alert.setContentText(StringUtil.format(lc.get("confirmDiscardMessage"),
-        //       proj.getLogisimFile().getName()));
-        //alert.setContentText(lc.get("confirmDiscardMessage"));
+        alert.setTitle("");
+        alert.setHeaderText(lc.get("openAlreadyTitle"));
+        alert.setContentText(lc.createComplexString("openAlreadyMessage",proj.getLogisimFile().getName()));
 
         ButtonType buttonTypeLoseChanges = new ButtonType( lc.get("openAlreadyLoseChangesOption"));
         ButtonType buttonTypeNewWindow = new ButtonType(lc.get("openAlreadyNewWindowOption"));
@@ -153,23 +153,9 @@ public class DialogManager {
             return 0;
         }
 
-        /*
-        String message = StringUtil.format(lc.get("openAlreadyMessage"),
-						proj.getLogisimFile().getName());
-				String[] options = {
-						lc.get("openAlreadyLoseChangesOption"),
-						lc.get("openAlreadyNewWindowOption"),
-						lc.get("openAlreadyCancelOption"),
-					};
-				int result = JOptionPane.showOptionDialog(proj.getFrame(),
-						message, lc.get("openAlreadyTitle"), 0,
-						JOptionPane.QUESTION_MESSAGE, null,
-						options, options[2]);
-         */
-
     }
 
-    public static String CreateInputDialog(Library lib){
+    public static String CreateInputDialog(LogisimFile file){
 
         Localizer lc = new Localizer("LogisimFX/resources/localization/menu");
 
@@ -191,7 +177,7 @@ public class DialogManager {
                 return null;
             } else {
 
-                if (lib.getTool(buff) == null) {
+                if (file.getTool(buff) == null) {
                     return buff;
                 } else {
                     CreateErrorDialog("Error",lc.get("circuitNameDuplicateError"));

@@ -95,7 +95,7 @@ public class CustomMenuBar extends MenuBar {
 
         MenuItem SaveAs = new MenuItem();
         SaveAs.textProperty().bind(localizer.createStringBinding("fileSaveAsItem"));
-        SaveAs.setOnAction(event -> ProjectActions.doSave(proj));
+        SaveAs.setOnAction(event -> ProjectActions.doSaveAs(proj));
 
 
         SeparatorMenuItem sp2 = new SeparatorMenuItem();

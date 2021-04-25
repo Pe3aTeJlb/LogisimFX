@@ -189,7 +189,7 @@ public class Startup {
         // load file
         if (filesToOpen.isEmpty()) {
 
-            ProjectActions.doNew(true);
+            ProjectActions.doNew();
 
             if (showSplash) {
                 //LoadingScreen.Close();

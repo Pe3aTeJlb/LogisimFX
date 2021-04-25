@@ -8,7 +8,6 @@ import com.cburch.LogisimFX.circuit.Circuit;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -92,9 +91,9 @@ public class MainFrameController extends AbstractController {
         String name = proj.getLogisimFile().getName();
 
         if (circuit != null) {
-            stage.titleProperty().bind(lc.createComplexTitleBinding("titleCircFileKnown",circuit.getName(), name));
+            stage.titleProperty().bind(lc.createComplexStringBinding("titleCircFileKnown",circuit.getName(), name));
         } else {
-            stage.titleProperty().bind(lc.createComplexTitleBinding("titleCircFileKnown", name));
+            stage.titleProperty().bind(lc.createComplexStringBinding("titleCircFileKnown", name));
         }
 
     }

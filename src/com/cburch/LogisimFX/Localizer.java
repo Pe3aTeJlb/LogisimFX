@@ -58,7 +58,11 @@ public class Localizer {
         return Bindings.createStringBinding(() -> get(key, args), locale);
     }
 
-    public StringBinding createComplexTitleBinding(final String key, String... strings) {
+    public String createComplexString(final String key, String... strings){
+        return StringUtil.format(get(key),strings);
+    }
+
+    public StringBinding createComplexStringBinding(final String key, String... strings) {
         return Bindings.createStringBinding(() -> StringUtil.format(get(key),strings), locale);
     }
 

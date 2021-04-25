@@ -34,7 +34,7 @@ public class CircuitStatisticController extends AbstractController {
 
     public void describeCircuit(Circuit circuit){
 
-        stage.titleProperty().bind(lc.createComplexTitleBinding("statsDialogTitle",circuit.getName()));
+        stage.titleProperty().bind(lc.createComplexStringBinding("statsDialogTitle",circuit.getName()));
 
     }
 

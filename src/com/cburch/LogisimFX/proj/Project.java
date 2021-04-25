@@ -82,11 +82,11 @@ public class Project {
 		= new EventSourceWeakSupport<CircuitListener>();
 
 	private Dependencies depends;
-	private MyListener myListener = new MyListener();
+	//private MyListener myListener = new MyListener();
 	//private boolean startupScreen = false;
 
 	public Project(LogisimFile file) {
-		addLibraryListener(myListener);
+		//addLibraryListener(myListener);
 		setLogisimFile(file);
 	}
 
