@@ -144,7 +144,6 @@ public class CustomMenuBar extends MenuBar {
 
         this.getMenus().add(File);
 
-
     }
 
     private void initEditMenu(){
@@ -263,21 +262,25 @@ public class CustomMenuBar extends MenuBar {
         });
 
 
-
+        //menuproject 20
         Menu UploadLibrary = new Menu();
         UploadLibrary.textProperty().bind(localizer.createStringBinding("projectLoadLibraryItem"));
 
         MenuItem BuiltInLib = new MenuItem();
         BuiltInLib.textProperty().bind(localizer.createStringBinding("projectLoadBuiltinItem"));
-        BuiltInLib.setOnAction(event -> {});
+        BuiltInLib.setOnAction(event -> ProjectLibraryActions.doLoadBuiltinLibrary(proj));
 
         MenuItem LogisimLib = new MenuItem();
         LogisimLib.textProperty().bind(localizer.createStringBinding("projectLoadLogisimItem"));
-        LogisimLib.setOnAction(event -> {});
+        LogisimLib.setOnAction(event -> {
+            ProjectLibraryActions.doLoadLogisimLibrary(proj);
+        });
 
         MenuItem JARLib = new MenuItem();
         JARLib.textProperty().bind(localizer.createStringBinding("projectLoadJarItem"));
-        JARLib.setOnAction(event -> {});
+        JARLib.setOnAction(event -> {
+            ProjectLibraryActions.doLoadJarLibrary(proj);
+        });
 
         UploadLibrary.getItems().addAll(
                 BuiltInLib,
@@ -289,7 +292,9 @@ public class CustomMenuBar extends MenuBar {
 
         MenuItem UnloadLibrary = new MenuItem();
         UnloadLibrary.textProperty().bind(localizer.createStringBinding("projectUnloadLibraryItem"));
-        UnloadLibrary.setOnAction(event -> {});
+        UnloadLibrary.setOnAction(event -> {
+            ProjectLibraryActions.doUnloadLibraries(proj);
+        });
 
 
         SeparatorMenuItem sp1 = new SeparatorMenuItem();

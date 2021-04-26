@@ -7,10 +7,6 @@ import com.cburch.LogisimFX.file.*;
 import com.cburch.LogisimFX.circuit.*;
 import com.cburch.LogisimFX.newgui.MainFrame.MainFrameController;
 import com.cburch.logisim.gui.log.LogFrame;
-import com.cburch.LogisimFX.gui.main.Canvas;
-import com.cburch.LogisimFX.gui.main.Frame;
-import com.cburch.LogisimFX.gui.main.Selection;
-import com.cburch.LogisimFX.gui.main.SelectionActions;
 import com.cburch.logisim.gui.opts.OptionsFrame;
 import com.cburch.logisim.tools.AddTool;
 import com.cburch.logisim.tools.Library;
@@ -94,6 +90,10 @@ public class Project {
 		frameController = controller;
 	}
 
+	public MainFrameController getFrameController(){
+		return frameController;
+	}
+
 	public void setFrame(Frame value) {
 		if (frame == value) return;
 		Frame oldValue = frame;
@@ -121,9 +121,6 @@ public class Project {
 		return depends;
 	}
 
-	public MainFrameController getFrameController(){
-		return frameController;
-	}
 	
 	public OptionsFrame getOptionsFrame(boolean create) {
 		if (optionsFrame == null || optionsFrame.getLogisimFile() != file) {

@@ -26,10 +26,10 @@ public class MainFrameController extends AbstractController {
     private Project proj;
 
     //UI
-    CustomMenuBar menubar;
-    AdditionalToolBar additionalToolBar;
-    MainToolBar mainToolBar;
-    TreeExplorerAggregation treeExplorerAggregation;
+    private CustomMenuBar menubar;
+    private AdditionalToolBar additionalToolBar;
+    private MainToolBar mainToolBar;
+    private TreeExplorerAggregation treeExplorerAggregation;
 
     private CustomCanvas cv;
 
@@ -50,7 +50,8 @@ public class MainFrameController extends AbstractController {
         computeTitle();
 
         AnchorPane canvasRoot = new AnchorPane();
-        canvasRoot.setMinWidth(200);
+        //canvasRoot.setMinWidth(0);
+        canvasRoot.setMinSize(0,0);
 
         AnchorPane treeRoot = new AnchorPane();
         treeRoot.setMinHeight(0);
