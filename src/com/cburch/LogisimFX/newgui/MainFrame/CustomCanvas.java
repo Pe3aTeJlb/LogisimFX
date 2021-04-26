@@ -14,6 +14,8 @@ public class CustomCanvas extends Canvas {
     private GraphicsContext cvcontext;
     private double width, height;
 
+    private static final double MIN_ZOOM = 5;
+    private static final double MAX_ZOOM = 0.5;
     private double dragScreenX, dragScreenY;
     private double[] transform;
 
@@ -152,7 +154,8 @@ public class CustomCanvas extends Canvas {
             dragScreenX = event.getX();
             dragScreenY = event.getY();
 
-            System.out.println("Point " + event.getX() + " " + event.getY());
+            System.out.println("Point " + inverseTransformX(event.getX()) + " " + inverseTransformY(event.getY()));
+            System.out.println("0 Point " + inverseTransformX(0) + " " + inverseTransformY(0));
 
         });
 
@@ -180,8 +183,8 @@ public class CustomCanvas extends Canvas {
             double oldScale = transform[0];
             double val = event.getDeltaY()*.005;
 
-            newScale = Math.max(oldScale+val, .2);
-            newScale = Math.min(newScale, 2.5);
+            newScale = Math.max(oldScale+val, MAX_ZOOM);
+            newScale = Math.min(newScale, MIN_ZOOM);
 
             int cx = inverseTransformX(width / 2);
             int cy = inverseTransformY(height / 2);
