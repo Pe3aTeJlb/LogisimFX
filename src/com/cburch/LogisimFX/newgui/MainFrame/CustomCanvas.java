@@ -6,6 +6,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 
+import java.awt.event.MouseEvent;
+
 public class CustomCanvas extends Canvas {
 
     private AnchorPane root;
@@ -16,6 +18,7 @@ public class CustomCanvas extends Canvas {
 
     private static final double MIN_ZOOM = 5;
     private static final double MAX_ZOOM = 0.5;
+    private double zoom;
     private double dragScreenX, dragScreenY;
     private double[] transform;
 
@@ -23,6 +26,7 @@ public class CustomCanvas extends Canvas {
     //Grid
     private static final Color BACKGROUND = Color.WHITE;
     private static final Color GRID_DOT = Color.gray(0.18,1);
+    private static final Color GRID_DOT_QUARTER = Color.gray(0.10,1);
 
     private static final double SPACING_X = 10;
     private static final double SPACING_Y = 10;
@@ -39,11 +43,6 @@ public class CustomCanvas extends Canvas {
         root.getChildren().add(cv);
 
         setCanvasEvents();
-
-        //AnchorPane.setLeftAnchor(cv,0.0);
-        //AnchorPane.setRightAnchor(cv,0.0);
-        //AnchorPane.setTopAnchor(cv,0.0);
-        //AnchorPane.setBottomAnchor(cv,0.0);
 
         transform = new double[6];
         transform[0] = transform[3] = 1;
@@ -99,15 +98,17 @@ public class CustomCanvas extends Canvas {
 
     private void drawGrid(){
 
-            cvcontext.setFill(GRID_DOT);
+            for (int x = snapXToGrid(inverseTransformX(0)); x < snapXToGrid(inverseTransformX(cv.getWidth())); x += SPACING_X) {
 
-            for (int x = 0; x < cv.getWidth(); x += SPACING_X) {
+                for (int y = snapYToGrid(inverseTransformY(0)); y < snapYToGrid(inverseTransformY(cv.getHeight())); y += SPACING_Y) {
 
-                for (int y = 0; y < cv.getHeight(); y += SPACING_Y) {
-
-                    //double offsetY = (y%(2*SPACING_Y)) == 0 ? SPACING_X /2 : 0;
-                    //cvcontext.fillOval(x-RADIUS,y-RADIUS,RADIUS+RADIUS,RADIUS+RADIUS);
-                    cvcontext.fillRect(x,y,1,1);
+                    if(zoom < 0.8f && (float)x % 50 == 0 && (float)y % 50 == 0){
+                        cvcontext.setFill(GRID_DOT_QUARTER);
+                        cvcontext.fillRect(x,y,2,2);
+                    }else{
+                        cvcontext.setFill(GRID_DOT);
+                        cvcontext.fillRect(x,y,1,1);
+                    }
 
                 }
 
@@ -122,19 +123,6 @@ public class CustomCanvas extends Canvas {
     }
 
 
-    //Canvas trail cleaner
-
-    private void clearRect40K() {
-
-        cvcontext.setFill(BACKGROUND);
-        cvcontext.fillRect(0,0,(cv.getWidth()/transform[0])*2,(cv.getHeight()/transform[0])*2);
-    }
-
-    private void clearRect40K(double prevX, double prevY) {
-        cvcontext.setFill(BACKGROUND);
-        cvcontext.fillRect(-prevX/transform[0],-prevY/transform[0],cv.getWidth()/transform[0],cv.getHeight()/transform[0]);
-    }
-
 
     //Tools
 
@@ -145,6 +133,28 @@ public class CustomCanvas extends Canvas {
 
     private int inverseTransformY(double y) {
         return (int) ((y-transform[5])/transform[3]);
+    }
+
+    public static int snapXToGrid(int x) {
+        if (x < 0) {
+            return -((-x + 5) / 10) * 10;
+        } else {
+            return ((x + 5) / 10) * 10;
+        }
+    }
+    public static int snapYToGrid(int y) {
+        if (y < 0) {
+            return -((-y + 5) / 10) * 10;
+        } else {
+            return ((y + 5) / 10) * 10;
+        }
+    }
+    public static void snapToGrid(MouseEvent e) {
+        int old_x = e.getX();
+        int old_y = e.getY();
+        int new_x = snapXToGrid(old_x);
+        int new_y = snapYToGrid(old_y);
+        e.translatePoint(new_x - old_x, new_y - old_y);
     }
 
     private void setCanvasEvents(){
@@ -195,12 +205,30 @@ public class CustomCanvas extends Canvas {
             // adjust translation to keep center of screen constant
             // inverse transform = (x-t4)/t0
 
+            zoom = newScale;
+            System.out.println("Zoom " + zoom);
+
             transform[4] = width / 2 - cx * newScale;
             transform[5] = height / 2 - cy * newScale;
 
 
         });
 
+    }
+
+
+
+    //Canvas trail cleaner
+
+    private void clearRect40K() {
+
+        cvcontext.setFill(BACKGROUND);
+        cvcontext.fillRect(0,0,(cv.getWidth()/transform[0])*2,(cv.getHeight()/transform[0])*2);
+    }
+
+    private void clearRect40K(double prevX, double prevY) {
+        cvcontext.setFill(BACKGROUND);
+        cvcontext.fillRect(-prevX/transform[0],-prevY/transform[0],cv.getWidth()/transform[0],cv.getHeight()/transform[0]);
     }
 
 }
