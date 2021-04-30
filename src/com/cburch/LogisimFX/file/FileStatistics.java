@@ -14,6 +14,7 @@ import com.cburch.logisim.tools.Tool;
 import java.util.*;
 
 public class FileStatistics {
+
 	public static class Count {
 		private Library library;
 		private ComponentFactory factory;
@@ -48,6 +49,7 @@ public class FileStatistics {
 		public int getRecursiveCount() {
 			return recursiveCount;
 		}
+
 	}
 	
 	public static FileStatistics compute(LogisimFile file, Circuit circuit) {

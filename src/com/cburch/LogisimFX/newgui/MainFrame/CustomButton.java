@@ -1,17 +1,19 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
+import com.cburch.LogisimFX.IconsManager;
 import javafx.scene.control.Button;
-import javafx.scene.image.ImageView;
 
 public class CustomButton extends Button {
 
-    public CustomButton(int prefWidth, int prefHeight, String Icon){
+    public CustomButton(int prefWidth, int prefHeight, String IconName){
+
         super();
         setPrefSize(prefWidth,prefHeight);
         setMinSize(prefWidth,prefHeight);
         setMaxSize(prefWidth,prefHeight);
-        graphicProperty().setValue(new ImageView(Icon));
+        graphicProperty().setValue(IconsManager.getIcon(IconName));
         //getStylesheets().add();
+
     }
 
 }

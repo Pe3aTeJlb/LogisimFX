@@ -5,7 +5,7 @@ import javafx.scene.image.ImageView;
 
 public class IconsManager {
 
-    private static final String path = "LogisimFx/resources/icons";
+    private static final String path = "com/cburch/LogisimFX/resources/icons";
 
     public static ImageView getIcon(String name) {
 

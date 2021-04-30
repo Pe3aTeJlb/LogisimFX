@@ -48,7 +48,7 @@ public class PrintController extends AbstractController {
     @FXML
     private Button CancleBtn;
 
-    private Localizer lc = new Localizer("LogisimFX/resources/localization/gui");
+    private Localizer lc = new Localizer("gui");
 
     private PrinterJob job;
     private Project proj;

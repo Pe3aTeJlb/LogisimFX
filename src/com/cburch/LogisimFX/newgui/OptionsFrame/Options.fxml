@@ -1,14 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.cburch.LogisimFX.newgui.OptionsFrame.OptionsController"
-            prefHeight="400.0" prefWidth="600.0">
 
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cburch.LogisimFX.newgui.OptionsFrame.OptionsController">
+   <children>
+      <TabPane layoutX="200.0" layoutY="100.0" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <tabs>
+          <Tab text="Untitled Tab 1">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <ChoiceBox layoutX="225.0" layoutY="109.0" prefWidth="150.0" />
+                        <ChoiceBox layoutX="225.0" layoutY="186.0" prefWidth="150.0" />
+                        <CheckBox layoutX="264.0" layoutY="248.0" mnemonicParsing="false" text="CheckBox" />
+                        <Label layoutX="120.0" layoutY="113.0" text="Label" />
+                        <Label layoutX="120.0" layoutY="190.0" text="Label" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Untitled Tab 2">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <ListView layoutX="386.0" layoutY="77.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.rightAnchor="15.0" />
+                        <TreeView layoutX="14.0" layoutY="77.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.leftAnchor="15.0" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+            <Tab text="Untitled Tab">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </children>
 </AnchorPane>

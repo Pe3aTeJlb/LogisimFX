@@ -24,7 +24,7 @@ public class HelpController extends AbstractController {
 
     private final SwingNode SwingContainer = new SwingNode();
 
-    private Localizer lc = new Localizer("LogisimFX/resources/localization/menu");
+    private Localizer lc = new Localizer("menu");
 
     private HelpSet helpSet;
     private String helpSetUrl = "";

@@ -8,7 +8,7 @@ import java.io.File;
 
 public class FileSelector {
 
-    private Localizer lc = new Localizer("LogisimFX/resources/localization/file");
+    private Localizer lc = new Localizer("file");
 
     private FileChooser fileChooser;
 

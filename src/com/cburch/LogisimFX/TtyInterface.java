@@ -33,7 +33,7 @@ import java.util.Map;
 
 public class TtyInterface {
 
-	private  static Localizer lc = new Localizer("LogisimFX/resources/localization/start");
+	private  static Localizer lc = new Localizer("start");
 
 	public static final int FORMAT_TABLE = 1;
 	public static final int FORMAT_SPEED = 2;

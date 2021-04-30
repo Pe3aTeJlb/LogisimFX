@@ -11,7 +11,7 @@ public class OptionsController extends AbstractController {
 
     private Stage stage;
 
-    private Localizer lc = new Localizer("LogisimFX/resources/localization/opts");
+    private Localizer lc = new Localizer("opts");
 
     private Project proj;
 

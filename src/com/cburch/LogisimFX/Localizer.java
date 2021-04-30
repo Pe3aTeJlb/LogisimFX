@@ -14,7 +14,7 @@ public class Localizer {
     private final String bundleName;
 
     public Localizer(String bundlename){
-        bundleName = "com/cburch/"+bundlename;
+        bundleName = "com/cburch/"+"LogisimFX/resources/localization/"+bundlename;
     }
 
     private static final ObjectProperty<Locale> locale;

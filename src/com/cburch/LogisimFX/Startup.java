@@ -23,7 +23,7 @@ import java.util.*;
 
 public class Startup {
 
-    private static final Localizer lc = new Localizer("LogisimFX/resources/localization/start");
+    private static final Localizer lc = new Localizer("start");
 
     private static Startup startupTemp = null;
 

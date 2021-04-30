@@ -23,7 +23,7 @@ public class CustomMenuBar extends MenuBar {
     private int prefHeight = 25;
 
     private Localizer localizer
-            = new Localizer("LogisimFX/resources/localization/menu");
+            = new Localizer("menu");
 
     private Project proj;
     private LogisimFile logisimFile;

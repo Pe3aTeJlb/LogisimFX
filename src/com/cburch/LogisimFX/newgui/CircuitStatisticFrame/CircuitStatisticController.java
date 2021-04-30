@@ -12,7 +12,7 @@ public class CircuitStatisticController extends AbstractController {
 
     private Stage stage;
 
-    private Localizer lc = new Localizer("LogisimFX/resources/localization/gui");
+    private Localizer lc = new Localizer("gui");
 
     private Project proj;
 

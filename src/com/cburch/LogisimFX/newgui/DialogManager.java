@@ -105,7 +105,7 @@ public class DialogManager {
 
     public static int CreateConfirmCloseDialog(Project proj){
 
-        Localizer lc = new Localizer("LogisimFX/resources/localization/gui");
+        Localizer lc = new Localizer("gui");
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("");
@@ -131,7 +131,7 @@ public class DialogManager {
 
     public static int CreateFileReloadDialog(Project proj){
 
-        Localizer lc = new Localizer("LogisimFX/resources/localization/proj");
+        Localizer lc = new Localizer("proj");
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("");
@@ -157,7 +157,7 @@ public class DialogManager {
 
     public static String CreateInputDialog(LogisimFile file){
 
-        Localizer lc = new Localizer("LogisimFX/resources/localization/menu");
+        Localizer lc = new Localizer("menu");
 
         TextInputDialog inputDialog = new TextInputDialog();
         inputDialog.setTitle(lc.get("circuitNameDialogTitle"));

@@ -21,7 +21,7 @@ public class MainFrameController extends AbstractController {
     @FXML
     private AnchorPane Root;
 
-    private Localizer lc = new Localizer("LogisimFX/resources/localization/gui");
+    private Localizer lc = new Localizer("gui");
 
     private Project proj;
 
@@ -50,7 +50,6 @@ public class MainFrameController extends AbstractController {
         computeTitle();
 
         AnchorPane canvasRoot = new AnchorPane();
-        //canvasRoot.setMinWidth(0);
         canvasRoot.setMinSize(0,0);
 
         AnchorPane treeRoot = new AnchorPane();
@@ -69,10 +68,10 @@ public class MainFrameController extends AbstractController {
 
         cv = new CustomCanvas(canvasRoot);
 
-        SplitPane toolSplitPane = new SplitPane(treeRoot,tableRoot);
-        toolSplitPane.setOrientation(Orientation.VERTICAL);
+        SplitPane explorereSplitPane = new SplitPane(treeRoot,tableRoot);
+        explorereSplitPane.setOrientation(Orientation.VERTICAL);
 
-        SplitPane mainSplitPane = new SplitPane(toolSplitPane,canvasRoot);
+        SplitPane mainSplitPane = new SplitPane(explorereSplitPane,canvasRoot);
         mainSplitPane.setOrientation(Orientation.HORIZONTAL);
         setAnchor(0,50,0,0,mainSplitPane);
 
@@ -81,8 +80,6 @@ public class MainFrameController extends AbstractController {
         Root.getChildren().addAll(menubar,mainToolBar,mainSplitPane);
 
     }
-
-
 
     private void computeTitle(){
 
@@ -108,6 +105,8 @@ public class MainFrameController extends AbstractController {
     public Stage getStage(){
         return stage;
     }
+
+
 
     private void setAnchor(double left,double top, double right, double bottom, Node n){
         AnchorPane.setLeftAnchor(n,left);

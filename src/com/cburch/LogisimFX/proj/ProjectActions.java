@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 
 public class ProjectActions {
 
-	private static Localizer lc = new Localizer("LogisimFX/resources/localization/proj");
+	private static Localizer lc = new Localizer("proj");
 
 	private ProjectActions() { }
 	

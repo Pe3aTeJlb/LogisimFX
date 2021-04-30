@@ -24,7 +24,7 @@ public class OpenRecentMenu extends Menu implements PropertyChangeListener {
 	private final int MAX_ITEM_LENGTH = 50;
 
 	private Localizer lc
-			= new Localizer("LogisimFX/resources/localization/menu");
+			= new Localizer("menu");
 
 	private Project proj;
 	

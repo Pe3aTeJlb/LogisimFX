@@ -49,7 +49,7 @@ public class ExplorerToolBar extends ToolBar {
 
     private void initItems(){
 
-        CustomButton ShowToolLibraryBtn = new CustomButton(prefWidth,prefHeight,"resources/logisim/icons/projtool.gif");
+        CustomButton ShowToolLibraryBtn = new CustomButton(prefWidth,prefHeight,"projtool.gif");
         ShowToolLibraryBtn.setOnAction(event -> {
 
             ShowProjectExplorer.set(true);
@@ -60,7 +60,7 @@ public class ExplorerToolBar extends ToolBar {
 
         });
 
-        CustomButton ShowCurcuitHierarchyBtn = new CustomButton(prefWidth,prefHeight,"resources/logisim/icons/projsim.gif");
+        CustomButton ShowCurcuitHierarchyBtn = new CustomButton(prefWidth,prefHeight,"projsim.gif");
         ShowCurcuitHierarchyBtn.setOnAction(event -> {
 
             ShowProjectExplorer.set(false);
@@ -73,7 +73,7 @@ public class ExplorerToolBar extends ToolBar {
 
         Separator sep = new Separator();
 
-        CustomButton RedactCircuitBtn = new CustomButton(prefWidth,prefHeight,"resources/logisim/icons/projlayo.gif");
+        CustomButton RedactCircuitBtn = new CustomButton(prefWidth,prefHeight,"projlayo.gif");
         RedactCircuitBtn.setOnAction(event -> {
 
             EditCircuitLayout.set(true);
@@ -83,7 +83,7 @@ public class ExplorerToolBar extends ToolBar {
             //TODO: add controll method for canvas
         });
 
-        CustomButton RedactBlackBoxBtn = new CustomButton(prefWidth,prefHeight,"resources/logisim/icons/projapp.gif");
+        CustomButton RedactBlackBoxBtn = new CustomButton(prefWidth,prefHeight,"projapp.gif");
         RedactBlackBoxBtn.setOnAction(event -> {
 
             EditCircuitLayout.set(false);

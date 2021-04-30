@@ -34,7 +34,9 @@ import java.util.List;
 import java.util.Map;
 
 class XmlReader {
+
 	static class CircuitData {
+
 		Element circuitElement;
 		Circuit circuit;
 		Map<Element, Component> knownComponents;
@@ -44,9 +46,11 @@ class XmlReader {
 			this.circuitElement = circuitElement;
 			this.circuit = circuit;
 		}
+
 	}
 	
 	class ReadContext {
+
 		LogisimFile file;
 		LogisimVersion sourceVersion;
 		HashMap<String,Library> libs = new HashMap<String,Library>();
@@ -54,7 +58,7 @@ class XmlReader {
 
 		ReadContext(LogisimFile file) {
 			this.file = file;
-			this.messages = new ArrayList<String>();
+			this.messages = new ArrayList<>();
 		}
 		
 		void addError(String message, String context) {
@@ -68,6 +72,7 @@ class XmlReader {
 		}
 
 		private void toLogisimFile(Element elt) {
+
 			// determine the version producing this file
 			String versionString = elt.getAttribute("source");
 			if (versionString.equals("")) {
@@ -128,22 +133,29 @@ class XmlReader {
 			XmlCircuitReader builder;
 			builder = new XmlCircuitReader(this, circuitsData);
 			builder.execute();
+
 		}
 
 		private Library toLibrary(Element elt) {
+
 			if (!elt.hasAttribute("name")) {
 				loader.showError(Strings.get("libNameMissingError"));
 				return null;
 			}
+
 			if (!elt.hasAttribute("desc")) {
 				loader.showError(Strings.get("libDescMissingError"));
 				return null;
 			}
+
 			String name = elt.getAttribute("name");
 			String desc = elt.getAttribute("desc");
+
 			Library ret = loader.loadLibrary(desc);
 			if (ret == null) return null;
+
 			libs.put(name, ret);
+
 			for (Element sub_elt : XmlIterator.forChildElements(elt, "tool")) {
 				if (!sub_elt.hasAttribute("name")) {
 					loader.showError(Strings.get("toolNameMissingError"));
@@ -159,18 +171,24 @@ class XmlReader {
 					}
 				}
 			}
+
 			return ret;
+
 		}
 
 		private Map<Element, Component> loadKnownComponents(Element elt) {
-			Map<Element, Component> known = new HashMap<Element, Component>();
+
+			Map<Element, Component> known = new HashMap<>();
+
 			for (Element sub : XmlIterator.forChildElements(elt, "comp")) {
 				try {
 					Component comp = XmlCircuitReader.getComponent(sub, this);
 					known.put(sub, comp);
 				} catch (XmlReaderException e) { }
 			}
+
 			return known;
+
 		}
 
 		private void loadAppearance(Element appearElt, CircuitData circData,
@@ -244,11 +262,15 @@ class XmlReader {
 		}
 
 		private void initToolbarData(Element elt) {
+
 			ToolbarData toolbar = file.getOptions().getToolbarData();
+
 			for (Element sub_elt : XmlIterator.forChildElements(elt)) {
+
 				if (sub_elt.getTagName().equals("sep")) {
 					toolbar.addSeparator();
 				} else if (sub_elt.getTagName().equals("tool")) {
+
 					Tool tool;
 					try {
 						tool = toTool(sub_elt);
@@ -256,6 +278,7 @@ class XmlReader {
 						addErrors(e, "toolbar");
 						continue;
 					}
+
 					if (tool != null) {
 						tool = tool.cloneTool();
 						try {
@@ -265,8 +288,11 @@ class XmlReader {
 						}
 						toolbar.addTool(tool);
 					}
+
 				}
+
 			}
+
 		}
 
 		Tool toTool(Element elt) throws XmlReaderException {
@@ -586,11 +612,17 @@ class XmlReader {
 	
 	private static void findLibraryUses(ArrayList<Element> dest, String label,
 			Iterable<Element> candidates) {
+
 		for (Element elt : candidates) {
+
 			String lib = elt.getAttribute("lib");
+
 			if (lib.equals(label)) {
 				dest.add(elt);
 			}
+
 		}
+
 	}
+
 }

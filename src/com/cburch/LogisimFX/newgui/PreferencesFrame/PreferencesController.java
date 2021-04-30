@@ -137,7 +137,7 @@ public class PreferencesController extends AbstractController {
 
 
 
-    private Localizer lc = new Localizer("LogisimFX/resources/localization/prefs");
+    private Localizer lc = new Localizer("prefs");
 
 
     @FXML

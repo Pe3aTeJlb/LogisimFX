@@ -16,6 +16,7 @@ import java.util.ListIterator;
 import java.util.Map;
 
 public class ToolbarData {
+
 	public static interface ToolbarListener {
 		public void toolbarChanged();
 	}

@@ -53,7 +53,7 @@ public class ExportImageController extends AbstractController {
     private Button CancelBtn;
 
 
-    private Localizer lc = new Localizer("LogisimFX/resources/localization/gui");
+    private Localizer lc = new Localizer("gui");
 
     private ObservableList<String> circuits = FXCollections.observableArrayList("1","2","1","1","1","1","1","1","1");
     private Project proj;

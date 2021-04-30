@@ -26,7 +26,7 @@ import java.util.Stack;
 
 public class Loader implements LibraryLoader {
 
-	private Localizer lc = new Localizer("LogisimFX/resources/localization/file");
+	private Localizer lc = new Localizer("file");
 
 	public static final String LOGISIM_EXTENSION = ".circ";
 	public static final FileFilter LOGISIM_FILTER = new LogisimFileFilter();

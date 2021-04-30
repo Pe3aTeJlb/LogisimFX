@@ -54,7 +54,7 @@ public class AdditionalToolBar extends ToolBar {
 
     private void SetCircuitOrderControlItems(){
 
-        CustomButton AddCircuitBtn = new CustomButton(prefWidth,prefHeight,"resources/logisim/icons/projadd.gif");
+        CustomButton AddCircuitBtn = new CustomButton(prefWidth,prefHeight,"projadd.gif");
         AddCircuitBtn.setOnAction(event -> {
 
             String circuitName = DialogManager.CreateInputDialog(proj.getLogisimFile());
@@ -69,7 +69,7 @@ public class AdditionalToolBar extends ToolBar {
         });
 
 
-        CustomButton PullCircuitUpBtn = new  CustomButton(prefWidth,prefHeight,"resources/logisim/icons/projup.gif");
+        CustomButton PullCircuitUpBtn = new  CustomButton(prefWidth,prefHeight,"projup.gif");
         PullCircuitUpBtn.disableProperty().bind(
                 Bindings.or(logisimFile.obsPos.isEqualTo("first"),logisimFile.obsPos.isEqualTo("first&last"))
         );
@@ -78,7 +78,7 @@ public class AdditionalToolBar extends ToolBar {
             treeExplorerAggregation.updateTree();
         });
 
-        CustomButton PullCircuitDownIBtn = new CustomButton(prefWidth,prefHeight,"resources/logisim/icons/projdown.gif");
+        CustomButton PullCircuitDownIBtn = new CustomButton(prefWidth,prefHeight,"projdown.gif");
         PullCircuitDownIBtn.disableProperty().bind(
                 Bindings.or(logisimFile.obsPos.isEqualTo("last"),logisimFile.obsPos.isEqualTo("first&last"))
         );
@@ -87,7 +87,7 @@ public class AdditionalToolBar extends ToolBar {
                 treeExplorerAggregation.updateTree();
         });
 
-        CustomButton DeleteCircuitBtn = new CustomButton(prefWidth,prefHeight,"resources/logisim/icons/projdel.gif");
+        CustomButton DeleteCircuitBtn = new CustomButton(prefWidth,prefHeight,"projdel.gif");
         DeleteCircuitBtn.disableProperty().bind(
                 logisimFile.obsPos.isEqualTo("first&last")
         );
@@ -107,19 +107,19 @@ public class AdditionalToolBar extends ToolBar {
 
     private void SetCircuitTicksControlItems(){
 
-        CustomButton SimStopBtn = new CustomButton(prefWidth,prefHeight,"resources/logisim/icons/simstop.png");
+        CustomButton SimStopBtn = new CustomButton(prefWidth,prefHeight,"simstop.png");
         SimStopBtn.setOnAction(event -> {
         });
 
-        CustomButton SimPlayOneStepBtn = new CustomButton(prefWidth,prefHeight,"resources/logisim/icons/simtplay.png");
+        CustomButton SimPlayOneStepBtn = new CustomButton(prefWidth,prefHeight,"simtplay.png");
         SimPlayOneStepBtn.setOnAction(event -> {
         });
 
-        CustomButton SimPlayBtn = new CustomButton(prefWidth,prefHeight,"resources/logisim/icons/simplay.png");
+        CustomButton SimPlayBtn = new CustomButton(prefWidth,prefHeight,"simplay.png");
         SimPlayBtn.setOnAction(event -> {
         });
 
-        CustomButton SimStepBtn = new CustomButton(prefWidth,prefHeight,"resources/logisim/icons/simstep.png");
+        CustomButton SimStepBtn = new CustomButton(prefWidth,prefHeight,"simstep.png");
         SimStepBtn.setOnAction(event -> {
         });
 

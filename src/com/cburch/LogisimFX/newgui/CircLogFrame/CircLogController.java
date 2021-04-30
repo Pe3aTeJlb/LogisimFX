@@ -10,7 +10,7 @@ public class CircLogController extends AbstractController {
 
     private Stage stage;
 
-    private Localizer lc = new Localizer("LogisimFX/resources/localization/log");
+    private Localizer lc = new Localizer("log");
 
     @FXML
     public void initialize(){

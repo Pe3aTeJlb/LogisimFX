@@ -34,7 +34,7 @@ public class About extends AbstractController {
 
     private Stage stage;
 
-    private Localizer lc = new Localizer("LogisimFX/resources/localization/start");
+    private Localizer lc = new Localizer("start");
 
     private AnimationTimer update;
 
