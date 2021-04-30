@@ -5,9 +5,9 @@ package com.cburch.LogisimFX.circuit;
 
 import com.cburch.LogisimFX.circuit.appear.CircuitAppearanceEvent;
 import com.cburch.LogisimFX.circuit.appear.CircuitAppearanceListener;
-import com.cburch.logisim.data.*;
-import com.cburch.logisim.instance.Instance;
-import com.cburch.logisim.instance.StdAttr;
+import com.cburch.LogisimFX.data.*;
+import com.cburch.LogisimFX.instance.Instance;
+import com.cburch.LogisimFX.instance.StdAttr;
 
 import java.awt.*;
 import java.util.Arrays;

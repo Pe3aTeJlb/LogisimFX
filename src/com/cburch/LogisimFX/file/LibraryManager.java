@@ -3,8 +3,8 @@
 
 package com.cburch.LogisimFX.file;
 
-import com.cburch.logisim.tools.Library;
-import com.cburch.logisim.util.StringUtil;
+import com.cburch.LogisimFX.tools.Library;
+import com.cburch.LogisimFX.util.StringUtil;
 
 import java.io.File;
 import java.io.IOException;

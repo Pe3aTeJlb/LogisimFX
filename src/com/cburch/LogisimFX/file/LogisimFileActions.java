@@ -7,11 +7,11 @@ import com.cburch.LogisimFX.proj.Action;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.proj.ProjectActions;
 import com.cburch.LogisimFX.circuit.Circuit;
-import com.cburch.logisim.data.Attribute;
-import com.cburch.logisim.data.AttributeSet;
-import com.cburch.logisim.tools.AddTool;
-import com.cburch.logisim.tools.Library;
-import com.cburch.logisim.tools.Tool;
+import com.cburch.LogisimFX.data.Attribute;
+import com.cburch.LogisimFX.data.AttributeSet;
+import com.cburch.LogisimFX.tools.AddTool;
+import com.cburch.LogisimFX.tools.Library;
+import com.cburch.LogisimFX.tools.Tool;
 
 import java.util.ArrayList;
 

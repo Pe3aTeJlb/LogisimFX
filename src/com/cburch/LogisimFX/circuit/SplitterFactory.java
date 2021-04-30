@@ -3,32 +3,40 @@
 
 package com.cburch.LogisimFX.circuit;
 
-import com.cburch.logisim.LogisimVersion;
-import com.cburch.logisim.comp.AbstractComponentFactory;
-import com.cburch.logisim.comp.Component;
-import com.cburch.logisim.comp.ComponentDrawContext;
-import com.cburch.logisim.data.Attribute;
-import com.cburch.logisim.data.AttributeSet;
-import com.cburch.logisim.data.Bounds;
-import com.cburch.logisim.data.Location;
-import com.cburch.logisim.instance.StdAttr;
-import com.cburch.logisim.tools.key.*;
-import com.cburch.logisim.util.Icons;
-import com.cburch.logisim.util.StringGetter;
+import com.cburch.LogisimFX.IconsManager;
+import com.cburch.LogisimFX.LogisimVersion;
+import com.cburch.LogisimFX.comp.AbstractComponentFactory;
+import com.cburch.LogisimFX.comp.Component;
+import com.cburch.LogisimFX.comp.ComponentDrawContext;
+import com.cburch.LogisimFX.data.Attribute;
+import com.cburch.LogisimFX.data.AttributeSet;
+import com.cburch.LogisimFX.data.Bounds;
+import com.cburch.LogisimFX.data.Location;
+import com.cburch.LogisimFX.instance.StdAttr;
+import com.cburch.LogisimFX.tools.key.*;
+import com.cburch.LogisimFX.util.Icons;
+import com.cburch.LogisimFX.util.StringGetter;
+import javafx.scene.image.ImageView;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
 
 public class SplitterFactory extends AbstractComponentFactory {
+
 	public static final SplitterFactory instance = new SplitterFactory();
 
-	private static final Icon toolIcon = Icons.getIcon("splitter.gif");
+	private static final ImageView icon = IconsManager.getIcon("splitter.gif");
 
 	private SplitterFactory() { }
 
 	@Override
 	public String getName() { return "Splitter"; }
+
+	@Override
+	public ImageView getIcon() {
+		return icon;
+	}
 
 	@Override
 	public StringGetter getDisplayGetter() {

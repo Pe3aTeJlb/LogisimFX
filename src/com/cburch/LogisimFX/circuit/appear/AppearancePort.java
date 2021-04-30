@@ -6,11 +6,11 @@ package com.cburch.LogisimFX.circuit.appear;
 import com.cburch.draw.model.CanvasObject;
 import com.cburch.draw.model.Handle;
 import com.cburch.draw.model.HandleGesture;
-import com.cburch.logisim.data.Bounds;
-import com.cburch.logisim.data.Location;
-import com.cburch.logisim.instance.Instance;
-import com.cburch.logisim.std.wiring.Pin;
-import com.cburch.logisim.util.UnmodifiableList;
+import com.cburch.LogisimFX.data.Bounds;
+import com.cburch.LogisimFX.data.Location;
+import com.cburch.LogisimFX.instance.Instance;
+import com.cburch.LogisimFX.std.wiring.Pin;
+import com.cburch.LogisimFX.util.UnmodifiableList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

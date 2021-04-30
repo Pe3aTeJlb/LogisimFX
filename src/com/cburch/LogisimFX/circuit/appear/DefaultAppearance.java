@@ -7,10 +7,10 @@ import com.cburch.draw.model.CanvasObject;
 import com.cburch.draw.shapes.Curve;
 import com.cburch.draw.shapes.DrawAttr;
 import com.cburch.draw.shapes.Rectangle;
-import com.cburch.logisim.data.Direction;
-import com.cburch.logisim.data.Location;
-import com.cburch.logisim.instance.Instance;
-import com.cburch.logisim.instance.StdAttr;
+import com.cburch.LogisimFX.data.Direction;
+import com.cburch.LogisimFX.data.Location;
+import com.cburch.LogisimFX.instance.Instance;
+import com.cburch.LogisimFX.instance.StdAttr;
 
 import java.awt.*;
 import java.util.List;

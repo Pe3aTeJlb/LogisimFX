@@ -3,11 +3,13 @@ package com.cburch.LogisimFX.newgui.MainFrame;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.circuit.SubcircuitFactory;
+import com.cburch.LogisimFX.comp.AbstractComponentFactory;
 import com.cburch.LogisimFX.file.LogisimFile;
+import com.cburch.LogisimFX.instance.InstanceFactory;
 import com.cburch.LogisimFX.proj.Project;
-import com.cburch.logisim.tools.AddTool;
-import com.cburch.logisim.tools.Library;
-import com.cburch.logisim.tools.Tool;
+import com.cburch.LogisimFX.tools.AddTool;
+import com.cburch.LogisimFX.tools.Library;
+import com.cburch.LogisimFX.tools.Tool;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.event.EventHandler;
@@ -47,13 +49,13 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
 
                     } else {
 
-
                         if(item instanceof Library){
                             setText(((Library)item).getName());
                         }
                         else if(item instanceof Tool){
                             setText(((Tool)item).getName());
-                            //setGraphic(((Tool)item).getIcon());
+                            System.out.println(((Tool)item).getIcon());
+                            setGraphic(((Tool)item).getIcon());
                         }
                         else if(item instanceof LogisimFile){
                             setText(proj.getLogisimFile().getName());

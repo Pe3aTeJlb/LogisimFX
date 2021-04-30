@@ -3,7 +3,7 @@
 
 package com.cburch.LogisimFX.circuit;
 
-import com.cburch.logisim.comp.Component;
+import com.cburch.LogisimFX.comp.Component;
 
 import java.io.PrintStream;
 import java.util.*;

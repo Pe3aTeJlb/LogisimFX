@@ -5,9 +5,9 @@ package com.cburch.LogisimFX.circuit.appear;
 
 import com.cburch.draw.model.AbstractCanvasObject;
 import com.cburch.draw.model.CanvasObject;
-import com.cburch.logisim.data.Attribute;
-import com.cburch.logisim.data.Bounds;
-import com.cburch.logisim.data.Location;
+import com.cburch.LogisimFX.data.Attribute;
+import com.cburch.LogisimFX.data.Bounds;
+import com.cburch.LogisimFX.data.Location;
 
 import java.util.Collections;
 import java.util.List;

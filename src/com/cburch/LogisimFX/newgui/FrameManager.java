@@ -8,7 +8,7 @@ import com.cburch.LogisimFX.newgui.MemoryEditorFrame.MemoryEditorController;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.proj.ProjectActions;
 
-import com.cburch.logisim.instance.Instance;
+import com.cburch.LogisimFX.instance.Instance;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

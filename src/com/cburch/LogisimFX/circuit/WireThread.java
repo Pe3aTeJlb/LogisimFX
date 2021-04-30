@@ -3,7 +3,7 @@
 
 package com.cburch.LogisimFX.circuit;
 
-import com.cburch.logisim.util.SmallSet;
+import com.cburch.LogisimFX.util.SmallSet;
 
 class WireThread {
 	private WireThread parent;

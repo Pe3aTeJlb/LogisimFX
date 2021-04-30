@@ -4,7 +4,7 @@ package com.cburch.LogisimFX.newgui;
 import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.proj.Project;
-import com.cburch.logisim.tools.Library;
+import com.cburch.LogisimFX.tools.Library;
 
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;

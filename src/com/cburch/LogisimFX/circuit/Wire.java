@@ -3,12 +3,12 @@
 
 package com.cburch.LogisimFX.circuit;
 
-import com.cburch.logisim.comp.Component;
-import com.cburch.logisim.comp.*;
-import com.cburch.logisim.data.*;
-import com.cburch.logisim.tools.CustomHandles;
-import com.cburch.logisim.util.Cache;
-import com.cburch.logisim.util.GraphicsUtil;
+import com.cburch.LogisimFX.comp.Component;
+import com.cburch.LogisimFX.comp.*;
+import com.cburch.LogisimFX.data.*;
+import com.cburch.LogisimFX.tools.CustomHandles;
+import com.cburch.LogisimFX.util.Cache;
+import com.cburch.LogisimFX.util.GraphicsUtil;
 
 import java.awt.*;
 import java.util.AbstractList;

@@ -3,11 +3,11 @@
 
 package com.cburch.LogisimFX.file;
 
-import com.cburch.logisim.comp.ComponentFactory;
-import com.cburch.logisim.data.AttributeSets;
-import com.cburch.logisim.tools.AddTool;
-import com.cburch.logisim.tools.SelectTool;
-import com.cburch.logisim.tools.Tool;
+import com.cburch.LogisimFX.comp.ComponentFactory;
+import com.cburch.LogisimFX.data.AttributeSets;
+import com.cburch.LogisimFX.tools.AddTool;
+import com.cburch.LogisimFX.tools.SelectTool;
+import com.cburch.LogisimFX.tools.Tool;
 
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;

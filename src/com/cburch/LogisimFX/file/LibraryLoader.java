@@ -3,7 +3,7 @@
 
 package com.cburch.LogisimFX.file;
 
-import com.cburch.logisim.tools.Library;
+import com.cburch.LogisimFX.tools.Library;
 
 interface LibraryLoader {
 	public Library loadLibrary(String desc);

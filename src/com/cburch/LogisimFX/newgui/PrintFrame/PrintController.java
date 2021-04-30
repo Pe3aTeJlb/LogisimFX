@@ -5,13 +5,13 @@ import com.cburch.LogisimFX.newgui.AbstractController;
 import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.circuit.CircuitState;
-import com.cburch.logisim.comp.Component;
-import com.cburch.logisim.comp.ComponentDrawContext;
-import com.cburch.logisim.data.Bounds;
+import com.cburch.LogisimFX.comp.Component;
+import com.cburch.LogisimFX.comp.ComponentDrawContext;
+import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.gui.main.Frame;
 import com.cburch.LogisimFX.proj.Project;
-import com.cburch.logisim.util.StringUtil;
+import com.cburch.LogisimFX.util.StringUtil;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

@@ -3,9 +3,9 @@
 
 package com.cburch.LogisimFX.circuit;
 
-import com.cburch.logisim.comp.Component;
-import com.cburch.logisim.data.Attribute;
-import com.cburch.logisim.data.AttributeSet;
+import com.cburch.LogisimFX.comp.Component;
+import com.cburch.LogisimFX.data.Attribute;
+import com.cburch.LogisimFX.data.AttributeSet;
 
 import java.util.*;
 

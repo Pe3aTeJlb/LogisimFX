@@ -3,8 +3,8 @@
 
 package com.cburch.LogisimFX.circuit.appear;
 
-import com.cburch.logisim.util.LocaleManager;
-import com.cburch.logisim.util.StringGetter;
+import com.cburch.LogisimFX.util.LocaleManager;
+import com.cburch.LogisimFX.util.StringGetter;
 
 class Strings {
 	private static LocaleManager source

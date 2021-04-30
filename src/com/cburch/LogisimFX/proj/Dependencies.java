@@ -10,10 +10,10 @@ import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.circuit.CircuitEvent;
 import com.cburch.LogisimFX.circuit.CircuitListener;
 import com.cburch.LogisimFX.circuit.SubcircuitFactory;
-import com.cburch.logisim.comp.Component;
-import com.cburch.logisim.comp.ComponentFactory;
-import com.cburch.logisim.tools.AddTool;
-import com.cburch.logisim.util.Dag;
+import com.cburch.LogisimFX.comp.Component;
+import com.cburch.LogisimFX.comp.ComponentFactory;
+import com.cburch.LogisimFX.tools.AddTool;
+import com.cburch.LogisimFX.util.Dag;
 
 public class Dependencies {
 	private class MyListener

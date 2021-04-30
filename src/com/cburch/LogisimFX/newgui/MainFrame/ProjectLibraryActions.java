@@ -7,7 +7,7 @@ import com.cburch.LogisimFX.file.Loader;
 import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.file.LogisimFileActions;
 import com.cburch.LogisimFX.proj.Project;
-import com.cburch.logisim.tools.Library;
+import com.cburch.LogisimFX.tools.Library;
 
 import java.io.File;
 import java.io.IOException;

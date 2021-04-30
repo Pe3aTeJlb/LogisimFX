@@ -1,12 +1,14 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
+import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.file.ToolbarData;
-import com.cburch.logisim.tools.Tool;
+import com.cburch.LogisimFX.tools.Tool;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.AnchorPane;
@@ -129,11 +131,17 @@ public class MainToolBar extends ToolBar {
     }
 
 
-    class ToolButton extends CustomButton{
+    class ToolButton extends Button {
 
         public ToolButton(Tool tool) {
-            super(prefWidth, prefHeight, "poke.gif");
+
+            super();
+            setPrefSize(prefWidth,prefHeight);
+            setMinSize(prefWidth,prefHeight);
+            setMaxSize(prefWidth,prefHeight);
+            graphicProperty().setValue(tool.getIcon());
             setActions(tool);
+
         }
 
         public void setActions(Tool tool){

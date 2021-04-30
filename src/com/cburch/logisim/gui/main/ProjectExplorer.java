@@ -232,6 +232,7 @@ public class ProjectExplorer extends JTree implements LocaleListener {
 			// draw tool icon
 			Graphics gIcon = g.create();
 			ComponentDrawContext context = new ComponentDrawContext(ProjectExplorer.this, null, null, g, gIcon);
+			System.out.println(tool.getName());
 			tool.paintIcon(context, x, y);
 			gIcon.dispose();
 

@@ -5,9 +5,9 @@ package com.cburch.LogisimFX.circuit.appear;
 
 import com.cburch.draw.model.AbstractCanvasObject;
 import com.cburch.draw.shapes.SvgReader;
-import com.cburch.logisim.data.Direction;
-import com.cburch.logisim.data.Location;
-import com.cburch.logisim.instance.Instance;
+import com.cburch.LogisimFX.data.Direction;
+import com.cburch.LogisimFX.data.Location;
+import com.cburch.LogisimFX.instance.Instance;
 import org.w3c.dom.Element;
 
 import java.util.Map;

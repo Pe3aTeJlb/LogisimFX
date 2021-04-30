@@ -4,21 +4,21 @@
 package com.cburch.LogisimFX.circuit;
 
 import com.cburch.LogisimFX.circuit.Propagator.SetData;
-import com.cburch.logisim.comp.Component;
-import com.cburch.logisim.comp.ComponentDrawContext;
-import com.cburch.logisim.comp.ComponentState;
-import com.cburch.logisim.data.BitWidth;
-import com.cburch.logisim.data.Location;
-import com.cburch.logisim.data.Value;
-import com.cburch.logisim.instance.Instance;
-import com.cburch.logisim.instance.InstanceData;
-import com.cburch.logisim.instance.InstanceFactory;
-import com.cburch.logisim.instance.InstanceState;
+import com.cburch.LogisimFX.comp.Component;
+import com.cburch.LogisimFX.comp.ComponentDrawContext;
+import com.cburch.LogisimFX.comp.ComponentState;
+import com.cburch.LogisimFX.data.BitWidth;
+import com.cburch.LogisimFX.data.Location;
+import com.cburch.LogisimFX.data.Value;
+import com.cburch.LogisimFX.instance.Instance;
+import com.cburch.LogisimFX.instance.InstanceData;
+import com.cburch.LogisimFX.instance.InstanceFactory;
+import com.cburch.LogisimFX.instance.InstanceState;
 import com.cburch.LogisimFX.proj.Project;
-import com.cburch.logisim.std.wiring.Clock;
-import com.cburch.logisim.std.wiring.Pin;
-import com.cburch.logisim.util.ArraySet;
-import com.cburch.logisim.util.SmallSet;
+import com.cburch.LogisimFX.std.wiring.Clock;
+import com.cburch.LogisimFX.std.wiring.Pin;
+import com.cburch.LogisimFX.util.ArraySet;
+import com.cburch.LogisimFX.util.SmallSet;
 
 import java.util.*;
 

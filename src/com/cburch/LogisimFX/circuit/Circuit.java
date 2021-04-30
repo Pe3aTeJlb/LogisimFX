@@ -4,15 +4,15 @@
 package com.cburch.LogisimFX.circuit;
 
 import com.cburch.LogisimFX.circuit.appear.CircuitAppearance;
-import com.cburch.logisim.comp.Component;
-import com.cburch.logisim.comp.*;
-import com.cburch.logisim.data.AttributeSet;
-import com.cburch.logisim.data.BitWidth;
-import com.cburch.logisim.data.Bounds;
-import com.cburch.logisim.data.Location;
-import com.cburch.logisim.std.wiring.Clock;
-import com.cburch.logisim.util.CollectionUtil;
-import com.cburch.logisim.util.EventSourceWeakSupport;
+import com.cburch.LogisimFX.comp.Component;
+import com.cburch.LogisimFX.comp.*;
+import com.cburch.LogisimFX.data.AttributeSet;
+import com.cburch.LogisimFX.data.BitWidth;
+import com.cburch.LogisimFX.data.Bounds;
+import com.cburch.LogisimFX.data.Location;
+import com.cburch.LogisimFX.std.wiring.Clock;
+import com.cburch.LogisimFX.util.CollectionUtil;
+import com.cburch.LogisimFX.util.EventSourceWeakSupport;
 
 import java.awt.*;
 import java.util.List;

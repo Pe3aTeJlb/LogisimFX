@@ -3,10 +3,10 @@
 
 package com.cburch.LogisimFX.newgui.PrintFrame;
 
-import com.cburch.logisim.circuit.Circuit;
-import com.cburch.logisim.data.Bounds;
-import com.cburch.logisim.file.LogisimFile;
-import com.cburch.logisim.proj.Project;
+import com.cburch.LogisimFX.circuit.Circuit;
+import com.cburch.LogisimFX.data.Bounds;
+import com.cburch.LogisimFX.file.LogisimFile;
+import com.cburch.LogisimFX.proj.Project;
 
 import javax.swing.*;
 import java.util.ArrayList;

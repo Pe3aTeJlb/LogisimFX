@@ -3,8 +3,8 @@
 
 package com.cburch.LogisimFX.circuit;
 
-import com.cburch.logisim.data.*;
-import com.cburch.logisim.util.StringGetter;
+import com.cburch.LogisimFX.data.*;
+import com.cburch.LogisimFX.util.StringGetter;
 
 public abstract class RadixOption extends AttributeOption {
 	public static final RadixOption RADIX_2 = new Radix2();

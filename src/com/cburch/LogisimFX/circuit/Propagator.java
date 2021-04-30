@@ -3,13 +3,13 @@
 
 package com.cburch.LogisimFX.circuit;
 
-import com.cburch.logisim.comp.Component;
-import com.cburch.logisim.comp.ComponentDrawContext;
-import com.cburch.logisim.comp.EndData;
-import com.cburch.logisim.data.AttributeEvent;
-import com.cburch.logisim.data.AttributeListener;
-import com.cburch.logisim.data.Location;
-import com.cburch.logisim.data.Value;
+import com.cburch.LogisimFX.comp.Component;
+import com.cburch.LogisimFX.comp.ComponentDrawContext;
+import com.cburch.LogisimFX.comp.EndData;
+import com.cburch.LogisimFX.data.AttributeEvent;
+import com.cburch.LogisimFX.data.AttributeListener;
+import com.cburch.LogisimFX.data.Location;
+import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.file.Options;
 
 import java.lang.ref.WeakReference;

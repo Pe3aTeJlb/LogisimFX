@@ -5,8 +5,8 @@ package com.cburch.LogisimFX.proj;
 
 import com.cburch.LogisimFX.file.Loader;
 import com.cburch.logisim.gui.main.Frame;
-import com.cburch.logisim.util.MacCompatibility;
-import com.cburch.logisim.util.PropertyChangeWeakSupport;
+import com.cburch.LogisimFX.util.MacCompatibility;
+import com.cburch.LogisimFX.util.PropertyChangeWeakSupport;
 
 import java.awt.*;
 import java.awt.event.WindowAdapter;

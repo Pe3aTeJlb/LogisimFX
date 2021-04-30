@@ -3,8 +3,8 @@
 
 package com.cburch.LogisimFX.circuit;
 
-import com.cburch.logisim.analyze.model.Expression;
-import com.cburch.logisim.data.Location;
+import com.cburch.LogisimFX.analyze.model.Expression;
+import com.cburch.LogisimFX.data.Location;
 
 import java.util.Map;
 

@@ -1,6 +1,6 @@
 package com.cburch.LogisimFX;
 
-import com.cburch.logisim.util.StringUtil;
+import com.cburch.LogisimFX.util.StringUtil;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ObjectProperty;

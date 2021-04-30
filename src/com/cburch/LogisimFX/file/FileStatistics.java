@@ -5,11 +5,11 @@ package com.cburch.LogisimFX.file;
 
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.circuit.SubcircuitFactory;
-import com.cburch.logisim.comp.Component;
-import com.cburch.logisim.comp.ComponentFactory;
-import com.cburch.logisim.tools.AddTool;
-import com.cburch.logisim.tools.Library;
-import com.cburch.logisim.tools.Tool;
+import com.cburch.LogisimFX.comp.Component;
+import com.cburch.LogisimFX.comp.ComponentFactory;
+import com.cburch.LogisimFX.tools.AddTool;
+import com.cburch.LogisimFX.tools.Library;
+import com.cburch.LogisimFX.tools.Tool;
 
 import java.util.*;
 

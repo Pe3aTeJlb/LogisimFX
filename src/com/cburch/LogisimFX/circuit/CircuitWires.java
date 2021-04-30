@@ -3,17 +3,17 @@
 
 package com.cburch.LogisimFX.circuit;
 
-import com.cburch.logisim.comp.Component;
-import com.cburch.logisim.comp.ComponentDrawContext;
-import com.cburch.logisim.comp.EndData;
-import com.cburch.logisim.data.*;
-import com.cburch.logisim.instance.Instance;
-import com.cburch.logisim.instance.StdAttr;
-import com.cburch.logisim.std.wiring.PullResistor;
-import com.cburch.logisim.std.wiring.Tunnel;
-import com.cburch.logisim.util.GraphicsUtil;
-import com.cburch.logisim.util.IteratorUtil;
-import com.cburch.logisim.util.SmallSet;
+import com.cburch.LogisimFX.comp.Component;
+import com.cburch.LogisimFX.comp.ComponentDrawContext;
+import com.cburch.LogisimFX.comp.EndData;
+import com.cburch.LogisimFX.data.*;
+import com.cburch.LogisimFX.instance.Instance;
+import com.cburch.LogisimFX.instance.StdAttr;
+import com.cburch.LogisimFX.std.wiring.PullResistor;
+import com.cburch.LogisimFX.std.wiring.Tunnel;
+import com.cburch.LogisimFX.util.GraphicsUtil;
+import com.cburch.LogisimFX.util.IteratorUtil;
+import com.cburch.LogisimFX.util.SmallSet;
 
 import java.awt.*;
 import java.util.List;

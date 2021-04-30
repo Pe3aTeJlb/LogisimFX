@@ -3,15 +3,15 @@
 
 package com.cburch.LogisimFX.circuit;
 
-import com.cburch.logisim.comp.Component;
-import com.cburch.logisim.data.*;
-import com.cburch.logisim.instance.*;
-import com.cburch.logisim.proj.Project;
-import com.cburch.logisim.std.wiring.Pin;
-import com.cburch.logisim.tools.MenuExtender;
-import com.cburch.logisim.util.GraphicsUtil;
-import com.cburch.logisim.util.StringGetter;
-import com.cburch.logisim.util.StringUtil;
+import com.cburch.LogisimFX.comp.Component;
+import com.cburch.LogisimFX.data.*;
+import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.proj.Project;
+import com.cburch.LogisimFX.std.wiring.Pin;
+import com.cburch.LogisimFX.tools.MenuExtender;
+import com.cburch.LogisimFX.util.GraphicsUtil;
+import com.cburch.LogisimFX.util.StringGetter;
+import com.cburch.LogisimFX.util.StringUtil;
 
 import javax.swing.*;
 import java.awt.*;

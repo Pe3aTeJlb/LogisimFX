@@ -12,9 +12,9 @@ import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.newgui.LoadingFrame.LoadingScreen;
 import com.cburch.LogisimFX.circuit.Circuit;
-import com.cburch.logisim.prefs.AppPreferences;
-import com.cburch.logisim.tools.Tool;
-import com.cburch.logisim.util.StringUtil;
+import com.cburch.LogisimFX.prefs.AppPreferences;
+import com.cburch.LogisimFX.tools.Tool;
+import com.cburch.LogisimFX.util.StringUtil;
 import javafx.application.Platform;
 
 import javax.swing.*;

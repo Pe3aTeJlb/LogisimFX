@@ -3,7 +3,7 @@ package com.cburch.LogisimFX.newgui.MainFrame;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.proj.Project;
-import com.cburch.logisim.tools.Tool;
+import com.cburch.LogisimFX.tools.Tool;
 
 import javafx.scene.control.*;
 import javafx.scene.image.Image;

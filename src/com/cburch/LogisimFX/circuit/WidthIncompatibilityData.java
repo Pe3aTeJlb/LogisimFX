@@ -3,8 +3,8 @@
 
 package com.cburch.LogisimFX.circuit;
 
-import com.cburch.logisim.data.BitWidth;
-import com.cburch.logisim.data.Location;
+import com.cburch.LogisimFX.data.BitWidth;
+import com.cburch.LogisimFX.data.Location;
 
 import java.util.ArrayList;
 

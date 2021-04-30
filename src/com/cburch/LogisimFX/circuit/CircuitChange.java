@@ -3,10 +3,10 @@
 
 package com.cburch.LogisimFX.circuit;
 
-import com.cburch.logisim.comp.Component;
-import com.cburch.logisim.data.Attribute;
-import com.cburch.logisim.instance.StdAttr;
-import com.cburch.logisim.std.wiring.Pin;
+import com.cburch.LogisimFX.comp.Component;
+import com.cburch.LogisimFX.data.Attribute;
+import com.cburch.LogisimFX.instance.StdAttr;
+import com.cburch.LogisimFX.std.wiring.Pin;
 
 import java.util.Collection;
 

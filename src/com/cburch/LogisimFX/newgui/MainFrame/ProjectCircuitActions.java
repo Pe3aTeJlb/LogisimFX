@@ -3,21 +3,21 @@
 
 package com.cburch.LogisimFX.newgui.MainFrame;
 
-import com.cburch.logisim.analyze.gui.Analyzer;
-import com.cburch.logisim.analyze.gui.AnalyzerManager;
-import com.cburch.logisim.analyze.model.AnalyzerModel;
-import com.cburch.logisim.circuit.Analyze;
-import com.cburch.logisim.circuit.AnalyzeException;
-import com.cburch.logisim.circuit.Circuit;
-import com.cburch.logisim.file.LogisimFileActions;
-import com.cburch.logisim.gui.menu.Strings;
-import com.cburch.logisim.instance.Instance;
-import com.cburch.logisim.instance.StdAttr;
-import com.cburch.logisim.proj.Project;
-import com.cburch.logisim.std.wiring.Pin;
-import com.cburch.logisim.tools.AddTool;
-import com.cburch.logisim.tools.Library;
-import com.cburch.logisim.util.StringUtil;
+import com.cburch.LogisimFX.analyze.gui.Analyzer;
+import com.cburch.LogisimFX.analyze.gui.AnalyzerManager;
+import com.cburch.LogisimFX.analyze.model.AnalyzerModel;
+import com.cburch.LogisimFX.circuit.Analyze;
+import com.cburch.LogisimFX.circuit.AnalyzeException;
+import com.cburch.LogisimFX.circuit.Circuit;
+import com.cburch.LogisimFX.file.LogisimFileActions;
+import com.cburch.LogisimFX.gui.menu.Strings;
+import com.cburch.LogisimFX.instance.Instance;
+import com.cburch.LogisimFX.instance.StdAttr;
+import com.cburch.LogisimFX.proj.Project;
+import com.cburch.LogisimFX.std.wiring.Pin;
+import com.cburch.LogisimFX.tools.AddTool;
+import com.cburch.LogisimFX.tools.Library;
+import com.cburch.LogisimFX.util.StringUtil;
 
 import javax.swing.*;
 import java.awt.*;

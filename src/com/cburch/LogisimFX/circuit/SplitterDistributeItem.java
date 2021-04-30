@@ -3,8 +3,8 @@
 
 package com.cburch.LogisimFX.circuit;
 
-import com.cburch.logisim.proj.Project;
-import com.cburch.logisim.util.StringGetter;
+import com.cburch.LogisimFX.proj.Project;
+import com.cburch.LogisimFX.util.StringGetter;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

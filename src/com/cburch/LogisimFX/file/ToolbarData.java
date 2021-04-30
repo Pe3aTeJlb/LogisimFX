@@ -4,11 +4,11 @@
 package com.cburch.LogisimFX.file;
 
 
-import com.cburch.logisim.data.AttributeListener;
-import com.cburch.logisim.data.AttributeSet;
-import com.cburch.logisim.data.AttributeSets;
-import com.cburch.logisim.tools.Tool;
-import com.cburch.logisim.util.EventSourceWeakSupport;
+import com.cburch.LogisimFX.data.AttributeListener;
+import com.cburch.LogisimFX.data.AttributeSet;
+import com.cburch.LogisimFX.data.AttributeSets;
+import com.cburch.LogisimFX.tools.Tool;
+import com.cburch.LogisimFX.util.EventSourceWeakSupport;
 
 import java.util.ArrayList;
 import java.util.List;

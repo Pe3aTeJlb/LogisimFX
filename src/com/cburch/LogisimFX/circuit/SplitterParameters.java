@@ -3,8 +3,8 @@
 
 package com.cburch.LogisimFX.circuit;
 
-import com.cburch.logisim.data.Direction;
-import com.cburch.logisim.util.GraphicsUtil;
+import com.cburch.LogisimFX.data.Direction;
+import com.cburch.LogisimFX.util.GraphicsUtil;
 
 class SplitterParameters {
 	private int dxEnd0; // location of split end 0 relative to origin

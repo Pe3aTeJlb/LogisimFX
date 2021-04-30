@@ -6,8 +6,8 @@ package com.cburch.LogisimFX.circuit.appear;
 import com.cburch.draw.model.CanvasObject;
 import com.cburch.draw.model.Handle;
 import com.cburch.draw.model.HandleGesture;
-import com.cburch.logisim.data.*;
-import com.cburch.logisim.util.UnmodifiableList;
+import com.cburch.LogisimFX.data.*;
+import com.cburch.LogisimFX.util.UnmodifiableList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -15,6 +15,7 @@ import java.awt.*;
 import java.util.List;
 
 public class AppearanceAnchor extends AppearanceElement {
+
 	public static final Attribute<Direction> FACING
 		= Attributes.forDirection("facing", Strings.getter("appearanceFacingAttr"));
 	static final List<Attribute<?>> ATTRIBUTES

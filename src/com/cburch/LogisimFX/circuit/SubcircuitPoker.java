@@ -3,11 +3,11 @@
 
 package com.cburch.LogisimFX.circuit;
 
-import com.cburch.logisim.data.Bounds;
+import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.logisim.gui.main.Canvas;
-import com.cburch.logisim.instance.InstancePainter;
-import com.cburch.logisim.instance.InstancePoker;
-import com.cburch.logisim.instance.InstanceState;
+import com.cburch.LogisimFX.instance.InstancePainter;
+import com.cburch.LogisimFX.instance.InstancePoker;
+import com.cburch.LogisimFX.instance.InstanceState;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;

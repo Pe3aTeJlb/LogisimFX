@@ -3,8 +3,8 @@
 
 package com.cburch.LogisimFX.circuit;
 
-import com.cburch.logisim.comp.ComponentDrawContext;
-import com.cburch.logisim.prefs.AppPreferences;
+import com.cburch.LogisimFX.comp.ComponentDrawContext;
+import com.cburch.LogisimFX.prefs.AppPreferences;
 
 import java.util.ArrayList;
 

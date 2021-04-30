@@ -8,11 +8,11 @@ import com.cburch.LogisimFX.circuit.*;
 import com.cburch.LogisimFX.newgui.MainFrame.MainFrameController;
 import com.cburch.logisim.gui.log.LogFrame;
 import com.cburch.logisim.gui.opts.OptionsFrame;
-import com.cburch.logisim.tools.AddTool;
-import com.cburch.logisim.tools.Library;
-import com.cburch.logisim.tools.Tool;
-import com.cburch.logisim.util.EventSourceWeakSupport;
-import com.cburch.logisim.util.JFileChoosers;
+import com.cburch.LogisimFX.tools.AddTool;
+import com.cburch.LogisimFX.tools.Library;
+import com.cburch.LogisimFX.tools.Tool;
+import com.cburch.LogisimFX.util.EventSourceWeakSupport;
+import com.cburch.LogisimFX.util.JFileChoosers;
 
 import javax.swing.*;
 import java.util.HashMap;

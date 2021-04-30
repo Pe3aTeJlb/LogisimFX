@@ -3,7 +3,7 @@
 
 package com.cburch.LogisimFX.file;
 
-import com.cburch.logisim.data.*;
+import com.cburch.LogisimFX.data.*;
 
 public class Options {
 

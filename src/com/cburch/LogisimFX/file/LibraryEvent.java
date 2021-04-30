@@ -3,7 +3,7 @@
 
 package com.cburch.LogisimFX.file;
 
-import com.cburch.logisim.tools.Library;
+import com.cburch.LogisimFX.tools.Library;
 
 public class LibraryEvent {
 	public final static int ADD_TOOL = 0;

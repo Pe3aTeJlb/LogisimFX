@@ -3,24 +3,31 @@
 
 package com.cburch.LogisimFX.circuit;
 
-import com.cburch.logisim.comp.AbstractComponentFactory;
-import com.cburch.logisim.comp.Component;
-import com.cburch.logisim.comp.ComponentDrawContext;
-import com.cburch.logisim.data.AttributeSet;
-import com.cburch.logisim.data.Bounds;
-import com.cburch.logisim.data.Location;
-import com.cburch.logisim.util.GraphicsUtil;
-import com.cburch.logisim.util.StringGetter;
+import com.cburch.LogisimFX.comp.AbstractComponentFactory;
+import com.cburch.LogisimFX.comp.Component;
+import com.cburch.LogisimFX.comp.ComponentDrawContext;
+import com.cburch.LogisimFX.data.AttributeSet;
+import com.cburch.LogisimFX.data.Bounds;
+import com.cburch.LogisimFX.data.Location;
+import com.cburch.LogisimFX.util.GraphicsUtil;
+import com.cburch.LogisimFX.util.StringGetter;
+import javafx.scene.image.ImageView;
 
 import java.awt.*;
 
 class WireFactory extends AbstractComponentFactory {
+
 	public static final WireFactory instance = new WireFactory();
 
 	private WireFactory() { }
 
 	@Override
 	public String getName() { return "Wire"; }
+
+	@Override
+	public ImageView getIcon() {
+		return null;
+	}
 
 	@Override
 	public StringGetter getDisplayGetter() {

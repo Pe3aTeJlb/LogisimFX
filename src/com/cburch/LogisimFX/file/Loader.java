@@ -5,12 +5,12 @@ package com.cburch.LogisimFX.file;
 
 import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.newgui.DialogManager;
-import com.cburch.logisim.std.Builtin;
-import com.cburch.logisim.tools.Library;
-import com.cburch.logisim.util.JFileChoosers;
-import com.cburch.logisim.util.MacCompatibility;
-import com.cburch.logisim.util.StringUtil;
-import com.cburch.logisim.util.ZipClassLoader;
+import com.cburch.LogisimFX.std.Builtin;
+import com.cburch.LogisimFX.tools.Library;
+import com.cburch.LogisimFX.util.JFileChoosers;
+import com.cburch.LogisimFX.util.MacCompatibility;
+import com.cburch.LogisimFX.util.StringUtil;
+import com.cburch.LogisimFX.util.ZipClassLoader;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;

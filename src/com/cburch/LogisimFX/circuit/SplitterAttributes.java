@@ -1,10 +1,10 @@
 /* Copyright (c) 2010, Carl Burch. License information is located in the
- * com.cburch.logisim.Main source code and at www.cburch.com/logisim/. */
+ * com.cburch.LogisimFX.Main source code and at www.cburch.com/logisim/. */
 
 package com.cburch.LogisimFX.circuit;
 
-import com.cburch.logisim.data.*;
-import com.cburch.logisim.instance.StdAttr;
+import com.cburch.LogisimFX.data.*;
+import com.cburch.LogisimFX.instance.StdAttr;
 
 import java.util.ArrayList;
 import java.util.Arrays;

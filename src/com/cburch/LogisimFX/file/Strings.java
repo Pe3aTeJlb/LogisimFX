@@ -3,9 +3,9 @@
 
 package com.cburch.LogisimFX.file;
 
-import com.cburch.logisim.util.LocaleManager;
-import com.cburch.logisim.util.StringGetter;
-import com.cburch.logisim.util.StringUtil;
+import com.cburch.LogisimFX.util.LocaleManager;
+import com.cburch.LogisimFX.util.StringGetter;
+import com.cburch.LogisimFX.util.StringUtil;
 
 class Strings {
 	private static LocaleManager source

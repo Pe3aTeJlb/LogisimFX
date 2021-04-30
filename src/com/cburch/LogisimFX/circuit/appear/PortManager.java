@@ -4,11 +4,11 @@
 package com.cburch.LogisimFX.circuit.appear;
 
 import com.cburch.draw.model.CanvasObject;
-import com.cburch.logisim.data.Bounds;
-import com.cburch.logisim.data.Direction;
-import com.cburch.logisim.data.Location;
-import com.cburch.logisim.instance.Instance;
-import com.cburch.logisim.instance.StdAttr;
+import com.cburch.LogisimFX.data.Bounds;
+import com.cburch.LogisimFX.data.Direction;
+import com.cburch.LogisimFX.data.Location;
+import com.cburch.LogisimFX.instance.Instance;
+import com.cburch.LogisimFX.instance.StdAttr;
 
 import java.util.*;
 

@@ -3,10 +3,10 @@
 
 package com.cburch.LogisimFX.circuit;
 
-import com.cburch.logisim.comp.Component;
-import com.cburch.logisim.comp.EndData;
-import com.cburch.logisim.data.BitWidth;
-import com.cburch.logisim.data.Location;
+import com.cburch.LogisimFX.comp.Component;
+import com.cburch.LogisimFX.comp.EndData;
+import com.cburch.LogisimFX.data.BitWidth;
+import com.cburch.LogisimFX.data.Location;
 
 import java.util.*;
 

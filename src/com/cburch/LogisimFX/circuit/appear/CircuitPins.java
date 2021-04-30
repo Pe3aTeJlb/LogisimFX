@@ -4,15 +4,15 @@
 package com.cburch.LogisimFX.circuit.appear;
 
 import com.cburch.LogisimFX.circuit.ReplacementMap;
-import com.cburch.logisim.comp.Component;
-import com.cburch.logisim.comp.ComponentEvent;
-import com.cburch.logisim.comp.ComponentListener;
-import com.cburch.logisim.data.Attribute;
-import com.cburch.logisim.data.AttributeEvent;
-import com.cburch.logisim.data.AttributeListener;
-import com.cburch.logisim.instance.Instance;
-import com.cburch.logisim.instance.StdAttr;
-import com.cburch.logisim.std.wiring.Pin;
+import com.cburch.LogisimFX.comp.Component;
+import com.cburch.LogisimFX.comp.ComponentEvent;
+import com.cburch.LogisimFX.comp.ComponentListener;
+import com.cburch.LogisimFX.data.Attribute;
+import com.cburch.LogisimFX.data.AttributeEvent;
+import com.cburch.LogisimFX.data.AttributeListener;
+import com.cburch.LogisimFX.instance.Instance;
+import com.cburch.LogisimFX.instance.StdAttr;
+import com.cburch.LogisimFX.std.wiring.Pin;
 
 import java.util.*;
 

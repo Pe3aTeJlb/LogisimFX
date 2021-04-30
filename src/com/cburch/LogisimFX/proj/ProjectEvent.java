@@ -5,7 +5,7 @@ package com.cburch.LogisimFX.proj;
 
 import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.circuit.Circuit;
-import com.cburch.logisim.tools.Tool;
+import com.cburch.LogisimFX.tools.Tool;
 
 
 public class ProjectEvent {

@@ -8,11 +8,11 @@ import com.cburch.draw.model.CanvasModelEvent;
 import com.cburch.draw.model.CanvasModelListener;
 import com.cburch.draw.model.CanvasObject;
 import com.cburch.draw.model.Drawing;
-import com.cburch.logisim.data.Bounds;
-import com.cburch.logisim.data.Direction;
-import com.cburch.logisim.data.Location;
-import com.cburch.logisim.instance.Instance;
-import com.cburch.logisim.util.EventSourceWeakSupport;
+import com.cburch.LogisimFX.data.Bounds;
+import com.cburch.LogisimFX.data.Direction;
+import com.cburch.LogisimFX.data.Location;
+import com.cburch.LogisimFX.instance.Instance;
+import com.cburch.LogisimFX.util.EventSourceWeakSupport;
 
 import java.awt.*;
 import java.util.List;
@@ -90,7 +90,7 @@ public class CircuitAppearance extends Drawing {
 		if (isDefault != value) {
 			isDefault = value;
 			if (value) {
-				recomputeDefaultAppearance();
+				//recomputeDefaultAppearance();
 			}
 		}
 	}

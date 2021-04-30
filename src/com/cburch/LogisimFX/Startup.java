@@ -13,10 +13,10 @@ import com.cburch.LogisimFX.file.LoadFailedException;
 import com.cburch.logisim.gui.menu.LogisimMenuBar;
 import com.cburch.logisim.gui.menu.WindowManagers;
 
-import com.cburch.logisim.prefs.AppPreferences;
+import com.cburch.LogisimFX.prefs.AppPreferences;
 import com.cburch.LogisimFX.proj.ProjectActions;
-import com.cburch.logisim.util.MacCompatibility;
-import com.cburch.logisim.util.StringUtil;
+import com.cburch.LogisimFX.util.MacCompatibility;
+import com.cburch.LogisimFX.util.StringUtil;
 
 import java.io.File;
 import java.util.*;

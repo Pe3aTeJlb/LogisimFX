@@ -4,19 +4,19 @@
 package com.cburch.LogisimFX.file;
 
 import com.cburch.draw.model.AbstractCanvasObject;
-import com.cburch.logisim.LogisimVersion;
-import com.cburch.logisim.Main;
+import com.cburch.LogisimFX.LogisimVersion;
+import com.cburch.LogisimFX.Main;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.circuit.Wire;
-import com.cburch.logisim.comp.Component;
-import com.cburch.logisim.comp.ComponentFactory;
-import com.cburch.logisim.data.Attribute;
-import com.cburch.logisim.data.AttributeDefaultProvider;
-import com.cburch.logisim.data.AttributeSet;
-import com.cburch.logisim.tools.Library;
-import com.cburch.logisim.tools.Tool;
-import com.cburch.logisim.util.InputEventUtil;
-import com.cburch.logisim.util.StringUtil;
+import com.cburch.LogisimFX.comp.Component;
+import com.cburch.LogisimFX.comp.ComponentFactory;
+import com.cburch.LogisimFX.data.Attribute;
+import com.cburch.LogisimFX.data.AttributeDefaultProvider;
+import com.cburch.LogisimFX.data.AttributeSet;
+import com.cburch.LogisimFX.tools.Library;
+import com.cburch.LogisimFX.tools.Tool;
+import com.cburch.LogisimFX.util.InputEventUtil;
+import com.cburch.LogisimFX.util.StringUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

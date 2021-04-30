@@ -21,8 +21,8 @@ import com.cburch.LogisimFX.data.Direction;
 import com.cburch.LogisimFX.util.LocaleListener;
 import com.cburch.LogisimFX.util.LocaleManager;
 import com.cburch.LogisimFX.util.PropertyChangeWeakSupport;
-import com.cburch.logisim.Main;
-import com.cburch.logisim.circuit.RadixOption;
+import com.cburch.LogisimFX.Main;
+import com.cburch.LogisimFX.circuit.RadixOption;
 import com.cburch.logisim.gui.start.Startup;
 
 public class AppPreferences {

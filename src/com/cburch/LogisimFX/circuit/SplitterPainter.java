@@ -3,11 +3,11 @@
 
 package com.cburch.LogisimFX.circuit;
 
-import com.cburch.logisim.comp.ComponentDrawContext;
-import com.cburch.logisim.data.Direction;
-import com.cburch.logisim.data.Location;
-import com.cburch.logisim.data.Value;
-import com.cburch.logisim.util.GraphicsUtil;
+import com.cburch.LogisimFX.comp.ComponentDrawContext;
+import com.cburch.LogisimFX.data.Direction;
+import com.cburch.LogisimFX.data.Location;
+import com.cburch.LogisimFX.data.Value;
+import com.cburch.LogisimFX.util.GraphicsUtil;
 
 import java.awt.*;
 

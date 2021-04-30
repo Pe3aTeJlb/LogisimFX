@@ -7,7 +7,7 @@ package com.cburch.LogisimFX.newgui.MainFrame;
 import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.proj.ProjectActions;
-import com.cburch.logisim.prefs.AppPreferences;
+import com.cburch.LogisimFX.prefs.AppPreferences;
 
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;

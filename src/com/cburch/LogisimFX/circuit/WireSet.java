@@ -3,7 +3,7 @@
 
 package com.cburch.LogisimFX.circuit;
 
-import com.cburch.logisim.data.Location;
+import com.cburch.LogisimFX.data.Location;
 
 import java.util.Collections;
 import java.util.HashSet;

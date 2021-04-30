@@ -3,10 +3,10 @@
 
 package com.cburch.LogisimFX.circuit;
 
-import com.cburch.logisim.comp.Component;
-import com.cburch.logisim.data.Attribute;
-import com.cburch.logisim.proj.Action;
-import com.cburch.logisim.util.StringGetter;
+import com.cburch.LogisimFX.comp.Component;
+import com.cburch.LogisimFX.data.Attribute;
+import com.cburch.LogisimFX.proj.Action;
+import com.cburch.LogisimFX.util.StringGetter;
 
 import java.util.*;
 
