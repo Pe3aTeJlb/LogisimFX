@@ -11,6 +11,7 @@ import com.cburch.LogisimFX.util.Cache;
  * are immutable.
  */
 public class Location implements Comparable<Location> {
+
 	private static final Cache cache = new Cache();
 	
 	private final int hashCode;
@@ -136,4 +137,5 @@ public class Location implements Comparable<Location> {
 		int y = Integer.parseInt(value.substring(comma + 1).trim());
 		return Location.create(x, y);
 	}
+
 }

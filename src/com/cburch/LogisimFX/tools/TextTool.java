@@ -21,8 +21,10 @@ import com.cburch.LogisimFX.circuit.CircuitMutation;
 import com.cburch.logisim.gui.main.Canvas;
 import com.cburch.LogisimFX.proj.Action;
 import com.cburch.LogisimFX.proj.Project;
+import javafx.scene.image.ImageView;
 
 public class TextTool extends Tool {
+
 	private class MyListener
 			implements CaretListener, CircuitListener {
 		public void editingCanceled(CaretEvent e) {
@@ -146,6 +148,11 @@ public class TextTool extends Tool {
 	@Override
 	public AttributeSet getAttributeSet() {
 		return attrs;
+	}
+
+	@Override
+	public ImageView getIcon(){
+		return Text.FACTORY.getIcon();
 	}
 
 	@Override

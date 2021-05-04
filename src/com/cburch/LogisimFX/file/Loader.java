@@ -3,6 +3,7 @@
 
 package com.cburch.LogisimFX.file;
 
+import com.cburch.LogisimFX.FileSelector;
 import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.std.Builtin;

@@ -14,6 +14,7 @@ import com.cburch.LogisimFX.util.GraphicsUtil;
 import java.awt.*;
 
 public class Text extends InstanceFactory {
+
 	public static Attribute<String> ATTR_TEXT = Attributes.forString("text",
 			Strings.getter("textTextAttr"));
 	public static Attribute<Font> ATTR_FONT = Attributes.forFont("font",

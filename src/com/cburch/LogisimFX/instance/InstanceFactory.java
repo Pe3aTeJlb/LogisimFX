@@ -89,7 +89,9 @@ public abstract class InstanceFactory extends AbstractComponentFactory {
 	}
 
 	@Override
-	public ImageView getIcon(){ return icon; }
+	public ImageView getIcon(){
+		return icon;
+	}
 
 	@Override
 	public final void paintIcon(ComponentDrawContext context,

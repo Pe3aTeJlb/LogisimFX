@@ -99,11 +99,6 @@ public class EditTool extends Tool {
 	}
 
 	@Override
-	public ImageView getIcon() {
-		return null;
-	}
-
-	@Override
 	public AttributeSet getAttributeSet() {
 		return select.getAttributeSet();
 	}
@@ -122,7 +117,12 @@ public class EditTool extends Tool {
 	public boolean isAllDefaultValues(AttributeSet attrs, LogisimVersion ver) {
 		return true;
 	}
-	
+
+	@Override
+	public ImageView getIcon(){
+		return select.getIcon();
+	}
+
 	@Override
 	public void paintIcon(ComponentDrawContext c, int x, int y) {
 		select.paintIcon(c, x, y);

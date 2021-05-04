@@ -9,6 +9,7 @@ import java.util.Arrays;
 import com.cburch.LogisimFX.util.Cache;
 
 public class Value {
+
 	public static final Value FALSE   = new Value(1, 0, 0, 0);
 	public static final Value TRUE    = new Value(1, 0, 0, 1);
 	public static final Value UNKNOWN = new Value(1, 0, 1, 0);
@@ -423,4 +424,5 @@ public class Value {
 			return MULTI_COLOR;
 		}
 	}
+
 }

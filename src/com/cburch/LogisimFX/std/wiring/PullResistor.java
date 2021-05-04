@@ -9,13 +9,16 @@ import java.awt.Graphics2D;
 
 import javax.swing.Icon;
 
+import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.Icons;
 import com.cburch.LogisimFX.prefs.AppPreferences;
+import javafx.scene.image.ImageView;
 
 public class PullResistor extends InstanceFactory {
+
 	public static final Attribute<AttributeOption> ATTR_PULL_TYPE
 		= Attributes.forOption("pull", Strings.getter("pullTypeAttr"),
 				new AttributeOption[] {
@@ -26,8 +29,8 @@ public class PullResistor extends InstanceFactory {
 
 	public static final PullResistor FACTORY = new PullResistor();
 	
-	private static final Icon ICON_SHAPED = Icons.getIcon("pullshap.gif");
-	private static final Icon ICON_RECTANGULAR = Icons.getIcon("pullrect.gif");
+	private static final ImageView ICON_SHAPED = IconsManager.getIcon("pullshap.gif");
+	private static final ImageView ICON_RECTANGULAR = IconsManager.getIcon("pullrect.gif");
 
 	public PullResistor() {
 		super("Pull Resistor", Strings.getter("pullComponent"));
@@ -53,6 +56,21 @@ public class PullResistor extends InstanceFactory {
 	//
 	// graphics methods
 	//
+
+	@Override
+	public ImageView getIcon(){
+
+		return ICON_SHAPED;
+		/*
+		if (painter.getGateShape() == AppPreferences.SHAPE_SHAPED) {
+			return ICON_SHAPED;
+		} else {
+			return ICON_RECTANGULAR;
+		}
+		 */
+
+	}
+
 	@Override
 	public void paintIcon(InstancePainter painter) {
 		Icon icon;

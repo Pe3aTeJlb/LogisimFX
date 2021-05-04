@@ -13,6 +13,7 @@ import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.EndData;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
@@ -23,9 +24,11 @@ import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.Icons;
 import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.circuit.RadixOption;
-import com.cburch.LogisimFX.gui.main.Canvas;
+import com.cburch.logisim.gui.main.Canvas;
+import javafx.scene.image.ImageView;
 
 public class Pin extends InstanceFactory {
+
 	public static final Attribute<Boolean> ATTR_TRISTATE
 		= Attributes.forBoolean("tristate", Strings.getter("pinThreeStateAttr"));
 	public static final Attribute<Boolean> ATTR_TYPE
@@ -45,8 +48,8 @@ public class Pin extends InstanceFactory {
 	
 	public static final Pin FACTORY = new Pin();
 
-	private static final Icon ICON_IN = Icons.getIcon("pinInput.gif");
-	private static final Icon ICON_OUT = Icons.getIcon("pinOutput.gif");
+	private static final ImageView ICON_IN = IconsManager.getIcon("pinInput.gif");
+	private static final ImageView ICON_OUT = IconsManager.getIcon("pinOutput.gif");
 	private static final Font ICON_WIDTH_FONT = new Font("SansSerif", Font.BOLD, 9);
 	private static final Color ICON_WIDTH_COLOR = Value.WIDTH_ERROR_COLOR.darker();
 
@@ -75,6 +78,12 @@ public class Pin extends InstanceFactory {
 	//
 	// graphics methods
 	//
+
+	@Override
+	public ImageView getIcon(){
+		return ICON_OUT;
+	}
+
 	@Override
 	public void paintIcon(InstancePainter painter) {
 		paintIconBase(painter);

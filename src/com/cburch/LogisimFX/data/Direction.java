@@ -6,6 +6,7 @@ package com.cburch.LogisimFX.data;
 import com.cburch.LogisimFX.util.StringGetter;
 
 public class Direction implements AttributeOptionInterface {
+
 	public static final Direction EAST
 		= new Direction("east", Strings.getter("directionEastOption"),
 				Strings.getter("directionEastVertical"), 0);
@@ -107,4 +108,5 @@ public class Direction implements AttributeOptionInterface {
 	public Object getValue() {
 		return this;
 	}
+
 }

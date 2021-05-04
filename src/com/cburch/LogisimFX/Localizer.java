@@ -11,9 +11,13 @@ import java.util.*;
 
 public class Localizer {
 
-    private final String bundleName;
+    private String bundleName;
 
     public Localizer(String bundlename){
+        bundleName = "com/cburch/"+"LogisimFX/resources/localization/"+bundlename;
+    }
+
+    public void changeBundle(String bundlename){
         bundleName = "com/cburch/"+"LogisimFX/resources/localization/"+bundlename;
     }
 

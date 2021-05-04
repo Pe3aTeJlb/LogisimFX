@@ -10,7 +10,6 @@ import java.awt.FontMetrics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-import javax.swing.Icon;
 
 import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.Component;
@@ -19,7 +18,6 @@ import com.cburch.LogisimFX.comp.ComponentUserEvent;
 import com.cburch.LogisimFX.data.AttributeSet;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.data.Value;
-import com.cburch.LogisimFX.util.Icons;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.circuit.CircuitEvent;
 import com.cburch.LogisimFX.circuit.CircuitListener;

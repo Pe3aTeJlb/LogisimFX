@@ -51,14 +51,16 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
 
                         if(item instanceof Library){
                             setText(((Library)item).getName());
+                            setGraphic(null);
                         }
                         else if(item instanceof Tool){
                             setText(((Tool)item).getName());
-                            System.out.println(((Tool)item).getIcon());
                             setGraphic(((Tool)item).getIcon());
+                            setTooltip(new Tooltip(((Tool)item).getDescription()));
                         }
                         else if(item instanceof LogisimFile){
                             setText(proj.getLogisimFile().getName());
+                            setGraphic(null);
                         }
                         else{
                             setText("you fucked up2");
@@ -156,66 +158,3 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
 
 
 }
-
-/*
-class ToolIcon extends ImageView {
-
-    Tool tool;
-    com.cburch.logisim.circuit.Circuit circ = null;
-
-    ToolIcon(Tool tool) {
-
-        this.setImage(new Image(""));
-
-        this.tool = tool;
-        if (tool instanceof AddTool) {
-            ComponentFactory fact = ((AddTool) tool).getFactory(false);
-            if (fact instanceof SubcircuitFactory) {
-                circ = ((SubcircuitFactory) fact).getSubcircuit();
-            }
-        }
-    }
-
-    public int getIconHeight() {
-        return 20;
-    }
-
-    public int getIconWidth() {
-        return 20;
-    }
-
-
-
-    public void paintIcon() {
-
-        // draw halo if appropriate
-        if (tool == haloedTool && AppPreferences.ATTRIBUTE_HALO.getBoolean()) {
-            g.setColor(Canvas.HALO_COLOR);
-            g.fillRoundRect(x, y, 20, 20, 10, 10);
-            g.setColor(Color.BLACK);
-        }
-
-        // draw tool icon
-        Graphics gIcon = g.create();
-        ComponentDrawContext context = new ComponentDrawContext(ProjectExplorer.this, null, null, g, gIcon);
-        tool.paintIcon(context, x, y);
-        gIcon.dispose();
-
-        // draw magnifying glass if appropriate
-        if (circ == proj.getCurrentCircuit()) {
-            int tx = x + 13;
-            int ty = y + 13;
-            int[] xp = { tx - 1, x + 18, x + 20, tx + 1 };
-            int[] yp = { ty + 1, y + 20, y + 18, ty - 1 };
-            g.setColor(MAGNIFYING_INTERIOR);
-            g.fillOval(x + 5, y + 5, 10, 10);
-            g.setColor(Color.BLACK);
-            g.drawOval(x + 5, y + 5, 10, 10);
-            g.fillPolygon(xp, yp, xp.length);
-        }
-
-    }
-
-}
-
- */

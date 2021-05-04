@@ -8,9 +8,11 @@ import java.util.List;
 
 import javax.swing.Icon;
 
+import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.ComponentFactory;
 import com.cburch.LogisimFX.util.Icons;
 import com.cburch.LogisimFX.util.StringGetter;
+import javafx.scene.image.ImageView;
 
 /** This class allows an object to be created holding all the information
  * essential to showing a ComponentFactory in the explorer window, but without
@@ -35,7 +37,7 @@ public class FactoryDescription {
 	private StringGetter displayName;
 	private String iconName;
 	private boolean iconLoadAttempted;
-	private Icon icon;
+	private ImageView icon;
 	private String factoryClassName;
 	private boolean factoryLoadAttempted;
 	private ComponentFactory factory;
@@ -50,7 +52,7 @@ public class FactoryDescription {
 	}
 	
 	public FactoryDescription(String name, StringGetter displayName,
-			Icon icon, String factoryClassName) {
+							  ImageView icon, String factoryClassName) {
 		this(name, displayName, factoryClassName);
 		this.iconName = "???";
 		this.iconLoadAttempted = true;
@@ -82,16 +84,21 @@ public class FactoryDescription {
 		return factoryLoadAttempted;
 	}
 	
-	public Icon getIcon() {
-		Icon ret = icon;
+	public ImageView getIcon() {
+
+		System.out.println("from factory desc");
+
+		ImageView ret = icon;
+
 		if (ret != null || iconLoadAttempted) {
 			return ret;
 		} else {
-			ret = Icons.getIcon(iconName);
+			ret = IconsManager.getIcon(iconName);
 			icon = ret;
 			iconLoadAttempted = true;
 			return ret;
 		}
+
 	}
 	
 	public ComponentFactory getFactory(Class<? extends Library> libraryClass) {

@@ -36,6 +36,7 @@ import com.cburch.logisim.util.UnmodifiableList;
  * there is only one ComponentFactory created for any particular category.
  */
 public abstract class InstanceFactory extends AbstractComponentFactory {
+
 	private String name;
 	private StringGetter displayName;
 	private StringGetter defaultToolTip;

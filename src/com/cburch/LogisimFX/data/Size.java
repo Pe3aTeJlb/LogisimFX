@@ -9,6 +9,7 @@ package com.cburch.LogisimFX.data;
  * are immutable.
  */
 public class Size {
+
 	public static Size create(int wid, int ht) {
 		return new Size(wid, ht);
 	}

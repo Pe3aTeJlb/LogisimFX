@@ -3,6 +3,7 @@
 
 package com.cburch.LogisimFX.tools;
 
+import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.data.Attribute;
@@ -29,8 +30,7 @@ public abstract class Tool implements AttributeDefaultProvider {
 	public abstract String getName();
 	public abstract String getDisplayName();
 	public abstract String getDescription();
-	public ImageView getIcon(){
-		System.out.println("def shit ");return null; }
+	public ImageView getIcon(){ return null; }
 	public Tool cloneTool() { return this; }
 	public boolean sharesSource(Tool other) { return this == other; }
 	public AttributeSet getAttributeSet() { return null; }

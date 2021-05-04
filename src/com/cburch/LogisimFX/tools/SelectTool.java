@@ -12,6 +12,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.Icon;
 
+import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.comp.ComponentFactory;
@@ -49,6 +50,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class SelectTool extends Tool {
+
 	private static final Cursor selectCursor
 		= Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
 	private static final Cursor rectSelectCursor
@@ -59,7 +61,7 @@ public class SelectTool extends Tool {
 	private static final int IDLE = 0;
 	private static final int MOVING = 1;
 	private static final int RECT_SELECT = 2;
-	private static final Icon toolIcon = Icons.getIcon("select.gif");
+	private static final ImageView icon = IconsManager.getIcon("select.gif");
 
 	private static final Color COLOR_UNMATCHED = new Color(192, 0, 0);
 	private static final Color COLOR_COMPUTING = new Color(96, 192, 96);
@@ -125,11 +127,6 @@ public class SelectTool extends Tool {
 	@Override
 	public String getDescription() {
 		return Strings.get("selectToolDesc");
-	}
-
-	@Override
-	public ImageView getIcon() {
-		return null;
 	}
 
 	@Override
@@ -496,6 +493,11 @@ public class SelectTool extends Tool {
 		}
 		curDx = dx;
 		curDy = dy;
+	}
+
+	@Override
+	public ImageView getIcon(){
+		return icon;
 	}
 
 	@Override

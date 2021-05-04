@@ -188,7 +188,18 @@ public class AddTool extends Tool {
 
 	@Override
 	public ImageView getIcon() {
+
+		if (description != null && !description.isFactoryLoaded()) {
+			return description.getIcon();
+		}
+
+		ComponentFactory source = getFactory();
+		if (source != null) {
+			return source.getIcon();
+		}
+
 		return null;
+
 	}
 
 	@Override
@@ -252,8 +263,7 @@ public class AddTool extends Tool {
 		lastAddition = null;
 	}
 
-	private synchronized void moveTo(Canvas canvas, Graphics g,
-			int x, int y) {
+	private synchronized void moveTo(Canvas canvas, Graphics g, int x, int y) {
 		if (state != SHOW_NONE) expose(canvas, lastX, lastY);
 		lastX = x;
 		lastY = y;
@@ -261,8 +271,7 @@ public class AddTool extends Tool {
 	}
 
 	@Override
-	public void mouseEntered(Canvas canvas, Graphics g,
-			MouseEvent e) {
+	public void mouseEntered(Canvas canvas, Graphics g, MouseEvent e) {
 		if (state == SHOW_GHOST || state == SHOW_NONE) {
 			setState(canvas, SHOW_GHOST);
 			canvas.requestFocusInWindow();
@@ -273,8 +282,7 @@ public class AddTool extends Tool {
 	}
 
 	@Override
-	public void mouseExited(Canvas canvas, Graphics g,
-			MouseEvent e) {
+	public void mouseExited(Canvas canvas, Graphics g, MouseEvent e) {
 		if (state == SHOW_GHOST) {
 			moveTo(canvas, canvas.getGraphics(), INVALID_COORD, INVALID_COORD);
 			setState(canvas, SHOW_NONE);
@@ -323,10 +331,12 @@ public class AddTool extends Tool {
 	}
 
 	@Override
-	public void mouseReleased(Canvas canvas, Graphics g,
-			MouseEvent e) {
+	public void mouseReleased(Canvas canvas, Graphics g, MouseEvent e) {
+
 		Component added = null;
+
 		if (state == SHOW_ADD) {
+
 			Circuit circ = canvas.getCircuit();
 			if (!canvas.getProject().getLogisimFile().contains(circ)) return;
 			if (shouldSnap) Canvas.snapToGrid(e);
@@ -367,6 +377,7 @@ public class AddTool extends Tool {
 
 		Project proj = canvas.getProject();
 		Tool next = determineNext(proj);
+
 		if (next != null) {
 			proj.setTool(next);
 			Action act = SelectionActions.dropAll(canvas.getSelection());
@@ -375,9 +386,11 @@ public class AddTool extends Tool {
 			}
 			if (added != null) canvas.getSelection().add(added);
 		}
+
 	}
 	
 	private Tool determineNext(Project proj) {
+
 		String afterAdd = AppPreferences.ADD_AFTER.get();
 		if (afterAdd.equals(AppPreferences.ADD_AFTER_UNCHANGED)) {
 			return null;
@@ -389,6 +402,7 @@ public class AddTool extends Tool {
 				return base.getTool("Edit Tool");
 			}
 		}
+
 	}
 	
 	@Override

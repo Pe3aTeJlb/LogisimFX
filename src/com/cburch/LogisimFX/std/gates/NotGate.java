@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.swing.Icon;
 
+import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.analyze.model.Expression;
 import com.cburch.LogisimFX.analyze.model.Expressions;
 import com.cburch.LogisimFX.comp.TextField;
@@ -20,6 +21,7 @@ import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.Icons;
 import com.cburch.LogisimFX.circuit.ExpressionComputer;
 import com.cburch.LogisimFX.prefs.AppPreferences;
+import javafx.scene.image.ImageView;
 
 class NotGate extends InstanceFactory {
 	public static final AttributeOption SIZE_NARROW
@@ -33,13 +35,14 @@ class NotGate extends InstanceFactory {
 			new AttributeOption[] { SIZE_NARROW, SIZE_WIDE });
 
 	private static final String RECT_LABEL = "1";
-	private static final Icon toolIcon = Icons.getIcon("notGate.gif");
-	private static final Icon toolIconRect = Icons.getIcon("notGateRect.gif");
-	private static final Icon toolIconDin = Icons.getIcon("dinNotGate.gif");
+	private static final ImageView toolIcon = IconsManager.getIcon("notGate.gif");
+	private static final ImageView toolIconRect = IconsManager.getIcon("notGateRect.gif");
+	private static final ImageView toolIconDin = IconsManager.getIcon("dinNotGate.gif");
 
 	public static InstanceFactory FACTORY = new NotGate();
 
 	private NotGate() {
+
 		super("NOT Gate", Strings.getter("notGateComponent"));
 		setAttributes(new Attribute[] {
 				StdAttr.FACING, StdAttr.WIDTH, ATTR_SIZE,
@@ -52,6 +55,7 @@ class NotGate extends InstanceFactory {
 			});
 		setFacingAttribute(StdAttr.FACING);
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
+
 	}
 
 	@Override
@@ -131,6 +135,12 @@ class NotGate extends InstanceFactory {
 	//
 	// painting methods
 	//
+
+	@Override
+	public ImageView getIcon() {
+		return toolIcon;
+	}
+
 	@Override
 	public void paintIcon(InstancePainter painter) {
 		Graphics g = painter.getGraphics();

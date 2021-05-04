@@ -22,8 +22,8 @@ import java.awt.event.MouseEvent;
 import java.util.Collection;
 
 public class MenuTool extends Tool {
-	private class MenuComponent extends JPopupMenu
-			implements ActionListener {
+
+	private class MenuComponent extends JPopupMenu implements ActionListener {
 		Project proj;
 		Circuit circ;
 		Component comp;
@@ -52,10 +52,11 @@ public class MenuTool extends Tool {
 				proj.getFrame().viewComponentAttributes(circ, comp);
 			}
 		}
+
 	}
 
-	private class MenuSelection extends JPopupMenu
-			implements ActionListener {
+	private class MenuSelection extends JPopupMenu implements ActionListener {
+
 		Project proj;
 		JMenuItem del = new JMenuItem(Strings.get("selDeleteItem"));
 		JMenuItem cut = new JMenuItem(Strings.get("selCutItem"));
@@ -158,4 +159,5 @@ public class MenuTool extends Tool {
 			g.drawLine(x + 4, y_offs, x + 14, y_offs);
 		}
 	}
+
 }

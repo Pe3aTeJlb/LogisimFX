@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.Icon;
 
+import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
@@ -16,6 +17,7 @@ import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.Icons;
 import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.circuit.RadixOption;
+import javafx.scene.image.ImageView;
 
 public class Clock extends InstanceFactory {
 	public static final Attribute<Integer> ATTR_HIGH
@@ -28,7 +30,7 @@ public class Clock extends InstanceFactory {
 
 	public static final Clock FACTORY = new Clock();
 
-	private static final Icon toolIcon = Icons.getIcon("clock.gif");
+	private static final ImageView icon = IconsManager.getIcon("clock.gif");
 
 	private static class ClockState implements InstanceData, Cloneable {
 		Value sending = Value.FALSE;
@@ -103,6 +105,11 @@ public class Clock extends InstanceFactory {
 	//
 	// graphics methods
 	//
+	@Override
+	public ImageView getIcon(){
+		return icon;
+	}
+
 	@Override
 	public void paintIcon(InstancePainter painter) {
 		Graphics g = painter.getGraphics();

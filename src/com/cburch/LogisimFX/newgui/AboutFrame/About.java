@@ -126,7 +126,7 @@ public class About extends AbstractController {
     public void postInitialization(Stage s) {
 
         stage = s;
-        stage.setTitle("Logisim " + Main.VERSION_NAME);
+        stage.setTitle("LogisimFX " + Main.VERSION_NAME);
         stage.setResizable(false);
 
     }

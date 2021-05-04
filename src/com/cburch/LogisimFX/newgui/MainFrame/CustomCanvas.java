@@ -187,7 +187,8 @@ public class CustomCanvas extends Canvas {
 
         cv.setOnScroll(event -> {
 
-            clearRect40K();
+
+            clearRect40K(transform[4], transform[5]);
 
             double newScale;
             double oldScale = transform[0];
@@ -210,7 +211,6 @@ public class CustomCanvas extends Canvas {
 
             transform[4] = width / 2 - cx * newScale;
             transform[5] = height / 2 - cy * newScale;
-
 
         });
 

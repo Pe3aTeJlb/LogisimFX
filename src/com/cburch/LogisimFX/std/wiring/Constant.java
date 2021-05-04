@@ -18,12 +18,15 @@ import java.util.List;
 import java.util.Map;
 
 public class Constant extends InstanceFactory {
+
 	public static final Attribute<Integer> ATTR_VALUE
 		= Attributes.forHexInteger("value", Strings.getter("constantValueAttr"));
 
 	public static InstanceFactory FACTORY = new Constant();
 
 	private static final Color BACKGROUND_COLOR = new Color(230, 230, 230);
+
+
 	
 	private static final List<Attribute<?>> ATTRIBUTES
 		= Arrays.asList(new Attribute<?>[] {
@@ -97,6 +100,7 @@ public class Constant extends InstanceFactory {
 		setKeyConfigurator(JoinedConfigurator.create(
 				new ConstantConfigurator(),
 				new BitWidthConfigurator(StdAttr.WIDTH)));
+		setIconName("constant.gif");
 	}
 
 	@Override

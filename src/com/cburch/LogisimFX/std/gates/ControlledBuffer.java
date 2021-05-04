@@ -9,6 +9,7 @@ import java.awt.Graphics2D;
 
 import javax.swing.Icon;
 
+import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.ComponentFactory;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
@@ -18,8 +19,10 @@ import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.Icons;
 import com.cburch.LogisimFX.file.Options;
+import javafx.scene.image.ImageView;
 
 class ControlledBuffer extends InstanceFactory {
+
 	private static final AttributeOption RIGHT_HANDED
 		= new AttributeOption("right", Strings.getter("controlledRightHanded"));
 	private static final AttributeOption LEFT_HANDED
@@ -31,8 +34,8 @@ class ControlledBuffer extends InstanceFactory {
 	public static ComponentFactory FACTORY_BUFFER = new ControlledBuffer(false);
 	public static ComponentFactory FACTORY_INVERTER = new ControlledBuffer(true);
 
-	private static final Icon ICON_BUFFER = Icons.getIcon("controlledBuffer.gif");
-	private static final Icon ICON_INVERTER = Icons.getIcon("controlledInverter.gif");
+	private static final ImageView ICON_BUFFER = IconsManager.getIcon("controlledBuffer.gif");
+	private static final ImageView ICON_INVERTER = IconsManager.getIcon("controlledInverter.gif");
 
 	private boolean isInverter;
 
@@ -76,6 +79,12 @@ class ControlledBuffer extends InstanceFactory {
 	//
 	// graphics methods
 	//
+
+	@Override
+	public ImageView getIcon(){
+		return isInverter ? ICON_INVERTER : ICON_BUFFER;
+	}
+
 	@Override
 	public void paintGhost(InstancePainter painter) {
 		paintShape(painter);

@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.swing.Icon;
 
+import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.analyze.model.Expression;
 import com.cburch.LogisimFX.analyze.model.Expressions;
 import com.cburch.LogisimFX.comp.TextField;
@@ -27,10 +28,12 @@ import com.cburch.LogisimFX.LogisimVersion;
 import com.cburch.LogisimFX.circuit.ExpressionComputer;
 import com.cburch.LogisimFX.file.Options;
 import com.cburch.LogisimFX.prefs.AppPreferences;
+import javafx.scene.image.ImageView;
 
 abstract class AbstractGate extends InstanceFactory {
+
 	private String[] iconNames = new String[3];
-	private Icon[] icons = new Icon[3];
+	private ImageView[] icons = new ImageView[3];
 	private int bonusWidth = 0;
 	private boolean negateOutput = false;
 	private boolean isXor = false;
@@ -218,6 +221,13 @@ abstract class AbstractGate extends InstanceFactory {
 		iconNames[0] = shaped;
 		iconNames[1] = rect;
 		iconNames[2] = din;
+	}
+
+	@Override
+	public ImageView getIcon() {
+
+		return IconsManager.getIcon(iconNames[0]);
+
 	}
 
 	private Icon getIcon(int type) {

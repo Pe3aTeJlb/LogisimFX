@@ -10,8 +10,7 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-import javax.swing.Icon;
-
+import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.data.Location;
@@ -23,15 +22,17 @@ import com.cburch.LogisimFX.circuit.Wire;
 import com.cburch.logisim.gui.main.Canvas;
 import com.cburch.LogisimFX.prefs.AppPreferences;
 import com.cburch.LogisimFX.proj.Action;
+import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Set;
 
 public class WiringTool extends Tool {
+
 	private static Cursor cursor
 		= Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
-	private static final Icon toolIcon = Icons.getIcon("wiring.gif");
+	private static final ImageView icon = IconsManager.getIcon("wiring.gif");
 	
 	private static final int HORIZONTAL = 1;
 	private static final int VERTICAL = 2;
@@ -383,6 +384,11 @@ public class WiringTool extends Tool {
 				lastAction = null;
 			}
 		}
+	}
+
+	@Override
+	public ImageView getIcon(){
+		return icon;
 	}
 
 	@Override

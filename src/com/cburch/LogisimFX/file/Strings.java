@@ -8,6 +8,7 @@ import com.cburch.LogisimFX.util.StringGetter;
 import com.cburch.LogisimFX.util.StringUtil;
 
 class Strings {
+
 	private static LocaleManager source
 		= new LocaleManager("resources/logisim", "file");
 
@@ -23,4 +24,5 @@ class Strings {
 	public static StringGetter getter(String key) {
 		return source.getter(key);
 	}
+
 }

@@ -1,6 +1,5 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
-import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.file.ToolbarData;
 import com.cburch.LogisimFX.tools.Tool;
@@ -11,6 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
 import javafx.scene.control.ToolBar;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 
 public class MainToolBar extends ToolBar {
@@ -136,10 +136,14 @@ public class MainToolBar extends ToolBar {
         public ToolButton(Tool tool) {
 
             super();
+
             setPrefSize(prefWidth,prefHeight);
             setMinSize(prefWidth,prefHeight);
             setMaxSize(prefWidth,prefHeight);
-            graphicProperty().setValue(tool.getIcon());
+
+            ImageView buff = new ImageView(tool.getIcon().getImage());
+            graphicProperty().setValue(buff);
+
             setActions(tool);
 
         }

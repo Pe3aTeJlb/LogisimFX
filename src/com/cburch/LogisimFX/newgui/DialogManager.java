@@ -3,41 +3,49 @@ package com.cburch.LogisimFX.newgui;
 
 import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.file.LogisimFile;
+import com.cburch.LogisimFX.newgui.MainFrame.ProjectLibraryActions;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.tools.Library;
 
+import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class DialogManager {
 
-    public static void CreateWarningDialog(String title, String content){
+    private static final Localizer lc = new Localizer(null);
+
+    public static void CreateWarningDialog(String header, String content){
 
         Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
+        alert.setTitle("LogisimFX");
+        alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
 
     }
 
-    public static void CreateInfoDialog(String title, String content){
+    public static void CreateInfoDialog(String header, String content){
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
+        alert.setTitle("LogisimFX");
+        alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
 
     }
 
-    public static void CreateErrorDialog(String title, String content){
+    public static void CreateErrorDialog(String header, String content){
 
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
+        alert.setTitle("LogisimFX");
+        alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
 
@@ -46,7 +54,8 @@ public class DialogManager {
     public static void CreateStackTraceDialog(String title, String header, Exception e){
 
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
+        alert.setTitle("LogisimFX");
+        //alert.setTitle(title);
         alert.setHeaderText(header);
 
         // Create expandable Exception.
@@ -78,12 +87,13 @@ public class DialogManager {
 
     }
 
-    public static void CreateScrollError(String title, String body){
+    public static void CreateScrollError(String header, String content){
 
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
+        alert.setTitle("LogisimFX");
+        alert.setTitle(header);
 
-        TextArea textArea = new TextArea(body);
+        TextArea textArea = new TextArea(content);
         textArea.setEditable(false);
         textArea.setWrapText(true);
 
@@ -105,10 +115,11 @@ public class DialogManager {
 
     public static int CreateConfirmCloseDialog(Project proj){
 
-        Localizer lc = new Localizer("gui");
+        lc.changeBundle("gui");
+        //Localizer lc = new Localizer("gui");
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("");
+        alert.setTitle("LogisimFX");
         alert.setHeaderText(lc.get("confirmCloseTitle"));
         alert.setContentText(lc.createComplexString("confirmDiscardMessage",  proj.getLogisimFile().getName()));
 
@@ -131,10 +142,11 @@ public class DialogManager {
 
     public static int CreateFileReloadDialog(Project proj){
 
-        Localizer lc = new Localizer("proj");
+        lc.changeBundle("proj");
+        //Localizer lc = new Localizer("proj");
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("");
+        alert.setTitle("LogisimFX");
         alert.setHeaderText(lc.get("openAlreadyTitle"));
         alert.setContentText(lc.createComplexString("openAlreadyMessage",proj.getLogisimFile().getName()));
 
@@ -157,10 +169,11 @@ public class DialogManager {
 
     public static String CreateInputDialog(LogisimFile file){
 
-        Localizer lc = new Localizer("menu");
+        lc.changeBundle("menu");
+        //Localizer lc = new Localizer("menu");
 
         TextInputDialog inputDialog = new TextInputDialog();
-        inputDialog.setTitle(lc.get("circuitNameDialogTitle"));
+        inputDialog.setTitle("LogisimFX");
         inputDialog.setHeaderText(lc.get("circuitNameDialogTitle"));
         inputDialog.setContentText(lc.get("circuitNamePrompt"));
 
@@ -192,21 +205,52 @@ public class DialogManager {
 
     }
 
-    public static int CreateConfirmDialog(){
+    public static String CreateInputDialog(String title, String body){
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation Dialog");
-        alert.setHeaderText("Look, a Confirmation Dialog");
-        alert.setContentText("Are you ok with this?");
+        //lc.changeBundle("menu");
+        //Localizer lc = new Localizer("menu");
 
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK){
-            return 1;
-        } else {
-            return 0;
+        TextInputDialog inputDialog = new TextInputDialog();
+        inputDialog.setTitle("LogisimFX");
+        inputDialog.setHeaderText(title);
+        inputDialog.setContentText(body);
+
+        Optional<String> result = inputDialog.showAndWait();
+
+        if (result.isPresent()){
+            return  result.get();
+        }else {
+            return null;
         }
 
     }
 
+    public static Library[] CreateLibSelectionDialog(ArrayList<Library> libs){
+
+        lc.changeBundle("menu");
+
+        ListViewDialog<Library> dialog = new ListViewDialog<>(null,libs);
+
+        dialog.setTitle("LogisimFX");
+        dialog.setHeaderText(lc.get("unloadLibrariesDialogTitle"));
+        dialog.setMultipleSelectionModel();
+
+        Optional<Library> result = dialog.showAndWait();
+
+       if(result.isPresent()){
+
+           Library[] out = new Library[dialog.getSelectedItems().size()];
+
+           for(int i = 0; i < dialog.getSelectedItems().size(); i++){
+
+               out[i] = dialog.getSelectedItems().get(i);
+
+           }
+
+           return  out;
+
+       }else {return null;}
+
+    }
 
 }
