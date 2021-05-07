@@ -3,8 +3,8 @@
 
 package com.cburch.LogisimFX.circuit.appear;
 
-import com.cburch.draw.model.AbstractCanvasObject;
-import com.cburch.draw.shapes.SvgReader;
+import com.cburch.LogisimFX.draw.model.AbstractCanvasObject;
+import com.cburch.LogisimFX.draw.shapes.SvgReader;
 import com.cburch.LogisimFX.data.Direction;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.instance.Instance;

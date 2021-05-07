@@ -44,7 +44,7 @@ public class Text extends InstanceFactory {
 
 	private Text() {
 		super("Text", Strings.getter("textComponent"));
-		setIconName("text.gif");
+		setIcon("text.gif");
 		setShouldSnap(false);
 	}
 	

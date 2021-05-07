@@ -31,7 +31,7 @@ public class BitFinder extends InstanceFactory {
 				BitWidth.create(8), LOW_ONE
 			});
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
-		setIconName("bitfindr.gif");
+		setIcon("bitfindr.gif");
 	}
 	
 	@Override

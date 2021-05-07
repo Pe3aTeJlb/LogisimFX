@@ -376,7 +376,7 @@ public class CustomMenuBar extends MenuBar {
             explorerToolBar.EditCircuitLayout.set(false);
             explorerToolBar.EditCircuitAppearance.set(true);
 
-            explorerToolBar.MainToolBar.SetMainToolBarItems("RedactBlackBox");
+            explorerToolBar.MainToolBar.SetMainToolBarItems("RedactAppearance");
             //TODO: add controll method for canvas
         });
 

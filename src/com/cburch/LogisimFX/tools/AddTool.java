@@ -12,6 +12,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
 
+import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.comp.ComponentFactory;
@@ -137,6 +138,7 @@ public class AddTool extends Tool {
 	}
 
 	public ComponentFactory getFactory() {
+
 		ComponentFactory ret = factory;
 		if (ret != null || sourceLoadAttempted) {
 			return ret;
@@ -151,6 +153,7 @@ public class AddTool extends Tool {
 			sourceLoadAttempted = true;
 			return ret;
 		}
+
 	}
 
 	@Override
@@ -167,8 +170,10 @@ public class AddTool extends Tool {
 
 	@Override
 	public String getDescription() {
+
 		String ret;
 		FactoryDescription desc = description;
+
 		if (desc != null) {
 			ret = desc.getToolTip();
 		} else {
@@ -180,10 +185,13 @@ public class AddTool extends Tool {
 				ret = null;
 			}
 		}
+
 		if (ret == null) {
 			ret = StringUtil.format(Strings.get("addToolText"), getDisplayName());
 		}
+
 		return ret;
+
 	}
 
 	@Override
@@ -193,7 +201,8 @@ public class AddTool extends Tool {
 			return description.getIcon();
 		}
 
-		ComponentFactory source = getFactory();
+		ComponentFactory source = getFactory(false);
+
 		if (source != null) {
 			return source.getIcon();
 		}

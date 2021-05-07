@@ -3,8 +3,8 @@
 
 package com.cburch.LogisimFX.circuit.appear;
 
-import com.cburch.draw.model.AbstractCanvasObject;
-import com.cburch.draw.model.CanvasObject;
+import com.cburch.LogisimFX.draw.model.AbstractCanvasObject;
+import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;

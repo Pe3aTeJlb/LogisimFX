@@ -22,6 +22,7 @@ import java.util.Map;
 public class SubcircuitFactory extends InstanceFactory {
 
 	private class CircuitFeature implements StringGetter, MenuExtender, ActionListener {
+
 		private Instance instance;
 		private Project proj;
 		
@@ -61,6 +62,7 @@ public class SubcircuitFactory extends InstanceFactory {
 		setFacingAttribute(StdAttr.FACING);
 		setDefaultToolTip(new CircuitFeature(null));
 		setInstancePoker(SubcircuitPoker.class);
+		setIcon("subcirc.gif");
 	}
 
 	public Circuit getSubcircuit() {

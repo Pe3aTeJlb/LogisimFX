@@ -100,7 +100,7 @@ public class Constant extends InstanceFactory {
 		setKeyConfigurator(JoinedConfigurator.create(
 				new ConstantConfigurator(),
 				new BitWidthConfigurator(StdAttr.WIDTH)));
-		setIconName("constant.gif");
+		setIcon("constant.gif");
 	}
 
 	@Override

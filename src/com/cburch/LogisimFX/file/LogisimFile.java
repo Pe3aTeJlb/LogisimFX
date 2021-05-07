@@ -27,7 +27,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class LogisimFile extends Library implements LibraryEventSource {
+
 	private static class WritingThread extends Thread {
+
 		OutputStream out;
 		LogisimFile file;
 
@@ -38,6 +40,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 
 		@Override
 		public void run() {
+
 			try {
 				file.write(out, file.loader);
 			} catch (IOException e) {
@@ -50,7 +53,9 @@ public class LogisimFile extends Library implements LibraryEventSource {
 				file.loader.showError(StringUtil.format(
 					Strings.get("fileDuplicateError"), e.toString()));
 			}
+
 		}
+
 	}
 
 	private EventSourceWeakSupport<LibraryListener> listeners

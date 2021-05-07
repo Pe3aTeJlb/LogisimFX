@@ -3,10 +3,10 @@
 
 package com.cburch.LogisimFX.circuit.appear;
 
-import com.cburch.draw.model.CanvasObject;
-import com.cburch.draw.shapes.Curve;
-import com.cburch.draw.shapes.DrawAttr;
-import com.cburch.draw.shapes.Rectangle;
+import com.cburch.LogisimFX.draw.model.CanvasObject;
+import com.cburch.LogisimFX.draw.shapes.Curve;
+import com.cburch.LogisimFX.draw.shapes.DrawAttr;
+import com.cburch.LogisimFX.draw.shapes.Rectangle;
 import com.cburch.LogisimFX.data.Direction;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.instance.Instance;

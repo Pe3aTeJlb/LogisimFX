@@ -151,4 +151,5 @@ public class FactoryDescription {
 		StringGetter getter = toolTip;
 		return getter == null ? null : getter.get();
 	}
+
 }

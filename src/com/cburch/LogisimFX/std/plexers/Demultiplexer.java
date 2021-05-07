@@ -26,7 +26,7 @@ public class Demultiplexer extends InstanceFactory {
 				new BitWidthConfigurator(Plexers.ATTR_SELECT, 1, 5, 0),
 				new BitWidthConfigurator(StdAttr.WIDTH)));
 		setFacingAttribute(StdAttr.FACING);
-		setIconName("demultiplexer.gif");
+		setIcon("demultiplexer.gif");
 	}
 	
 	@Override

@@ -3,6 +3,7 @@ package com.cburch.LogisimFX.newgui.ExportImageFrame;
 import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.newgui.AbstractController;
 import com.cburch.LogisimFX.newgui.DialogManager;
+import com.cburch.LogisimFX.newgui.PreferencesFrame.LC;
 import com.cburch.LogisimFX.proj.Project;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -52,9 +53,6 @@ public class ExportImageController extends AbstractController {
     @FXML
     private Button CancelBtn;
 
-
-    private Localizer lc = new Localizer("gui");
-
     private ObservableList<String> circuits = FXCollections.observableArrayList("1","2","1","1","1","1","1","1","1");
     private Project proj;
 
@@ -77,7 +75,7 @@ public class ExportImageController extends AbstractController {
     public void postInitialization(Stage s, Project project) {
 
         stage = s;
-        stage.titleProperty().bind(lc.createStringBinding("printParmsTitle"));
+        stage.titleProperty().bind(LC.createStringBinding("printParmsTitle"));
         stage.setHeight(300);
         stage.setWidth(300);
 
@@ -86,7 +84,7 @@ public class ExportImageController extends AbstractController {
         //setCircuitList(true);
 
         if(circuits.size()==0){
-            DialogManager.CreateErrorDialog( lc.get("printEmptyCircuitsTitle"), lc.get("printEmptyCircuitsMessage"));
+            DialogManager.CreateErrorDialog( LC.get("printEmptyCircuitsTitle"), LC.get("printEmptyCircuitsMessage"));
         }
 
     }

@@ -45,7 +45,7 @@ public class Probe extends InstanceFactory {
 
 	public Probe() {
 		super("Probe", Strings.getter("probeComponent"));
-		setIconName("probe.gif");
+		setIcon("probe.gif");
 		setFacingAttribute(StdAttr.FACING);
 		setInstanceLogger(ProbeLogger.class);
 	}

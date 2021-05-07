@@ -8,6 +8,7 @@ import java.awt.Color;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.util.StringGetter;
 import com.cburch.LogisimFX.LogisimVersion;
+
 import javafx.scene.image.ImageView;
 
 /**

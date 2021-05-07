@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 public abstract class CanvasTool {
+
 	public abstract Cursor getCursor(Canvas canvas);
 	public void draw(Canvas canvas, Graphics g) { }
 	

@@ -31,7 +31,7 @@ public class Register extends InstanceFactory {
 			});
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
 		setOffsetBounds(Bounds.create(-30, -20, 30, 40));
-		setIconName("register.gif");
+		setIcon("register.gif");
 		setInstancePoker(RegisterPoker.class);
 		setInstanceLogger(RegisterLogger.class);
 		

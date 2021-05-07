@@ -4,10 +4,10 @@
 package com.cburch.LogisimFX.circuit.appear;
 
 import com.cburch.LogisimFX.circuit.Circuit;
-import com.cburch.draw.model.CanvasModelEvent;
-import com.cburch.draw.model.CanvasModelListener;
-import com.cburch.draw.model.CanvasObject;
-import com.cburch.draw.model.Drawing;
+import com.cburch.LogisimFX.draw.model.CanvasModelEvent;
+import com.cburch.LogisimFX.draw.model.CanvasModelListener;
+import com.cburch.LogisimFX.draw.model.CanvasObject;
+import com.cburch.LogisimFX.draw.model.Drawing;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Direction;
 import com.cburch.LogisimFX.data.Location;

@@ -10,7 +10,7 @@ import com.cburch.LogisimFX.circuit.Analyze;
 import com.cburch.LogisimFX.circuit.AnalyzeException;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.file.LogisimFileActions;
-import com.cburch.LogisimFX.gui.menu.Strings;
+//import com.cburch.LogisimFX.gui.menu.Strings;
 import com.cburch.LogisimFX.instance.Instance;
 import com.cburch.LogisimFX.instance.StdAttr;
 import com.cburch.LogisimFX.proj.Project;

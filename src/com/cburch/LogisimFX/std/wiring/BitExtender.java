@@ -30,7 +30,7 @@ public class BitExtender extends InstanceFactory {
 
 	public BitExtender() {
 		super("Bit Extender", Strings.getter("extenderComponent"));
-		setIconName("extender.gif");
+		setIcon("extender.gif");
 		setAttributes(new Attribute[] {
 				ATTR_IN_WIDTH, ATTR_OUT_WIDTH, ATTR_TYPE
 			}, new Object[] {

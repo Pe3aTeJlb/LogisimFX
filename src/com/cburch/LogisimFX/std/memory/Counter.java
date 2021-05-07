@@ -41,7 +41,7 @@ public class Counter extends InstanceFactory {
 	public Counter() {
 		super("Counter", Strings.getter("counterComponent"));
 		setOffsetBounds(Bounds.create(-30, -20, 30, 40));
-		setIconName("counter.gif");
+		setIcon("counter.gif");
 		setInstancePoker(RegisterPoker.class);
 		setInstanceLogger(RegisterLogger.class);
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));

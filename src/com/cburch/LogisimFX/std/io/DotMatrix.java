@@ -51,7 +51,7 @@ public class DotMatrix extends InstanceFactory {
 				INPUT_COLUMN, Integer.valueOf(5), Integer.valueOf(7),
 				Color.GREEN, Color.DARK_GRAY, Integer.valueOf(0), SHAPE_SQUARE
 			});
-		setIconName("dotmat.gif");
+		setIcon("dotmat.gif");
 	}
 
 	@Override

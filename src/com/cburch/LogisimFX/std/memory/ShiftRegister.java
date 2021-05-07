@@ -38,7 +38,7 @@ public class ShiftRegister extends InstanceFactory {
 				new IntegerConfigurator(ATTR_LENGTH, 1, 32, 0),
 				new BitWidthConfigurator(StdAttr.WIDTH)));
 
-		setIconName("shiftreg.gif");
+		setIcon("shiftreg.gif");
 		setInstanceLogger(ShiftRegisterLogger.class);
 		setInstancePoker(ShiftRegisterPoker.class);
 	}

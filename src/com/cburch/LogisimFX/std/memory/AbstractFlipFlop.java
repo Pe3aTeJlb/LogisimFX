@@ -19,7 +19,7 @@ abstract class AbstractFlipFlop extends InstanceFactory {
 	protected AbstractFlipFlop(String name, String iconName, StringGetter desc,
 			int numInputs, boolean allowLevelTriggers) {
 		super(name, desc);
-		setIconName(iconName);
+		setIcon(iconName);
 		triggerAttribute = allowLevelTriggers ? StdAttr.TRIGGER : StdAttr.EDGE_TRIGGER;
 		setAttributes(new Attribute[] {
 				triggerAttribute, StdAttr.LABEL, StdAttr.LABEL_FONT

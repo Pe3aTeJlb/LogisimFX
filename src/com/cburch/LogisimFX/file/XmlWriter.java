@@ -3,7 +3,7 @@
 
 package com.cburch.LogisimFX.file;
 
-import com.cburch.draw.model.AbstractCanvasObject;
+import com.cburch.LogisimFX.draw.model.AbstractCanvasObject;
 import com.cburch.LogisimFX.LogisimVersion;
 import com.cburch.LogisimFX.Main;
 import com.cburch.LogisimFX.circuit.Circuit;

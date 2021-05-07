@@ -1,6 +1,5 @@
 package com.cburch.LogisimFX.newgui.PrintFrame;
 
-import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.newgui.AbstractController;
 import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.circuit.Circuit;
@@ -8,22 +7,17 @@ import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.data.Bounds;
-import com.cburch.LogisimFX.file.LogisimFile;
-import com.cburch.LogisimFX.gui.main.Frame;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.util.StringUtil;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.print.PrintColor;
-import javafx.print.PrinterAttributes;
+
 import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-
-import javax.print.attribute.standard.PrinterMakeAndModel;
 
 
 public class PrintController extends AbstractController {
@@ -48,8 +42,6 @@ public class PrintController extends AbstractController {
     @FXML
     private Button CancleBtn;
 
-    private Localizer lc = new Localizer("gui");
-
     private PrinterJob job;
     private Project proj;
 
@@ -58,9 +50,9 @@ public class PrintController extends AbstractController {
     @FXML
     public void initialize(){
 
-        CircuitsLbl.textProperty().bind(lc.createStringBinding("labelCircuits"));
+        CircuitsLbl.textProperty().bind(LC.createStringBinding("labelCircuits"));
 
-        HeaderLbl.textProperty().bind(lc.createStringBinding("labelHeader"));
+        HeaderLbl.textProperty().bind(LC.createStringBinding("labelHeader"));
         HeaderTxtFld.setText("%n (%p of %P)");
 
         OkBtn.setText("Ok");
@@ -79,7 +71,7 @@ public class PrintController extends AbstractController {
     public void postInitialization(Stage s, Project project) {
 
         stage = s;
-        stage.titleProperty().bind(lc.createStringBinding("printParmsTitle"));
+        stage.titleProperty().bind(LC.createStringBinding("printParmsTitle"));
         stage.setHeight(300);
         stage.setWidth(300);
 
@@ -88,7 +80,7 @@ public class PrintController extends AbstractController {
         setCircuitList(true);
 
         if(circuits.size()==0){
-            DialogManager.CreateErrorDialog( lc.get("printEmptyCircuitsTitle"), lc.get("printEmptyCircuitsMessage"));
+            DialogManager.CreateErrorDialog( LC.get("printEmptyCircuitsTitle"), LC.get("printEmptyCircuitsMessage"));
         }
 
 

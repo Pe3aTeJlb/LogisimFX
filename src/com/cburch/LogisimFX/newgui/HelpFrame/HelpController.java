@@ -24,8 +24,6 @@ public class HelpController extends AbstractController {
 
     private final SwingNode SwingContainer = new SwingNode();
 
-    private Localizer lc = new Localizer("menu");
-
     private HelpSet helpSet;
     private String helpSetUrl = "";
     private JHelp helpComponent;
@@ -33,7 +31,7 @@ public class HelpController extends AbstractController {
     @FXML
     public void initialize(){
         
-        String helpUrl = "com/cburch/"+lc.get("helpsetUrl");
+        String helpUrl = "com/cburch/"+LC.get("helpsetUrl");
         if (helpUrl == null) helpUrl = "com/cburch/LogisimFX/resources/doc/doc_en.hs";
 
         if (helpSet == null || !helpUrl.equals(helpSetUrl)) {
@@ -45,7 +43,7 @@ public class HelpController extends AbstractController {
                 URL hsURL = HelpSet.findHelpSet(loader, helpUrl);
 
                 if (hsURL == null) {
-                    DialogManager.CreateErrorDialog("Error",lc.get("helpNotFoundError"));
+                    DialogManager.CreateErrorDialog("Error",LC.get("helpNotFoundError"));
                     return;
                 }
 
@@ -55,7 +53,7 @@ public class HelpController extends AbstractController {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                DialogManager.CreateErrorDialog("Error",lc.get("helpUnavailableError"));
+                DialogManager.CreateErrorDialog("Error",LC.get("helpUnavailableError"));
                 return;
             }
 
@@ -75,7 +73,7 @@ public class HelpController extends AbstractController {
     @Override
     public void postInitialization(Stage s) {
         stage = s;
-        stage.titleProperty().bind(lc.createStringBinding("helpWindowTitle"));
+        stage.titleProperty().bind(LC.createStringBinding("helpWindowTitle"));
     }
 
     private void createSwingContent(final SwingNode swingNode) {

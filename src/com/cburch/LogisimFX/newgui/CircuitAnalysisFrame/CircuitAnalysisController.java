@@ -10,8 +10,6 @@ public class CircuitAnalysisController extends AbstractController {
 
     private Stage stage;
 
-    private Localizer lc = new Localizer("");
-
     @FXML
     public void initialize(){
     }

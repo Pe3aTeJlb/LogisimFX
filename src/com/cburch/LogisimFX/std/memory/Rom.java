@@ -36,7 +36,7 @@ public class Rom extends Mem {
 	
 	public Rom() {
 		super("ROM", Strings.getter("romComponent"), 0);
-		setIconName("rom.gif");
+		setIcon("rom.gif");
 		memListeners = new WeakHashMap<Instance,MemListener>();
 	}
 

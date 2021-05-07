@@ -37,7 +37,6 @@ public abstract class InstanceFactory extends AbstractComponentFactory {
 	private String name;
 	private StringGetter displayName;
 	private StringGetter defaultToolTip;
-	private String iconName;
 	private ImageView icon;
 	private Attribute<?>[] attrs;
 	private Object[] defaults;
@@ -57,7 +56,6 @@ public abstract class InstanceFactory extends AbstractComponentFactory {
 	public InstanceFactory(String name, StringGetter displayName) {
 		this.name = name;
 		this.displayName = displayName;
-		this.iconName = null;
 		this.icon = null;
 		this.attrs = null;
 		this.defaults = null;
@@ -83,8 +81,7 @@ public abstract class InstanceFactory extends AbstractComponentFactory {
 		return displayName;
 	}
 
-	public void setIconName(String value) {
-		iconName = value;
+	public void setIcon(String value) {
 		icon = IconsManager.getIcon(value);
 	}
 

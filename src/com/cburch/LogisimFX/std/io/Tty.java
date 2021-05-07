@@ -41,7 +41,7 @@ public class Tty extends InstanceFactory {
 				Integer.valueOf(8), Integer.valueOf(32), StdAttr.TRIG_RISING,
 				Color.BLACK, DEFAULT_BACKGROUND
 			});
-		setIconName("tty.gif");
+		setIcon("tty.gif");
 
 		Port[] ps = new Port[4];
 		ps[CLR] = new Port(20,  10, Port.INPUT, 1);

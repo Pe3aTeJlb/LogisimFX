@@ -42,7 +42,7 @@ public class Ram extends Mem {
 
 	public Ram() {
 		super("RAM", Strings.getter("ramComponent"), 3);
-		setIconName("ram.gif");
+		setIcon("ram.gif");
 		setInstanceLogger(Logger.class);
 	}
 	

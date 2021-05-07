@@ -1,7 +1,7 @@
 package com.cburch.LogisimFX.newgui.OptionsFrame;
 
-import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.newgui.AbstractController;
+import com.cburch.LogisimFX.newgui.PreferencesFrame.LC;
 import com.cburch.LogisimFX.proj.Project;
 
 import javafx.fxml.FXML;
@@ -10,8 +10,6 @@ import javafx.stage.Stage;
 public class OptionsController extends AbstractController {
 
     private Stage stage;
-
-    private Localizer lc = new Localizer("opts");
 
     private Project proj;
 
@@ -27,7 +25,7 @@ public class OptionsController extends AbstractController {
 
         String name = proj.getLogisimFile() == null ? "???" : proj.getLogisimFile().getDisplayName();
 
-        stage.titleProperty().bind(lc.createComplexStringBinding("optionsFrameTitle",name));
+        stage.titleProperty().bind(LC.createComplexStringBinding("optionsFrameTitle",name));
 
 
     }

@@ -24,7 +24,7 @@ public class Led extends InstanceFactory {
 				StdAttr.DEFAULT_LABEL_FONT, Color.BLACK
 			});
 		setFacingAttribute(StdAttr.FACING);
-		setIconName("led.gif");
+		setIcon("led.gif");
 		setPorts(new Port[] { new Port(0, 0, Port.INPUT, 1) });
 		setInstanceLogger(Logger.class);
 	}

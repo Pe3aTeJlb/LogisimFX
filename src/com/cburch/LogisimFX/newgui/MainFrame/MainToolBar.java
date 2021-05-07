@@ -4,6 +4,7 @@ import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.file.ToolbarData;
 import com.cburch.LogisimFX.tools.Tool;
 
+import com.cburch.LogisimFX.draw.tools.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -16,7 +17,7 @@ import javafx.scene.layout.AnchorPane;
 public class MainToolBar extends ToolBar {
 
     private ObservableList<Node> RedactCircuitBtnsList;
-    private ObservableList<Node> RedactBlackBoxBtnsList;
+    private ObservableList<Node> RedactAppearanceBtnsList;
 
     private int prefWidth = 15;
     private int prefHeight = 15;
@@ -42,7 +43,7 @@ public class MainToolBar extends ToolBar {
     private void initItems(){
 
         RedactCircuitBtnsList = FXCollections.observableArrayList();
-        RedactBlackBoxBtnsList = FXCollections.observableArrayList();
+        RedactAppearanceBtnsList = FXCollections.observableArrayList();
 
         SetRedactCircuitItems();
         SetRedactBlackBoxItems();
@@ -67,53 +68,24 @@ public class MainToolBar extends ToolBar {
 
     private void SetRedactBlackBoxItems(){
 
-        CustomButton DragSelectionBtn = new CustomButton(prefWidth,prefHeight,"select.gif");
-        DragSelectionBtn.setOnAction(event -> {
-        });
+        DrawingAttributeSet attrs = new DrawingAttributeSet();
 
-        CustomButton RedactTextFieldBtn = new CustomButton(prefWidth,prefHeight,"text.gif");
-        RedactTextFieldBtn.setOnAction(event -> {
-        });
+        AbstractTool[] tools = {
+                new SelectTool(),
+                new TextTool(attrs),
+                new LineTool(attrs),
+                new CurveTool(attrs),
+                new PolyTool(false, attrs),
+                new RectangleTool(attrs),
+                new RoundRectangleTool(attrs),
+                new OvalTool(attrs),
+                new PolyTool(true, attrs),
+        };
 
-        CustomButton DrawStraightLineBtn = new CustomButton(prefWidth,prefHeight,"drawline.gif");
-        DrawStraightLineBtn.setOnAction(event -> {
-        });
+        for (AbstractTool tool: tools) {
+            RedactAppearanceBtnsList.add(new ToolButton(tool));
+        }
 
-        CustomButton DrawCurveBtn = new CustomButton(prefWidth,prefHeight,"drawcurv.gif");
-        DrawCurveBtn.setOnAction(event -> {
-        });
-
-        CustomButton DrawBrokenLineBtn = new CustomButton(prefWidth,prefHeight,"drawplin.gif");
-        DrawBrokenLineBtn.setOnAction(event -> {
-        });
-
-        CustomButton DrawSquareBtn = new CustomButton(prefWidth,prefHeight,"drawrect.gif");
-        DrawSquareBtn.setOnAction(event -> {
-        });
-
-        CustomButton DrawRoundedSquareBtn = new CustomButton(prefWidth,prefHeight,"drawrrct.gif");
-        DrawRoundedSquareBtn.setOnAction(event -> {
-        });
-
-        CustomButton DrawOvalBtn = new CustomButton(prefWidth,prefHeight,"drawoval.gif");
-        DrawOvalBtn.setOnAction(event -> {
-        });
-
-        CustomButton DrawPolygonBtn = new CustomButton(prefWidth,prefHeight,"drawpoly.gif");
-        DrawPolygonBtn.setOnAction(event -> {
-        });
-
-        RedactBlackBoxBtnsList.addAll(
-                DragSelectionBtn,
-                RedactTextFieldBtn,
-                DrawStraightLineBtn,
-                DrawCurveBtn,
-                DrawBrokenLineBtn,
-                DrawSquareBtn,
-                DrawRoundedSquareBtn,
-                DrawOvalBtn,
-                DrawPolygonBtn
-        );
     }
 
     public void SetMainToolBarItems(String ToolBarType){
@@ -123,9 +95,9 @@ public class MainToolBar extends ToolBar {
             getItems().addAll(RedactCircuitBtnsList);
         }
 
-        if(ToolBarType.equals("RedactBlackBox")){
+        if(ToolBarType.equals("RedactAppearance")){
             getItems().clear();
-            getItems().addAll(RedactBlackBoxBtnsList);
+            getItems().addAll(RedactAppearanceBtnsList);
         }
 
     }
@@ -148,7 +120,30 @@ public class MainToolBar extends ToolBar {
 
         }
 
+        public ToolButton(AbstractTool tool) {
+
+            super();
+
+            setPrefSize(prefWidth,prefHeight);
+            setMinSize(prefWidth,prefHeight);
+            setMaxSize(prefWidth,prefHeight);
+
+            ImageView buff = new ImageView(tool.getIcon().getImage());
+            graphicProperty().setValue(buff);
+
+            setActions(tool);
+
+        }
+
         public void setActions(Tool tool){
+
+            this.setOnAction(event -> {
+
+            });
+
+        }
+
+        public void setActions(AbstractTool tool){
 
             this.setOnAction(event -> {
 
@@ -159,4 +154,3 @@ public class MainToolBar extends ToolBar {
     }
 
 }
-

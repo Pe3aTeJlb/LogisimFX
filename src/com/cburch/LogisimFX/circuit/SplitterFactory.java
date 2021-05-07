@@ -104,9 +104,9 @@ public class SplitterFactory extends AbstractComponentFactory {
 	public void paintIcon(ComponentDrawContext c,
 			int x, int y, AttributeSet attrs) {
 		Graphics g = c.getGraphics();
-		if (toolIcon != null) {
-			toolIcon.paintIcon(c.getDestination(), g, x + 2, y + 2);
-		}
+	//	if (toolIcon != null) {
+		//	toolIcon.paintIcon(c.getDestination(), g, x + 2, y + 2);
+		//}
 	}
 
 	@Override

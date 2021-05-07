@@ -1,8 +1,6 @@
 package com.cburch.LogisimFX.newgui.AboutFrame;
 
-import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.newgui.AbstractController;
-import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.Main;
 import com.cburch.LogisimFX.data.Value;
 import javafx.animation.AnimationTimer;
@@ -34,13 +32,12 @@ public class About extends AbstractController {
 
     private Stage stage;
 
-    private Localizer lc = new Localizer("start");
-
     private AnimationTimer update;
 
     private final Color fadeColor = Color.rgb(255, 255, 255, 0);
     private final Color headerColor = Color.rgb(143,0,0,0);
     private final Color gateColor = Color.GREEN;
+
     private final Font headerFont = new Font("Monospaced",72);
     private final Font versionFont = new Font("Serif", 32);
     private final Font copyrightFont = new Font("Serif", 18);
@@ -170,32 +167,32 @@ public class About extends AbstractController {
 
         linesHeight = 0; // computed in paintComponent
         lines.add(new About.CreditsLine(1, "www.cburch.com/logisim/"));
-        lines.add(new About.CreditsLine(0, lc.get("creditsRoleLead"),
+        lines.add(new About.CreditsLine(0, LC.get("creditsRoleLead"),
                 hendrixLogo, HENDRIX_WIDTH));
         lines.add(new About.CreditsLine(1, "Carl Burch"));
         lines.add(new About.CreditsLine(2, "Hendrix College"));
         initialLines = lines.size();
-        lines.add(new About.CreditsLine(0, lc.get("creditsRoleGerman")));
+        lines.add(new About.CreditsLine(0, LC.get("creditsRoleGerman")));
         lines.add(new About.CreditsLine(1, "Uwe Zimmerman"));
         lines.add(new About.CreditsLine(2, "Uppsala universitet"));
-        lines.add(new About.CreditsLine(0, lc.get("creditsRoleGreek")));
+        lines.add(new About.CreditsLine(0, LC.get("creditsRoleGreek")));
         lines.add(new About.CreditsLine(1, "Thanos Kakarountas"));
         lines.add(new About.CreditsLine(2, "\u03A4.\u0395.\u0399 \u0399\u03BF\u03BD\u03AF\u03C9\u03BD \u039D\u03AE\u03C3\u03C9\u03BD"));
-        lines.add(new About.CreditsLine(0, lc.get("creditsRolePortuguese")));
+        lines.add(new About.CreditsLine(0, LC.get("creditsRolePortuguese")));
         lines.add(new About.CreditsLine(1, "Theldo Cruz Franqueira"));
         lines.add(new About.CreditsLine(2, "PUC Minas"));
-        lines.add(new About.CreditsLine(0, lc.get("creditsRoleRussian")));
+        lines.add(new About.CreditsLine(0, LC.get("creditsRoleRussian")));
         lines.add(new About.CreditsLine(1, "Ilia Lilov"));
         lines.add(new About.CreditsLine(2, "\u041C\u043E\u0441\u043A\u043E\u0432\u0441\u043A\u0438\u0439 \u0433\u043E\u0441\u0443\u0434\u0430\u0440\u0441\u0442\u0432\u0435\u043D\u043D\u044B\u0439"));
         lines.add(new About.CreditsLine(2, "\u0443\u043D\u0438\u0432\u0435\u0440\u0441\u0438\u0442\u0435\u0442 \u043F\u0435\u0447\u0430\u0442\u0438"));
-        lines.add(new About.CreditsLine(0, lc.get("creditsRoleTesting")));
+        lines.add(new About.CreditsLine(0, LC.get("creditsRoleTesting")));
         lines.add(new About.CreditsLine(1, "Ilia Lilov"));
         lines.add(new About.CreditsLine(2, "\u041C\u043E\u0441\u043A\u043E\u0432\u0441\u043A\u0438\u0439 \u0433\u043E\u0441\u0443\u0434\u0430\u0440\u0441\u0442\u0432\u0435\u043D\u043D\u044B\u0439"));
         lines.add(new About.CreditsLine(2, "\u0443\u043D\u0438\u0432\u0435\u0440\u0441\u0438\u0442\u0435\u0442 \u043F\u0435\u0447\u0430\u0442\u0438"));
 
         /* If you fork Logisim, feel free to change the above lines, but
          * please do not change these last four lines! */
-        lines.add(new About.CreditsLine(0, lc.get("creditsRoleOriginal"),
+        lines.add(new About.CreditsLine(0, LC.get("creditsRoleOriginal"),
                 hendrixLogo, HENDRIX_WIDTH));
         lines.add(new About.CreditsLine(1, "Carl Burch"));
         lines.add(new About.CreditsLine(2, "Hendrix College"));

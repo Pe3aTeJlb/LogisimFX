@@ -136,10 +136,6 @@ public class PreferencesController extends AbstractController {
 
 
 
-
-    private Localizer lc = new Localizer("prefs");
-
-
     @FXML
     public void initialize(){
 
@@ -153,14 +149,14 @@ public class PreferencesController extends AbstractController {
     @Override
     public void postInitialization(Stage s) {
         stage = s;
-        stage.titleProperty().bind(lc.createStringBinding("preferencesFrameTitle"));
+        stage.titleProperty().bind(LC.createStringBinding("preferencesFrameTitle"));
     }
 
     private void initTemplateTab(){
 
-        TemplateTab.textProperty().bind(lc.createStringBinding("templateTitle"));
+        TemplateTab.textProperty().bind(LC.createStringBinding("templateTitle"));
 
-        PlainTemplRB.textProperty().bind(lc.createStringBinding("templatePlainOption"));
+        PlainTemplRB.textProperty().bind(LC.createStringBinding("templatePlainOption"));
         PlainTemplRB.setOnAction(event -> {
 
             EmptyTemplRB.setSelected(false);
@@ -168,7 +164,7 @@ public class PreferencesController extends AbstractController {
 
         });
 
-        EmptyTemplRB.textProperty().bind(lc.createStringBinding("templateEmptyOption"));
+        EmptyTemplRB.textProperty().bind(LC.createStringBinding("templateEmptyOption"));
         EmptyTemplRB.setOnAction(event -> {
 
             PlainTemplRB.setSelected(false);
@@ -176,7 +172,7 @@ public class PreferencesController extends AbstractController {
 
         });
 
-        CustomTemplRB.textProperty().bind(lc.createStringBinding("templateCustomOption"));
+        CustomTemplRB.textProperty().bind(LC.createStringBinding("templateCustomOption"));
         CustomTemplRB.setOnAction(event -> {
 
             if(!FilePath.toString().equals("")){
@@ -196,7 +192,7 @@ public class PreferencesController extends AbstractController {
 
 
 
-        FilePathSelectBtn.textProperty().bind(lc.createStringBinding("templateSelectButton"));
+        FilePathSelectBtn.textProperty().bind(LC.createStringBinding("templateSelectButton"));
         FilePathSelectBtn.setOnAction(event -> {
 
             File f = fileChooser.showOpenDialog(Root.getScene().getWindow());
@@ -214,12 +210,12 @@ public class PreferencesController extends AbstractController {
 
     private void initInternalizationTab(){
 
-        InternalizationTab.textProperty().bind(lc.createStringBinding("intlTitle"));
+        InternalizationTab.textProperty().bind(LC.createStringBinding("intlTitle"));
 
-        ShapeLbl.textProperty().bind(lc.createStringBinding("intlGateShape"));
-        LocaleLbl.textProperty().bind(lc.createStringBinding("intlLocale"));
+        ShapeLbl.textProperty().bind(LC.createStringBinding("intlGateShape"));
+        LocaleLbl.textProperty().bind(LC.createStringBinding("intlLocale"));
 
-        SpecificSymbolsChbx.textProperty().bind(lc.createStringBinding("intlReplaceAccents"));
+        SpecificSymbolsChbx.textProperty().bind(LC.createStringBinding("intlReplaceAccents"));
         SpecificSymbolsChbx.disableProperty().bind(Localizer.localeProperty().isNotEqualTo(Locale.forLanguageTag("es")));
         SpecificSymbolsChbx.setOnAction(event -> {
             //ToDO:
@@ -242,19 +238,19 @@ public class PreferencesController extends AbstractController {
         ObservableList<Label> gateShapeLabels = FXCollections.observableArrayList();
 
         Label Shaped = new Label();
-        Shaped.textProperty().bind(lc.createStringBinding("shapeShaped"));
+        Shaped.textProperty().bind(LC.createStringBinding("shapeShaped"));
         Shaped.setOnMouseClicked(event -> {
             //ToDO:
         });
 
         Label Rectangular = new Label();
-        Rectangular.textProperty().bind(lc.createStringBinding("shapeRectangular"));
+        Rectangular.textProperty().bind(LC.createStringBinding("shapeRectangular"));
         Rectangular.setOnMouseClicked(event -> {
             //ToDO:
         });
 
         Label DIN40700 = new Label();
-        DIN40700.textProperty().bind(lc.createStringBinding("shapeDIN40700"));
+        DIN40700.textProperty().bind(LC.createStringBinding("shapeDIN40700"));
         DIN40700.setOnMouseClicked(event -> {
             //ToDO:
         });
@@ -297,47 +293,47 @@ public class PreferencesController extends AbstractController {
 
     private void initLayoutTab(){
 
-        LayoutTab.textProperty().bind(lc.createStringBinding("layoutTitle"));
+        LayoutTab.textProperty().bind(LC.createStringBinding("layoutTitle"));
 
-        ShowTickRateChbx.textProperty().bind(lc.createStringBinding("windowTickRate"));
+        ShowTickRateChbx.textProperty().bind(LC.createStringBinding("windowTickRate"));
         //ShowTickRateChbx.setDisable(AppPreferences.SHOW_TICK_RATE.getBoolean());
         ShowTickRateChbx.setOnAction(event -> {});
 
-        PrinterViewChbx.textProperty().bind(lc.createStringBinding("layoutPrinterView"));
+        PrinterViewChbx.textProperty().bind(LC.createStringBinding("layoutPrinterView"));
         //PrinterViewChbx.setDisable();
         PrinterViewChbx.setOnAction(event -> {});
 
-        ShowAttrHaloChbx.textProperty().bind(lc.createStringBinding("layoutAttributeHalo"));
+        ShowAttrHaloChbx.textProperty().bind(LC.createStringBinding("layoutAttributeHalo"));
         //ShowAttrHaloChbx.setDisable();
         ShowAttrHaloChbx.setOnAction(event -> {});
 
-        ShowComponentTipsChbx.textProperty().bind(lc.createStringBinding("layoutShowTips"));
+        ShowComponentTipsChbx.textProperty().bind(LC.createStringBinding("layoutShowTips"));
         //ShowComponentTipsChbx.setDisable();
         ShowComponentTipsChbx.setOnAction(event -> {});
 
-        KeepConnectionsChbx.textProperty().bind(lc.createStringBinding("layoutMoveKeepConnect"));
+        KeepConnectionsChbx.textProperty().bind(LC.createStringBinding("layoutMoveKeepConnect"));
         //KeepConnectionsChbx.setDisable();
         KeepConnectionsChbx.setOnAction(event -> {});
 
-        ShowGhostChbx.textProperty().bind(lc.createStringBinding("layoutAddShowGhosts"));
+        ShowGhostChbx.textProperty().bind(LC.createStringBinding("layoutAddShowGhosts"));
         //ShowGhostChbx.setDisable();
         ShowGhostChbx.setOnAction(event -> {});
 
 
 
-        AfterAddingLbl.textProperty().bind(lc.createStringBinding("layoutAddAfter"));
+        AfterAddingLbl.textProperty().bind(LC.createStringBinding("layoutAddAfter"));
 
         //AfterAddingCmbx
 
 
 
-        FirstRadixLbl.textProperty().bind(lc.createStringBinding("layoutRadix1"));
+        FirstRadixLbl.textProperty().bind(LC.createStringBinding("layoutRadix1"));
 
         //FirstRadixCmbx
 
 
 
-        SecondRadixLbl.textProperty().bind(lc.createStringBinding("layoutRadix2"));
+        SecondRadixLbl.textProperty().bind(LC.createStringBinding("layoutRadix2"));
 
         //SecondRadixCmbx
 
@@ -346,33 +342,33 @@ public class PreferencesController extends AbstractController {
 
     private void initExperimentalTab(){
 
-        ExperimentalTab.textProperty().bind(lc.createStringBinding("experimentTitle"));
+        ExperimentalTab.textProperty().bind(LC.createStringBinding("experimentTitle"));
 
-        GraphicsAccelLabel.textProperty().bind(lc.createStringBinding("accelLabel"));
-        RestartLogisimLabel.textProperty().bind(lc.createStringBinding("accelRestartLabel"));
+        GraphicsAccelLabel.textProperty().bind(LC.createStringBinding("accelLabel"));
+        RestartLogisimLabel.textProperty().bind(LC.createStringBinding("accelRestartLabel"));
 
         ObservableList<Label> accels = FXCollections.observableArrayList();
 
         Label Default = new Label();
-        Default.textProperty().bind(lc.createStringBinding("shapeShaped"));
+        Default.textProperty().bind(LC.createStringBinding("shapeShaped"));
         Default.setOnMouseClicked(event -> {
             //ToDO:
         });
 
         Label None = new Label();
-        None.textProperty().bind(lc.createStringBinding("accelNone"));
+        None.textProperty().bind(LC.createStringBinding("accelNone"));
         None.setOnMouseClicked(event -> {
             //ToDO:
         });
 
         Label OpenGL = new Label();
-        OpenGL.textProperty().bind(lc.createStringBinding("accelOpenGL"));
+        OpenGL.textProperty().bind(LC.createStringBinding("accelOpenGL"));
         OpenGL.setOnMouseClicked(event -> {
             //ToDO:
         });
 
         Label Direct3D = new Label();
-        Direct3D.textProperty().bind(lc.createStringBinding("accelD3D"));
+        Direct3D.textProperty().bind(LC.createStringBinding("accelD3D"));
         Direct3D.setOnMouseClicked(event -> {
             //ToDO:
         });

@@ -3,9 +3,9 @@
 
 package com.cburch.LogisimFX.circuit.appear;
 
-import com.cburch.draw.model.CanvasObject;
-import com.cburch.draw.model.Handle;
-import com.cburch.draw.model.HandleGesture;
+import com.cburch.LogisimFX.draw.model.CanvasObject;
+import com.cburch.LogisimFX.draw.model.Handle;
+import com.cburch.LogisimFX.draw.model.HandleGesture;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.util.UnmodifiableList;
 import org.w3c.dom.Document;

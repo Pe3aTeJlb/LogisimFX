@@ -14,12 +14,15 @@ import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.circuit.CircuitState;
 
 public class Instance {
+
 	public static Instance getInstanceFor(Component comp) {
+
 		if (comp instanceof InstanceComponent) {
 			return ((InstanceComponent) comp).getInstance();
 		} else {
 			return null;
 		}
+
 	}
 
 	public static Component getComponentFor(Instance instance) {

@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.KeyEvent;
 
+import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.comp.ComponentUserEvent;
@@ -108,6 +109,8 @@ public class TextTool extends Tool {
 	private static Cursor cursor
 		= Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR);
 
+	private static final ImageView icon = IconsManager.getIcon("text.gif");
+
 	private MyListener listener = new MyListener();
 	private AttributeSet attrs;
 	private Caret caret = null;
@@ -152,7 +155,7 @@ public class TextTool extends Tool {
 
 	@Override
 	public ImageView getIcon(){
-		return Text.FACTORY.getIcon();
+		return icon;
 	}
 
 	@Override

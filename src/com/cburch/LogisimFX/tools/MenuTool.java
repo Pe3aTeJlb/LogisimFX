@@ -4,6 +4,7 @@
 package com.cburch.LogisimFX.tools;
 
 
+import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.data.Location;
@@ -13,6 +14,7 @@ import com.cburch.logisim.gui.main.Canvas;
 import com.cburch.logisim.gui.main.Selection;
 import com.cburch.logisim.gui.main.SelectionActions;
 import com.cburch.LogisimFX.proj.Project;
+import javafx.scene.image.ImageView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -89,6 +91,8 @@ public class MenuTool extends Tool {
 		}
 	}
 
+	private static final ImageView icon = IconsManager.getIcon("drawoval.gif");
+
 	public MenuTool() { }
 	
 	@Override
@@ -109,6 +113,11 @@ public class MenuTool extends Tool {
 
 	@Override
 	public String getDescription() { return Strings.get("menuToolDesc"); }
+
+	@Override
+	public ImageView getIcon() {
+		return icon;
+	}
 
 	@Override
 	public void mousePressed(Canvas canvas, Graphics g, MouseEvent e) {

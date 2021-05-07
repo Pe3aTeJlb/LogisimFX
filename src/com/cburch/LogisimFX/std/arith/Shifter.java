@@ -40,7 +40,7 @@ public class Shifter extends InstanceFactory {
 			});
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
 		setOffsetBounds(Bounds.create(-40, -20, 40, 40));
-		setIconName("shifter.gif");
+		setIcon("shifter.gif");
 	}
 
 	@Override

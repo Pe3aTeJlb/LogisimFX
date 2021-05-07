@@ -3,6 +3,7 @@
 
 package com.cburch.LogisimFX.tools;
 
+import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.comp.ComponentFactory;
@@ -46,7 +47,9 @@ public class EditTool extends Tool {
 			updateLocation(lastCanvas, lastRawX, lastRawY, lastMods);
 		}
 	}
-	
+
+	private static final ImageView icon = IconsManager.getIcon("select.gif");
+
 	private Listener listener;
 	private SelectTool select;
 	private WiringTool wiring;
@@ -99,6 +102,11 @@ public class EditTool extends Tool {
 	}
 
 	@Override
+	public ImageView getIcon(){
+		return icon;
+	}
+
+	@Override
 	public AttributeSet getAttributeSet() {
 		return select.getAttributeSet();
 	}
@@ -116,11 +124,6 @@ public class EditTool extends Tool {
 	@Override
 	public boolean isAllDefaultValues(AttributeSet attrs, LogisimVersion ver) {
 		return true;
-	}
-
-	@Override
-	public ImageView getIcon(){
-		return select.getIcon();
 	}
 
 	@Override

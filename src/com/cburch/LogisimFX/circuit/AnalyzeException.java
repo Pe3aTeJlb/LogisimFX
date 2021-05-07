@@ -3,7 +3,7 @@
 
 package com.cburch.LogisimFX.circuit;
 
-import com.cburch.logisim.util.StringUtil;
+import com.cburch.LogisimFX.util.StringUtil;
 
 public class AnalyzeException extends Exception {
 	public static class Circular extends AnalyzeException {

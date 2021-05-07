@@ -26,8 +26,6 @@ import java.util.regex.Pattern;
 
 public class ProjectActions {
 
-	private static Localizer lc = new Localizer("proj");
-
 	private ProjectActions() { }
 	
 	private static class CreateFrame implements Runnable {
@@ -77,9 +75,9 @@ public class ProjectActions {
 
 
 	private static void displayException(Exception ex) {
-		String msg = StringUtil.format(lc.get("templateOpenError"),
+		String msg = StringUtil.format(LC.get("templateOpenError"),
 				ex.toString());
-		String ttl = lc.get("templateOpenErrorTitle");
+		String ttl = LC.get("templateOpenErrorTitle");
 		DialogManager.CreateErrorDialog(ttl,msg);
 	}
 
@@ -276,7 +274,7 @@ public class ProjectActions {
 
 		} catch (LoadFailedException ex) {
 			if (!ex.isShown()) {
-				DialogManager.CreateStackTraceDialog(lc.get("fileOpenErrorTitle"),StringUtil.format(lc.get("fileOpenError"),
+				DialogManager.CreateStackTraceDialog(LC.get("fileOpenErrorTitle"),StringUtil.format(LC.get("fileOpenError"),
 						ex.toString()),ex);
 			}
 			return null;

@@ -19,7 +19,7 @@ import com.cburch.LogisimFX.circuit.Wire;
 public class Ground extends InstanceFactory {
 	public Ground() {
 		super("Ground", Strings.getter("groundComponent"));
-		setIconName("ground.gif");
+		setIcon("ground.gif");
 		setAttributes(new Attribute[] { StdAttr.FACING, StdAttr.WIDTH },
 				new Object[] { Direction.SOUTH, BitWidth.ONE });
 		setFacingAttribute(StdAttr.FACING);

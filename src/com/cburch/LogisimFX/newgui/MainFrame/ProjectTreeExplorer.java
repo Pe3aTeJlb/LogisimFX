@@ -1,24 +1,14 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
-import com.cburch.LogisimFX.circuit.Circuit;
-import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.circuit.SubcircuitFactory;
-import com.cburch.LogisimFX.comp.AbstractComponentFactory;
 import com.cburch.LogisimFX.file.LogisimFile;
-import com.cburch.LogisimFX.instance.InstanceFactory;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.tools.AddTool;
 import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.tools.Tool;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 
 
 public class ProjectTreeExplorer extends AbstractTreeExplorer {
@@ -42,29 +32,36 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
 
                     super.updateItem(item, empty) ;
 
-                    if (empty) {
+                    if (!empty) {
 
-                        setText(null);
-                        setGraphic(null);
 
-                    } else {
+                        if(item instanceof LogisimFile){
 
-                        if(item instanceof Library){
-                            setText(((Library)item).getName());
-                            setGraphic(null);
-                        }
-                        else if(item instanceof Tool){
-                            setText(((Tool)item).getName());
-                            setGraphic(((Tool)item).getIcon());
-                            setTooltip(new Tooltip(((Tool)item).getDescription()));
-                        }
-                        else if(item instanceof LogisimFile){
                             setText(proj.getLogisimFile().getName());
                             setGraphic(null);
+
+                        }
+                        else if(item instanceof Library){
+
+                            setText(((Library)item).getName());
+                            setGraphic(null);
+
+                        }
+                        else if(item instanceof Tool){
+
+                            setText(((Tool)item).getName());
+                            setTooltip(new Tooltip(((Tool)item).getDescription()));
+                            setGraphic(((Tool) item).getIcon());
+
                         }
                         else{
                             setText("you fucked up2");
                         }
+
+                    } else {
+
+                        setText(null);
+                        setGraphic(null);
 
                     }
 
@@ -103,10 +100,6 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
                     }
 
                 }
-            });
-
-            cell.setOnMouseEntered(event -> {
-                //System.out.println("entered");
             });
 
             return cell ;

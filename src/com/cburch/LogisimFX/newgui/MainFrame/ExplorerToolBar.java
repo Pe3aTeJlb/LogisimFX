@@ -89,7 +89,7 @@ public class ExplorerToolBar extends ToolBar {
             EditCircuitLayout.set(false);
             EditCircuitAppearance.set(true);
 
-            MainToolBar.SetMainToolBarItems("RedactBlackBox");
+            MainToolBar.SetMainToolBarItems("RedactAppearance");
             //TODO: add controll method for canvas
         });
 

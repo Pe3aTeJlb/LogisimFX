@@ -3,14 +3,13 @@ package com.cburch.LogisimFX.newgui.CircLogFrame;
 import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.newgui.AbstractController;
+import com.cburch.LogisimFX.newgui.PreferencesFrame.LC;
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
 
 public class CircLogController extends AbstractController {
 
     private Stage stage;
-
-    private Localizer lc = new Localizer("log");
 
     @FXML
     public void initialize(){
@@ -25,7 +24,7 @@ public class CircLogController extends AbstractController {
     public void setCircuit(Circuit circ){
 
         //setText(StringUtil.format(Strings.get("logFrameMenuItem"), title));
-        stage.titleProperty().bind(lc.createStringBinding("logFrameTitle"));
+        stage.titleProperty().bind(LC.createStringBinding("logFrameTitle"));
 
     }
 

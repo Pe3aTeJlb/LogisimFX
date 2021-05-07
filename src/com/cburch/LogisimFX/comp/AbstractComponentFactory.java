@@ -16,7 +16,7 @@ import javafx.scene.image.ImageView;
 
 public abstract class AbstractComponentFactory implements ComponentFactory {
 
-	private static final ImageView icon = IconsManager.getIcon("subcirc.gif");
+	public ImageView icon = IconsManager.getIcon("subcirc.gif");
 
 	private AttributeSet defaultSet;
 	

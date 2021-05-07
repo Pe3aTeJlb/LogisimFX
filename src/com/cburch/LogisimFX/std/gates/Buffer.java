@@ -13,7 +13,6 @@ import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
-import com.cburch.LogisimFX.util.Icons;
 import com.cburch.LogisimFX.circuit.ExpressionComputer;
 import com.cburch.LogisimFX.file.Options;
 
@@ -26,7 +25,7 @@ class Buffer extends InstanceFactory {
 					GateAttributes.ATTR_OUTPUT, StdAttr.LABEL, StdAttr.LABEL_FONT },
 				new Object[] { Direction.EAST, BitWidth.ONE,
 					GateAttributes.OUTPUT_01, "", StdAttr.DEFAULT_LABEL_FONT });
-		setIconName("bufferGate.gif");
+		setIcon("bufferGate.gif");
 		setFacingAttribute(StdAttr.FACING);
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
 		setPorts(new Port[] {

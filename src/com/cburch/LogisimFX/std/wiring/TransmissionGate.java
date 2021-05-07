@@ -23,7 +23,7 @@ public class TransmissionGate extends InstanceFactory {
 
 	public TransmissionGate() {
 		super("Transmission Gate", Strings.getter("transmissionGateComponent"));
-		setIconName("transmis.gif");
+		setIcon("transmis.gif");
 		setAttributes(new Attribute[] { StdAttr.FACING, Wiring.ATTR_GATE, StdAttr.WIDTH },
 				new Object[] { Direction.EAST, Wiring.GATE_TOP_LEFT, BitWidth.ONE });
 		setFacingAttribute(StdAttr.FACING);

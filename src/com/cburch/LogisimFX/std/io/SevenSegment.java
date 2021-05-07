@@ -22,7 +22,7 @@ public class SevenSegment extends InstanceFactory {
 				new Object[] { new Color(240, 0, 0), DEFAULT_OFF,
 					Io.DEFAULT_BACKGROUND, Boolean.TRUE });
 		setOffsetBounds(Bounds.create(-5, 0, 40, 60));
-		setIconName("7seg.gif");
+		setIcon("7seg.gif");
 		setPorts(new Port[] {
 				new Port(20,  0, Port.INPUT, 1),
 				new Port(30,  0, Port.INPUT, 1),

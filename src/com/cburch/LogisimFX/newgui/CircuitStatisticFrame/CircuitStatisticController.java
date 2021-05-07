@@ -3,6 +3,7 @@ package com.cburch.LogisimFX.newgui.CircuitStatisticFrame;
 import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.newgui.AbstractController;
+import com.cburch.LogisimFX.newgui.PreferencesFrame.LC;
 import com.cburch.LogisimFX.proj.Project;
 
 import javafx.fxml.FXML;
@@ -11,8 +12,6 @@ import javafx.stage.Stage;
 public class CircuitStatisticController extends AbstractController {
 
     private Stage stage;
-
-    private Localizer lc = new Localizer("gui");
 
     private Project proj;
 
@@ -34,7 +33,7 @@ public class CircuitStatisticController extends AbstractController {
 
     public void describeCircuit(Circuit circuit){
 
-        stage.titleProperty().bind(lc.createComplexStringBinding("statsDialogTitle",circuit.getName()));
+        stage.titleProperty().bind(LC.createComplexStringBinding("statsDialogTitle",circuit.getName()));
 
     }
 
