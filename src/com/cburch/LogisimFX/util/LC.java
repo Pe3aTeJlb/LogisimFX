@@ -25,7 +25,7 @@ public class LC {
     }
 
     public static String get(final String key, final Object... args) {
-       return lc.get(key, args);
+        return lc.get(key, args);
     }
 
 }

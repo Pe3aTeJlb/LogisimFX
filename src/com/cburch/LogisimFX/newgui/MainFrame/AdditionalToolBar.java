@@ -34,7 +34,6 @@ public class AdditionalToolBar extends ToolBar {
         logisimFile = proj.getLogisimFile();
 
         treeExplorerAggregation = explorer;
-        treeExplorerAggregation = explorer;
 
         AnchorPane.setLeftAnchor(this,0.0);
         AnchorPane.setTopAnchor(this,20.0);
@@ -56,16 +55,8 @@ public class AdditionalToolBar extends ToolBar {
 
         CustomButton AddCircuitBtn = new CustomButton(prefWidth,prefHeight,"projadd.gif");
         AddCircuitBtn.setOnAction(event -> {
-
-            String circuitName = DialogManager.CreateInputDialog(proj.getLogisimFile());
-
-            if (circuitName != null) {
-                Circuit circuit = new Circuit(circuitName);
-                proj.doAction(LogisimFileActions.addCircuit(circuit));
-                proj.setCurrentCircuit(circuit);
-                treeExplorerAggregation.updateTree();
-            }
-
+            ProjectCircuitActions.doAddCircuit(proj);
+            treeExplorerAggregation.updateTree();
         });
 
 
@@ -74,8 +65,8 @@ public class AdditionalToolBar extends ToolBar {
                 Bindings.or(logisimFile.obsPos.isEqualTo("first"),logisimFile.obsPos.isEqualTo("first&last"))
         );
         PullCircuitUpBtn.setOnAction(event -> {
-            //logisimFile.moveCircuit(proj.getTool(),);
-            treeExplorerAggregation.updateTree();
+                ProjectCircuitActions.doMoveCircuit(proj,proj.getCurrentCircuit(),-1);
+                treeExplorerAggregation.updateTree();
         });
 
         CustomButton PullCircuitDownIBtn = new CustomButton(prefWidth,prefHeight,"projdown.gif");
@@ -83,7 +74,7 @@ public class AdditionalToolBar extends ToolBar {
                 Bindings.or(logisimFile.obsPos.isEqualTo("last"),logisimFile.obsPos.isEqualTo("first&last"))
         );
         PullCircuitDownIBtn.setOnAction(event -> {
-                //logisimFile.moveCircuit();
+                ProjectCircuitActions.doMoveCircuit(proj,proj.getCurrentCircuit(),1);
                 treeExplorerAggregation.updateTree();
         });
 
@@ -92,7 +83,7 @@ public class AdditionalToolBar extends ToolBar {
                 logisimFile.obsPos.isEqualTo("first&last")
         );
         DeleteCircuitBtn.setOnAction(event -> {
-                logisimFile.removeCircuit(proj.getCurrentCircuit());
+                ProjectCircuitActions.doRemoveCircuit(proj,proj.getCurrentCircuit());
                 treeExplorerAggregation.updateTree();
         });
 

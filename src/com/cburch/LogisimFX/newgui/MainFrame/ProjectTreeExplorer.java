@@ -2,10 +2,13 @@ package com.cburch.LogisimFX.newgui.MainFrame;
 
 import com.cburch.LogisimFX.circuit.SubcircuitFactory;
 import com.cburch.LogisimFX.file.LogisimFile;
+import com.cburch.LogisimFX.newgui.ContextMenuManager;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.tools.AddTool;
 import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.tools.Tool;
+import com.cburch.LogisimFX.circuit.Circuit;
+import com.cburch.LogisimFX.comp.ComponentFactory;
 
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
@@ -34,7 +37,6 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
 
                     if (!empty) {
 
-
                         if(item instanceof LogisimFile){
 
                             setText(proj.getLogisimFile().getName());
@@ -43,15 +45,18 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
                         }
                         else if(item instanceof Library){
 
-                            setText(((Library)item).getName());
+                            setText(((Library)item).getDisplayName());
                             setGraphic(null);
+                            setContextMenu(ContextMenuManager.getContextMenu(item));
 
                         }
                         else if(item instanceof Tool){
 
-                            setText(((Tool)item).getName());
+                            setText(((Tool)item).getDisplayName());
                             setTooltip(new Tooltip(((Tool)item).getDescription()));
                             setGraphic(((Tool) item).getIcon());
+
+                            //checkForHighLight(cell,item);
 
                         }
                         else{
@@ -70,36 +75,41 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
             };
 
             cell.setOnMouseClicked(event -> {
+
                 if (!cell.isEmpty()) {
 
                     TreeItem<Object> treeItem = cell.getTreeItem();
 
-                    if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2 && !event.isConsumed()) {
-                        System.out.println("double click");
+                    if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2
+                            && !event.isConsumed()) {
+
                         event.consume();
 
-                        if(treeItem.getValue() instanceof SubcircuitFactory){
-                            //(SubcircuitFactory)treeItem.getValue().
-                        }
-                        /*
-                        if(treeItem.getValue() instanceof Circuit){
-                            project.setCurrentCircuit((Circuit) treeItem.getValue());
+                        if(treeItem.getValue() instanceof AddTool){
+
+                            ComponentFactory fact = ((AddTool) treeItem.getValue()).getFactory(false);
+                            if (fact instanceof SubcircuitFactory) {
+                                proj.setCurrentCircuit(
+                                        ((SubcircuitFactory) fact).getSubcircuit()
+                                );
+
+                            }
+
                         }
 
-                         */
 
                     }else if (event.getButton().equals(MouseButton.PRIMARY)){
-                        System.out.println("Left click");
 
-                    }else if(event.getButton().equals(MouseButton.SECONDARY)){
-                        System.out.println("Right click");
-                        if(treeItem.getValue() instanceof Tool){
-                            //project.setCurrentCircuit((Circuit) treeItem.getValue());
+                        if(treeItem.getValue() instanceof AddTool){
+                            proj.setTool((Tool)treeItem.getValue());
                         }
+
+                        System.out.println("Left click");
 
                     }
 
                 }
+
             });
 
             return cell ;
@@ -110,11 +120,6 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
         //todo: create update binding to proj tool.size
 
         updateTree();
-
-    }
-
-    //not best solution, but yes
-    public void updateCurrentSections(){
 
     }
 
@@ -149,5 +154,22 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
 
     }
 
+    private void checkForHighLight(TreeCell<Object> cell, Object item){
+
+        //if circuit tool, and is current circuit, then highlight cell
+
+        ComponentFactory fact = ((AddTool) item).getFactory(false);
+
+        if (fact instanceof com.cburch.logisim.circuit.SubcircuitFactory) {
+
+            Circuit circ = ((SubcircuitFactory) fact).getSubcircuit();
+
+            if(proj.getCurrentCircuit().equals(circ)){
+
+            }
+
+        }
+
+    }
 
 }

@@ -316,12 +316,16 @@ public class Project {
 		if (circState == null) circState = new CircuitState(this, circuit);
 		setCircuitState(circState);
 
+		getLogisimFile().setCurrent(circuit);
+
 	}
 
 	public void setTool(Tool value) {
 
 		if (tool == value) return;
+
 		Tool old = tool;
+		/*
 		Canvas canvas = frame.getCanvas();
 		if (old != null) old.deselect(canvas);
 		Selection selection = canvas.getSelection();
@@ -344,6 +348,7 @@ public class Project {
 
 		tool = value;
 		if (tool != null) tool.select(frame.getCanvas());
+		*/
 		fireEvent(ProjectEvent.ACTION_SET_TOOL, old, tool);
 
 	}

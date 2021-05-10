@@ -16,8 +16,10 @@ import com.cburch.LogisimFX.tools.AddTool;
 import com.cburch.LogisimFX.util.Dag;
 
 public class Dependencies {
+
 	private class MyListener
 			implements LibraryListener, CircuitListener {
+
 		public void libraryChanged(LibraryEvent e) {
 			switch (e.getAction()) {
 			case LibraryEvent.ADD_TOOL:
@@ -72,6 +74,7 @@ public class Dependencies {
 				break;
 			}
 		}
+
 	}
 
 	private MyListener myListener = new MyListener();

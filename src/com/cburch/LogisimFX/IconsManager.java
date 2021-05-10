@@ -9,14 +9,9 @@ public class IconsManager {
 
     public static ImageView getIcon(String name) {
 
-        System.out.println(path + "/" + name);
+        //System.out.println(path + "/" + name);
         Image img = new Image(path + "/" + name);
-
-        if(img != null){
-            return new ImageView(img);
-        }else{
-            return null;
-        }
+        return new ImageView(img);
 
     }
 

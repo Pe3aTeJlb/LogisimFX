@@ -3,6 +3,7 @@
 
 package com.cburch.LogisimFX.newgui.MainFrame;
 
+import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.analyze.gui.Analyzer;
 import com.cburch.LogisimFX.analyze.gui.AnalyzerManager;
 import com.cburch.LogisimFX.analyze.model.AnalyzerModel;
@@ -10,32 +11,32 @@ import com.cburch.LogisimFX.circuit.Analyze;
 import com.cburch.LogisimFX.circuit.AnalyzeException;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.file.LogisimFileActions;
-//import com.cburch.LogisimFX.gui.menu.Strings;
 import com.cburch.LogisimFX.instance.Instance;
 import com.cburch.LogisimFX.instance.StdAttr;
+import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.std.wiring.Pin;
 import com.cburch.LogisimFX.tools.AddTool;
 import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.util.StringUtil;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
 import java.util.ArrayList;
 import java.util.Map;
 
 public class ProjectCircuitActions {
-	private ProjectCircuitActions() { }
-	
+
+	private static Localizer lc = new Localizer("gui");
+
 	public static void doAddCircuit(Project proj) {
-		String name = promptForCircuitName(proj.getFrame(), proj.getLogisimFile(), "");
-		if (name != null) {
-			Circuit circuit = new Circuit(name);
+
+		String circuitName = DialogManager.CreateInputDialog(proj.getLogisimFile());
+
+		if (circuitName != null) {
+			Circuit circuit = new Circuit(circuitName);
 			proj.doAction(LogisimFileActions.addCircuit(circuit));
 			proj.setCurrentCircuit(circuit);
 		}
+
 	}
 
 	private static String promptForCircuitName(JFrame frame,
@@ -111,25 +112,21 @@ public class ProjectCircuitActions {
 	}
 
 	public static void doRemoveCircuit(Project proj, Circuit circuit) {
+
 		if (proj.getLogisimFile().getTools().size() == 1) {
-			JOptionPane.showMessageDialog(proj.getFrame(),
-					Strings.get("circuitRemoveLastError"),
-					Strings.get("circuitRemoveErrorTitle"),
-					JOptionPane.ERROR_MESSAGE);
+			DialogManager.CreateErrorDialog(lc.get("circuitRemoveErrorTitle"),lc.get("circuitRemoveLastError"));
 		} else if (!proj.getDependencies().canRemove(circuit)) {
-			JOptionPane.showMessageDialog(proj.getFrame(),
-				Strings.get("circuitRemoveUsedError"),
-				Strings.get("circuitRemoveErrorTitle"),
-				JOptionPane.ERROR_MESSAGE);
+			DialogManager.CreateErrorDialog(lc.get("circuitRemoveErrorTitle"),lc.get("circuitRemoveUsedError"));
 		} else {
 			proj.doAction(LogisimFileActions.removeCircuit(circuit));
 		}
+
 	}
 	
 	public static void doAnalyze(Project proj, Circuit circuit) {
 		Map<Instance, String> pinNames = Analyze.getPinLabels(circuit);
-		ArrayList<String> inputNames = new ArrayList<String>();
-		ArrayList<String> outputNames = new ArrayList<String>();
+		ArrayList<String> inputNames = new ArrayList<>();
+		ArrayList<String> outputNames = new ArrayList<>();
 		for (Map.Entry<Instance, String> entry : pinNames.entrySet()) {
 			Instance pin = entry.getKey();
 			boolean isInput = Pin.FACTORY.isInputPin(pin);
@@ -140,20 +137,20 @@ public class ProjectCircuitActions {
 			}
 			if (pin.getAttributeValue(StdAttr.WIDTH).getWidth() > 1) {
 				if (isInput) {
-					analyzeError(proj, Strings.get("analyzeMultibitInputError"));
+					analyzeError(proj, lc.get("analyzeMultibitInputError"));
 				} else {
-					analyzeError(proj, Strings.get("analyzeMultibitOutputError"));
+					analyzeError(proj, lc.get("analyzeMultibitOutputError"));
 				}
 				return;
 			}
 		}
 		if (inputNames.size() > AnalyzerModel.MAX_INPUTS) {
-			analyzeError(proj, StringUtil.format(Strings.get("analyzeTooManyInputsError"),
+			analyzeError(proj, StringUtil.format(lc.get("analyzeTooManyInputsError"),
 					"" + AnalyzerModel.MAX_INPUTS));
 			return;
 		}
 		if (outputNames.size() > AnalyzerModel.MAX_OUTPUTS) {
-			analyzeError(proj, StringUtil.format(Strings.get("analyzeTooManyOutputsError"),
+			analyzeError(proj, StringUtil.format(lc.get("analyzeTooManyOutputsError"),
 					"" + AnalyzerModel.MAX_OUTPUTS));
 			return;
 		}
@@ -168,6 +165,7 @@ public class ProjectCircuitActions {
 	private static void configureAnalyzer(Project proj, Circuit circuit,
 			Analyzer analyzer, Map<Instance, String> pinNames,
 			ArrayList<String> inputNames, ArrayList<String> outputNames) {
+
 		analyzer.getModel().setVariables(inputNames, outputNames);
 		
 		// If there are no inputs, we stop with that tab selected
@@ -188,9 +186,7 @@ public class ProjectCircuitActions {
 			analyzer.setSelectedTab(Analyzer.EXPRESSION_TAB);
 			return;
 		} catch (AnalyzeException ex) {
-			JOptionPane.showMessageDialog(proj.getFrame(), ex.getMessage(),
-					Strings.get("analyzeNoExpressionTitle"),
-					JOptionPane.INFORMATION_MESSAGE);
+			DialogManager.CreateScrollError(lc.get("analyzeNoExpressionTitle"),ex.getMessage());
 		}
 		
 		// As a backup measure, we compute a truth table.
@@ -199,9 +195,7 @@ public class ProjectCircuitActions {
 	}
 		
 	private static void analyzeError(Project proj, String message) {
-		JOptionPane.showMessageDialog(proj.getFrame(), message,
-			Strings.get("analyzeErrorTitle"),
-			JOptionPane.ERROR_MESSAGE);
-		return;
+		DialogManager.CreateErrorDialog(lc.get("analyzeErrorTitle"), message);
 	}
+
 }

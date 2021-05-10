@@ -4,6 +4,7 @@
 package com.cburch.LogisimFX.proj;
 
 public abstract class Action {
+
 	public boolean isModification() { return true; }
 
 	public abstract String getName();
@@ -17,4 +18,5 @@ public abstract class Action {
 	public Action append(Action other) {
 		return new JoinedAction(this, other);
 	}
+
 }

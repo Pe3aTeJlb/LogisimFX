@@ -41,6 +41,8 @@ public class FrameManager {
 
     private static final HashMap<String, Data> OpenedProjectIndependentFrames = new HashMap<>();
 
+    private static boolean isStartup = true;
+
     private static class Data{
 
         public Stage stage;
@@ -63,6 +65,19 @@ public class FrameManager {
     public static void CreateMainFrame(Project proj){
 
        // if(!OpenedMainFrames.containsKey(proj)){
+
+            //It must be place exactly here, cause see CloseFrame() when OMF size == 1
+            // close startup empty project frame when u load new from file
+            if(!OpenedMainFrames.isEmpty() && isStartup ){
+
+                // at this moment OMF contains only startup frame
+                for (Project p: OpenedMainFrames.keySet()) {
+                    if(!p.isFileDirty()) {
+                        p.getFrameController().getStage().close();
+                        isStartup = false;
+                    }
+                }
+            }
 
             loader = new FXMLLoader(ClassLoader.getSystemResource(
                     "com/cburch/LogisimFX/newgui/MainFrame/LogisimFx.fxml"));
@@ -402,6 +417,17 @@ public class FrameManager {
     }
 
 
+    public static void ExitPreventedCloseFrame(Project proj){
+
+            CloseMemoryEditors(proj);
+            CloseProjectAssociatedFrames(proj);
+            CloseCircuitStatisticsFrames(proj);
+            proj.getFrameController().onClose();
+
+            OpenedMainFrames.remove(proj);
+
+    }
+
     public static void CloseFrame(Project proj){
 
         if (OpenedMainFrames.size() > 1) {
@@ -413,7 +439,6 @@ public class FrameManager {
 
             OpenedMainFrames.remove(proj);
 
-
         } else if(OpenedMainFrames.size() == 1){
 
             CloseMemoryEditors(proj);
@@ -422,12 +447,11 @@ public class FrameManager {
             CloseProjectAssociatedFrames(proj);
             proj.getFrameController().onClose();
 
+
             Platform.exit();
             System.exit(0);
 
         }
-
-
 
     }
 

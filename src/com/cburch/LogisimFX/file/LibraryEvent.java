@@ -6,6 +6,7 @@ package com.cburch.LogisimFX.file;
 import com.cburch.LogisimFX.tools.Library;
 
 public class LibraryEvent {
+
 	public final static int ADD_TOOL = 0;
 	public final static int REMOVE_TOOL = 1;
 	public final static int MOVE_TOOL = 2;

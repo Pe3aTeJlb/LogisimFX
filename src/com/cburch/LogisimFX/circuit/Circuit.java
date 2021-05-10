@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.*;
 
 public class Circuit {
+
 	private class EndChangedTransaction extends CircuitTransaction {
 		private Component comp;
 		private Map<Location,EndData> toRemove;
