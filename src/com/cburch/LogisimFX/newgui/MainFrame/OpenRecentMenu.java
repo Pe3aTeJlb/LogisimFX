@@ -37,7 +37,7 @@ public class OpenRecentMenu extends Menu implements PropertyChangeListener {
 			super(getFileText(file));
 			this.file = file;
 			this.setOnAction(event -> {
-				ProjectActions.doOpen(null, file);
+				if(file != null) ProjectActions.doOpen(null, file);
 			});
 
 		}
