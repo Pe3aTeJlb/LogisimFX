@@ -41,12 +41,14 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
 
                             setText(proj.getLogisimFile().getName());
                             setGraphic(null);
+                            setTooltip(null);
 
                         }
                         else if(item instanceof Library){
 
                             setText(((Library)item).getDisplayName());
                             setGraphic(null);
+                            setTooltip(null);
                             setContextMenu(ContextMenuManager.getContextMenu(item));
 
                         }
@@ -67,6 +69,8 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
 
                         setText(null);
                         setGraphic(null);
+                        setTooltip(null);
+                        setContextMenu(null);
 
                     }
 
