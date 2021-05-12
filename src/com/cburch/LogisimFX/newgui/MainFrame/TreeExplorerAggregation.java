@@ -22,7 +22,6 @@ public class TreeExplorerAggregation extends TreeView {
 
         currTreeExplorer = projectTreeExplorer;
 
-        //setSimulationView();
         setProjectView();
 
     }
@@ -50,9 +49,6 @@ public class TreeExplorerAggregation extends TreeView {
 
         this.setCellFactory(projectTreeExplorer.getCellFactory());
         this.setRoot(projectTreeExplorer.getRoot());
-
-        //currTreeExplorer.setCellFactory(projectTreeExplorer.getCellFactory());
-        //currTreeExplorer.setRoot(projectTreeExplorer.getRoot());
 
         updateTree();
 

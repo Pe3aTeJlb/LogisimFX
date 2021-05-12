@@ -42,6 +42,7 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
                             setText(proj.getLogisimFile().getName());
                             setGraphic(null);
                             setTooltip(null);
+                            setContextMenu(ContextMenuManager.ProjectContextMenu(proj));
 
                         }
                         else if(item instanceof Library){
@@ -49,7 +50,7 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
                             setText(((Library)item).getDisplayName());
                             setGraphic(null);
                             setTooltip(null);
-                            setContextMenu(ContextMenuManager.getContextMenu(item));
+                            setContextMenu(ContextMenuManager.LibraryContextMenu(proj, (Library) item));
 
                         }
                         else if(item instanceof Tool){
@@ -58,7 +59,21 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
                             setTooltip(new Tooltip(((Tool)item).getDescription()));
                             setGraphic(((Tool) item).getIcon());
 
-                            //checkForHighLight(cell,item);
+                            ComponentFactory fact = ((AddTool) item).getFactory(false);
+
+                            if (fact instanceof SubcircuitFactory) {
+
+                                Circuit circ = ((SubcircuitFactory) fact).getSubcircuit();
+
+                                setContextMenu(ContextMenuManager.CircuitContextMenu(proj));
+
+                                if(proj.getCurrentCircuit().equals(circ)){
+
+                                }
+
+                            }else{
+                                setContextMenu(null);
+                            }
 
                         }
                         else{
@@ -108,8 +123,6 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
                             proj.setTool((Tool)treeItem.getValue());
                         }
 
-                        System.out.println("Left click");
-
                     }
 
                 }
@@ -119,9 +132,6 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
             return cell ;
 
         });
-
-
-        //todo: create update binding to proj tool.size
 
         updateTree();
 
