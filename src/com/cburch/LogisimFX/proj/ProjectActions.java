@@ -305,7 +305,7 @@ public class ProjectActions {
 		FileSelector fileSelector = new FileSelector(proj.getFrameController().getStage());
 
 		if (loader.getMainFile() != null) {
-			fileSelector.setInitialDirectory(loader.getMainFile());
+			//fileSelector.setInitialDirectory(loader.getMainFile());
 		}
 
 		File f = fileSelector.SaveCircFile();

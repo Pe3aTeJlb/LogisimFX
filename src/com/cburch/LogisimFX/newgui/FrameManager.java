@@ -1,10 +1,10 @@
 package com.cburch.LogisimFX.newgui;
 
+import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.file.Loader;
 import com.cburch.LogisimFX.newgui.CircuitStatisticFrame.CircuitStatisticController;
 import com.cburch.LogisimFX.newgui.HelpFrame.HelpController;
-import com.cburch.LogisimFX.newgui.MemoryEditorFrame.MemoryEditorController;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.proj.ProjectActions;
 
@@ -66,19 +66,6 @@ public class FrameManager {
 
        // if(!OpenedMainFrames.containsKey(proj)){
 
-            //It must be place exactly here, cause see CloseFrame() when OMF size == 1
-            // close startup empty project frame when u load new from file
-            if(!OpenedMainFrames.isEmpty() && isStartup ){
-
-                // at this moment OMF contains only startup frame
-                for (Project p: OpenedMainFrames.keySet()) {
-                    if(!p.isFileDirty()) {
-                        p.getFrameController().getStage().close();
-                        isStartup = false;
-                    }
-                }
-            }
-
             loader = new FXMLLoader(ClassLoader.getSystemResource(
                     "com/cburch/LogisimFX/newgui/MainFrame/LogisimFx.fxml"));
             Parent root = null;
@@ -122,20 +109,35 @@ public class FrameManager {
                     }
 
                 }else{
-
                     CloseFrame(proj);
-
                 }
 
 
             });
 
+            newStage.getIcons().add(IconsManager.LogisimFX);
+
             newStage.show();
 
             OpenedMainFrames.put(proj, new Data(newStage,c));
 
-            //System.out.println(OpenedMainFrames.size());
-            //System.out.println(proj.getLogisimFile().getName());
+
+
+            //Close startup frame when u load project from file
+            if(OpenedMainFrames.size() > 1 && isStartup ){
+
+                // at this moment OMF contains startup frame and another project frame
+                for (Project p: OpenedMainFrames.keySet()) {
+                    if(!p.isFileDirty()) {
+                        p.getFrameController().getStage().close();
+                        isStartup = false;
+                        break;
+                    }
+                }
+
+            }
+
+
 
        // }
         //else{
@@ -174,7 +176,8 @@ public class FrameManager {
             });
 
             newStage.initModality(modality);
-            //newStage.initOwner(OpenedMainFrames.get(proj).stage);
+
+            newStage.getIcons().add(IconsManager.LogisimFX);
 
             newStage.show();
 
@@ -235,6 +238,8 @@ public class FrameManager {
             });
 
             newStage.initModality(modality);
+
+            newStage.getIcons().add(IconsManager.LogisimFX);
 
             newStage.show();
 
@@ -417,17 +422,6 @@ public class FrameManager {
     }
 
 
-    public static void ExitPreventedCloseFrame(Project proj){
-
-            CloseMemoryEditors(proj);
-            CloseProjectAssociatedFrames(proj);
-            CloseCircuitStatisticsFrames(proj);
-            proj.getFrameController().onClose();
-
-            OpenedMainFrames.remove(proj);
-
-    }
-
     public static void CloseFrame(Project proj){
 
         if (OpenedMainFrames.size() > 1) {
@@ -446,7 +440,6 @@ public class FrameManager {
             CloseCircuitStatisticsFrames(proj);
             CloseProjectAssociatedFrames(proj);
             proj.getFrameController().onClose();
-
 
             Platform.exit();
             System.exit(0);

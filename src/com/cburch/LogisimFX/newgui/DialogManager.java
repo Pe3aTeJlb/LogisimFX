@@ -1,16 +1,19 @@
 package com.cburch.LogisimFX.newgui;
 
 
+import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.newgui.MainFrame.ProjectLibraryActions;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.tools.Library;
 
+import com.cburch.logisim.util.Icons;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.stage.Stage;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -27,6 +30,9 @@ public class DialogManager {
         alert.setTitle("LogisimFX");
         alert.setHeaderText(header);
         alert.setContentText(content);
+
+        ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().add(IconsManager.LogisimFX);
+
         alert.showAndWait();
 
     }
@@ -37,6 +43,9 @@ public class DialogManager {
         alert.setTitle("LogisimFX");
         alert.setHeaderText(header);
         alert.setContentText(content);
+
+        ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().add(IconsManager.LogisimFX);
+
         alert.showAndWait();
 
     }
@@ -47,6 +56,9 @@ public class DialogManager {
         alert.setTitle("LogisimFX");
         alert.setHeaderText(header);
         alert.setContentText(content);
+
+        ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().add(IconsManager.LogisimFX);
+
         alert.showAndWait();
 
     }
@@ -83,6 +95,8 @@ public class DialogManager {
         // Set expandable Exception into the dialog pane.
         alert.getDialogPane().setExpandableContent(expContent);
 
+        ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().add(IconsManager.LogisimFX);
+
         alert.showAndWait();
 
     }
@@ -109,6 +123,8 @@ public class DialogManager {
         // Set expandable Exception into the dialog pane.
         alert.getDialogPane().setExpandableContent(expContent);
 
+        ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().add(IconsManager.LogisimFX);
+
         alert.showAndWait();
 
     }
@@ -122,6 +138,8 @@ public class DialogManager {
         alert.setTitle("LogisimFX");
         alert.setHeaderText(lc.get("confirmCloseTitle"));
         alert.setContentText(lc.createComplexString("confirmDiscardMessage",  proj.getLogisimFile().getName()));
+
+        ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().add(IconsManager.LogisimFX);
 
         ButtonType buttonTypeSave = new ButtonType( lc.get("saveOption"));
         ButtonType buttonTypeDiscard = new ButtonType(lc.get("discardOption"));
@@ -150,6 +168,8 @@ public class DialogManager {
         alert.setHeaderText(lc.get("openAlreadyTitle"));
         alert.setContentText(lc.createComplexString("openAlreadyMessage",proj.getLogisimFile().getName()));
 
+        ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().add(IconsManager.LogisimFX);
+
         ButtonType buttonTypeLoseChanges = new ButtonType( lc.get("openAlreadyLoseChangesOption"));
         ButtonType buttonTypeNewWindow = new ButtonType(lc.get("openAlreadyNewWindowOption"));
         ButtonType buttonTypeCancel = new ButtonType(lc.get("openAlreadyCancelOption"), ButtonBar.ButtonData.CANCEL_CLOSE);
@@ -176,6 +196,8 @@ public class DialogManager {
         inputDialog.setTitle("LogisimFX");
         inputDialog.setHeaderText(lc.get("circuitNameDialogTitle"));
         inputDialog.setContentText(lc.get("circuitNamePrompt"));
+
+        ((Stage) inputDialog.getDialogPane().getScene().getWindow()).getIcons().add(IconsManager.LogisimFX);
 
         Optional<String> result = inputDialog.showAndWait();
 
@@ -215,6 +237,8 @@ public class DialogManager {
         inputDialog.setHeaderText(title);
         inputDialog.setContentText(body);
 
+        ((Stage) inputDialog.getDialogPane().getScene().getWindow()).getIcons().add(IconsManager.LogisimFX);
+
         Optional<String> result = inputDialog.showAndWait();
 
         if (result.isPresent()){
@@ -234,6 +258,8 @@ public class DialogManager {
         dialog.setTitle("LogisimFX");
         dialog.setHeaderText(lc.get("unloadLibrariesDialogTitle"));
         dialog.setMultipleSelectionModel();
+
+        ((Stage) dialog.getDialogPane().getScene().getWindow()).getIcons().add(IconsManager.LogisimFX);
 
         Optional<Library> result = dialog.showAndWait();
 
