@@ -7,11 +7,16 @@ import com.cburch.LogisimFX.tools.Tool;
 import com.cburch.LogisimFX.draw.tools.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
 import javafx.scene.control.ToolBar;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 
 public class MainToolBar extends ToolBar {
@@ -21,6 +26,8 @@ public class MainToolBar extends ToolBar {
 
     private int prefWidth = 15;
     private int prefHeight = 15;
+
+    private int toolsCounter = 1;
 
     private Project proj;
 
@@ -116,6 +123,26 @@ public class MainToolBar extends ToolBar {
             ImageView buff = new ImageView(tool.getIcon().getImage());
             graphicProperty().setValue(buff);
 
+            if(toolsCounter <11){
+
+                if(toolsCounter == 10) {toolsCounter = 0;}
+                System.out.println("DIGIT"+ toolsCounter);
+                proj.getFrameController().getStage().getScene().getAccelerators().put(
+                        new KeyCodeCombination(KeyCode.valueOf("DIGIT"+ toolsCounter), KeyCombination.CONTROL_DOWN),
+                        new Runnable() {
+                            @FXML
+                            public void run() {
+                               fire();
+                            }
+                        }
+
+                );
+
+                toolsCounter++;
+            }
+
+            setTooltip(new Tooltip(tool.getDescription()+" ("+"CTRL+"+ toolsCounter+")"));
+
             setActions(tool);
 
         }
@@ -138,7 +165,7 @@ public class MainToolBar extends ToolBar {
         public void setActions(Tool tool){
 
             this.setOnAction(event -> {
-
+                System.out.println("tool setted");
             });
 
         }
@@ -146,7 +173,6 @@ public class MainToolBar extends ToolBar {
         public void setActions(AbstractTool tool){
 
             this.setOnAction(event -> {
-
             });
 
         }

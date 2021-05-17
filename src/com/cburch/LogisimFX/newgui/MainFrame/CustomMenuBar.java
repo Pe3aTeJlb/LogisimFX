@@ -14,6 +14,7 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 
 import java.io.File;
@@ -29,13 +30,15 @@ public class CustomMenuBar extends MenuBar {
     private LogisimFile logisimFile;
 
     private ExplorerToolBar explorerToolBar;
+    private TreeExplorerAggregation treeExplorerAggregation;
 
 
-    public CustomMenuBar(ExplorerToolBar etb, Project project){
+    public CustomMenuBar(ExplorerToolBar etb, Project project, TreeExplorerAggregation tea){
 
         super();
 
         explorerToolBar = etb;
+        treeExplorerAggregation = tea;
 
         proj = project;
         logisimFile = proj.getLogisimFile();
@@ -67,14 +70,14 @@ public class CustomMenuBar extends MenuBar {
         File.textProperty().bind(localizer.createStringBinding("fileMenu"));
 
         MenuItem New = new MenuItem();
+        New.setAccelerator(KeyCombination.keyCombination("Ctrl+N"));
         New.textProperty().bind(localizer.createStringBinding("fileNewItem"));
         New.setOnAction(event -> ProjectActions.doNew(proj));
 
         MenuItem Open = new MenuItem();
+        Open.setAccelerator(KeyCombination.keyCombination("Ctrl+O"));
         Open.textProperty().bind(localizer.createStringBinding("fileOpenItem"));
-        Open.setOnAction(event -> {
-            ProjectActions.doOpen(proj);
-        });
+        Open.setOnAction(event -> { ProjectActions.doOpen(proj); });
 
         //see gui/menu/OpenRecent
         OpenRecentMenu OpenRecent = new OpenRecentMenu(proj);
@@ -86,14 +89,17 @@ public class CustomMenuBar extends MenuBar {
 
 
         MenuItem Close = new MenuItem();
+        Close.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+W"));
         Close.textProperty().bind(localizer.createStringBinding("fileCloseItem"));
         Close.setOnAction(event -> proj.getFrameController().getStage().close());
 
         MenuItem Save = new MenuItem();
+        Save.setAccelerator(KeyCombination.keyCombination("Ctrl+S"));
         Save.textProperty().bind(localizer.createStringBinding("fileSaveItem"));
         Save.setOnAction(event -> ProjectActions.doSave(proj));
 
         MenuItem SaveAs = new MenuItem();
+        SaveAs.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+S"));
         SaveAs.textProperty().bind(localizer.createStringBinding("fileSaveAsItem"));
         SaveAs.setOnAction(event -> ProjectActions.doSaveAs(proj));
 
@@ -106,6 +112,7 @@ public class CustomMenuBar extends MenuBar {
         ExportImage.setOnAction(event -> FrameManager.CreateExportImageFrame(proj));
 
         MenuItem Print = new MenuItem();
+        Print.setAccelerator(KeyCombination.keyCombination("Ctrl+P"));
         Print.textProperty().bind(localizer.createStringBinding("filePrintItem"));
         Print.setOnAction(event -> FrameManager.CreatePrintFrame(proj));
 
@@ -122,8 +129,14 @@ public class CustomMenuBar extends MenuBar {
 
 
         MenuItem Exit = new MenuItem();
+        Exit.setAccelerator(KeyCombination.keyCombination("Ctrl+Q"));
         Exit.textProperty().bind(localizer.createStringBinding("fileQuitItem"));
         Exit.setOnAction(event -> FrameManager.ExitProgram());
+
+        MenuItem ForceExit = new MenuItem();
+        ForceExit.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+Q"));
+        ForceExit.setText("Force Exit");
+        ForceExit.setOnAction(event -> FrameManager.ForceExit());
 
         File.getItems().addAll(
                 New,
@@ -139,7 +152,8 @@ public class CustomMenuBar extends MenuBar {
                 sp3,
                 Preferences,
                 sp4,
-                Exit
+                Exit,
+                ForceExit
         );
 
         this.getMenus().add(File);
@@ -152,6 +166,7 @@ public class CustomMenuBar extends MenuBar {
         Edit.textProperty().bind(localizer.createStringBinding("editMenu"));
 
         MenuItem Undo = new MenuItem();
+        Undo.setAccelerator(KeyCombination.keyCombination("Ctrl+T"));
         Undo.textProperty().bind(localizer.createStringBinding("editCantUndoItem"));
         Undo.setOnAction(event -> {});
 
@@ -160,14 +175,17 @@ public class CustomMenuBar extends MenuBar {
 
 
         MenuItem Cut = new MenuItem();
+        Cut.setAccelerator(KeyCombination.keyCombination("Ctrl+X"));
         Cut.textProperty().bind(localizer.createStringBinding("editCutItem"));
         Cut.setOnAction(event -> {});
 
         MenuItem Copy = new MenuItem();
+        Copy.setAccelerator(KeyCombination.keyCombination("Ctrl+C"));
         Copy.textProperty().bind(localizer.createStringBinding("editCopyItem"));
         Copy.setOnAction(event -> {});
 
         MenuItem Paste = new MenuItem();
+        Paste.setAccelerator(KeyCombination.keyCombination("Ctrl+V"));
         Paste.textProperty().bind(localizer.createStringBinding("editPasteItem"));
         Paste.setOnAction(event -> {});
 
@@ -176,14 +194,17 @@ public class CustomMenuBar extends MenuBar {
 
 
         MenuItem Delete = new MenuItem();
+        Delete.setAccelerator(KeyCombination.keyCombination("Delete"));
         Delete.textProperty().bind(localizer.createStringBinding("editDuplicateItem"));
         Delete.setOnAction(event -> {});
 
         MenuItem Duplicate = new MenuItem();
+        Duplicate.setAccelerator(KeyCombination.keyCombination("Ctrl+D"));
         Duplicate.textProperty().bind(localizer.createStringBinding("editClearItem"));
         Duplicate.setOnAction(event -> {});
 
         MenuItem SelecteAll = new MenuItem();
+        SelecteAll.setAccelerator(KeyCombination.keyCombination("Ctrl+A"));
         SelecteAll.textProperty().bind(localizer.createStringBinding("editSelectAllItem"));
         SelecteAll.setOnAction(event -> {});
 
@@ -192,18 +213,22 @@ public class CustomMenuBar extends MenuBar {
 
 
         MenuItem RaiseSelection = new MenuItem();
+        RaiseSelection.setAccelerator(KeyCombination.keyCombination("Ctrl+Up"));
         RaiseSelection.textProperty().bind(localizer.createStringBinding("editLowerItem"));
         RaiseSelection.setOnAction(event -> {});
 
         MenuItem LowerSelection = new MenuItem();
+        LowerSelection.setAccelerator(KeyCombination.keyCombination("Ctrl+Down"));
         LowerSelection.textProperty().bind(localizer.createStringBinding("editRaiseItem"));
         LowerSelection.setOnAction(event -> {});
 
         MenuItem RiseToTop = new MenuItem();
+        RiseToTop.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+Up"));
         RiseToTop.textProperty().bind(localizer.createStringBinding("editRaiseTopItem"));
         RiseToTop.setOnAction(event -> {});
 
         MenuItem LowerToBottom = new MenuItem();
+        LowerToBottom.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+Down"));
         LowerToBottom.textProperty().bind(localizer.createStringBinding("editLowerBottomItem"));
         LowerToBottom.setOnAction(event -> {});
 
@@ -250,15 +275,8 @@ public class CustomMenuBar extends MenuBar {
         MenuItem AddCircuit = new MenuItem();
         AddCircuit.textProperty().bind(localizer.createStringBinding("projectAddCircuitItem"));
         AddCircuit.setOnAction(event -> {
-
-            String circuitName = DialogManager.CreateInputDialog(proj.getLogisimFile());
-
-            if (circuitName != null) {
-                Circuit circuit = new Circuit(circuitName);
-                proj.doAction(LogisimFileActions.addCircuit(circuit));
-                proj.setCurrentCircuit(circuit);
-            }
-
+            ProjectCircuitActions.doAddCircuit(proj);
+            treeExplorerAggregation.updateTree();
         });
 
 
@@ -299,28 +317,36 @@ public class CustomMenuBar extends MenuBar {
                 Bindings.or(logisimFile.obsPos.isEqualTo("first"),logisimFile.obsPos.isEqualTo("first&last"))
         );
         MoveCircuitUp.textProperty().bind(localizer.createStringBinding("projectMoveCircuitUpItem"));
-        MoveCircuitUp.setOnAction(event -> {});
+        MoveCircuitUp.setOnAction(event -> {
+            ProjectCircuitActions.doMoveCircuit(proj,proj.getCurrentCircuit(),-1);
+            treeExplorerAggregation.updateTree();
+        });
 
         MenuItem MoveCircuitDown = new MenuItem();
         MoveCircuitDown.disableProperty().bind(
                 Bindings.or(logisimFile.obsPos.isEqualTo("last"),logisimFile.obsPos.isEqualTo("first&last"))
         );
         MoveCircuitDown.textProperty().bind(localizer.createStringBinding("projectMoveCircuitDownItem"));
-        MoveCircuitDown.setOnAction(event -> {});
+        MoveCircuitDown.setOnAction(event -> {
+            ProjectCircuitActions.doMoveCircuit(proj,proj.getCurrentCircuit(),1);
+            treeExplorerAggregation.updateTree();
+        });
 
         MenuItem SetAsMain = new MenuItem();
         SetAsMain.disableProperty().bind(
                 logisimFile.obsPos.isEqualTo("first&last")
         );
         SetAsMain.textProperty().bind(localizer.createStringBinding("projectSetAsMainItem"));
-        SetAsMain.setOnAction(event -> {});
+        SetAsMain.setOnAction(event -> {//TODO
+             });
 
         MenuItem RemoveCirc = new MenuItem();
-        RemoveCirc.disableProperty().bind(
-                logisimFile.obsPos.isEqualTo("first&last")
-        );
+        RemoveCirc.disableProperty().bind(logisimFile.obsPos.isEqualTo("first&last"));
         RemoveCirc.textProperty().bind(localizer.createStringBinding("projectRemoveCircuitItem"));
-        RemoveCirc.setOnAction(event -> {});
+        RemoveCirc.setOnAction(event -> {
+            ProjectCircuitActions.doRemoveCircuit(proj,proj.getCurrentCircuit());
+            treeExplorerAggregation.updateTree();
+        });
 
         MenuItem RevertAppearance = new MenuItem();
 
@@ -428,14 +454,17 @@ public class CustomMenuBar extends MenuBar {
         Simulate.textProperty().bind(localizer.createStringBinding("simulateMenu"));
 
         MenuItem EnableSimulation = new MenuItem();
+        EnableSimulation.setAccelerator(KeyCombination.keyCombination("Ctrl+E"));
         EnableSimulation.textProperty().bind(localizer.createStringBinding("simulateRunItem"));
         EnableSimulation.setOnAction(event -> {});
 
         MenuItem ResetSimulation = new MenuItem();
+        ResetSimulation.setAccelerator(KeyCombination.keyCombination("Ctrl+R"));
         ResetSimulation.textProperty().bind(localizer.createStringBinding("simulateResetItem"));
         ResetSimulation.setOnAction(event -> {});
 
         MenuItem SimStep = new MenuItem();
+        SimStep.setAccelerator(KeyCombination.keyCombination("Ctrl+I"));
         SimStep.textProperty().bind(localizer.createStringBinding("simulateStepItem"));
         SimStep.setOnAction(event -> {});
 
@@ -458,10 +487,12 @@ public class CustomMenuBar extends MenuBar {
 
 
         MenuItem TickOnce = new MenuItem();
+        TickOnce.setAccelerator(KeyCombination.keyCombination("Ctrl+T"));
         TickOnce.textProperty().bind(localizer.createStringBinding("simulateTickOnceItem"));
         TickOnce.setOnAction(event -> {});
 
         MenuItem TicksEnable = new MenuItem();
+        TicksEnable.setAccelerator(KeyCombination.keyCombination("Ctrl+K"));
         TicksEnable.textProperty().bind(localizer.createStringBinding("simulateTickItem"));
         TicksEnable.setOnAction(event -> {});
 
@@ -638,14 +669,17 @@ public class CustomMenuBar extends MenuBar {
         private void init(){
 
             MenuItem Maximize = new MenuItem();
+            Maximize.setAccelerator(KeyCombination.keyCombination("Ctrl+M"));
             Maximize.textProperty().bind(localizer.createStringBinding("windowZoomItem"));
             Maximize.setOnAction(event -> proj.getFrameController().getStage().setMaximized(true));
 
             MenuItem Minimize = new MenuItem();
+            Minimize.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+M"));
             Minimize.textProperty().bind(localizer.createStringBinding("windowMinimizeItem"));
             Minimize.setOnAction(event -> proj.getFrameController().getStage().setIconified(true));
 
             MenuItem Close = new MenuItem();
+            Close.setAccelerator(KeyCombination.keyCombination("Ctrl+W"));
             Close.textProperty().bind(localizer.createStringBinding("windowCloseItem"));
             Close.setOnAction(event -> proj.getFrameController().getStage().close());
 

@@ -75,7 +75,7 @@ public class MainFrameController extends AbstractController {
         mainSplitPane.setOrientation(Orientation.HORIZONTAL);
         setAnchor(0,50,0,0,mainSplitPane);
 
-        menubar = new CustomMenuBar(controlToolBar,proj);
+        menubar = new CustomMenuBar(controlToolBar,proj,treeExplorerAggregation);
 
         Root.getChildren().addAll(menubar,mainToolBar,mainSplitPane);
 
