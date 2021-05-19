@@ -79,6 +79,8 @@ public class FrameManager {
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root, 800, 600));
 
+            newStage.getIcons().add(IconsManager.LogisimFX);
+
             AbstractController c = loader.getController();
             c.postInitialization(newStage, proj);
 
@@ -115,8 +117,6 @@ public class FrameManager {
 
             });
 
-            newStage.getIcons().add(IconsManager.LogisimFX);
-
             newStage.show();
 
             OpenedMainFrames.put(proj, new Data(newStage,c));
@@ -124,7 +124,7 @@ public class FrameManager {
 
 
             //Close startup frame when u load project from file
-            if(OpenedMainFrames.size() > 1 && isStartup ){
+            if(OpenedMainFrames.size() > 1 && isStartup){
 
                 // at this moment OMF contains startup frame and another project frame
                 for (Project p: OpenedMainFrames.keySet()) {
@@ -146,6 +146,12 @@ public class FrameManager {
 
     }
 
+    public static void CreateFromMenuItem(Project proj){
+
+        if(isStartup)isStartup=false;
+        CreateMainFrame(proj);
+
+    }
 
 
     //Project-depending frames
@@ -166,6 +172,8 @@ public class FrameManager {
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root, 450, 350));
 
+            newStage.getIcons().add(IconsManager.LogisimFX);
+
             AbstractController c = loader.getController();
             curr = c;
             c.postInitialization(newStage, proj);
@@ -176,8 +184,6 @@ public class FrameManager {
             });
 
             newStage.initModality(modality);
-
-            newStage.getIcons().add(IconsManager.LogisimFX);
 
             newStage.show();
 
@@ -229,6 +235,8 @@ public class FrameManager {
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root, 450, 350));
 
+            newStage.getIcons().add(IconsManager.LogisimFX);
+
             AbstractController c = loader.getController();
             c.postInitialization(newStage);
 
@@ -238,8 +246,6 @@ public class FrameManager {
             });
 
             newStage.initModality(modality);
-
-            newStage.getIcons().add(IconsManager.LogisimFX);
 
             newStage.show();
 
@@ -297,6 +303,8 @@ public class FrameManager {
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root, 450, 350));
 
+            newStage.getIcons().add(IconsManager.LogisimFX);
+
             AbstractController c = loader.getController();
             curr = c;
             c.postInitialization(newStage, proj);
@@ -343,6 +351,8 @@ public class FrameManager {
 
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root, 450, 350));
+
+            newStage.getIcons().add(IconsManager.LogisimFX);
 
             AbstractController c = loader.getController();
             curr = c;

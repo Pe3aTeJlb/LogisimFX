@@ -1,9 +1,7 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
-import com.cburch.LogisimFX.circuit.Circuit;
+import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.file.LogisimFile;
-import com.cburch.LogisimFX.file.LogisimFileActions;
-import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.proj.Project;
 
 import javafx.beans.binding.Bindings;
@@ -11,6 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ToolBar;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 
 public class AdditionalToolBar extends ToolBar {
@@ -25,6 +24,17 @@ public class AdditionalToolBar extends ToolBar {
 
     private Project proj;
     private LogisimFile logisimFile;
+
+    private static Localizer lc = new Localizer("gui");
+
+    private static class ToolTip extends Tooltip{
+
+        public ToolTip(String text){
+            super();
+            textProperty().bind(lc.createStringBinding(text));
+        }
+
+    }
 
     public AdditionalToolBar(Project project, TreeExplorerAggregation explorer){
 
@@ -54,6 +64,7 @@ public class AdditionalToolBar extends ToolBar {
     private void SetCircuitOrderControlItems(){
 
         CustomButton AddCircuitBtn = new CustomButton(prefWidth,prefHeight,"projadd.gif");
+        AddCircuitBtn.setTooltip(new ToolTip("projectAddCircuitTip"));
         AddCircuitBtn.setOnAction(event -> {
             ProjectCircuitActions.doAddCircuit(proj);
             treeExplorerAggregation.updateTree();
@@ -61,6 +72,7 @@ public class AdditionalToolBar extends ToolBar {
 
 
         CustomButton PullCircuitUpBtn = new  CustomButton(prefWidth,prefHeight,"projup.gif");
+        PullCircuitUpBtn.setTooltip(new ToolTip("projectMoveCircuitUpTip"));
         PullCircuitUpBtn.disableProperty().bind(
                 Bindings.or(logisimFile.obsPos.isEqualTo("first"),logisimFile.obsPos.isEqualTo("first&last"))
         );
@@ -70,6 +82,7 @@ public class AdditionalToolBar extends ToolBar {
         });
 
         CustomButton PullCircuitDownIBtn = new CustomButton(prefWidth,prefHeight,"projdown.gif");
+        PullCircuitDownIBtn.setTooltip(new ToolTip("projectMoveCircuitDownTip"));
         PullCircuitDownIBtn.disableProperty().bind(
                 Bindings.or(logisimFile.obsPos.isEqualTo("last"),logisimFile.obsPos.isEqualTo("first&last"))
         );
@@ -79,6 +92,7 @@ public class AdditionalToolBar extends ToolBar {
         });
 
         CustomButton DeleteCircuitBtn = new CustomButton(prefWidth,prefHeight,"projdel.gif");
+        DeleteCircuitBtn.setTooltip(new ToolTip("projectRemoveCircuitTip"));
         DeleteCircuitBtn.disableProperty().bind(
                 logisimFile.obsPos.isEqualTo("first&last")
         );
@@ -99,18 +113,22 @@ public class AdditionalToolBar extends ToolBar {
     private void SetCircuitTicksControlItems(){
 
         CustomButton SimStopBtn = new CustomButton(prefWidth,prefHeight,"simstop.png");
+        SimStopBtn.setTooltip(new ToolTip("simulateEnableStepsTip"));
         SimStopBtn.setOnAction(event -> {
         });
 
         CustomButton SimPlayOneStepBtn = new CustomButton(prefWidth,prefHeight,"simtplay.png");
+        SimPlayOneStepBtn.setTooltip(new ToolTip("simulateStepTip"));
         SimPlayOneStepBtn.setOnAction(event -> {
         });
 
         CustomButton SimPlayBtn = new CustomButton(prefWidth,prefHeight,"simplay.png");
+        SimPlayBtn.setTooltip(new ToolTip("simulateEnableTicksTip"));
         SimPlayBtn.setOnAction(event -> {
         });
 
         CustomButton SimStepBtn = new CustomButton(prefWidth,prefHeight,"simstep.png");
+        SimStepBtn.setTooltip(new ToolTip("simulateTickTip"));
         SimStepBtn.setOnAction(event -> {
         });
 

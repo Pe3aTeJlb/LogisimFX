@@ -136,7 +136,8 @@ public class ProjectActions {
 		LogisimFile file = createNewFile(baseProject);
 		Project newProj = new Project(file);
 
-		FrameManager.CreateMainFrame(newProj);
+		FrameManager.CreateFromMenuItem(newProj);
+		//FrameManager.CreateMainFrame(newProj);
 
 		return newProj;
 

@@ -61,8 +61,7 @@ public class Project {
 	private Simulator simulator = new Simulator();
 	private LogisimFile file;
 	private CircuitState circuitState;
-	private HashMap<Circuit,CircuitState> stateMap
-		= new HashMap<Circuit,CircuitState>();
+	private HashMap<Circuit,CircuitState> stateMap = new HashMap<>();
 	private MainFrameController frameController;
 	private OptionsFrame optionsFrame = null;
 	private LogFrame logFrame = null;

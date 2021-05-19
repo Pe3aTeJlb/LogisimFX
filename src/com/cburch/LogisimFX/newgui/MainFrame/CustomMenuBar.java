@@ -1,13 +1,9 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
-import com.cburch.LogisimFX.file.LogisimFileActions;
 import com.cburch.LogisimFX.newgui.FrameManager;
 import com.cburch.LogisimFX.file.LogisimFile;
-import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.proj.Project;
-import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.proj.ProjectActions;
-import com.cburch.LogisimFX.FileSelector;
 import com.cburch.LogisimFX.Localizer;
 
 import javafx.beans.binding.Bindings;
@@ -16,8 +12,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
-
-import java.io.File;
 
 public class CustomMenuBar extends MenuBar {
 
@@ -333,12 +327,9 @@ public class CustomMenuBar extends MenuBar {
         });
 
         MenuItem SetAsMain = new MenuItem();
-        SetAsMain.disableProperty().bind(
-                logisimFile.obsPos.isEqualTo("first&last")
-        );
+        SetAsMain.disableProperty().bind(logisimFile.isMain);
         SetAsMain.textProperty().bind(localizer.createStringBinding("projectSetAsMainItem"));
-        SetAsMain.setOnAction(event -> {//TODO
-             });
+        SetAsMain.setOnAction(event -> ProjectCircuitActions.doSetAsMainCircuit(proj, proj.getCurrentCircuit()));
 
         MenuItem RemoveCirc = new MenuItem();
         RemoveCirc.disableProperty().bind(logisimFile.obsPos.isEqualTo("first&last"));
@@ -351,7 +342,11 @@ public class CustomMenuBar extends MenuBar {
         MenuItem RevertAppearance = new MenuItem();
 
         RevertAppearance.textProperty().bind(localizer.createStringBinding("projectRevertAppearanceItem"));
-        RevertAppearance.setOnAction(event -> {});
+        RevertAppearance.setOnAction(event -> {
+
+            //proj.doAction(new RevertAppearanceAction(cur));
+            //Todo:
+        });
 
 
         SeparatorMenuItem sp2 = new SeparatorMenuItem();
@@ -359,52 +354,22 @@ public class CustomMenuBar extends MenuBar {
         MenuItem ShowTools = new MenuItem();
         ShowTools.disableProperty().bind(explorerToolBar.ShowProjectExplorer);
         ShowTools.textProperty().bind(localizer.createStringBinding("projectViewToolboxItem"));
-        ShowTools.setOnAction(event -> {
-
-            explorerToolBar.ShowProjectExplorer.set(true);
-            explorerToolBar.ShowSimulationHierarchy.set(false);
-
-            explorerToolBar.AdditionalToolBar.SetAdditionalToolBarItems("ControlCircuitOrder");
-            explorerToolBar.TreeExplorerAggregation.setProjectView();
-
-        });
+        ShowTools.setOnAction(event -> explorerToolBar.ShowProjectExplorer());
 
         MenuItem ViewSimulationTree = new MenuItem();
         ViewSimulationTree.disableProperty().bind(explorerToolBar.ShowSimulationHierarchy);
         ViewSimulationTree.textProperty().bind(localizer.createStringBinding("projectViewSimulationItem"));
-        ViewSimulationTree.setOnAction(event -> {
-
-            explorerToolBar.ShowProjectExplorer.set(false);
-            explorerToolBar.ShowSimulationHierarchy.set(true);
-
-            explorerToolBar.AdditionalToolBar.SetAdditionalToolBarItems("ControlCircuitTicks");
-            explorerToolBar.TreeExplorerAggregation.setSimulationView();
-
-        });
+        ViewSimulationTree.setOnAction(event -> explorerToolBar.ShowSimulation());
 
         MenuItem EditCircuitLayout = new MenuItem();
         EditCircuitLayout.disableProperty().bind(explorerToolBar.EditCircuitLayout);
         EditCircuitLayout.textProperty().bind(localizer.createStringBinding("projectEditCircuitLayoutItem"));
-        EditCircuitLayout.setOnAction(event -> {
-
-            explorerToolBar.EditCircuitLayout.set(true);
-            explorerToolBar.EditCircuitAppearance.set(false);
-
-            explorerToolBar.MainToolBar.SetMainToolBarItems("RedactCircuit");
-            //TODO: add controll method for canvas
-        });
+        EditCircuitLayout.setOnAction(event -> explorerToolBar.EditCircuit());
 
         MenuItem EditCircuitAppearance = new MenuItem();
         EditCircuitAppearance.disableProperty().bind(explorerToolBar.EditCircuitAppearance);
         EditCircuitAppearance.textProperty().bind(localizer.createStringBinding("projectEditCircuitAppearanceItem"));
-        EditCircuitAppearance.setOnAction(event -> {
-
-            explorerToolBar.EditCircuitLayout.set(false);
-            explorerToolBar.EditCircuitAppearance.set(true);
-
-            explorerToolBar.MainToolBar.SetMainToolBarItems("RedactAppearance");
-            //TODO: add controll method for canvas
-        });
+        EditCircuitAppearance.setOnAction(event -> explorerToolBar.EditAppearance());
 
 
         SeparatorMenuItem sp3 = new SeparatorMenuItem();

@@ -27,8 +27,9 @@ public class MainFrameController extends AbstractController {
 
     //UI
     private CustomMenuBar menubar;
-    private AdditionalToolBar additionalToolBar;
     private MainToolBar mainToolBar;
+    private AdditionalToolBar additionalToolBar;
+    private ExplorerToolBar explorerToolBar;
     private TreeExplorerAggregation treeExplorerAggregation;
 
     private CustomCanvas cv;
@@ -62,9 +63,9 @@ public class MainFrameController extends AbstractController {
 
         mainToolBar = new MainToolBar(proj);
         additionalToolBar = new AdditionalToolBar(proj, treeExplorerAggregation);
-        ExplorerToolBar controlToolBar = new ExplorerToolBar(mainToolBar,additionalToolBar, treeExplorerAggregation);
+        explorerToolBar = new ExplorerToolBar(mainToolBar,additionalToolBar, treeExplorerAggregation);
 
-        treeRoot.getChildren().addAll(controlToolBar,additionalToolBar, treeExplorerAggregation);
+        treeRoot.getChildren().addAll(explorerToolBar,additionalToolBar, treeExplorerAggregation);
 
         cv = new CustomCanvas(canvasRoot);
 
@@ -75,7 +76,7 @@ public class MainFrameController extends AbstractController {
         mainSplitPane.setOrientation(Orientation.HORIZONTAL);
         setAnchor(0,50,0,0,mainSplitPane);
 
-        menubar = new CustomMenuBar(controlToolBar,proj,treeExplorerAggregation);
+        menubar = new CustomMenuBar(explorerToolBar,proj,treeExplorerAggregation);
 
         Root.getChildren().addAll(menubar,mainToolBar,mainSplitPane);
 
@@ -96,6 +97,22 @@ public class MainFrameController extends AbstractController {
 
     }
 
+
+
+    //Section for static access from proj.getController. Duplicate functional
+    public void setAppearanceView(Circuit cir){
+        explorerToolBar.EditAppearance();
+    }
+
+    public void setEditView(Circuit circ){
+        explorerToolBar.EditCircuit();
+    }
+
+    public void manual_UI_Update(){
+
+        treeExplorerAggregation.updateTree();
+
+    }
 
 
     public Project getProj(){

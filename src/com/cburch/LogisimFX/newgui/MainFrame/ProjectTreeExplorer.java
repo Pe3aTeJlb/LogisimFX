@@ -56,7 +56,13 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
                         else if(item instanceof Tool){
 
                             setText(((Tool)item).getDisplayName());
+
+                            //Tooltip tip = new Tooltip();
+                            //tip.textProperty().bind(((Tool)item).getDescription());
+                            //setTooltip(tip);
+
                             setTooltip(new Tooltip(((Tool)item).getDescription()));
+
                             setGraphic(((Tool) item).getIcon());
 
                             ComponentFactory fact = ((AddTool) item).getFactory(false);
@@ -65,7 +71,7 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
 
                                 Circuit circ = ((SubcircuitFactory) fact).getSubcircuit();
 
-                                setContextMenu(ContextMenuManager.CircuitContextMenu(proj));
+                                setContextMenu(ContextMenuManager.CircuitContextMenu(proj, circ));
 
                                 if(proj.getCurrentCircuit().equals(circ)){
 

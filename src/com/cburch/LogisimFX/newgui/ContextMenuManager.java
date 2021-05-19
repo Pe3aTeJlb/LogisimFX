@@ -3,6 +3,7 @@ package com.cburch.LogisimFX.newgui;
 import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.file.LogisimFileActions;
+import com.cburch.LogisimFX.newgui.MainFrame.ProjectCircuitActions;
 import com.cburch.LogisimFX.newgui.MainFrame.ProjectLibraryActions;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.tools.Library;
@@ -16,7 +17,6 @@ import javafx.scene.control.MenuItem;
 public class ContextMenuManager {
 
     private static Localizer lc = new Localizer(null);
-
 
     public static ContextMenu ProjectContextMenu(Project proj){
 
@@ -93,15 +93,50 @@ public class ContextMenuManager {
 
     }
 
-    public static ContextMenu CircuitContextMenu(Project proj){
+    public static ContextMenu CircuitContextMenu(Project proj, Circuit circ){
+
+        lc.changeBundle("menu");
 
         ContextMenu contextMenu = new ContextMenu();
 
-        MenuItem menuItem = new MenuItem("Menu Item");
-        menuItem.setDisable(proj.getLogisimFile().getTools().size()==1);
+        MenuItem EditCircuit = new MenuItem();
+        EditCircuit.textProperty().bind(lc.createStringBinding("projectEditCircuitLayoutItem"));
+        EditCircuit.setOnAction(event -> proj.getFrameController().setEditView(circ));
+
+        MenuItem EditAppearance = new MenuItem();
+        EditAppearance.textProperty().bind(lc.createStringBinding("projectEditCircuitAppearanceItem"));
+        EditAppearance.setOnAction(event -> proj.getFrameController().setAppearanceView(circ));
+
+        MenuItem AnalyzeCircuit = new MenuItem();
+        AnalyzeCircuit.textProperty().bind(lc.createStringBinding("projectAnalyzeCircuitItem"));
+        AnalyzeCircuit.setOnAction(event -> FrameManager.CreateCircuitAnalysisFrame(proj));
+
+        MenuItem GetCircuitStatistics = new MenuItem();
+        GetCircuitStatistics.textProperty().bind(lc.createStringBinding("projectGetCircuitStatisticsItem"));
+        GetCircuitStatistics.setOnAction(event -> FrameManager.CreateCircuitStatisticFrame(proj, circ));
+
+        MenuItem SetAsMain = new MenuItem();
+        SetAsMain.disableProperty().bind(proj.getLogisimFile().isMain);
+        SetAsMain.textProperty().bind(lc.createStringBinding("projectSetAsMainItem"));
+        SetAsMain.setOnAction(event -> proj.getLogisimFile().setMainCircuit(circ));
+
+        MenuItem RemoveCirc = new MenuItem();
+        RemoveCirc.disableProperty().bind(proj.getLogisimFile().obsPos.isEqualTo("first&last"));
+        RemoveCirc.textProperty().bind(lc.createStringBinding("projectRemoveCircuitItem"));
+        RemoveCirc.setOnAction(event -> {
+            ProjectCircuitActions.doRemoveCircuit(proj,circ);
+            proj.getFrameController().manual_UI_Update();
+        });
 
 
-        contextMenu.getItems().addAll(menuItem);
+        contextMenu.getItems().addAll(
+                EditCircuit,
+                EditAppearance,
+                AnalyzeCircuit,
+                GetCircuitStatistics,
+                SetAsMain,
+                RemoveCirc
+        );
 
         return contextMenu;
 

@@ -15,6 +15,7 @@ import com.cburch.LogisimFX.util.EventSourceWeakSupport;
 import com.cburch.LogisimFX.util.ListUtil;
 import com.cburch.LogisimFX.util.StringUtil;
 
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import org.xml.sax.SAXException;
 
@@ -71,6 +72,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 	private boolean dirty = false;
 
 	public SimpleStringProperty obsPos = new SimpleStringProperty("undefined2");
+	public SimpleBooleanProperty isMain = new SimpleBooleanProperty(false);
 
 	LogisimFile(Loader loader) {
 
@@ -321,6 +323,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 		this.main = circuit;
 		fireEvent(LibraryEvent.SET_MAIN, circuit);
 
+		isMain.setValue(true);
 		updateCircuitPos();
 
 	}
@@ -328,7 +331,13 @@ public class LogisimFile extends Library implements LibraryEventSource {
 	public void setCurrent(Circuit circ){
 
 		current = circ;
+
+		if(current != main){
+			isMain.setValue(false);
+		}else{isMain.setValue(true);}
+
 		updateCircuitPos();
+
 	}
 
 	//
