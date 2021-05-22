@@ -10,10 +10,11 @@ import com.cburch.LogisimFX.data.BitWidth;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 
 public class HexDigit extends InstanceFactory {
 	public HexDigit() {
-		super("Hex Digit Display", Strings.getter("hexDigitComponent"));
+		super("Hex Digit Display", LC.createStringBinding("hexDigitComponent"));
 		setAttributes(new Attribute[] { Io.ATTR_ON_COLOR, Io.ATTR_OFF_COLOR,
 					Io.ATTR_BACKGROUND },
 				new Object[] { new Color(240, 0, 0), SevenSegment.DEFAULT_OFF,

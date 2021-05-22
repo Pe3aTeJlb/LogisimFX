@@ -28,6 +28,7 @@ import com.cburch.LogisimFX.LogisimVersion;
 import com.cburch.LogisimFX.circuit.ExpressionComputer;
 import com.cburch.LogisimFX.file.Options;
 import com.cburch.LogisimFX.prefs.AppPreferences;
+import javafx.beans.binding.StringBinding;
 import javafx.scene.image.ImageView;
 
 abstract class AbstractGate extends InstanceFactory {
@@ -40,11 +41,11 @@ abstract class AbstractGate extends InstanceFactory {
 	private String rectLabel = "";
 	private boolean paintInputLines;
 
-	protected AbstractGate(String name, StringGetter desc) {
+	protected AbstractGate(String name, StringBinding desc) {
 		this(name, desc, false);
 	}
 	
-	protected AbstractGate(String name, StringGetter desc, boolean isXor) {
+	protected AbstractGate(String name, StringBinding desc, boolean isXor) {
 		super(name, desc);
 		this.isXor = isXor;
 		setFacingAttribute(StdAttr.FACING);

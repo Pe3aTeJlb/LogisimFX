@@ -11,6 +11,7 @@ import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.StringGetter;
+import javafx.beans.binding.StringBinding;
 import javafx.scene.image.ImageView;
 
 import java.awt.*;
@@ -30,8 +31,8 @@ class WireFactory extends AbstractComponentFactory {
 	}
 
 	@Override
-	public StringGetter getDisplayGetter() {
-		return Strings.getter("wireComponent");
+	public StringBinding getDisplayGetter() {
+		return LC.createStringBinding("wireComponent");
 	}
 
 	@Override

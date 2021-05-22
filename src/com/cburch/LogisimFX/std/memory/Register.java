@@ -8,6 +8,7 @@ import java.awt.Graphics;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.StringUtil;
@@ -21,7 +22,7 @@ public class Register extends InstanceFactory {
 	private static final int EN  = 4;
 
 	public Register() {
-		super("Register", Strings.getter("registerComponent"));
+		super("Register", LC.createStringBinding("registerComponent"));
 		setAttributes(new Attribute[] {
 				StdAttr.WIDTH, StdAttr.TRIGGER,
 				StdAttr.LABEL, StdAttr.LABEL_FONT

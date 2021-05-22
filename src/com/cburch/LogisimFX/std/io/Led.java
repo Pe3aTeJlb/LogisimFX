@@ -5,13 +5,14 @@ package com.cburch.LogisimFX.std.io;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
 import java.awt.*;
 
 public class Led extends InstanceFactory {
 	public Led() {
-		super("LED", Strings.getter("ledComponent"));
+		super("LED", LC.createStringBinding("ledComponent"));
 		setAttributes(new Attribute[] {
 				StdAttr.FACING, Io.ATTR_ON_COLOR, Io.ATTR_OFF_COLOR,
 				Io.ATTR_ACTIVE,

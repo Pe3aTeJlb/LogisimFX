@@ -6,12 +6,10 @@ package com.cburch.LogisimFX.tools;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.Icon;
-
 import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.ComponentFactory;
-import com.cburch.LogisimFX.util.Icons;
-import com.cburch.LogisimFX.util.StringGetter;
+import com.cburch.LogisimFX.std.LC;
+import javafx.beans.binding.StringBinding;
 import javafx.scene.image.ImageView;
 
 /** This class allows an object to be created holding all the information
@@ -34,16 +32,16 @@ public class FactoryDescription {
 	}
 	
 	private String name;
-	private StringGetter displayName;
+	private StringBinding displayName;
 	private String iconName;
 	private boolean iconLoadAttempted;
 	private ImageView icon;
 	private String factoryClassName;
 	private boolean factoryLoadAttempted;
 	private ComponentFactory factory;
-	private StringGetter toolTip;
+	private StringBinding toolTip;
 	
-	public FactoryDescription(String name, StringGetter displayName,
+	public FactoryDescription(String name, StringBinding displayName,
 			String iconName, String factoryClassName) {
 		this(name, displayName, factoryClassName);
 		this.iconName = iconName;
@@ -51,7 +49,7 @@ public class FactoryDescription {
 		this.icon = null;
 	}
 	
-	public FactoryDescription(String name, StringGetter displayName,
+	public FactoryDescription(String name, StringBinding displayName,
 							  ImageView icon, String factoryClassName) {
 		this(name, displayName, factoryClassName);
 		this.iconName = "???";
@@ -59,7 +57,7 @@ public class FactoryDescription {
 		this.icon = icon;
 	}
 	
-	public FactoryDescription(String name, StringGetter displayName,
+	public FactoryDescription(String name, StringBinding displayName,
 			String factoryClassName) {
 		this.name = name;
 		this.displayName = displayName;
@@ -76,8 +74,8 @@ public class FactoryDescription {
 		return name;
 	}
 	
-	public String getDisplayName() {
-		return displayName.get();
+	public StringBinding getDisplayName() {
+		return displayName == null ? LC.createRawStringBinding(getName()) : displayName;
 	}
 	
 	public boolean isFactoryLoaded() {
@@ -142,14 +140,14 @@ public class FactoryDescription {
 		}
 	}
 	
-	public FactoryDescription setToolTip(StringGetter getter) {
+	public FactoryDescription setToolTip(StringBinding getter) {
 		toolTip = getter;
 		return this;
 	}
 	
-	public String getToolTip() {
-		StringGetter getter = toolTip;
-		return getter == null ? null : getter.get();
+	public StringBinding getToolTip() {
+		StringBinding getter = toolTip;
+		return getter == null ? null : getter;
 	}
 
 }

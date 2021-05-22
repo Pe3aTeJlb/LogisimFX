@@ -3,7 +3,6 @@
 
 package com.cburch.LogisimFX.tools;
 
-import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.data.Attribute;
@@ -12,6 +11,7 @@ import com.cburch.LogisimFX.data.AttributeSet;
 import com.cburch.LogisimFX.LogisimVersion;
 import com.cburch.logisim.gui.main.Canvas;
 
+import javafx.beans.binding.StringBinding;
 import javafx.scene.image.ImageView;
 
 import java.awt.*;
@@ -28,8 +28,8 @@ public abstract class Tool implements AttributeDefaultProvider {
 		= Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
 
 	public abstract String getName();
-	public abstract String getDisplayName();
-	public abstract String getDescription();
+	public abstract StringBinding getDisplayName();
+	public abstract StringBinding getDescription();
 	public ImageView getIcon(){ return null; }
 	public Tool cloneTool() { return this; }
 	public boolean sharesSource(Tool other) { return this == other; }

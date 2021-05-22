@@ -13,6 +13,7 @@ import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.Icons;
 import com.cburch.LogisimFX.circuit.CircuitState;
@@ -82,7 +83,7 @@ public class Clock extends InstanceFactory {
 	}
 
 	public Clock() {
-		super("Clock", Strings.getter("clockComponent"));
+		super("Clock", LC.createStringBinding("clockComponent"));
 		setAttributes(new Attribute[] {
 					StdAttr.FACING, ATTR_HIGH, ATTR_LOW,
 					StdAttr.LABEL, Pin.ATTR_LABEL_LOC, StdAttr.LABEL_FONT

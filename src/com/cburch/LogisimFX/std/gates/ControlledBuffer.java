@@ -13,6 +13,7 @@ import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.ComponentFactory;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.WireRepair;
 import com.cburch.LogisimFX.tools.WireRepairData;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
@@ -41,8 +42,8 @@ class ControlledBuffer extends InstanceFactory {
 
 	private ControlledBuffer(boolean isInverter) {
 		super(isInverter ? "Controlled Inverter" : "Controlled Buffer",
-			isInverter ? Strings.getter("controlledInverterComponent")
-					: Strings.getter("controlledBufferComponent"));
+			isInverter ? LC.createStringBinding("controlledInverterComponent")
+					: LC.createStringBinding("controlledBufferComponent"));
 		this.isInverter = isInverter;
 		if (isInverter) {
 			setAttributes(new Attribute[] { StdAttr.FACING, StdAttr.WIDTH,

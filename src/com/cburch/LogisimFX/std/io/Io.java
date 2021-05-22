@@ -39,21 +39,21 @@ public class Io extends Library {
 	static final Color DEFAULT_BACKGROUND = new Color(255, 255, 255, 0);
 	
 	private static FactoryDescription[] DESCRIPTIONS = {
-		new FactoryDescription("Button", Strings.getter("buttonComponent"),
+		new FactoryDescription("Button", LC.createStringBinding("buttonComponent"),
 				"button.gif", "Button"),
-		new FactoryDescription("Joystick", Strings.getter("joystickComponent"),
+		new FactoryDescription("Joystick", LC.createStringBinding("joystickComponent"),
 				"joystick.gif", "Joystick"),
-		new FactoryDescription("Keyboard", Strings.getter("keyboardComponent"),
+		new FactoryDescription("Keyboard", LC.createStringBinding("keyboardComponent"),
 				"keyboard.gif", "Keyboard"),
-		new FactoryDescription("LED", Strings.getter("ledComponent"),
+		new FactoryDescription("LED", LC.createStringBinding("ledComponent"),
 				"led.gif", "Led"),
-		new FactoryDescription("7-Segment Display", Strings.getter("sevenSegmentComponent"),
+		new FactoryDescription("7-Segment Display", LC.createStringBinding("sevenSegmentComponent"),
 				"7seg.gif", "SevenSegment"),
-		new FactoryDescription("Hex Digit Display", Strings.getter("hexDigitComponent"),
+		new FactoryDescription("Hex Digit Display", LC.createStringBinding("hexDigitComponent"),
 				"hexdig.gif", "HexDigit"),
-		new FactoryDescription("DotMatrix", Strings.getter("dotMatrixComponent"),
+		new FactoryDescription("DotMatrix", LC.createStringBinding("dotMatrixComponent"),
 				"dotmat.gif", "DotMatrix"),
-		new FactoryDescription("TTY", Strings.getter("ttyComponent"),
+		new FactoryDescription("TTY", LC.createStringBinding("ttyComponent"),
 				"tty.gif", "Tty"),
 	};
 

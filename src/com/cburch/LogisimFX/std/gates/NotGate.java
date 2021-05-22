@@ -16,6 +16,7 @@ import com.cburch.LogisimFX.analyze.model.Expressions;
 import com.cburch.LogisimFX.comp.TextField;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.Icons;
@@ -43,7 +44,7 @@ class NotGate extends InstanceFactory {
 
 	private NotGate() {
 
-		super("NOT Gate", Strings.getter("notGateComponent"));
+		super("NOT Gate", LC.createStringBinding("notGateComponent"));
 		setAttributes(new Attribute[] {
 				StdAttr.FACING, StdAttr.WIDTH, ATTR_SIZE,
 				GateAttributes.ATTR_OUTPUT,

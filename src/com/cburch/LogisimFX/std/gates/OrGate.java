@@ -11,6 +11,7 @@ import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.instance.Instance;
 import com.cburch.LogisimFX.instance.InstancePainter;
 import com.cburch.LogisimFX.instance.InstanceState;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.WireRepairData;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
@@ -18,7 +19,7 @@ class OrGate extends AbstractGate {
 	public static OrGate FACTORY = new OrGate();
 
 	private OrGate() {
-		super("OR Gate", Strings.getter("orGateComponent"));
+		super("OR Gate", LC.createStringBinding("orGateComponent"));
 		setRectangularLabel("\u2265" + "1");
 		setIconNames("orGate.gif", "orGateRect.gif", "dinOrGate.gif");
 		setPaintInputLines(true);

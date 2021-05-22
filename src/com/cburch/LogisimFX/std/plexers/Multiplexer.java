@@ -8,6 +8,7 @@ import java.awt.Graphics;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.JoinedConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
@@ -15,7 +16,7 @@ import com.cburch.LogisimFX.LogisimVersion;
 
 public class Multiplexer extends InstanceFactory {
 	public Multiplexer() {
-		super("Multiplexer", Strings.getter("multiplexerComponent"));
+		super("Multiplexer", LC.createStringBinding("multiplexerComponent"));
 		setAttributes(new Attribute[] {
 				StdAttr.FACING, Plexers.ATTR_SELECT_LOC, Plexers.ATTR_SELECT, StdAttr.WIDTH,
 				Plexers.ATTR_DISABLED, Plexers.ATTR_ENABLE

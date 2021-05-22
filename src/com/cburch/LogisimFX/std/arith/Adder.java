@@ -5,6 +5,7 @@ package com.cburch.LogisimFX.std.arith;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
@@ -20,7 +21,7 @@ public class Adder extends InstanceFactory {
 	private static final int C_OUT = 4;
 	
 	public Adder() {
-		super("Adder", Strings.getter("adderComponent"));
+		super("Adder", LC.createStringBinding("adderComponent"));
 		setAttributes(new Attribute[] {
 				StdAttr.WIDTH
 			}, new Object[] {

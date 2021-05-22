@@ -24,6 +24,10 @@ public class LC {
         return lc.createComplexStringBinding(key, strings);
     }
 
+    public static StringBinding createRawStringBinding(final String string){
+        return lc.createRawStringBinding(string);
+    }
+
     public static String get(final String key, final Object... args) {
        return lc.get(key, args);
     }

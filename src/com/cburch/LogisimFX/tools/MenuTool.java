@@ -14,6 +14,7 @@ import com.cburch.logisim.gui.main.Canvas;
 import com.cburch.logisim.gui.main.Selection;
 import com.cburch.logisim.gui.main.SelectionActions;
 import com.cburch.LogisimFX.proj.Project;
+import javafx.beans.binding.StringBinding;
 import javafx.scene.image.ImageView;
 
 import javax.swing.*;
@@ -109,10 +110,10 @@ public class MenuTool extends Tool {
 	public String getName() { return "Menu Tool"; }
 
 	@Override
-	public String getDisplayName() { return Strings.get("menuTool"); }
+	public StringBinding getDisplayName() { return LC.createStringBinding("menuTool"); }
 
 	@Override
-	public String getDescription() { return Strings.get("menuToolDesc"); }
+	public StringBinding getDescription() { return LC.createStringBinding("menuToolDesc"); }
 
 	@Override
 	public ImageView getIcon() {

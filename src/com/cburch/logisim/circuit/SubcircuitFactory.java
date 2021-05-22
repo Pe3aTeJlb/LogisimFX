@@ -39,6 +39,7 @@ import com.cburch.logisim.util.StringGetter;
 import com.cburch.logisim.util.StringUtil;
 
 public class SubcircuitFactory extends InstanceFactory {
+
 	private class CircuitFeature implements StringGetter, MenuExtender, ActionListener {
 		private Instance instance;
 		private Project proj;

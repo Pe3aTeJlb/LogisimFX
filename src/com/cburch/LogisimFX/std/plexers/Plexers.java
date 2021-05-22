@@ -45,15 +45,15 @@ public class Plexers extends Library {
 	protected static final int DELAY = 3;
 
 	private static FactoryDescription[] DESCRIPTIONS = {
-		new FactoryDescription("Multiplexer", Strings.getter("multiplexerComponent"),
+		new FactoryDescription("Multiplexer", LC.createStringBinding("multiplexerComponent"),
 				"multiplexer.gif", "Multiplexer"),
-		new FactoryDescription("Demultiplexer", Strings.getter("demultiplexerComponent"),
+		new FactoryDescription("Demultiplexer", LC.createStringBinding("demultiplexerComponent"),
 				"demultiplexer.gif", "Demultiplexer"),
-		new FactoryDescription("Decoder", Strings.getter("decoderComponent"),
+		new FactoryDescription("Decoder", LC.createStringBinding("decoderComponent"),
 				"decoder.gif", "Decoder"),
-		new FactoryDescription("Priority Encoder", Strings.getter("priorityEncoderComponent"),
+		new FactoryDescription("Priority Encoder", LC.createStringBinding("priorityEncoderComponent"),
 				"priencod.gif", "PriorityEncoder"),
-		new FactoryDescription("BitSelector", Strings.getter("bitSelectorComponent"),
+		new FactoryDescription("BitSelector", LC.createStringBinding("bitSelectorComponent"),
 				"bitSelector.gif", "BitSelector"),
 	};
 

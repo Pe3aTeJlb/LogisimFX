@@ -4,11 +4,12 @@
 package com.cburch.LogisimFX.std.memory;
 
 import com.cburch.LogisimFX.data.Value;
+import com.cburch.LogisimFX.std.LC;
 
 public class TFlipFlop extends AbstractFlipFlop {
 	public TFlipFlop() {
 		super("T Flip-Flop", "tFlipFlop.gif",
-				Strings.getter("tFlipFlopComponent"), 1, false);
+				LC.createStringBinding("tFlipFlopComponent"), 1, false);
 	}
 
 	@Override

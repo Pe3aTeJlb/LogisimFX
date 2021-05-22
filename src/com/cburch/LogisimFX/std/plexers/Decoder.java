@@ -5,6 +5,7 @@ package com.cburch.LogisimFX.std.plexers;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.LogisimVersion;
@@ -13,7 +14,7 @@ import java.awt.*;
 
 public class Decoder extends InstanceFactory {
 	public Decoder() {
-		super("Decoder", Strings.getter("decoderComponent"));
+		super("Decoder", LC.createStringBinding("decoderComponent"));
 		setAttributes(new Attribute[] {
 				StdAttr.FACING, Plexers.ATTR_SELECT_LOC, Plexers.ATTR_SELECT,
 				Plexers.ATTR_TRISTATE, Plexers.ATTR_DISABLED, Plexers.ATTR_ENABLE

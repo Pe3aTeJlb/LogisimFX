@@ -9,6 +9,7 @@ package com.cburch.LogisimFX.std.wiring;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.Icons;
@@ -34,7 +35,7 @@ public class Transistor extends InstanceFactory {
 	private static final Icon ICON_P = Icons.getIcon("trans0.gif");
 
 	public Transistor() {
-		super("Transistor", Strings.getter("transistorComponent"));
+		super("Transistor", LC.createStringBinding("transistorComponent"));
 		setAttributes(
 				new Attribute[] { ATTR_TYPE, StdAttr.FACING,
 						Wiring.ATTR_GATE, StdAttr.WIDTH },

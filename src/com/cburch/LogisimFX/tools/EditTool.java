@@ -19,6 +19,7 @@ import com.cburch.logisim.gui.main.Selection;
 import com.cburch.logisim.gui.main.Selection.Event;
 import com.cburch.logisim.gui.main.SelectionActions;
 import com.cburch.LogisimFX.proj.Action;
+import javafx.beans.binding.StringBinding;
 import javafx.scene.image.ImageView;
 
 import java.awt.*;
@@ -92,13 +93,13 @@ public class EditTool extends Tool {
 	}
 	
 	@Override
-	public String getDisplayName() {
-		return Strings.get("editTool");
+	public StringBinding getDisplayName() {
+		return LC.createStringBinding("editTool");
 	}
 	
 	@Override
-	public String getDescription() {
-		return Strings.get("editToolDesc");
+	public StringBinding getDescription() {
+		return LC.createStringBinding("editToolDesc");
 	}
 
 	@Override

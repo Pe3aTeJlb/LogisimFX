@@ -8,6 +8,7 @@ import java.awt.Graphics;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.StringUtil;
@@ -39,7 +40,7 @@ public class Counter extends InstanceFactory {
 	private static final int CARRY = 6;
 
 	public Counter() {
-		super("Counter", Strings.getter("counterComponent"));
+		super("Counter", LC.createStringBinding("counterComponent"));
 		setOffsetBounds(Bounds.create(-30, -20, 30, 40));
 		setIcon("counter.gif");
 		setInstancePoker(RegisterPoker.class);

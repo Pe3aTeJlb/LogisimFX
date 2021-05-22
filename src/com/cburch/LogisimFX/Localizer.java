@@ -70,9 +70,15 @@ public class Localizer {
         return Bindings.createStringBinding(() -> StringUtil.format(get(key),strings), locale);
     }
 
+    public StringBinding createRawStringBinding(final String string){
+        return Bindings.createStringBinding(() -> string);
+    }
+
     public String get(final String key, final Object... args) {
         ResourceBundle bundle = ResourceBundle.getBundle(bundleName, getLocale());
-        return MessageFormat.format(bundle.getString(key), args);
+        if(bundle.getString(key) != null) {
+            return MessageFormat.format(bundle.getString(key), args);
+        }else{ return null;}
     }
 
 }

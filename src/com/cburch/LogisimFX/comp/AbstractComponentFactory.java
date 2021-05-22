@@ -8,10 +8,10 @@ import java.awt.Graphics;
 
 import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.data.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.util.GraphicsUtil;
-import com.cburch.LogisimFX.util.StringGetter;
-import com.cburch.LogisimFX.util.StringUtil;
 import com.cburch.LogisimFX.LogisimVersion;
+import javafx.beans.binding.StringBinding;
 import javafx.scene.image.ImageView;
 
 public abstract class AbstractComponentFactory implements ComponentFactory {
@@ -29,8 +29,8 @@ public abstract class AbstractComponentFactory implements ComponentFactory {
 
 	public abstract String getName();
 	public ImageView getIcon(){ return icon; }
-	public String getDisplayName() { return getDisplayGetter().get(); }
-	public StringGetter getDisplayGetter() { return StringUtil.constantGetter(getName()); }
+	public StringBinding getDisplayName() { return getDisplayGetter(); }
+	public StringBinding getDisplayGetter() { return LC.createStringBinding(getName()); }
 	public abstract Component createComponent(Location loc, AttributeSet attrs);
 	public abstract Bounds getOffsetBounds(AttributeSet attrs);
 

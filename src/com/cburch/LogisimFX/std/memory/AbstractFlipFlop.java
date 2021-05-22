@@ -7,6 +7,7 @@ import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.StringGetter;
+import javafx.beans.binding.StringBinding;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -16,7 +17,7 @@ abstract class AbstractFlipFlop extends InstanceFactory {
 	
 	private Attribute<AttributeOption> triggerAttribute;
 	
-	protected AbstractFlipFlop(String name, String iconName, StringGetter desc,
+	protected AbstractFlipFlop(String name, String iconName, StringBinding desc,
 			int numInputs, boolean allowLevelTriggers) {
 		super(name, desc);
 		setIcon(iconName);

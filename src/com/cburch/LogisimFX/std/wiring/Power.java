@@ -11,6 +11,7 @@ import java.awt.Graphics2D;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
@@ -18,7 +19,7 @@ import com.cburch.LogisimFX.circuit.Wire;
 
 public class Power extends InstanceFactory {
 	public Power() {
-		super("Power", Strings.getter("powerComponent"));
+		super("Power", LC.createStringBinding("powerComponent"));
 		setIcon("power.gif");
 		setAttributes(new Attribute[] { StdAttr.FACING, StdAttr.WIDTH },
 				new Object[] { Direction.NORTH, BitWidth.ONE });

@@ -7,11 +7,13 @@ import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
 import com.cburch.LogisimFX.proj.Project;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.std.wiring.Pin;
 import com.cburch.LogisimFX.tools.MenuExtender;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.StringGetter;
 import com.cburch.LogisimFX.util.StringUtil;
+import javafx.beans.binding.StringBinding;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,7 +38,7 @@ public class SubcircuitFactory extends InstanceFactory {
 
 		public void configureMenu(JPopupMenu menu, Project proj) {
 			this.proj = proj;
-			String name = instance.getFactory().getDisplayName();
+			String name = instance.getFactory().getDisplayName().getValue();
 			String text = Strings.get("subcircuitViewItem", name);
 			JMenuItem item = new JMenuItem(text);
 			item.addActionListener(this);
@@ -60,7 +62,7 @@ public class SubcircuitFactory extends InstanceFactory {
 		super("", null);
 		this.source = source;
 		setFacingAttribute(StdAttr.FACING);
-		setDefaultToolTip(new CircuitFeature(null));
+		//setDefaultToolTip(new CircuitFeature(null));
 		setInstancePoker(SubcircuitPoker.class);
 		setIcon("subcirc.gif");
 	}
@@ -75,8 +77,8 @@ public class SubcircuitFactory extends InstanceFactory {
 	}
 
 	@Override
-	public StringGetter getDisplayGetter() {
-		return StringUtil.constantGetter(source.getName());
+	public StringBinding getDisplayGetter() {
+		return LC.createStringBinding(source.getName());
 	}
 
 	@Override

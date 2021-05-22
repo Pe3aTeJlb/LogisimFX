@@ -5,6 +5,7 @@ package com.cburch.LogisimFX.std.io;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.std.wiring.DurationAttribute;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
@@ -42,7 +43,7 @@ public class DotMatrix extends InstanceFactory {
 			Strings.getter("ioMatrixPersistenceAttr"), 0, Integer.MAX_VALUE);
 
 	public DotMatrix() {
-		super("DotMatrix", Strings.getter("dotMatrixComponent"));
+		super("DotMatrix", LC.createStringBinding("dotMatrixComponent"));
 		setAttributes(new Attribute<?>[] {
 				ATTR_INPUT_TYPE, ATTR_MATRIX_COLS, ATTR_MATRIX_ROWS,
 				Io.ATTR_ON_COLOR, Io.ATTR_OFF_COLOR,

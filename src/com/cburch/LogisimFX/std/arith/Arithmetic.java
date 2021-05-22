@@ -15,23 +15,23 @@ public class Arithmetic extends Library {
 
 	private static FactoryDescription[] DESCRIPTIONS = {
 
-		new FactoryDescription("Adder", Strings.getter("adderComponent"),
+		new FactoryDescription("Adder", LC.createStringBinding("adderComponent"),
 				"adder.gif", "Adder"),
-		new FactoryDescription("Subtractor", Strings.getter("subtractorComponent"),
+		new FactoryDescription("Subtractor", LC.createStringBinding("subtractorComponent"),
 				"subtractor.gif", "Subtractor"),
-		new FactoryDescription("Multiplier", Strings.getter("multiplierComponent"),
+		new FactoryDescription("Multiplier", LC.createStringBinding("multiplierComponent"),
 				"multiplier.gif", "Multiplier"),
-		new FactoryDescription("Divider", Strings.getter("dividerComponent"),
+		new FactoryDescription("Divider", LC.createStringBinding("dividerComponent"),
 				"divider.gif", "Divider"),
-		new FactoryDescription("Negator", Strings.getter("negatorComponent"),
+		new FactoryDescription("Negator", LC.createStringBinding("negatorComponent"),
 				"negator.gif", "Negator"),
-		new FactoryDescription("Comparator", Strings.getter("comparatorComponent"),
+		new FactoryDescription("Comparator", LC.createStringBinding("comparatorComponent"),
 				"comparator.gif", "Comparator"),
-		new FactoryDescription("Shifter", Strings.getter("shifterComponent"),
+		new FactoryDescription("Shifter", LC.createStringBinding("shifterComponent"),
 				"shifter.gif", "Shifter"),
-		new FactoryDescription("BitAdder", Strings.getter("bitAdderComponent"),
+		new FactoryDescription("BitAdder", LC.createStringBinding("bitAdderComponent"),
 				"bitadder.gif", "BitAdder"),
-		new FactoryDescription("BitFinder", Strings.getter("bitFinderComponent"),
+		new FactoryDescription("BitFinder", LC.createStringBinding("bitFinderComponent"),
 				"bitfindr.gif", "BitFinder"),
 
 	};

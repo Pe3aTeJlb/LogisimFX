@@ -12,6 +12,7 @@ import javax.swing.Icon;
 import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.Icons;
 import com.cburch.LogisimFX.prefs.AppPreferences;
@@ -33,7 +34,7 @@ public class PullResistor extends InstanceFactory {
 	private static final ImageView ICON_RECTANGULAR = IconsManager.getIcon("pullrect.gif");
 
 	public PullResistor() {
-		super("Pull Resistor", Strings.getter("pullComponent"));
+		super("Pull Resistor", LC.createStringBinding("pullComponent"));
 		setAttributes(new Attribute[] { StdAttr.FACING, ATTR_PULL_TYPE },
 				new Object[] { Direction.SOUTH, ATTR_PULL_TYPE.parse("0") });
 		setFacingAttribute(StdAttr.FACING);

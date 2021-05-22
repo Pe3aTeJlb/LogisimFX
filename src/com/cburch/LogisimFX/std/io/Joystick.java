@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
@@ -17,7 +18,7 @@ public class Joystick extends InstanceFactory {
 			Strings.getter("ioBitWidthAttr"), 2, 5);
 
 	public Joystick() {
-		super("Joystick", Strings.getter("joystickComponent"));
+		super("Joystick", LC.createStringBinding("joystickComponent"));
 		setAttributes(new Attribute[] { ATTR_WIDTH, Io.ATTR_COLOR },
 				new Object[] { BitWidth.create(4), Color.RED });
 		setKeyConfigurator(new BitWidthConfigurator(ATTR_WIDTH, 2, 5));

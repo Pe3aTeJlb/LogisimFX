@@ -16,6 +16,7 @@ import com.cburch.LogisimFX.instance.StdAttr;
 import com.cburch.LogisimFX.tools.key.*;
 import com.cburch.LogisimFX.util.Icons;
 import com.cburch.LogisimFX.util.StringGetter;
+import javafx.beans.binding.StringBinding;
 import javafx.scene.image.ImageView;
 
 import javax.swing.*;
@@ -39,8 +40,8 @@ public class SplitterFactory extends AbstractComponentFactory {
 	}
 
 	@Override
-	public StringGetter getDisplayGetter() {
-		return Strings.getter("splitterComponent");
+	public StringBinding getDisplayGetter() {
+		return LC.createStringBinding("splitterComponent");
 	}
 
 	@Override

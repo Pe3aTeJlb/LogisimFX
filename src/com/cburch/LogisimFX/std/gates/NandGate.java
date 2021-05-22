@@ -8,6 +8,7 @@ import com.cburch.LogisimFX.analyze.model.Expressions;
 import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.instance.InstancePainter;
 import com.cburch.LogisimFX.instance.InstanceState;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
 import java.awt.*;
@@ -16,7 +17,7 @@ class NandGate extends AbstractGate {
 	public static NandGate FACTORY = new NandGate();
 
 	private NandGate() {
-		super("NAND Gate", Strings.getter("nandGateComponent"));
+		super("NAND Gate", LC.createStringBinding("nandGateComponent"));
 		setNegateOutput(true);
 		setRectangularLabel(AndGate.FACTORY.getRectangularLabel(null));
 		setIconNames("nandGate.gif", "nandGateRect.gif", "dinNandGate.gif");

@@ -4,11 +4,12 @@
 package com.cburch.LogisimFX.std.memory;
 
 import com.cburch.LogisimFX.data.Value;
+import com.cburch.LogisimFX.std.LC;
 
 public class JKFlipFlop extends AbstractFlipFlop {
 	public JKFlipFlop() {
 		super("J-K Flip-Flop", "jkFlipFlop.gif",
-				Strings.getter("jkFlipFlopComponent"), 2, false);
+				LC.createStringBinding("jkFlipFlopComponent"), 2, false);
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.util.StringGetter;
 import com.cburch.LogisimFX.LogisimVersion;
 
+import javafx.beans.binding.StringBinding;
 import javafx.scene.image.ImageView;
 
 /**
@@ -24,9 +25,9 @@ public interface ComponentFactory extends AttributeDefaultProvider {
 	Object FACING_ATTRIBUTE_KEY = new Object();
 	
 	String getName();
-	String getDisplayName();
+	StringBinding getDisplayName();
 	ImageView getIcon();
-	StringGetter getDisplayGetter();
+	StringBinding getDisplayGetter();
 	Component createComponent(Location loc, AttributeSet attrs);
 	Bounds getOffsetBounds(AttributeSet attrs);
 	AttributeSet createAttributeSet();

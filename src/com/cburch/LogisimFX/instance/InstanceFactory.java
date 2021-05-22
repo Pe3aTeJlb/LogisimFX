@@ -15,6 +15,7 @@ import com.cburch.LogisimFX.comp.AbstractComponentFactory;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.data.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.Pokable;
 import com.cburch.LogisimFX.tools.key.KeyConfigurator;
 import com.cburch.LogisimFX.util.Icons;
@@ -24,6 +25,7 @@ import com.cburch.LogisimFX.util.UnmodifiableList;
 import com.cburch.LogisimFX.LogisimVersion;
 import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.logisim.gui.log.Loggable;
+import javafx.beans.binding.StringBinding;
 import javafx.scene.image.ImageView;
 
 /**
@@ -35,8 +37,8 @@ import javafx.scene.image.ImageView;
 public abstract class InstanceFactory extends AbstractComponentFactory {
 
 	private String name;
-	private StringGetter displayName;
-	private StringGetter defaultToolTip;
+	private StringBinding displayName;
+	private StringBinding defaultToolTip;
 	private ImageView icon;
 	private Attribute<?>[] attrs;
 	private Object[] defaults;
@@ -50,10 +52,10 @@ public abstract class InstanceFactory extends AbstractComponentFactory {
 	private Class<? extends InstanceLogger> loggerClass;
 
 	public InstanceFactory(String name) {
-		this(name, StringUtil.constantGetter(name));
+		this(name, LC.createStringBinding(name));
 	}
 
-	public InstanceFactory(String name, StringGetter displayName) {
+	public InstanceFactory(String name, StringBinding displayName) {
 		this.name = name;
 		this.displayName = displayName;
 		this.icon = null;
@@ -72,12 +74,12 @@ public abstract class InstanceFactory extends AbstractComponentFactory {
 	}
 
 	@Override
-	public String getDisplayName() {
-		return getDisplayGetter().get();
+	public StringBinding getDisplayName() {
+		return displayName == null ? LC.createRawStringBinding(getName()) : getDisplayGetter();
 	}
 
 	@Override
-	public StringGetter getDisplayGetter() {
+	public StringBinding getDisplayGetter() {
 		return displayName;
 	}
 
@@ -206,11 +208,11 @@ public abstract class InstanceFactory extends AbstractComponentFactory {
 		return portList;
 	}
 
-	public void setDefaultToolTip(StringGetter value) {
+	public void setDefaultToolTip(StringBinding value) {
 		defaultToolTip = value;
 	}
 
-	public StringGetter getDefaultToolTip() {
+	public StringBinding getDefaultToolTip() {
 		return defaultToolTip;
 	}
 

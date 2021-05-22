@@ -22,6 +22,7 @@ import com.cburch.LogisimFX.circuit.Wire;
 import com.cburch.logisim.gui.main.Canvas;
 import com.cburch.LogisimFX.prefs.AppPreferences;
 import com.cburch.LogisimFX.proj.Action;
+import javafx.beans.binding.StringBinding;
 import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
@@ -84,13 +85,13 @@ public class WiringTool extends Tool {
 	}
 
 	@Override
-	public String getDisplayName() {
-		return Strings.get("wiringTool");
+	public StringBinding getDisplayName() {
+		return LC.createStringBinding("wiringTool");
 	}
 
 	@Override
-	public String getDescription() {
-		return Strings.get("wiringToolDesc");
+	public StringBinding getDescription() {
+		return LC.createStringBinding("wiringToolDesc");
 	}
 	
 	private boolean computeMove(int newX, int newY) {

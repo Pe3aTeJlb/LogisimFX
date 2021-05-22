@@ -7,6 +7,7 @@ import com.cburch.LogisimFX.analyze.model.Expression;
 import com.cburch.LogisimFX.analyze.model.Expressions;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.JoinedConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
@@ -95,7 +96,7 @@ public class Constant extends InstanceFactory {
 	}
 	
 	public Constant() {
-		super("Constant", Strings.getter("constantComponent"));
+		super("Constant", LC.createStringBinding("constantComponent"));
 		setFacingAttribute(StdAttr.FACING);
 		setKeyConfigurator(JoinedConfigurator.create(
 				new ConstantConfigurator(),

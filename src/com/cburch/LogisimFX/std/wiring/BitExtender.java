@@ -8,6 +8,7 @@ import java.awt.Graphics;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.JoinedConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
@@ -29,7 +30,7 @@ public class BitExtender extends InstanceFactory {
 	public static final BitExtender FACTORY = new BitExtender();
 
 	public BitExtender() {
-		super("Bit Extender", Strings.getter("extenderComponent"));
+		super("Bit Extender", LC.createStringBinding("extenderComponent"));
 		setIcon("extender.gif");
 		setAttributes(new Attribute[] {
 				ATTR_IN_WIDTH, ATTR_OUT_WIDTH, ATTR_TYPE

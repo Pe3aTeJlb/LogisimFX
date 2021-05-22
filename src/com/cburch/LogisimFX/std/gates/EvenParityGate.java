@@ -8,12 +8,13 @@ import com.cburch.LogisimFX.analyze.model.Expressions;
 import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.instance.InstancePainter;
 import com.cburch.LogisimFX.instance.InstanceState;
+import com.cburch.LogisimFX.std.LC;
 
 class EvenParityGate extends AbstractGate {
 	public static EvenParityGate FACTORY = new EvenParityGate();
 
 	private EvenParityGate() {
-		super("Even Parity", Strings.getter("evenParityComponent"));
+		super("Even Parity", LC.createStringBinding("evenParityComponent"));
 		setRectangularLabel("2k");
 		setIconNames("parityEvenGate.gif");
 	}

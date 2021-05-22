@@ -9,6 +9,7 @@ import com.cburch.LogisimFX.instance.Instance;
 import com.cburch.LogisimFX.instance.InstanceFactory;
 import com.cburch.LogisimFX.instance.InstancePainter;
 import com.cburch.LogisimFX.instance.InstanceState;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
 import java.awt.*;
@@ -43,7 +44,7 @@ public class Text extends InstanceFactory {
 	public static final Text FACTORY = new Text();
 
 	private Text() {
-		super("Text", Strings.getter("textComponent"));
+		super("Text", LC.createStringBinding("textComponent"));
 		setIcon("text.gif");
 		setShouldSnap(false);
 	}

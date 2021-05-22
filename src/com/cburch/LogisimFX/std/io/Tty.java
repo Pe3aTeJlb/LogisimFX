@@ -10,6 +10,7 @@ import java.awt.Graphics;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
 public class Tty extends InstanceFactory {
@@ -33,7 +34,7 @@ public class Tty extends InstanceFactory {
 			Strings.getter("ttyRowsAttr"), 1, 48);
 
 	public Tty() {
-		super("TTY", Strings.getter("ttyComponent"));
+		super("TTY", LC.createStringBinding("ttyComponent"));
 		setAttributes(new Attribute[] {
 				ATTR_ROWS, ATTR_COLUMNS, StdAttr.EDGE_TRIGGER,
 				Io.ATTR_COLOR, Io.ATTR_BACKGROUND

@@ -12,6 +12,7 @@ import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.instance.Instance;
 import com.cburch.LogisimFX.instance.InstancePainter;
 import com.cburch.LogisimFX.instance.InstanceState;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.WireRepairData;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
@@ -19,7 +20,7 @@ class XnorGate extends AbstractGate {
 	public static XnorGate FACTORY = new XnorGate();
 
 	private XnorGate() {
-		super("XNOR Gate", Strings.getter("xnorGateComponent"), true);
+		super("XNOR Gate", LC.createStringBinding("xnorGateComponent"), true);
 		setNegateOutput(true);
 		setAdditionalWidth(10);
 		setIconNames("xnorGate.gif", "xnorGateRect.gif", "dinXnorGate.gif");

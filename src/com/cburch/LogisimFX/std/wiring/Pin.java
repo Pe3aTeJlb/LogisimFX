@@ -17,6 +17,7 @@ import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.EndData;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.DirectionConfigurator;
 import com.cburch.LogisimFX.tools.key.JoinedConfigurator;
@@ -54,7 +55,7 @@ public class Pin extends InstanceFactory {
 	private static final Color ICON_WIDTH_COLOR = Value.WIDTH_ERROR_COLOR.darker();
 
 	public Pin() {
-		super("Pin", Strings.getter("pinComponent"));
+		super("Pin", LC.createStringBinding("pinComponent"));
 		setFacingAttribute(StdAttr.FACING);
 		setKeyConfigurator(JoinedConfigurator.create(
 			new BitWidthConfigurator(StdAttr.WIDTH),

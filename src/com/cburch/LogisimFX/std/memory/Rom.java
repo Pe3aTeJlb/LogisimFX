@@ -11,6 +11,7 @@ import com.cburch.LogisimFX.instance.Instance;
 import com.cburch.LogisimFX.instance.InstanceState;
 import com.cburch.LogisimFX.instance.Port;
 import com.cburch.LogisimFX.circuit.CircuitState;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.logisim.gui.hex.HexFile;
 import com.cburch.logisim.gui.hex.HexFrame;
 import com.cburch.logisim.gui.main.Frame;
@@ -35,7 +36,7 @@ public class Rom extends Mem {
 	private WeakHashMap<Instance,MemListener> memListeners;
 	
 	public Rom() {
-		super("ROM", Strings.getter("romComponent"), 0);
+		super("ROM", LC.createStringBinding("romComponent"), 0);
 		setIcon("rom.gif");
 		memListeners = new WeakHashMap<Instance,MemListener>();
 	}

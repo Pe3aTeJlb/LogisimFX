@@ -23,6 +23,7 @@ import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.logisim.gui.hex.HexFile;
 import com.cburch.logisim.gui.hex.HexFrame;
 import com.cburch.LogisimFX.proj.Project;
+import javafx.beans.binding.StringBinding;
 
 abstract class Mem extends InstanceFactory {
 	// Note: The code is meant to be able to handle up to 32-bit addresses, but it
@@ -48,7 +49,7 @@ abstract class Mem extends InstanceFactory {
 
 	private WeakHashMap<Instance,File> currentInstanceFiles;
 
-	Mem(String name, StringGetter desc, int extraPorts) {
+	Mem(String name, StringBinding desc, int extraPorts) {
 		super(name, desc);
 		currentInstanceFiles = new WeakHashMap<Instance,File>();
 		setInstancePoker(MemPoker.class);

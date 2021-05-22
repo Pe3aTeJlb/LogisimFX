@@ -11,6 +11,7 @@ import java.awt.Graphics2D;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
@@ -18,7 +19,7 @@ import com.cburch.LogisimFX.circuit.Wire;
 
 public class Ground extends InstanceFactory {
 	public Ground() {
-		super("Ground", Strings.getter("groundComponent"));
+		super("Ground", LC.createStringBinding("groundComponent"));
 		setIcon("ground.gif");
 		setAttributes(new Attribute[] { StdAttr.FACING, StdAttr.WIDTH },
 				new Object[] { Direction.SOUTH, BitWidth.ONE });

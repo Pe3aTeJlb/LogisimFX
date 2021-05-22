@@ -8,6 +8,7 @@ import java.awt.Graphics;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
@@ -21,7 +22,7 @@ public class Divider extends InstanceFactory {
 	private static final int REM   = 4;
 
 	public Divider() {
-		super("Divider", Strings.getter("dividerComponent"));
+		super("Divider", LC.createStringBinding("dividerComponent"));
 		setAttributes(new Attribute[] { StdAttr.WIDTH },
 				new Object[] { BitWidth.create(8) });
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));

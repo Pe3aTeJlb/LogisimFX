@@ -7,6 +7,7 @@ import java.awt.Graphics;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.StringUtil;
@@ -21,7 +22,7 @@ public class Random extends InstanceFactory {
 	private static final int RST = 3;
 
 	public Random() {
-		super("Random", Strings.getter("randomComponent"));
+		super("Random", LC.createStringBinding("randomComponent"));
 		setAttributes(new Attribute[] {
 				StdAttr.WIDTH, ATTR_SEED, StdAttr.EDGE_TRIGGER,
 				StdAttr.LABEL, StdAttr.LABEL_FONT

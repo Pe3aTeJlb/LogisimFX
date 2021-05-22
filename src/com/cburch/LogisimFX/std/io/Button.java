@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.circuit.Wire;
 
@@ -16,7 +17,7 @@ public class Button extends InstanceFactory {
 	private static final int DEPTH = 3;
 
 	public Button() {
-		super("Button", Strings.getter("buttonComponent"));
+		super("Button", LC.createStringBinding("buttonComponent"));
 		setAttributes(new Attribute[] {
 				StdAttr.FACING, Io.ATTR_COLOR,
 				StdAttr.LABEL, Io.ATTR_LABEL_LOC,

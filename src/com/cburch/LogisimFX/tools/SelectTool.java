@@ -40,6 +40,7 @@ import com.cburch.logisim.gui.main.Selection.Event;
 import com.cburch.LogisimFX.prefs.AppPreferences;
 import com.cburch.LogisimFX.proj.Action;
 import com.cburch.LogisimFX.proj.Project;
+import javafx.beans.binding.StringBinding;
 import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
@@ -120,13 +121,13 @@ public class SelectTool extends Tool {
 	}
 
 	@Override
-	public String getDisplayName() {
-		return Strings.get("selectTool");
+	public StringBinding getDisplayName() {
+		return LC.createStringBinding("selectTool");
 	}
 
 	@Override
-	public String getDescription() {
-		return Strings.get("selectToolDesc");
+	public StringBinding getDescription() {
+		return LC.createStringBinding("selectToolDesc");
 	}
 
 	@Override

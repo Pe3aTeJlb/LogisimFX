@@ -9,6 +9,7 @@ package com.cburch.LogisimFX.std.wiring;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.circuit.Wire;
@@ -22,7 +23,7 @@ public class TransmissionGate extends InstanceFactory {
 	static final int GATE1 = 3;
 
 	public TransmissionGate() {
-		super("Transmission Gate", Strings.getter("transmissionGateComponent"));
+		super("Transmission Gate", LC.createStringBinding("transmissionGateComponent"));
 		setIcon("transmis.gif");
 		setAttributes(new Attribute[] { StdAttr.FACING, Wiring.ATTR_GATE, StdAttr.WIDTH },
 				new Object[] { Direction.EAST, Wiring.GATE_TOP_LEFT, BitWidth.ONE });

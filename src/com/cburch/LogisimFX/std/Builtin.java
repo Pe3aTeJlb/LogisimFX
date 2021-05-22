@@ -12,6 +12,7 @@ import com.cburch.LogisimFX.std.plexers.Plexers;
 import com.cburch.LogisimFX.std.wiring.Wiring;
 import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.tools.Tool;
+import javafx.beans.binding.StringBinding;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,7 +37,7 @@ public class Builtin extends Library {
 	public String getName() { return "Builtin"; }
 
 	@Override
-	public String getDisplayName() { return LC.get("builtinLibrary"); }
+	public StringBinding getDisplayName() { return LC.createStringBinding("builtinLibrary"); }
 
 	@Override
 	public List<Tool> getTools() { return Collections.emptyList(); }

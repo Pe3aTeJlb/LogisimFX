@@ -8,6 +8,7 @@ import com.cburch.LogisimFX.analyze.model.Expressions;
 import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.instance.InstancePainter;
 import com.cburch.LogisimFX.instance.InstanceState;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
 import java.awt.*;
@@ -16,7 +17,7 @@ class AndGate extends AbstractGate {
 	public static AndGate FACTORY = new AndGate();
 
 	private AndGate() {
-		super("AND Gate", Strings.getter("andGateComponent"));
+		super("AND Gate", LC.createStringBinding("andGateComponent"));
 		setRectangularLabel("&");
 		setIconNames("andGate.gif", "andGateRect.gif", "dinAndGate.gif");
 	}

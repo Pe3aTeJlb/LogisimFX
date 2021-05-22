@@ -27,6 +27,7 @@ import com.cburch.LogisimFX.circuit.WireSet;
 import com.cburch.logisim.gui.main.Canvas;
 import com.cburch.LogisimFX.prefs.AppPreferences;
 import com.cburch.LogisimFX.proj.Project;
+import javafx.beans.binding.StringBinding;
 import javafx.scene.image.ImageView;
 
 public class PokeTool extends Tool {
@@ -112,8 +113,8 @@ public class PokeTool extends Tool {
 	}
 
 	@Override
-	public String getDisplayName() {
-		return Strings.get("pokeTool");
+	public StringBinding getDisplayName() {
+		return LC.createStringBinding("pokeTool");
 	}
 
 	private void removeCaret(boolean normal) {
@@ -139,8 +140,8 @@ public class PokeTool extends Tool {
 	}
 
 	@Override
-	public String getDescription() {
-		return Strings.get("pokeToolDesc");
+	public StringBinding getDescription() {
+		return LC.createStringBinding("pokeToolDesc");
 	}
 
 	@Override

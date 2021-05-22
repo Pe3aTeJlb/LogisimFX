@@ -10,13 +10,14 @@ import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 
 public class SevenSegment extends InstanceFactory {
 	static Bounds[] SEGMENTS = null;
 	static Color DEFAULT_OFF = new Color(220, 220, 220);
 	
 	public SevenSegment() {
-		super("7-Segment Display", Strings.getter("sevenSegmentComponent"));
+		super("7-Segment Display", LC.createStringBinding("sevenSegmentComponent"));
 		setAttributes(new Attribute[] { Io.ATTR_ON_COLOR, Io.ATTR_OFF_COLOR,
 					Io.ATTR_BACKGROUND, Io.ATTR_ACTIVE },
 				new Object[] { new Color(240, 0, 0), DEFAULT_OFF,

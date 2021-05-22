@@ -22,6 +22,7 @@ import com.cburch.LogisimFX.circuit.CircuitMutation;
 import com.cburch.logisim.gui.main.Canvas;
 import com.cburch.LogisimFX.proj.Action;
 import com.cburch.LogisimFX.proj.Project;
+import javafx.beans.binding.StringBinding;
 import javafx.scene.image.ImageView;
 
 public class TextTool extends Tool {
@@ -139,13 +140,13 @@ public class TextTool extends Tool {
 	}
 
 	@Override
-	public String getDisplayName() {
-		return Strings.get("textTool");
+	public StringBinding getDisplayName() {
+		return LC.createStringBinding("textTool");
 	}
 
 	@Override
-	public String getDescription() {
-		return Strings.get("textToolDesc");
+	public StringBinding getDescription() {
+		return LC.createStringBinding("textToolDesc");
 	}
 
 	@Override

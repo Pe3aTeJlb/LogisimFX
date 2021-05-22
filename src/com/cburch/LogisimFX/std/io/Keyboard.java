@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 
 public class Keyboard extends InstanceFactory {
 	private static final int CLR = 0;
@@ -33,7 +34,7 @@ public class Keyboard extends InstanceFactory {
 				Strings.getter("keybBufferLengthAttr"), 1, 256);
 
 	public Keyboard() {
-		super("Keyboard", Strings.getter("keyboardComponent"));
+		super("Keyboard", LC.createStringBinding("keyboardComponent"));
 		setAttributes(new Attribute[] { ATTR_BUFFER, StdAttr.EDGE_TRIGGER },
 				new Object[] { Integer.valueOf(32), StdAttr.TRIG_RISING });
 		setOffsetBounds(Bounds.create(0, -15, WIDTH, HEIGHT));

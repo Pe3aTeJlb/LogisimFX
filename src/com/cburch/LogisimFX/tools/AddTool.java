@@ -33,6 +33,7 @@ import com.cburch.LogisimFX.prefs.AppPreferences;
 import com.cburch.LogisimFX.proj.Action;
 import com.cburch.LogisimFX.proj.Dependencies;
 import com.cburch.LogisimFX.proj.Project;
+import javafx.beans.binding.StringBinding;
 import javafx.scene.image.ImageView;
 
 public class AddTool extends Tool {
@@ -163,15 +164,15 @@ public class AddTool extends Tool {
 	}
 
 	@Override
-	public String getDisplayName() {
+	public StringBinding getDisplayName() {
 		FactoryDescription desc = description;
 		return desc == null ? factory.getDisplayName() : desc.getDisplayName();
 	}
 
 	@Override
-	public String getDescription() {
+	public StringBinding getDescription() {
 
-		String ret;
+		StringBinding ret = null;
 		FactoryDescription desc = description;
 
 		if (desc != null) {
@@ -179,15 +180,13 @@ public class AddTool extends Tool {
 		} else {
 			ComponentFactory source = getFactory();
 			if (source != null) {
-				ret = (String) source.getFeature(ComponentFactory.TOOL_TIP,
+				ret = (StringBinding) source.getFeature(ComponentFactory.TOOL_TIP,
 						getAttributeSet());
-			} else {
-				ret = null;
 			}
 		}
 
 		if (ret == null) {
-			ret = StringUtil.format(Strings.get("addToolText"), getDisplayName());
+			ret = (StringBinding) LC.createStringBinding("addToolText").concat(getDisplayName());
 		}
 
 		return ret;

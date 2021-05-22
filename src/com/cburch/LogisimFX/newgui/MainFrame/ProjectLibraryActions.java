@@ -31,7 +31,7 @@ public class ProjectLibraryActions {
 		BuiltinOption(Library lib) { this.lib = lib; }
 
 		@Override
-		public String toString() { return lib.getDisplayName(); }
+		public String toString() { return lib.getDisplayName().toString(); }
 
 	}
 

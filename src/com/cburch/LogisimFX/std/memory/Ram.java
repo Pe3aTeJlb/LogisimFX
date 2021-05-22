@@ -10,6 +10,7 @@ import java.awt.event.WindowEvent;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
 import com.cburch.LogisimFX.circuit.CircuitState;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.logisim.gui.hex.HexFrame;
 import com.cburch.LogisimFX.proj.Project;
 
@@ -41,7 +42,7 @@ public class Ram extends Mem {
 	private static Object[][] logOptions = new Object[9][];
 
 	public Ram() {
-		super("RAM", Strings.getter("ramComponent"), 3);
+		super("RAM", LC.createStringBinding("ramComponent"), 3);
 		setIcon("ram.gif");
 		setInstanceLogger(Logger.class);
 	}

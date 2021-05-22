@@ -5,6 +5,7 @@ package com.cburch.LogisimFX.std.arith;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.IntegerConfigurator;
 import com.cburch.LogisimFX.tools.key.JoinedConfigurator;
@@ -17,7 +18,7 @@ public class BitAdder extends InstanceFactory {
 		= Attributes.forIntegerRange("inputs", Strings.getter("gateInputsAttr"), 1, 32);
 	
 	public BitAdder() {
-		super("BitAdder", Strings.getter("bitAdderComponent"));
+		super("BitAdder", LC.createStringBinding("bitAdderComponent"));
 		setAttributes(new Attribute[] {
 				StdAttr.WIDTH, NUM_INPUTS
 			}, new Object[] {

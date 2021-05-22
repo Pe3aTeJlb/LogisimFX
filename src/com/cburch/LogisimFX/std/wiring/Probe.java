@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import com.cburch.LogisimFX.comp.TextField;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.circuit.RadixOption;
 
@@ -44,7 +45,7 @@ public class Probe extends InstanceFactory {
 	}
 
 	public Probe() {
-		super("Probe", Strings.getter("probeComponent"));
+		super("Probe", LC.createStringBinding("probeComponent"));
 		setIcon("probe.gif");
 		setFacingAttribute(StdAttr.FACING);
 		setInstanceLogger(ProbeLogger.class);

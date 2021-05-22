@@ -8,6 +8,7 @@ import java.awt.Graphics;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
@@ -18,7 +19,7 @@ public class PriorityEncoder extends InstanceFactory {
 	private static final int GS = 3;
 	
 	public PriorityEncoder() {
-		super("Priority Encoder", Strings.getter("priorityEncoderComponent"));
+		super("Priority Encoder", LC.createStringBinding("priorityEncoderComponent"));
 		setAttributes(new Attribute[] {
 				StdAttr.FACING, Plexers.ATTR_SELECT, Plexers.ATTR_DISABLED
 			}, new Object[] {

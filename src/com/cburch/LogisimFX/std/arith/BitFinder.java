@@ -5,6 +5,7 @@ package com.cburch.LogisimFX.std.arith;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
@@ -24,7 +25,7 @@ public class BitFinder extends InstanceFactory {
 				new AttributeOption[] { LOW_ONE, HIGH_ONE, LOW_ZERO, HIGH_ZERO });
 	
 	public BitFinder() {
-		super("BitFinder", Strings.getter("bitFinderComponent"));
+		super("BitFinder", LC.createStringBinding("bitFinderComponent"));
 		setAttributes(new Attribute[] {
 				StdAttr.WIDTH, TYPE
 			}, new Object[] {

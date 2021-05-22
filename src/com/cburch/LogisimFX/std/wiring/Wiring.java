@@ -38,15 +38,15 @@ public class Wiring extends Library {
 	};
 	
 	private static FactoryDescription[] DESCRIPTIONS = {
-		new FactoryDescription("Power", Strings.getter("powerComponent"),
+		new FactoryDescription("Power", LC.createStringBinding("powerComponent"),
 				"power.gif", "Power"),
-		new FactoryDescription("Ground", Strings.getter("groundComponent"),
+		new FactoryDescription("Ground", LC.createStringBinding("groundComponent"),
 				"ground.gif", "Ground"),
-		new FactoryDescription("Transistor", Strings.getter("transistorComponent"),
+		new FactoryDescription("Transistor", LC.createStringBinding("transistorComponent"),
 				"trans0.gif", "Transistor"),
-		new FactoryDescription("Transmission Gate", Strings.getter("transmissionGateComponent"),
+		new FactoryDescription("Transmission Gate", LC.createStringBinding("transmissionGateComponent"),
 				"transmis.gif", "TransmissionGate"),
-		new FactoryDescription("Bit Extender", Strings.getter("extenderComponent"),
+		new FactoryDescription("Bit Extender", LC.createStringBinding("extenderComponent"),
 				"extender.gif", "BitExtender"),
 	};
 
@@ -62,6 +62,7 @@ public class Wiring extends Library {
 
 	@Override
 	public List<Tool> getTools() {
+
 		if (tools == null) {
 			List<Tool> ret = new ArrayList<Tool>(ADD_TOOLS.length + DESCRIPTIONS.length);
 			for (Tool a : ADD_TOOLS) {
@@ -70,6 +71,8 @@ public class Wiring extends Library {
 			ret.addAll(FactoryDescription.getTools(Wiring.class, DESCRIPTIONS));
 			tools = ret;
 		}
+
 		return tools;
+
 	}
 }

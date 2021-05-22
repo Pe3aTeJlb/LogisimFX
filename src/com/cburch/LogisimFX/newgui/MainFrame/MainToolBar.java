@@ -126,7 +126,7 @@ public class MainToolBar extends ToolBar {
             if(toolsCounter <11){
 
                 if(toolsCounter == 10) {toolsCounter = 0;}
-                System.out.println("DIGIT"+ toolsCounter);
+
                 proj.getFrameController().getStage().getScene().getAccelerators().put(
                         new KeyCodeCombination(KeyCode.valueOf("DIGIT"+ toolsCounter), KeyCombination.CONTROL_DOWN),
                         new Runnable() {
@@ -141,7 +141,11 @@ public class MainToolBar extends ToolBar {
                 toolsCounter++;
             }
 
-            setTooltip(new Tooltip(tool.getDescription()+" ("+"CTRL+"+ toolsCounter+")"));
+            String bindbuff = " ("+"CTRL+"+ toolsCounter+")";
+
+            Tooltip tip = new Tooltip();
+            tip.textProperty().bind(tool.getDescription().concat(bindbuff));
+            setTooltip(tip);
 
             setActions(tool);
 

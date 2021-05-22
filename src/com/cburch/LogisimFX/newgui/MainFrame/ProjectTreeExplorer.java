@@ -65,33 +65,33 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
                         }
                         else if(item instanceof Tool){
 
-                            setText(((Tool)item).getDisplayName());
+                            textProperty().bind(((Tool) item).getDisplayName());
 
-                            //Tooltip tip = new Tooltip();
-                            //tip.textProperty().bind(((Tool)item).getDescription());
-                            //setTooltip(tip);
-
-                            setTooltip(new Tooltip(((Tool)item).getDescription()));
+                            Tooltip tip = new Tooltip();
+                            tip.textProperty().bind(((Tool)item).getDescription());
+                            setTooltip(tip);
 
                             setGraphic(((Tool) item).getIcon());
 
-                            /*
-                                                        ComponentFactory fact = ((AddTool) item).getFactory(false);
+                            if(item instanceof AddTool){
 
-                            if (fact instanceof SubcircuitFactory) {
+                                ComponentFactory fact = ((AddTool) item).getFactory(false);
 
-                                Circuit circ = ((SubcircuitFactory) fact).getSubcircuit();
+                                if (fact instanceof SubcircuitFactory) {
 
-                                setContextMenu(ContextMenuManager.CircuitContextMenu(proj, circ));
+                                    Circuit circ = ((SubcircuitFactory) fact).getSubcircuit();
 
-                                if(proj.getCurrentCircuit().equals(circ)){
+                                    setContextMenu(ContextMenuManager.CircuitContextMenu(proj, circ));
+
+                                    if (proj.getCurrentCircuit().equals(circ)) {
+
+                                    }
 
                                 }
 
-                            }else{
+                            } else {
                                 setContextMenu(null);
                             }
-                             */
 
                         }
                         else{

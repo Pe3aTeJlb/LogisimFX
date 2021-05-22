@@ -5,6 +5,7 @@ package com.cburch.LogisimFX.std.arith;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 
 public class Negator extends InstanceFactory {
@@ -12,7 +13,7 @@ public class Negator extends InstanceFactory {
 	private static final int OUT   = 1;
 
 	public Negator() {
-		super("Negator", Strings.getter("negatorComponent"));
+		super("Negator", LC.createStringBinding("negatorComponent"));
 		setAttributes(new Attribute[] { StdAttr.WIDTH },
 					new Object[] { BitWidth.create(8) });
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));

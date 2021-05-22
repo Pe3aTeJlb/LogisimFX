@@ -11,6 +11,7 @@ import java.util.Map;
 import com.cburch.LogisimFX.analyze.model.Expression;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.circuit.ExpressionComputer;
@@ -20,7 +21,7 @@ class Buffer extends InstanceFactory {
 	public static InstanceFactory FACTORY = new Buffer();
 
 	private Buffer() {
-		super("Buffer", Strings.getter("bufferComponent"));
+		super("Buffer", LC.createStringBinding("bufferComponent"));
 		setAttributes(new Attribute[] { StdAttr.FACING, StdAttr.WIDTH,
 					GateAttributes.ATTR_OUTPUT, StdAttr.LABEL, StdAttr.LABEL_FONT },
 				new Object[] { Direction.EAST, BitWidth.ONE,

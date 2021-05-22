@@ -10,6 +10,7 @@ import java.awt.Graphics;
 import com.cburch.LogisimFX.comp.TextField;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
@@ -23,7 +24,7 @@ public class Tunnel extends InstanceFactory {
 	static final int ARROW_MAX_WIDTH = 20;
 
 	public Tunnel() {
-		super("Tunnel", Strings.getter("tunnelComponent"));
+		super("Tunnel", LC.createStringBinding("tunnelComponent"));
 		setIcon("tunnel.gif");
 		setFacingAttribute(StdAttr.FACING);
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));

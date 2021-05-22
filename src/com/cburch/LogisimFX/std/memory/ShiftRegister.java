@@ -7,6 +7,7 @@ import java.awt.Graphics;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.IntegerConfigurator;
 import com.cburch.LogisimFX.tools.key.JoinedConfigurator;
@@ -26,7 +27,7 @@ public class ShiftRegister extends InstanceFactory {
 	private static final int LD  = 5;
 
 	public ShiftRegister() {
-		super("Shift Register", Strings.getter("shiftRegisterComponent"));
+		super("Shift Register", LC.createStringBinding("shiftRegisterComponent"));
 		setAttributes(new Attribute[] {
 				StdAttr.WIDTH, ATTR_LENGTH, ATTR_LOAD, StdAttr.EDGE_TRIGGER,
 				StdAttr.LABEL, StdAttr.LABEL_FONT

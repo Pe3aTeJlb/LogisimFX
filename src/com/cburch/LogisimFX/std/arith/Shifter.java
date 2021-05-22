@@ -9,6 +9,7 @@ import java.util.Arrays;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 
 public class Shifter extends InstanceFactory {
@@ -32,7 +33,7 @@ public class Shifter extends InstanceFactory {
 	private static final int OUT   = 2;
 
 	public Shifter() {
-		super("Shifter", Strings.getter("shifterComponent"));
+		super("Shifter", LC.createStringBinding("shifterComponent"));
 		setAttributes(new Attribute[] {
 				StdAttr.WIDTH, ATTR_SHIFT
 			}, new Object[] {
