@@ -6,7 +6,9 @@ package com.cburch.LogisimFX.std.base;
 import java.util.Arrays;
 import java.util.List;
 
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.*;
+import javafx.beans.binding.StringBinding;
 
 public class Base extends Library {
 	private List<Tool> tools = null;
@@ -30,7 +32,7 @@ public class Base extends Library {
 	public String getName() { return "Base"; }
 
 	@Override
-	public String getDisplayName() { return Strings.get("baseLibrary"); }
+	public StringBinding getDisplayName() { return LC.createStringBinding("baseLibrary"); }
 
 	@Override
 	public List<Tool> getTools() {

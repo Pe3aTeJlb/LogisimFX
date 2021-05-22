@@ -31,11 +31,21 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
 
             TreeCell<Object> cell = new TreeCell<Object>() {
 
+                @Override
                 public void updateItem(Object item, boolean empty) {
 
-                    super.updateItem(item, empty) ;
+                    super.updateItem(item, empty);
 
-                    if (!empty) {
+                    textProperty().unbind();
+
+                    if(empty || item == null) {
+
+                        setText(null);
+                        setGraphic(null);
+                        setTooltip(null);
+                        setContextMenu(null);
+
+                    } else {
 
                         if(item instanceof LogisimFile){
 
@@ -47,7 +57,7 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
                         }
                         else if(item instanceof Library){
 
-                            setText(((Library)item).getDisplayName());
+                            textProperty().bind(((Library) item).getDisplayName());
                             setGraphic(null);
                             setTooltip(null);
                             setContextMenu(ContextMenuManager.LibraryContextMenu(proj, (Library) item));
@@ -65,7 +75,8 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
 
                             setGraphic(((Tool) item).getIcon());
 
-                            ComponentFactory fact = ((AddTool) item).getFactory(false);
+                            /*
+                                                        ComponentFactory fact = ((AddTool) item).getFactory(false);
 
                             if (fact instanceof SubcircuitFactory) {
 
@@ -80,18 +91,12 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
                             }else{
                                 setContextMenu(null);
                             }
+                             */
 
                         }
                         else{
                             setText("you fucked up2");
                         }
-
-                    } else {
-
-                        setText(null);
-                        setGraphic(null);
-                        setTooltip(null);
-                        setContextMenu(null);
 
                     }
 

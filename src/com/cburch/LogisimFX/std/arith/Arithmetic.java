@@ -5,9 +5,11 @@ package com.cburch.LogisimFX.std.arith;
 
 import java.util.List;
 
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.FactoryDescription;
 import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.tools.Tool;
+import javafx.beans.binding.StringBinding;
 
 public class Arithmetic extends Library {
 
@@ -42,7 +44,7 @@ public class Arithmetic extends Library {
 	public String getName() { return "Arithmetic"; }
 
 	@Override
-	public String getDisplayName() { return Strings.get("arithmeticLibrary"); }
+	public StringBinding getDisplayName() { return LC.createStringBinding("arithmeticLibrary"); }
 
 	@Override
 	public List<Tool> getTools() {

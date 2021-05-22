@@ -5,6 +5,7 @@ package com.cburch.LogisimFX.tools;
 
 import com.cburch.LogisimFX.comp.ComponentFactory;
 import com.cburch.LogisimFX.util.ListUtil;
+import javafx.beans.binding.StringBinding;
 
 import java.util.Collections;
 import java.util.List;
@@ -20,7 +21,7 @@ public abstract class Library {
 	@Override
 	public String toString() { return getName(); }
 
-	public String getDisplayName() { return getName(); }
+	public StringBinding getDisplayName() { return null; }
 	
 	public boolean isDirty() { return false; }
 

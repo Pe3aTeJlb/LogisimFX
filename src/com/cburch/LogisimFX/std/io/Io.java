@@ -7,9 +7,11 @@ import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.AttributeOption;
 import com.cburch.LogisimFX.data.Attributes;
 import com.cburch.LogisimFX.data.Direction;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.FactoryDescription;
 import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.tools.Tool;
+import javafx.beans.binding.StringBinding;
 
 import java.awt.*;
 import java.util.List;
@@ -63,7 +65,7 @@ public class Io extends Library {
 	public String getName() { return "I/O"; }
 
 	@Override
-	public String getDisplayName() { return Strings.get("ioLibrary"); }
+	public StringBinding getDisplayName() { return LC.createStringBinding("ioLibrary"); }
 
 	@Override
 	public List<Tool> getTools() {

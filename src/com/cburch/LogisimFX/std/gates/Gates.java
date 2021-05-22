@@ -3,9 +3,11 @@
 
 package com.cburch.LogisimFX.std.gates;
 
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.AddTool;
 import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.tools.Tool;
+import javafx.beans.binding.StringBinding;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +36,7 @@ public class Gates extends Library {
 	public String getName() { return "Gates"; }
 
 	@Override
-	public String getDisplayName() { return Strings.get("gatesLibrary"); }
+	public StringBinding getDisplayName() { return LC.createStringBinding("gatesLibrary"); }
 
 	@Override
 	public List<Tool> getTools() {

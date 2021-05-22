@@ -5,9 +5,11 @@ package com.cburch.LogisimFX.std.memory;
 
 import java.util.List;
 
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.FactoryDescription;
 import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.tools.Tool;
+import javafx.beans.binding.StringBinding;
 
 public class Memory extends Library {
 	protected static final int DELAY = 5;
@@ -43,7 +45,7 @@ public class Memory extends Library {
 	public String getName() { return "Memory"; }
 
 	@Override
-	public String getDisplayName() { return Strings.get("memoryLibrary"); }
+	public StringBinding getDisplayName() { return LC.createStringBinding("memoryLibrary"); }
 
 	@Override
 	public List<Tool> getTools() {

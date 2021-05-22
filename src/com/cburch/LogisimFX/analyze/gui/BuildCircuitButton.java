@@ -39,7 +39,7 @@ class BuildCircuitButton extends JButton {
 		
 		@Override
 		public String toString() {
-			return project.getLogisimFile().getDisplayName();
+			return project.getLogisimFile().getDisplayName().getValue();
 		}
 	}
 	

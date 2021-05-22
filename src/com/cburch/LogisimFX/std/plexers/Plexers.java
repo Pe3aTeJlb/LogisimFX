@@ -7,10 +7,12 @@ import java.awt.Graphics;
 import java.util.List;
 
 import com.cburch.LogisimFX.data.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.FactoryDescription;
 import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.tools.Tool;
 import com.cburch.LogisimFX.util.GraphicsUtil;
+import javafx.beans.binding.StringBinding;
 
 public class Plexers extends Library {
 	public static final Attribute<BitWidth> ATTR_SELECT
@@ -63,7 +65,7 @@ public class Plexers extends Library {
 	public String getName() { return "Plexers"; }
 
 	@Override
-	public String getDisplayName() { return Strings.get("plexerLibrary"); }
+	public StringBinding getDisplayName() { return LC.createStringBinding("plexerLibrary"); }
 
 	@Override
 	public List<Tool> getTools() {

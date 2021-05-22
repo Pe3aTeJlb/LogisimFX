@@ -6,11 +6,13 @@ package com.cburch.LogisimFX.std.wiring;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.AttributeOption;
 import com.cburch.LogisimFX.data.Attributes;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.AddTool;
 import com.cburch.LogisimFX.tools.FactoryDescription;
 import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.tools.Tool;
 import com.cburch.LogisimFX.circuit.SplitterFactory;
+import javafx.beans.binding.StringBinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +58,7 @@ public class Wiring extends Library {
 	public String getName() { return "Wiring"; }
 
 	@Override
-	public String getDisplayName() { return Strings.get("wiringLibrary"); }
+	public StringBinding getDisplayName() { return LC.createStringBinding("wiringLibrary"); }
 
 	@Override
 	public List<Tool> getTools() {
