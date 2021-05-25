@@ -1,6 +1,7 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
-import com.cburch.LogisimFX.Localizer;
+import com.cburch.LogisimFX.localization.LC_gui;
+import com.cburch.LogisimFX.localization.Localizer;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,7 +28,7 @@ public class ExplorerToolBar extends ToolBar {
     public SimpleBooleanProperty EditCircuitLayout = new SimpleBooleanProperty(true);
     public SimpleBooleanProperty EditCircuitAppearance = new SimpleBooleanProperty(false);
 
-    private static Localizer lc = new Localizer("gui");
+    private static Localizer lc = LC_gui.getInstance();
 
     private static class ToolTip extends Tooltip{
 

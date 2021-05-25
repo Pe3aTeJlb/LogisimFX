@@ -1,6 +1,7 @@
 package com.cburch.LogisimFX.circuit;
 
-import com.cburch.LogisimFX.Localizer;
+import com.cburch.LogisimFX.localization.LC_circuit;
+import com.cburch.LogisimFX.localization.Localizer;
 import javafx.beans.binding.StringBinding;
 
 // package localizer
@@ -10,7 +11,7 @@ import javafx.beans.binding.StringBinding;
 
 public class LC {
 
-    private static Localizer lc = new Localizer("circuit");
+    private static Localizer lc = LC_circuit.getInstance();
 
     public static StringBinding createStringBinding(final String key, Object... args) {
         return lc.createStringBinding(key, args);
@@ -25,7 +26,7 @@ public class LC {
     }
 
     public static StringBinding createRawStringBinding(final String string){
-        return lc.createRawStringBinding(string);
+        return lc.castToBind(string);
     }
 
     public static String get(final String key, final Object... args) {

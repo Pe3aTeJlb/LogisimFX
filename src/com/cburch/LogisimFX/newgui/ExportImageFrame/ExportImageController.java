@@ -1,6 +1,5 @@
 package com.cburch.LogisimFX.newgui.ExportImageFrame;
 
-import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.newgui.AbstractController;
 import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.newgui.PreferencesFrame.LC;
@@ -8,7 +7,6 @@ import com.cburch.LogisimFX.proj.Project;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.print.PrinterJob;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 

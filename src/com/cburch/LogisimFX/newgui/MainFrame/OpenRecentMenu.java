@@ -4,7 +4,8 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
 
-import com.cburch.LogisimFX.Localizer;
+import com.cburch.LogisimFX.localization.LC_menu;
+import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.proj.ProjectActions;
 import com.cburch.LogisimFX.prefs.AppPreferences;
@@ -23,8 +24,7 @@ public class OpenRecentMenu extends Menu implements PropertyChangeListener {
 
 	private final int MAX_ITEM_LENGTH = 50;
 
-	private Localizer lc
-			= new Localizer("menu");
+	private static Localizer lc = LC_menu.getInstance();
 
 	private Project proj;
 	

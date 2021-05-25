@@ -3,7 +3,8 @@
 
 package com.cburch.LogisimFX.newgui.MainFrame;
 
-import com.cburch.LogisimFX.Localizer;
+import com.cburch.LogisimFX.localization.LC_gui;
+import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.analyze.gui.Analyzer;
 import com.cburch.LogisimFX.analyze.gui.AnalyzerManager;
 import com.cburch.LogisimFX.analyze.model.AnalyzerModel;
@@ -25,7 +26,7 @@ import java.util.Map;
 
 public class ProjectCircuitActions {
 
-	private static Localizer lc = new Localizer("gui");
+	private static Localizer lc = LC_gui.getInstance();
 
 	public static void doAddCircuit(Project proj) {
 

@@ -3,6 +3,8 @@
 
 package com.cburch.LogisimFX;
 
+import com.cburch.LogisimFX.localization.LC_start;
+import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.newgui.FrameManager;
 import com.cburch.LogisimFX.newgui.LoadingFrame.LoadingScreen;
 import com.cburch.LogisimFX.proj.Project;
@@ -23,7 +25,7 @@ import java.util.*;
 
 public class Startup {
 
-    private static final Localizer lc = new Localizer("start");
+    private static final Localizer lc = LC_start.getInstance();
 
     private static Startup startupTemp = null;
 

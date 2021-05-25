@@ -1,5 +1,7 @@
 package com.cburch.LogisimFX;
 
+import com.cburch.LogisimFX.localization.LC_file;
+import com.cburch.LogisimFX.localization.Localizer;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
@@ -8,7 +10,7 @@ import java.io.File;
 
 public class FileSelector {
 
-    private Localizer lc = new Localizer("file");
+    private static Localizer lc = LC_file.getInstance();
 
     private FileChooser fileChooser;
 

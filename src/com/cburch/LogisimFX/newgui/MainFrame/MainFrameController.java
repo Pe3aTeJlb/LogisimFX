@@ -1,10 +1,12 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
+import com.cburch.LogisimFX.localization.LC_gui;
 import com.cburch.LogisimFX.newgui.AbstractController;
-import com.cburch.LogisimFX.Localizer;
+import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.circuit.Circuit;
 
+import javafx.geometry.NodeOrientation;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -21,7 +23,7 @@ public class MainFrameController extends AbstractController {
     @FXML
     private AnchorPane Root;
 
-    private Localizer lc = new Localizer("gui");
+    private static Localizer lc = LC_gui.getInstance();
 
     private Project proj;
 
@@ -50,33 +52,53 @@ public class MainFrameController extends AbstractController {
 
         computeTitle();
 
-        AnchorPane canvasRoot = new AnchorPane();
-        canvasRoot.setMinSize(0,0);
-
         AnchorPane treeRoot = new AnchorPane();
         treeRoot.setMinHeight(0);
 
-        AnchorPane tableRoot = new AnchorPane();
 
+        //TreeExplorer
         treeExplorerAggregation = new TreeExplorerAggregation(proj);
         setAnchor(0,40,0,0, treeExplorerAggregation);
 
-        mainToolBar = new MainToolBar(proj);
         additionalToolBar = new AdditionalToolBar(proj, treeExplorerAggregation);
         explorerToolBar = new ExplorerToolBar(mainToolBar,additionalToolBar, treeExplorerAggregation);
 
         treeRoot.getChildren().addAll(explorerToolBar,additionalToolBar, treeExplorerAggregation);
 
+
+        //Attribute table
+        AnchorPane tableRoot = new AnchorPane();
+        tableRoot.setMinHeight(0);
+
+        AttributeTable attributeTable = new AttributeTable();
+        setAnchor(0,0,0,0, attributeTable);
+
+        tableRoot.getChildren().add(attributeTable);
+
+
+        SplitPane explorerSplitPane = new SplitPane(treeRoot,tableRoot);
+        explorerSplitPane.setOrientation(Orientation.VERTICAL);
+
+
+        //Canvas
+        AnchorPane canvasRoot = new AnchorPane();
+        canvasRoot.setMinSize(0,0);
+
         cv = new CustomCanvas(canvasRoot);
 
-        SplitPane explorereSplitPane = new SplitPane(treeRoot,tableRoot);
-        explorereSplitPane.setOrientation(Orientation.VERTICAL);
 
-        SplitPane mainSplitPane = new SplitPane(explorereSplitPane,canvasRoot);
+
+        SplitPane mainSplitPane = new SplitPane(explorerSplitPane,canvasRoot);
         mainSplitPane.setOrientation(Orientation.HORIZONTAL);
         setAnchor(0,50,0,0,mainSplitPane);
 
+
+
+        mainToolBar = new MainToolBar(proj);
+
         menubar = new CustomMenuBar(explorerToolBar,proj,treeExplorerAggregation);
+
+
 
         Root.getChildren().addAll(menubar,mainToolBar,mainSplitPane);
 

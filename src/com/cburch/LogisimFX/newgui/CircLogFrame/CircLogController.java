@@ -1,6 +1,5 @@
 package com.cburch.LogisimFX.newgui.CircLogFrame;
 
-import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.newgui.AbstractController;
 import com.cburch.LogisimFX.newgui.PreferencesFrame.LC;

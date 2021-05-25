@@ -1,6 +1,7 @@
 package com.cburch.LogisimFX.tools;
 
-import com.cburch.LogisimFX.Localizer;
+import com.cburch.LogisimFX.localization.LC_tools;
+import com.cburch.LogisimFX.localization.Localizer;
 import javafx.beans.binding.StringBinding;
 
 // package localizer
@@ -10,7 +11,7 @@ import javafx.beans.binding.StringBinding;
 
 public class LC {
 
-    private static Localizer lc = new Localizer("tools");
+    private static Localizer lc = LC_tools.getInstance();
 
     public static StringBinding createStringBinding(final String key, Object... args) {
         return lc.createStringBinding(key, args);

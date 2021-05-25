@@ -4,7 +4,8 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
 import com.cburch.LogisimFX.FileSelector;
-import com.cburch.LogisimFX.Localizer;
+import com.cburch.LogisimFX.localization.LC_menu;
+import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.file.Loader;
 import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.file.LogisimFileActions;
@@ -13,7 +14,6 @@ import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.tools.Library;
 
 
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import java.util.jar.Manifest;
 
 public class ProjectLibraryActions {
 
-	private static Localizer lc = new Localizer("menu");
+	private static Localizer lc = LC_menu.getInstance();
 
 	private static class BuiltinOption {
 

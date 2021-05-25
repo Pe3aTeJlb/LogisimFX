@@ -1,6 +1,7 @@
 package com.cburch.LogisimFX.newgui;
 
-import com.cburch.LogisimFX.Localizer;
+import com.cburch.LogisimFX.localization.LC_null;
+import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.file.LogisimFileActions;
 import com.cburch.LogisimFX.newgui.MainFrame.ProjectCircuitActions;
@@ -16,7 +17,7 @@ import javafx.scene.control.MenuItem;
 
 public class ContextMenuManager {
 
-    private static Localizer lc = new Localizer(null);
+    private static Localizer lc = LC_null.getInstance();
 
     public static ContextMenu ProjectContextMenu(Project proj){
 

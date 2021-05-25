@@ -1,4 +1,23 @@
 package com.cburch.LogisimFX.localization;
 
+//implement Singleton
 public class LC_std {
+
+    private static final String packageName = "std";
+
+    private static Localizer lc;
+
+    private LC_std(){}
+
+    public static Localizer getInstance(){
+
+        if(lc == null){
+            System.out.println("std localizer created from static");
+            lc = new Localizer(packageName);
+        }
+
+        return lc;
+
+    }
+
 }

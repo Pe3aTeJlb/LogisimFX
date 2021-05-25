@@ -5,7 +5,6 @@ package com.cburch.LogisimFX.proj;
 
 import com.cburch.LogisimFX.FileSelector;
 import com.cburch.LogisimFX.newgui.FrameManager;
-import com.cburch.LogisimFX.Localizer;
 import com.cburch.LogisimFX.file.LoadFailedException;
 import com.cburch.LogisimFX.file.Loader;
 import com.cburch.LogisimFX.file.LogisimFile;
@@ -17,12 +16,10 @@ import com.cburch.LogisimFX.tools.Tool;
 import com.cburch.LogisimFX.util.StringUtil;
 import javafx.application.Platform;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public class ProjectActions {
 

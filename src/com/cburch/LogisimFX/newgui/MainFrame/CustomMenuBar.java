@@ -1,10 +1,11 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
+import com.cburch.LogisimFX.localization.LC_menu;
 import com.cburch.LogisimFX.newgui.FrameManager;
 import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.proj.ProjectActions;
-import com.cburch.LogisimFX.Localizer;
+import com.cburch.LogisimFX.localization.Localizer;
 
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
@@ -17,8 +18,7 @@ public class CustomMenuBar extends MenuBar {
 
     private int prefHeight = 25;
 
-    private Localizer localizer
-            = new Localizer("menu");
+    private static Localizer localizer = LC_menu.getInstance();
 
     private Project proj;
     private LogisimFile logisimFile;

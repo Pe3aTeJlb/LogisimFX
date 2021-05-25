@@ -3,8 +3,8 @@
 
 package com.cburch.LogisimFX.file;
 
-import com.cburch.LogisimFX.FileSelector;
-import com.cburch.LogisimFX.Localizer;
+import com.cburch.LogisimFX.localization.LC_file;
+import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.std.Builtin;
 import com.cburch.LogisimFX.tools.Library;
@@ -27,7 +27,7 @@ import java.util.Stack;
 
 public class Loader implements LibraryLoader {
 
-	private Localizer lc = new Localizer("file");
+	private static Localizer lc = LC_file.getInstance();
 
 	public static final String LOGISIM_EXTENSION = ".circ";
 	public static final FileFilter LOGISIM_FILTER = new LogisimFileFilter();

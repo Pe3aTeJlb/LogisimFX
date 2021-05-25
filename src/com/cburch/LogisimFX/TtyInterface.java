@@ -13,9 +13,10 @@ import com.cburch.LogisimFX.file.FileStatistics;
 import com.cburch.LogisimFX.file.LoadFailedException;
 import com.cburch.LogisimFX.file.Loader;
 import com.cburch.LogisimFX.file.LogisimFile;
-import com.cburch.LogisimFX.Startup;
 import com.cburch.LogisimFX.instance.Instance;
 import com.cburch.LogisimFX.instance.InstanceState;
+import com.cburch.LogisimFX.localization.LC_start;
+import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.std.io.Keyboard;
 import com.cburch.LogisimFX.std.io.Tty;
@@ -33,7 +34,7 @@ import java.util.Map;
 
 public class TtyInterface {
 
-	private  static Localizer lc = new Localizer("start");
+	private  static Localizer lc = LC_start.getInstance();
 
 	public static final int FORMAT_TABLE = 1;
 	public static final int FORMAT_SPEED = 2;

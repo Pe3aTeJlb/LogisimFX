@@ -2,14 +2,12 @@ package com.cburch.LogisimFX.newgui;
 
 
 import com.cburch.LogisimFX.IconsManager;
-import com.cburch.LogisimFX.Localizer;
+import com.cburch.LogisimFX.localization.LC_null;
+import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.file.LogisimFile;
-import com.cburch.LogisimFX.newgui.MainFrame.ProjectLibraryActions;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.tools.Library;
 
-import com.cburch.logisim.util.Icons;
-import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -22,7 +20,7 @@ import java.util.Optional;
 
 public class DialogManager {
 
-    private static final Localizer lc = new Localizer(null);
+    private static final Localizer lc = LC_null.getInstance();
 
     public static void CreateWarningDialog(String header, String content){
 
@@ -132,7 +130,6 @@ public class DialogManager {
     public static int CreateConfirmCloseDialog(Project proj){
 
         lc.changeBundle("gui");
-        //Localizer lc = new Localizer("gui");
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("LogisimFX");
@@ -161,7 +158,6 @@ public class DialogManager {
     public static int CreateFileReloadDialog(Project proj){
 
         lc.changeBundle("proj");
-        //Localizer lc = new Localizer("proj");
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("LogisimFX");
@@ -190,7 +186,6 @@ public class DialogManager {
     public static String CreateInputDialog(LogisimFile file){
 
         lc.changeBundle("menu");
-        //Localizer lc = new Localizer("menu");
 
         TextInputDialog inputDialog = new TextInputDialog();
         inputDialog.setTitle("LogisimFX");
@@ -230,7 +225,6 @@ public class DialogManager {
     public static String CreateInputDialog(String title, String body){
 
         //lc.changeBundle("menu");
-        //Localizer lc = new Localizer("menu");
 
         TextInputDialog inputDialog = new TextInputDialog();
         inputDialog.setTitle("LogisimFX");

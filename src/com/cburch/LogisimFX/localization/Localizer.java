@@ -1,4 +1,4 @@
-package com.cburch.LogisimFX;
+package com.cburch.LogisimFX.localization;
 
 import com.cburch.LogisimFX.util.StringUtil;
 import javafx.beans.binding.Bindings;
@@ -71,7 +71,7 @@ public class Localizer {
         return Bindings.createStringBinding(() -> StringUtil.format(get(key),strings), locale);
     }
 
-    public StringBinding createRawStringBinding(final String string){
+    public StringBinding castToBind(final String string){
         return Bindings.createStringBinding(() -> string);
     }
 

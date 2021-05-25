@@ -1,6 +1,7 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
-import com.cburch.LogisimFX.Localizer;
+import com.cburch.LogisimFX.localization.LC_gui;
+import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.proj.Project;
 
@@ -25,7 +26,7 @@ public class AdditionalToolBar extends ToolBar {
     private Project proj;
     private LogisimFile logisimFile;
 
-    private static Localizer lc = new Localizer("gui");
+    private static Localizer lc = LC_gui.getInstance();
 
     private static class ToolTip extends Tooltip{
 

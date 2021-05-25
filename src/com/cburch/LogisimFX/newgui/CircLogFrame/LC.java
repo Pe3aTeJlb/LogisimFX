@@ -1,6 +1,7 @@
 package com.cburch.LogisimFX.newgui.CircLogFrame;
 
-import com.cburch.LogisimFX.Localizer;
+import com.cburch.LogisimFX.localization.LC_log;
+import com.cburch.LogisimFX.localization.Localizer;
 import javafx.beans.binding.StringBinding;
 
 // package localizer
@@ -10,7 +11,7 @@ import javafx.beans.binding.StringBinding;
 
 public class LC {
 
-    private static Localizer lc = new Localizer("log");
+    private static Localizer lc = LC_log.getInstance();
 
     public static StringBinding createStringBinding(final String key, Object... args) {
         return lc.createStringBinding(key, args);

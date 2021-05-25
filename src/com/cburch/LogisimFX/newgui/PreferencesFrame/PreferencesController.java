@@ -1,14 +1,13 @@
 package com.cburch.LogisimFX.newgui.PreferencesFrame;
 
 import com.cburch.LogisimFX.newgui.AbstractController;
-import com.cburch.LogisimFX.proj.Project;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
-import com.cburch.LogisimFX.Localizer;
+import com.cburch.LogisimFX.localization.Localizer;
 import javafx.stage.Stage;
 
 import java.io.File;

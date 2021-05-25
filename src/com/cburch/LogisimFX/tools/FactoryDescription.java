@@ -84,8 +84,6 @@ public class FactoryDescription {
 	
 	public ImageView getIcon() {
 
-		System.out.println("from factory desc");
-
 		ImageView ret = icon;
 
 		if (ret != null || iconLoadAttempted) {
