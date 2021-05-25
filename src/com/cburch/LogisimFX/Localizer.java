@@ -14,6 +14,7 @@ public class Localizer {
     private String bundleName;
 
     public Localizer(String bundlename){
+        System.out.println("create from "+this.hashCode()+" "+bundlename);
         bundleName = "com/cburch/"+"LogisimFX/resources/localization/"+bundlename;
     }
 
