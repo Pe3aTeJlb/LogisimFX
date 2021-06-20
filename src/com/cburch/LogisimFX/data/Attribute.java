@@ -4,11 +4,14 @@
 package com.cburch.LogisimFX.data;
 
 import com.cburch.LogisimFX.util.StringGetter;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.cell.TextFieldTableCell;
 
 import javax.swing.*;
 import java.awt.*;
 
 public abstract class Attribute<V> {
+
 	private String name;
 	private StringGetter disp;
 
@@ -30,11 +33,21 @@ public abstract class Attribute<V> {
 		return disp.get();
 	}
 
+	public TableCell<Attribute, Object> getCell(){
+
+		System.out.println("from template get cell");
+		return new TextFieldTableCell<>();
+	}
+
+	public V getValue(){
+		return parse(this.name);
+	}
+
 	public java.awt.Component getCellEditor(Window source, V value) {
 		return getCellEditor(value);
 	}
 
-	protected java.awt.Component getCellEditor(V value) {
+	public java.awt.Component getCellEditor(V value) {
 		return new JTextField(toDisplayString(value));
 	}
 
@@ -47,4 +60,5 @@ public abstract class Attribute<V> {
 	}
 
 	public abstract V parse(String value);
+
 }

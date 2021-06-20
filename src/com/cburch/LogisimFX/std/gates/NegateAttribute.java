@@ -53,7 +53,9 @@ class NegateAttribute extends Attribute<Boolean> {
 	public Boolean parse(String value) {
 		return BOOLEAN_ATTR.parse(value);
 	}
+
 	
+
 	@Override
 	public java.awt.Component getCellEditor(Boolean value) {
 		return BOOLEAN_ATTR.getCellEditor(null, value);

@@ -6,6 +6,7 @@ import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.circuit.Circuit;
 
+import com.cburch.LogisimFX.tools.Tool;
 import javafx.geometry.NodeOrientation;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
@@ -33,6 +34,7 @@ public class MainFrameController extends AbstractController {
     private AdditionalToolBar additionalToolBar;
     private ExplorerToolBar explorerToolBar;
     private TreeExplorerAggregation treeExplorerAggregation;
+    private AttributeTable attributeTable;
 
     private CustomCanvas cv;
 
@@ -70,7 +72,7 @@ public class MainFrameController extends AbstractController {
         AnchorPane tableRoot = new AnchorPane();
         tableRoot.setMinHeight(0);
 
-        AttributeTable attributeTable = new AttributeTable();
+        attributeTable = new AttributeTable();
         setAnchor(0,0,0,0, attributeTable);
 
         tableRoot.getChildren().add(attributeTable);
@@ -133,6 +135,12 @@ public class MainFrameController extends AbstractController {
     public void manual_UI_Update(){
 
         treeExplorerAggregation.updateTree();
+
+    }
+
+    public void setAttributeTable(Tool tool){
+
+        attributeTable.setTool(tool);
 
     }
 

@@ -7,14 +7,17 @@ package com.cburch.LogisimFX.data;
 import javax.swing.JComboBox;
 
 import com.cburch.LogisimFX.util.StringGetter;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.cell.ComboBoxTableCell;
 
 public class BitWidth implements Comparable<BitWidth> {
+
 	public static final BitWidth UNKNOWN = new BitWidth(0);
 	public static final BitWidth ONE = new BitWidth(1);
 
 	private static BitWidth[] prefab = null;
 
-	static class Attribute extends com.cburch.LogisimFX.data.Attribute<BitWidth> {
+	public static class Attribute extends com.cburch.LogisimFX.data.Attribute<BitWidth> {
 		private BitWidth[] choices;
 
 		public Attribute(String name, StringGetter disp) {
@@ -34,6 +37,15 @@ public class BitWidth implements Comparable<BitWidth> {
 		@Override
 		public BitWidth parse(String value) {
 			return BitWidth.parse(value);
+		}
+
+		@Override
+		public TableCell<com.cburch.LogisimFX.data.Attribute, Object> getCell(){
+
+			ComboBoxTableCell<com.cburch.LogisimFX.data.Attribute,Object> cell = new ComboBoxTableCell<>();
+			cell.getItems().addAll(choices);
+			return cell;
+
 		}
 
 		@Override

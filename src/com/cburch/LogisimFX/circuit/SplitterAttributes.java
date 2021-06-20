@@ -5,6 +5,8 @@ package com.cburch.LogisimFX.circuit;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.StdAttr;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.cell.ComboBoxTableCell;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -111,6 +113,15 @@ class SplitterAttributes extends AbstractAttributeSet {
 			} else {
 				return "" + (index - 1);
 			}
+		}
+
+		@Override
+		public TableCell<Attribute, Object> getCell(){
+
+			ComboBoxTableCell<Attribute,Object> cell = new ComboBoxTableCell<>();
+			cell.getItems().addAll(options);
+			return cell;
+
 		}
 
 		@Override

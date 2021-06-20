@@ -13,7 +13,7 @@ import com.cburch.LogisimFX.comp.ComponentFactory;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 
-
+//setStyle("-fx-background-color: yellow");
 public class ProjectTreeExplorer extends AbstractTreeExplorer {
 
     private Project proj;

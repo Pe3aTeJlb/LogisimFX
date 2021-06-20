@@ -321,6 +321,8 @@ public class Project {
 
 	public void setTool(Tool value) {
 
+		frameController.setAttributeTable(value);
+
 		if (tool == value) return;
 
 		Tool old = tool;
