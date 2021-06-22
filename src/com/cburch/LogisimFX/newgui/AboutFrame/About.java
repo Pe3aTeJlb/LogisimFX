@@ -51,6 +51,8 @@ public class About extends AbstractController {
     private Value upper = Value.FALSE;
     private Value lower = Value.TRUE;
 
+    private final int CircOffsetX = 50;
+    private final int CircOffsetY = 50;
 
 
     /** Time to spend freezing the credits before after after scrolling */
@@ -111,6 +113,7 @@ public class About extends AbstractController {
         update = new AnimationTimer() {
             @Override
             public void handle(long now) {
+                start = System.currentTimeMillis();
                 Update();
             }
         };
@@ -214,15 +217,22 @@ public class About extends AbstractController {
         setScroll();
         updateCredits();
 
+
+        long elapse = System.currentTimeMillis() - start;
+        int count = (int) (elapse / 500) % 4;
+        upper = (count == 2 || count == 3) ? Value.TRUE : Value.FALSE;
+        lower = (count == 1 || count == 2) ? Value.TRUE : Value.FALSE;
+
         g.setFill(gateColor);
         g.setStroke(gateColor);
 
         drawWires(0,0);
-        drawNot(0, 0, 70, 10);
-        drawNot(0, 0, 70, 110);
-        drawAnd(0, 0, 130, 30);
-        drawAnd(0, 0, 130, 90);
-        drawOr(0, 0, 220, 60);
+        drawNot(0, 0, 70+CircOffsetX, 10+CircOffsetY);
+        drawNot(0, 0, 70+CircOffsetX, 110+CircOffsetY);
+        drawAnd(0, 0, 130+CircOffsetX, 30+CircOffsetY);
+        drawAnd(0, 0, 130+CircOffsetX, 90+CircOffsetY);
+        drawOr(0, 0, 220+CircOffsetX, 60+CircOffsetY);
+
 
         drawVersion(5,5);
 

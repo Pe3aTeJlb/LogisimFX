@@ -23,7 +23,7 @@ public class OptionsController extends AbstractController {
         stage = s;
         proj = project;
 
-        String name = proj.getLogisimFile() == null ? "???" : proj.getLogisimFile().getDisplayName();
+        String name = proj.getLogisimFile() == null ? "???" : proj.getLogisimFile().getDisplayName().toString();
 
         stage.titleProperty().bind(LC.createComplexStringBinding("optionsFrameTitle",name));
 

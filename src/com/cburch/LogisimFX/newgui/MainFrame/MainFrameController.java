@@ -13,6 +13,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.fxml.FXML;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 public class MainFrameController extends AbstractController {
@@ -78,6 +79,8 @@ public class MainFrameController extends AbstractController {
         attributeTable = new AttributeTable();
 
         scrollPane.setContent(attributeTable);
+        scrollPane.setFitToWidth(true);
+
 
         tableRoot.getChildren().add(scrollPane);
 

@@ -262,13 +262,13 @@ public class Analyze {
 					expressionMap.currentCause = comp;
 					computer.computeExpression(expressionMap);
 				} catch (UnsupportedOperationException e) {
-					throw new AnalyzeException.CannotHandle(comp.getFactory().getDisplayName());
+					throw new AnalyzeException.CannotHandle(comp.getFactory().getDisplayName().toString());
 				}
 			} else if (comp.getFactory() instanceof Pin) {
 				; // pins are handled elsewhere
 			} else {
 				// pins are handled elsewhere
-				throw new AnalyzeException.CannotHandle(comp.getFactory().getDisplayName());
+				throw new AnalyzeException.CannotHandle(comp.getFactory().getDisplayName().toString());
 			}
 		}
 	}

@@ -4,6 +4,7 @@
 package com.cburch.LogisimFX.data;
 
 import com.bric.swing.ColorPicker;
+import com.cburch.LogisimFX.newgui.MainFrame.AttributeTable;
 import com.cburch.LogisimFX.util.FontUtil;
 import com.cburch.LogisimFX.util.JInputComponent;
 import com.cburch.LogisimFX.util.StringGetter;
@@ -220,7 +221,9 @@ public class Attributes {
 			ComboBox<Object> cell = new ComboBox<>();
 			cell.getItems().addAll(vals);
 			cell.setValue(value);
-			cell.setOnAction(event -> {});
+			cell.setOnAction(event -> {
+				AttributeTable.printShit();
+			});
 			return cell;
 
 		}

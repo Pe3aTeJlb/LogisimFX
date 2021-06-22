@@ -43,7 +43,7 @@ public class SimulationTreeExplorer extends AbstractTreeExplorer {
 
                             SubcircuitFactory buff = ((CircuitState) item).getCircuit().getSubcircuitFactory();
 
-                            setText(buff.getName());
+                            setText(buff.getName()+buff.get);
                             setGraphic(buff.getIcon());
 
                         }
