@@ -5,90 +5,60 @@ import com.cburch.LogisimFX.localization.LC_gui;
 import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.tools.Tool;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
 
-public class AttributeTable extends TableView {
+public class AttributeTable extends GridPane {
 
     private Localizer lc = LC_gui.getInstance();
 
-    private TableColumn<Attribute, String> attrName;
-    private TableColumn<Attribute, TableCell<Attribute, Object>> attrValue;
-
     private Tool tool = null;
 
-    private ObservableList<Attribute> items;
+    private int currRow = 1;
+
+    private Label attrNameLbl, attrValueLbl;
 
     public AttributeTable(){
 
         super();
 
-        this.setEditable(true);
+        this.setHgap(5);
+        this.setVgap(5);
+        this.setPadding(new Insets(20));
 
-        attrName = new TableColumn<>();
-        attrName.textProperty().bind(lc.createStringBinding("attributeNameTitle"));
-        //attrName.setEditable(false);
-        //attrName.setSortable(false);
-        //attrName.setResizable(false);
-        attrName.setCellValueFactory(new PropertyValueFactory<>("DisplayName"));
+        setTitle();
 
-        attrValue = new TableColumn<>();
-        attrValue.textProperty().bind(lc.createStringBinding("attributeValueTitle"));
-        //attrValue.setSortable(false);
-        //attrValue.setResizable(false);
-        //attrValue.setEditable(true);
-        attrValue.setCellValueFactory(new PropertyValueFactory<>("Cell"));
-        attrValue.setCellFactory(param -> {
+    }
 
-            TableCell<Attribute,TableCell<Attribute, Object>> cell = new TableCell<Attribute,TableCell<Attribute, Object>>(){
+    private void setTitle(){
 
-                @Override
-                protected void updateItem(TableCell<Attribute, Object> item, boolean empty) {
+        attrNameLbl = new Label();
+        attrNameLbl.textProperty().bind(lc.createStringBinding("attributeNameTitle"));
+        this.add(attrNameLbl,0,0);
 
-                    super.updateItem(item, empty);
+        attrValueLbl = new Label();
+        attrValueLbl.textProperty().bind(lc.createStringBinding("attributeValueTitle"));
+        this.add(attrValueLbl,1,0);
 
-                    if(item != null) {
-
-                        System.out.println(" its not empty");
-                        setGraphic(item);
-
-                    } else {
-
-                        System.out.println("lol its empty");
-                        setText(null);
-                        setGraphic(null);
-
-                    }
-
-                }
-
-            };
-
-            return cell;
-
-        });
-
-
-        this.getColumns().setAll(attrName,attrValue);
-
-        items = FXCollections.observableArrayList();
+        this.setGridLinesVisible(true);
 
     }
 
     private void updateTable(){
 
-        items.clear();
+        this.getChildren().clear();
+
+        setTitle();
 
         System.out.println("attr size "+tool.getAttributeSet().getAttributes().size());
 
         for (Attribute attr: tool.getAttributeSet().getAttributes()) {
+            currRow += 1;
+            this.add(new Label(attr.getDisplayName()),0,currRow);
+            this.add(attr.getCell(tool.getAttributeSet().getValue(attr)), 1,currRow);
             System.out.println("attr "+attr.getName());
         }
-
-        items.addAll(tool.getAttributeSet().getAttributes());
-        this.setItems(items);
 
     }
 

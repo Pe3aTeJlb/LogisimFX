@@ -8,6 +8,8 @@ import com.cburch.LogisimFX.util.FontUtil;
 import com.cburch.LogisimFX.util.JInputComponent;
 import com.cburch.LogisimFX.util.StringGetter;
 import com.connectina.swing.fontchooser.JFontChooser;
+import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.ComboBoxTableCell;
@@ -214,10 +216,11 @@ public class Attributes {
 		}
 
 		@Override
-		public TableCell<Attribute, Object> getCell(){
-
-			ComboBoxTableCell<Attribute,Object> cell = new ComboBoxTableCell<>();
+		public Node getCell(Object value){
+			ComboBox<Object> cell = new ComboBox<>();
 			cell.getItems().addAll(vals);
+			cell.setValue(value);
+			cell.setOnAction(event -> {});
 			return cell;
 
 		}

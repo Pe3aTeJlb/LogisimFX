@@ -7,6 +7,10 @@ package com.cburch.LogisimFX.data;
 import javax.swing.JComboBox;
 
 import com.cburch.LogisimFX.util.StringGetter;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.cell.ComboBoxTableCell;
 
@@ -40,10 +44,14 @@ public class BitWidth implements Comparable<BitWidth> {
 		}
 
 		@Override
-		public TableCell<com.cburch.LogisimFX.data.Attribute, Object> getCell(){
+		public Node getCell(BitWidth value){
 
-			ComboBoxTableCell<com.cburch.LogisimFX.data.Attribute,Object> cell = new ComboBoxTableCell<>();
+			ComboBox<Object> cell = new ComboBox<>();
 			cell.getItems().addAll(choices);
+			cell.setValue(value);
+			cell.setOnAction(event -> {
+
+			});
 			return cell;
 
 		}

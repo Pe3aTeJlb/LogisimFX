@@ -72,10 +72,14 @@ public class MainFrameController extends AbstractController {
         AnchorPane tableRoot = new AnchorPane();
         tableRoot.setMinHeight(0);
 
-        attributeTable = new AttributeTable();
-        setAnchor(0,0,0,0, attributeTable);
+        ScrollPane scrollPane = new ScrollPane();
+        setAnchor(0,0,0,0, scrollPane);
 
-        tableRoot.getChildren().add(attributeTable);
+        attributeTable = new AttributeTable();
+
+        scrollPane.setContent(attributeTable);
+
+        tableRoot.getChildren().add(scrollPane);
 
 
         SplitPane explorerSplitPane = new SplitPane(treeRoot,tableRoot);
