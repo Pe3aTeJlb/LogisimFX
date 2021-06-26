@@ -47,14 +47,16 @@ public class FrameManager {
 
         public Stage stage;
         public AbstractController controller;
+        public Boolean isStartup;
 
         public HashMap<String, Stage> ProjectAssociatedFrames = new HashMap<>();
         public HashMap<Circuit, Stage> AssociatedCircuitStatisticFrames = new HashMap<>();
         public HashMap<Instance, Stage> AssociatedMemoryEditors = new HashMap<>();
 
-        Data(Stage s, AbstractController c){
+        Data(Stage s, AbstractController c, Boolean i){
             this.stage = s;
             this.controller = c;
+            this.isStartup = i;
         }
 
     }
@@ -64,27 +66,25 @@ public class FrameManager {
 
     public static void CreateMainFrame(Project proj){
 
-       // if(!OpenedMainFrames.containsKey(proj)){
-
-            loader = new FXMLLoader(ClassLoader.getSystemResource(
+        loader = new FXMLLoader(ClassLoader.getSystemResource(
                     "com/cburch/LogisimFX/newgui/MainFrame/LogisimFx.fxml"));
-            Parent root = null;
+        Parent root = null;
 
-            try {
+        try {
                 root = loader.load();
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            Stage newStage = new Stage();
-            newStage.setScene(new Scene(root, 800, 600));
+        Stage newStage = new Stage();
+        newStage.setScene(new Scene(root, 800, 600));
 
-            newStage.getIcons().add(IconsManager.LogisimFX);
+        newStage.getIcons().add(IconsManager.LogisimFX);
 
-            AbstractController c = loader.getController();
-            c.postInitialization(newStage, proj);
+        AbstractController c = loader.getController();
+        c.postInitialization(newStage, proj);
 
-            newStage.setOnHiding(event -> {
+        newStage.setOnHiding(event -> {
 
                 event.consume();
 
@@ -116,43 +116,40 @@ public class FrameManager {
 
 
             });
+        newStage.show();
 
-            newStage.show();
+        System.out.println(proj.getLogisimFile().getName()+" "+isStartup);
+        OpenedMainFrames.put(proj, new Data(newStage,c,isStartup));
+        isStartup = false;
 
-            OpenedMainFrames.put(proj, new Data(newStage,c));
+        //Close startup frame when u load project from file
+        if(OpenedMainFrames.size() > 1){
 
-
-
-            //Close startup frame when u load project from file
-            if(OpenedMainFrames.size() > 1 && isStartup){
-
-                // at this moment OMF contains startup frame and another project frame
-                for (Project p: OpenedMainFrames.keySet()) {
-                    if(!p.isFileDirty()) {
-                        p.getFrameController().getStage().close();
-                        isStartup = false;
-                        break;
-                    }
+            // at this moment OMF contains startup frame and another project frame
+            for (Project p: OpenedMainFrames.keySet()) {
+                System.out.println(p.getLogisimFile().getName()+" is dirty "+p.isFileDirty());
+                if(!p.isFileDirty() && OpenedMainFrames.get(p).isStartup) {
+                    System.out.println("System close: "+p.getLogisimFile().getName());
+                    p.getFrameController().getStage().close();
+                    break;
                 }
-
             }
 
-
-
-       // }
-        //else{
-         //   FocusOnFrame(OpenedMainFrames.get(proj).stage);
-       // }
+        }
 
     }
 
-    public static void CreateFromMenuItem(Project proj){
+    //Ctrl-N
+    public static void SpamNew(Project proj){
 
-        if(isStartup)isStartup=false;
+        for (Project p: OpenedMainFrames.keySet()) {
+            System.out.println(p.getLogisimFile().getName()+" is dirty "+p.isFileDirty());
+            OpenedMainFrames.get(p).isStartup = false;
+        }
+
         CreateMainFrame(proj);
 
     }
-
 
     //Project-depending frames
 
@@ -249,7 +246,7 @@ public class FrameManager {
 
             newStage.show();
 
-            OpenedProjectIndependentFrames.put(resourcePath, new Data(newStage, c));
+            OpenedProjectIndependentFrames.put(resourcePath, new Data(newStage, c, false));
 
         }else{
             FocusOnFrame(OpenedProjectIndependentFrames.get(resourcePath).stage);

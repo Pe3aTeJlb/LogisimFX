@@ -66,7 +66,7 @@ public class CustomMenuBar extends MenuBar {
         MenuItem New = new MenuItem();
         New.setAccelerator(KeyCombination.keyCombination("Ctrl+N"));
         New.textProperty().bind(localizer.createStringBinding("fileNewItem"));
-        New.setOnAction(event -> ProjectActions.doNew(proj));
+        New.setOnAction(event -> ProjectActions.spamNew(proj));
 
         MenuItem Open = new MenuItem();
         Open.setAccelerator(KeyCombination.keyCombination("Ctrl+O"));

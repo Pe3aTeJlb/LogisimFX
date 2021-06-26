@@ -128,19 +128,28 @@ public class ProjectActions {
 
 	}
 
+
 	public static Project doNew(Project baseProject) {
 
 		LogisimFile file = createNewFile(baseProject);
 		Project newProj = new Project(file);
 
-		FrameManager.CreateFromMenuItem(newProj);
-		//FrameManager.CreateMainFrame(newProj);
+		FrameManager.CreateMainFrame(newProj);
 
 		return newProj;
 
 	}
 
+	public static Project spamNew(Project baseProject) {
 
+		LogisimFile file = createNewFile(baseProject);
+		Project newProj = new Project(file);
+
+		FrameManager.SpamNew(newProj);
+
+		return newProj;
+
+	}
 
 	public static Project doOpen(File source, Map<File,File> substitutions) throws LoadFailedException {
 
