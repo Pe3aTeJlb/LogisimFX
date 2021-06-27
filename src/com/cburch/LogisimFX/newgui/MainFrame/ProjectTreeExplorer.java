@@ -10,6 +10,7 @@ import com.cburch.LogisimFX.tools.Tool;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.comp.ComponentFactory;
 
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 
@@ -17,6 +18,10 @@ import javafx.scene.input.MouseButton;
 public class ProjectTreeExplorer extends AbstractTreeExplorer {
 
     private Project proj;
+    private String highlight = "-fx-background-color: blue";
+    private String defColor = "-fx-background-color: white";
+
+    private TableCell toDefColor;
 
     public ProjectTreeExplorer(Project project){
 
@@ -82,9 +87,10 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
                                     Circuit circ = ((SubcircuitFactory) fact).getSubcircuit();
 
                                     setContextMenu(ContextMenuManager.CircuitContextMenu(proj, circ));
+                                    System.out.println("The circuit is "+circ.getName());
 
                                     if (proj.getCurrentCircuit().equals(circ)) {
-
+                                        setStyle(highlight);
                                     }
 
                                 }
@@ -119,9 +125,12 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
 
                             ComponentFactory fact = ((AddTool) treeItem.getValue()).getFactory(false);
                             if (fact instanceof SubcircuitFactory) {
+
                                 proj.setCurrentCircuit(
                                         ((SubcircuitFactory) fact).getSubcircuit()
                                 );
+
+                                cell.setStyle(highlight);
 
                             }
 
@@ -172,24 +181,6 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
 
                 TreeItem<Object> t = new TreeItem<>(tool);
                 l.getChildren().add(t);
-
-            }
-
-        }
-
-    }
-
-    private void checkForHighLight(TreeCell<Object> cell, Object item){
-
-        //if circuit tool, and is current circuit, then highlight cell
-
-        ComponentFactory fact = ((AddTool) item).getFactory(false);
-
-        if (fact instanceof com.cburch.logisim.circuit.SubcircuitFactory) {
-
-            Circuit circ = ((SubcircuitFactory) fact).getSubcircuit();
-
-            if(proj.getCurrentCircuit().equals(circ)){
 
             }
 

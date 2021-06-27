@@ -7,15 +7,19 @@ import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.circuit.SubcircuitFactory;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.comp.ComponentFactory;
+import com.cburch.LogisimFX.newgui.CircuitStatisticFrame.LC;
 import com.cburch.LogisimFX.tools.AddTool;
 import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.tools.Tool;
+import javafx.beans.binding.StringBinding;
 
 import java.util.*;
 
 public class FileStatistics {
 
 	public static class Count {
+
+		private StringBinding extraTitleF,extraTitleS;
 		private Library library;
 		private ComponentFactory factory;
 		private int simpleCount;
@@ -29,13 +33,20 @@ public class FileStatistics {
 			this.uniqueCount = 0;
 			this.recursiveCount = 0;
 		}
-		
-		public Library getLibrary() {
-			return library;
+
+		public void setExtraTitleF(StringBinding extraTitle) {
+			this.extraTitleF = extraTitle;
 		}
-		
-		public ComponentFactory getFactory() {
-			return factory;
+		public void setExtraTitleS(StringBinding extraTitle) {
+			this.extraTitleS = extraTitle;
+		}
+
+		public StringBinding getComponentName() {
+			return factory == null ? extraTitleF : factory.getDisplayName();
+		}
+
+		public StringBinding getLibName() {
+			return library == null ? null : library.getDisplayName();
 		}
 		
 		public int getSimpleCount() {
@@ -48,6 +59,15 @@ public class FileStatistics {
 		
 		public int getRecursiveCount() {
 			return recursiveCount;
+		}
+
+
+		public Library getLibrary() {
+			return library;
+		}
+
+		public ComponentFactory getFactory() {
+			return factory;
 		}
 
 	}
@@ -176,9 +196,15 @@ public class FileStatistics {
 	
 	private FileStatistics(List<Count> counts, Count totalWithout,
 			Count totalWith) {
+
 		this.counts = Collections.unmodifiableList(counts);
+
 		this.totalWithout = totalWithout;
+		this.totalWithout.setExtraTitleF(LC.createStringBinding("statsTotalWithout"));
+
 		this.totalWith = totalWith;
+		this.totalWith.setExtraTitleF(LC.createStringBinding("statsTotalWith"));
+
 	}
 	
 	public List<Count> getCounts() {

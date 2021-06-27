@@ -21,7 +21,13 @@ public abstract class Library {
 	@Override
 	public String toString() { return getName(); }
 
-	public StringBinding getDisplayName() { return null; }
+	public StringBinding getDisplayName() { return new StringBinding() {
+			@Override
+			protected String computeValue() {
+				return getName();
+			}
+		};
+	}
 	
 	public boolean isDirty() { return false; }
 

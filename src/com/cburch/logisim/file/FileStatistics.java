@@ -20,7 +20,9 @@ import com.cburch.logisim.tools.Library;
 import com.cburch.logisim.tools.Tool;
 
 public class FileStatistics {
+
 	public static class Count {
+
 		private Library library;
 		private ComponentFactory factory;
 		private int simpleCount;
@@ -54,6 +56,7 @@ public class FileStatistics {
 		public int getRecursiveCount() {
 			return recursiveCount;
 		}
+
 	}
 	
 	public static FileStatistics compute(LogisimFile file, Circuit circuit) {
@@ -70,6 +73,7 @@ public class FileStatistics {
 	private static Map<ComponentFactory,Count> doRecursiveCount(Circuit circuit,
 			Set<Circuit> include,
 			Map<Circuit,Map<ComponentFactory,Count>> countMap) {
+
 		if (countMap.containsKey(circuit)) {
 			return countMap.get(circuit);
 		}
@@ -102,6 +106,7 @@ public class FileStatistics {
 	}
 	
 	private static Map<ComponentFactory,Count> doSimpleCount(Circuit circuit) {
+
 		Map<ComponentFactory,Count> counts;
 		counts = new HashMap<ComponentFactory,Count>();
 		for (Component comp : circuit.getNonWires()) {
@@ -114,10 +119,12 @@ public class FileStatistics {
 			count.simpleCount++;
 		}
 		return counts;
+
 	}
 	
 	private static void doUniqueCounts(Map<ComponentFactory,Count> counts,
 			Map<Circuit,Map<ComponentFactory,Count>> circuitCounts) {
+
 		for (Count count : counts.values()) {
 			ComponentFactory factory = count.getFactory();
 			int unique = 0;
@@ -129,10 +136,12 @@ public class FileStatistics {
 			}
 			count.uniqueCount = unique;
 		}
+
 	}
 	
 	private static List<Count> sortCounts(Map<ComponentFactory,Count> counts,
 			LogisimFile file) {
+
 		List<Count> ret = new ArrayList<Count>();
 		for (AddTool tool : file.getTools()) {
 			ComponentFactory factory = tool.getFactory();
@@ -155,9 +164,11 @@ public class FileStatistics {
 			}
 		}
 		return ret;
+
 	}
 	
 	private static Count getTotal(List<Count> counts, Set<Circuit> exclude) {
+
 		Count ret = new Count(null);
 		for (Count count : counts) {
 			ComponentFactory factory = count.getFactory();
@@ -172,17 +183,19 @@ public class FileStatistics {
 			}
 		}
 		return ret;
+
 	}
 	
 	private List<Count> counts;
 	private Count totalWithout;
 	private Count totalWith;
 	
-	private FileStatistics(List<Count> counts, Count totalWithout,
-			Count totalWith) {
+	private FileStatistics(List<Count> counts, Count totalWithout, Count totalWith) {
+
 		this.counts = Collections.unmodifiableList(counts);
 		this.totalWithout = totalWithout;
 		this.totalWith = totalWith;
+
 	}
 	
 	public List<Count> getCounts() {
@@ -196,4 +209,5 @@ public class FileStatistics {
 	public Count getTotalWithSubcircuits() {
 		return totalWith;
 	}
+
 }

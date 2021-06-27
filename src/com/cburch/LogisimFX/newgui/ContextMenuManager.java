@@ -96,6 +96,8 @@ public class ContextMenuManager {
 
     public static ContextMenu CircuitContextMenu(Project proj, Circuit circ){
 
+        System.out.println("The context circuit is "+circ.getName());
+
         lc.changeBundle("menu");
 
         ContextMenu contextMenu = new ContextMenu();
