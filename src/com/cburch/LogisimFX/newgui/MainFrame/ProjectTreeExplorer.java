@@ -87,7 +87,6 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
                                     Circuit circ = ((SubcircuitFactory) fact).getSubcircuit();
 
                                     setContextMenu(ContextMenuManager.CircuitContextMenu(proj, circ));
-                                    System.out.println("The circuit is "+circ.getName());
 
                                     if (proj.getCurrentCircuit().equals(circ)) {
                                         setStyle(highlight);

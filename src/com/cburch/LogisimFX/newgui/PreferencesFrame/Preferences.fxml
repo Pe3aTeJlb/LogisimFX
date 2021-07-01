@@ -39,7 +39,6 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <ChoiceBox fx:id="AfterAddingCmbx" layoutX="125.0" layoutY="196.0" prefWidth="150.0" />
                         <Label fx:id="AfterAddingLbl" layoutX="35.0" layoutY="200.0" text="Label" />
                         <CheckBox fx:id="ShowTickRateChbx" layoutX="35.0" layoutY="27.0" mnemonicParsing="false" text="CheckBox" />
                         <CheckBox fx:id="PrinterViewChbx" layoutX="35.0" layoutY="52.0" mnemonicParsing="false" text="CheckBox" />
@@ -47,10 +46,11 @@
                         <CheckBox fx:id="ShowComponentTipsChbx" layoutX="35.0" layoutY="102.0" mnemonicParsing="false" text="CheckBox" />
                         <CheckBox fx:id="KeepConnectionsChbx" layoutX="35.0" layoutY="127.0" mnemonicParsing="false" text="CheckBox" />
                         <CheckBox fx:id="ShowGhostChbx" layoutX="35.0" layoutY="152.0" mnemonicParsing="false" text="CheckBox" />
-                        <ChoiceBox fx:id="FirstRadixCmbx" layoutX="125.0" layoutY="231.0" prefWidth="150.0" />
-                        <ChoiceBox fx:id="SecondRadixCmbx" layoutX="125.0" layoutY="266.0" prefWidth="150.0" />
                         <Label fx:id="FirstRadixLbl" layoutX="35.0" layoutY="235.0" text="Label" />
                         <Label fx:id="SecondRadixLbl" layoutX="35.0" layoutY="270.0" text="Label" />
+                        <ComboBox fx:id="AfterAddingCmbx" layoutX="125.0" layoutY="196.0" prefWidth="150.0" />
+                        <ComboBox fx:id="FirstRadixCmbx" layoutX="125.0" layoutY="231.0" prefWidth="150.0" />
+                        <ComboBox fx:id="SecondRadixCmbx" layoutX="125.0" layoutY="266.0" prefWidth="150.0" />
                      </children></AnchorPane>
               </content>
             </Tab>

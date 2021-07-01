@@ -1,13 +1,16 @@
 package com.cburch.LogisimFX.newgui.PreferencesFrame;
 
 import com.cburch.LogisimFX.newgui.AbstractController;
+import com.cburch.LogisimFX.circuit.RadixOption;
+import com.cburch.logisim.prefs.AppPreferences;
+import com.cburch.LogisimFX.localization.Localizer;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
-import com.cburch.LogisimFX.localization.Localizer;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -17,6 +20,7 @@ import java.util.Locale;
 
 public class PreferencesController extends AbstractController {
 
+    //Root
     private Stage stage;
 
     @FXML
@@ -25,6 +29,8 @@ public class PreferencesController extends AbstractController {
     @FXML
     private TabPane TabPane;
 
+
+    //Template tab
     @FXML
     private Tab TemplateTab;
 
@@ -48,13 +54,12 @@ public class PreferencesController extends AbstractController {
     private FileChooser fileChooser = new FileChooser();
 
 
-
-
+    //Internationalization tab
     @FXML
     private Tab InternalizationTab;
 
     @FXML
-    private ComboBox<Label> GateShapeCmbx;
+    private ComboBox<PrefOption> GateShapeCmbx;
 
     @FXML
     private ListView<Label> LocaleListView;
@@ -78,7 +83,7 @@ public class PreferencesController extends AbstractController {
 
 
 
-
+    //Layout tab
     @FXML
     private Tab LayoutTab;
 
@@ -104,28 +109,28 @@ public class PreferencesController extends AbstractController {
     private Label AfterAddingLbl;
 
     @FXML
-    private ChoiceBox<?> AfterAddingCmbx;
+    private ComboBox<PrefOption> AfterAddingCmbx;
 
     @FXML
     private Label FirstRadixLbl;
 
     @FXML
-    private ChoiceBox<?> FirstRadixCmbx;
+    private ComboBox<PrefOption> FirstRadixCmbx;
 
     @FXML
     private Label SecondRadixLbl;
 
     @FXML
-    private ChoiceBox<?> SecondRadixCmbx;
+    private ComboBox<PrefOption> SecondRadixCmbx;
 
 
 
-
+    //Experimental tab
     @FXML
     private Tab ExperimentalTab;
 
     @FXML
-    private ComboBox<Label> AcceleratorCmbx;
+    private ComboBox<PrefOption> AcceleratorCmbx;
 
     @FXML
     private Label GraphicsAccelLabel;
@@ -216,57 +221,40 @@ public class PreferencesController extends AbstractController {
 
         SpecificSymbolsChbx.textProperty().bind(LC.createStringBinding("intlReplaceAccents"));
         SpecificSymbolsChbx.disableProperty().bind(Localizer.localeProperty().isNotEqualTo(Locale.forLanguageTag("es")));
-        SpecificSymbolsChbx.setOnAction(event -> {
-            //ToDO:
-            if(SpecificSymbolsChbx.isSelected()){
+        SpecificSymbolsChbx.setSelected(AppPreferences.ACCENTS_REPLACE.get());
+        SpecificSymbolsChbx.setOnAction(event -> AppPreferences.ACCENTS_REPLACE.set(SpecificSymbolsChbx.isSelected()));
 
-            }else{
-
-            }
-
-        });
-
-        /*
-        if(Locale.getDefault() == Locale.forLanguageTag("es")){
-                SpecificSymbolsChbx.setDisable(false);
-        }else{
-                SpecificSymbolsChbx.setDisable(true);
-        }
-*/
-
-        ObservableList<Label> gateShapeLabels = FXCollections.observableArrayList();
-
-        Label Shaped = new Label();
-        Shaped.textProperty().bind(LC.createStringBinding("shapeShaped"));
-        Shaped.setOnMouseClicked(event -> {
-            //ToDO:
-        });
-
-        Label Rectangular = new Label();
-        Rectangular.textProperty().bind(LC.createStringBinding("shapeRectangular"));
-        Rectangular.setOnMouseClicked(event -> {
-            //ToDO:
-        });
-
-        Label DIN40700 = new Label();
-        DIN40700.textProperty().bind(LC.createStringBinding("shapeDIN40700"));
-        DIN40700.setOnMouseClicked(event -> {
-            //ToDO:
-        });
+        ObservableList<PrefOption> gateShapeLabels = FXCollections.observableArrayList();
 
         gateShapeLabels.addAll(
-                Shaped,
-                Rectangular,
-                DIN40700
+                new PrefOption(AppPreferences.SHAPE_SHAPED,
+                        LC.createStringBinding("shapeShaped")),
+                new PrefOption(AppPreferences.SHAPE_RECTANGULAR,
+                        LC.createStringBinding("shapeRectangular")),
+                new PrefOption(AppPreferences.SHAPE_DIN40700,
+                        LC.createStringBinding("shapeDIN40700"))
         );
+
+
+        GateShapeCmbx.setCellFactory(lv -> new TranslationCell());
+        GateShapeCmbx.setButtonCell(new TranslationCell());
 
         GateShapeCmbx.setItems(gateShapeLabels);
 
-        //ToDO: add default value
-        //GateShapeCmbx.setValue();
+        //default value
+        for (PrefOption pref: GateShapeCmbx.getItems()) {
+
+            if (pref.getValue().equals(AppPreferences.GATE_SHAPE.get())) {
+                GateShapeCmbx.setValue(pref);
+                break;
+            }
+
+        }
+
+        GateShapeCmbx.setOnAction(event -> AppPreferences.GATE_SHAPE.set(GateShapeCmbx.getValue().getValue().toString()));
 
 
-
+        //set locales list
         ObservableList<Label> localeLabels = FXCollections.observableArrayList();
 
         for (Locale l: locales) {
@@ -274,14 +262,17 @@ public class PreferencesController extends AbstractController {
             Label lb = new Label();
 
             if(l != Locale.getDefault()){
+
+                //lb.textProperty().bind(new SimpleStringProperty(l.getDisplayName()+ " / " + l.getDisplayName(Locale.getDefault())));
                 lb.setText(l.getDisplayName(l)
                         + " / " + l.getDisplayName(Locale.getDefault()));
             }
             else{
+                //lb.textProperty().bind(new SimpleStringProperty(Locale,l.getDisplayName(),));
                 lb.setText(l.getDisplayName(l));
             }
 
-            lb.setOnMouseClicked(event -> { Localizer.setLocale(l); });
+            lb.setOnMouseClicked(event -> Localizer.setLocale(l));
 
             localeLabels.add(lb);
         }
@@ -295,47 +286,114 @@ public class PreferencesController extends AbstractController {
         LayoutTab.textProperty().bind(LC.createStringBinding("layoutTitle"));
 
         ShowTickRateChbx.textProperty().bind(LC.createStringBinding("windowTickRate"));
-        //ShowTickRateChbx.setDisable(AppPreferences.SHOW_TICK_RATE.getBoolean());
-        ShowTickRateChbx.setOnAction(event -> {});
+        ShowTickRateChbx.setSelected(AppPreferences.SHOW_TICK_RATE.get());
+        ShowTickRateChbx.setOnAction(event -> AppPreferences.SHOW_TICK_RATE.set(ShowTickRateChbx.isSelected()));
 
         PrinterViewChbx.textProperty().bind(LC.createStringBinding("layoutPrinterView"));
-        //PrinterViewChbx.setDisable();
-        PrinterViewChbx.setOnAction(event -> {});
+        PrinterViewChbx.setSelected(AppPreferences.PRINTER_VIEW.get());
+        PrinterViewChbx.setOnAction(event -> AppPreferences.PRINTER_VIEW.set(PrinterViewChbx.isSelected()));
 
         ShowAttrHaloChbx.textProperty().bind(LC.createStringBinding("layoutAttributeHalo"));
-        //ShowAttrHaloChbx.setDisable();
-        ShowAttrHaloChbx.setOnAction(event -> {});
+        ShowAttrHaloChbx.setSelected(AppPreferences.ATTRIBUTE_HALO.get());
+        ShowAttrHaloChbx.setOnAction(event -> AppPreferences.ATTRIBUTE_HALO.set(ShowAttrHaloChbx.isSelected()));
 
         ShowComponentTipsChbx.textProperty().bind(LC.createStringBinding("layoutShowTips"));
-        //ShowComponentTipsChbx.setDisable();
-        ShowComponentTipsChbx.setOnAction(event -> {});
+        ShowComponentTipsChbx.setSelected(AppPreferences.COMPONENT_TIPS.get());
+        ShowComponentTipsChbx.setOnAction(event -> AppPreferences.COMPONENT_TIPS.set(ShowComponentTipsChbx.isSelected()));
 
         KeepConnectionsChbx.textProperty().bind(LC.createStringBinding("layoutMoveKeepConnect"));
-        //KeepConnectionsChbx.setDisable();
-        KeepConnectionsChbx.setOnAction(event -> {});
+        KeepConnectionsChbx.setSelected(AppPreferences.MOVE_KEEP_CONNECT.get());
+        KeepConnectionsChbx.setOnAction(event -> AppPreferences.MOVE_KEEP_CONNECT.set(KeepConnectionsChbx.isSelected()));
 
         ShowGhostChbx.textProperty().bind(LC.createStringBinding("layoutAddShowGhosts"));
-        //ShowGhostChbx.setDisable();
-        ShowGhostChbx.setOnAction(event -> {});
+        ShowGhostChbx.setSelected(AppPreferences.ADD_SHOW_GHOSTS.get());
+        ShowGhostChbx.setOnAction(event -> AppPreferences.ADD_SHOW_GHOSTS.set(ShowGhostChbx.isSelected()));
 
 
 
         AfterAddingLbl.textProperty().bind(LC.createStringBinding("layoutAddAfter"));
 
-        //AfterAddingCmbx
+        ObservableList<PrefOption> afterAdd = FXCollections.observableArrayList();
 
+        afterAdd.addAll(
+
+                new PrefOption(AppPreferences.ADD_AFTER_UNCHANGED,
+                        LC.createStringBinding("layoutAddAfterUnchanged")),
+                new PrefOption(AppPreferences.ADD_AFTER_EDIT,
+                        LC.createStringBinding("layoutAddAfterEdit"))
+        );
+
+        AfterAddingCmbx.setCellFactory(lv -> new TranslationCell());
+        AfterAddingCmbx.setButtonCell(new TranslationCell());
+
+        AfterAddingCmbx.setItems(afterAdd);
+
+        //default value
+        for (PrefOption pref: AfterAddingCmbx.getItems()) {
+
+            if (pref.getValue().equals(AppPreferences.ADD_AFTER.get())) {
+                AfterAddingCmbx.setValue(pref);
+                break;
+            }
+
+        }
+
+        AfterAddingCmbx.setOnAction(event -> AppPreferences.ADD_AFTER.set(AfterAddingCmbx.getValue().getValue().toString()));
+
+
+        //Radix section preparation
+        RadixOption[] opts = RadixOption.OPTIONS;
+        PrefOption[] items = new PrefOption[opts.length];
+
+        for (int j = 0; j < RadixOption.OPTIONS.length; j++) {
+            //items[j] = new PrefOption(opts[j].getSaveString(), opts[j].getDisplayGetter());
+        }
+
+        ObservableList<PrefOption> radix = FXCollections.observableArrayList();
+
+        radix.addAll(items);
 
 
         FirstRadixLbl.textProperty().bind(LC.createStringBinding("layoutRadix1"));
 
-        //FirstRadixCmbx
+        FirstRadixCmbx.setCellFactory(lv -> new TranslationCell());
+        FirstRadixCmbx.setButtonCell(new TranslationCell());
+
+        FirstRadixCmbx.setItems(radix);
+
+        //default value
+        for (PrefOption pref: FirstRadixCmbx.getItems()) {
+
+            //if (pref.getValue().equals(AppPreferences.POKE_WIRE_RADIX1.get())) {
+            //    FirstRadixCmbx.setValue(pref);
+            //    break;
+            //}
+
+        }
+
+        FirstRadixCmbx.setOnAction(event -> AppPreferences.POKE_WIRE_RADIX1.set(FirstRadixCmbx.getValue().getValue().toString()));
 
 
 
         SecondRadixLbl.textProperty().bind(LC.createStringBinding("layoutRadix2"));
 
         //SecondRadixCmbx
+        SecondRadixCmbx.setCellFactory(lv -> new TranslationCell());
+        SecondRadixCmbx.setButtonCell(new TranslationCell());
 
+        SecondRadixCmbx.setItems(radix);
+
+        //default value
+        for (PrefOption pref: SecondRadixCmbx.getItems()) {
+
+            //if (pref.getValue().equals(AppPreferences.POKE_WIRE_RADIX2.get())) {
+             //   SecondRadixCmbx.setValue(pref);
+            //    break;
+           // }
+
+        }
+
+        SecondRadixCmbx.setOnAction(event -> AppPreferences.POKE_WIRE_RADIX2.set(SecondRadixCmbx.getValue().getValue().toString()));
 
     }
 
@@ -346,42 +404,31 @@ public class PreferencesController extends AbstractController {
         GraphicsAccelLabel.textProperty().bind(LC.createStringBinding("accelLabel"));
         RestartLogisimLabel.textProperty().bind(LC.createStringBinding("accelRestartLabel"));
 
-        ObservableList<Label> accels = FXCollections.observableArrayList();
-
-        Label Default = new Label();
-        Default.textProperty().bind(LC.createStringBinding("shapeShaped"));
-        Default.setOnMouseClicked(event -> {
-            //ToDO:
-        });
-
-        Label None = new Label();
-        None.textProperty().bind(LC.createStringBinding("accelNone"));
-        None.setOnMouseClicked(event -> {
-            //ToDO:
-        });
-
-        Label OpenGL = new Label();
-        OpenGL.textProperty().bind(LC.createStringBinding("accelOpenGL"));
-        OpenGL.setOnMouseClicked(event -> {
-            //ToDO:
-        });
-
-        Label Direct3D = new Label();
-        Direct3D.textProperty().bind(LC.createStringBinding("accelD3D"));
-        Direct3D.setOnMouseClicked(event -> {
-            //ToDO:
-        });
+        ObservableList<PrefOption> accels = FXCollections.observableArrayList();
 
         accels.addAll(
-                Default,
-                None,
-                OpenGL,
-                Direct3D
+                new PrefOption(AppPreferences.ACCEL_DEFAULT, LC.createStringBinding("accelDefault")),
+                new PrefOption(AppPreferences.ACCEL_NONE, LC.createStringBinding("accelNone")),
+                new PrefOption(AppPreferences.ACCEL_OPENGL, LC.createStringBinding("accelOpenGL")),
+                new PrefOption(AppPreferences.ACCEL_D3D, LC.createStringBinding("accelD3D"))
         );
 
-        AcceleratorCmbx.getItems().addAll(accels);
-        //ToDO:
-        //AcceleratorCmbx.setValue();
+        AcceleratorCmbx.setCellFactory(lv -> new TranslationCell());
+        AcceleratorCmbx.setButtonCell(new TranslationCell());
+
+        AcceleratorCmbx.setItems(accels);
+
+        //default value
+        for (PrefOption pref: AcceleratorCmbx.getItems()) {
+
+            if (pref.getValue().equals(AppPreferences.GRAPHICS_ACCELERATION.get())) {
+                AcceleratorCmbx.setValue(pref);
+                break;
+            }
+
+        }
+
+        AcceleratorCmbx.setOnAction(event -> AppPreferences.GRAPHICS_ACCELERATION.set(AcceleratorCmbx.getValue().getValue().toString()));
 
     }
 
@@ -391,4 +438,21 @@ public class PreferencesController extends AbstractController {
         System.out.println("Prefs closed");
     }
 
+}
+
+class TranslationCell extends ListCell<PrefOption> {
+
+    @Override
+    protected void updateItem(PrefOption item, boolean empty) {
+
+        super.updateItem(item, empty);
+        textProperty().unbind();
+
+        if (empty || item == null) {
+            setText("");
+        } else {
+            textProperty().bind(item.getBinding());
+        }
+
+    }
 }
