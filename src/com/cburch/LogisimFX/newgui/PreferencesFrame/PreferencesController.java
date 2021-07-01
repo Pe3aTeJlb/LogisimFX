@@ -2,8 +2,14 @@ package com.cburch.LogisimFX.newgui.PreferencesFrame;
 
 import com.cburch.LogisimFX.newgui.AbstractController;
 import com.cburch.LogisimFX.circuit.RadixOption;
+import com.cburch.LogisimFX.file.Loader;
+import com.cburch.LogisimFX.file.LoaderException;
+import com.cburch.LogisimFX.file.LogisimFile;
+import com.cburch.LogisimFX.newgui.DialogManager;
+import com.cburch.LogisimFX.util.StringUtil;
 import com.cburch.logisim.prefs.AppPreferences;
 import com.cburch.LogisimFX.localization.Localizer;
+import com.cburch.LogisimFX.prefs.Template;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,6 +20,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -165,6 +174,7 @@ public class PreferencesController extends AbstractController {
 
             EmptyTemplRB.setSelected(false);
             CustomTemplRB.setSelected(false);
+            AppPreferences.setTemplateType(AppPreferences.TEMPLATE_PLAIN);
 
         });
 
@@ -173,6 +183,7 @@ public class PreferencesController extends AbstractController {
 
             PlainTemplRB.setSelected(false);
             CustomTemplRB.setSelected(false);
+            AppPreferences.setTemplateType(AppPreferences.TEMPLATE_EMPTY);
 
         });
 
@@ -182,33 +193,60 @@ public class PreferencesController extends AbstractController {
             if(!FilePath.toString().equals("")){
                 EmptyTemplRB.setSelected(false);
                 PlainTemplRB.setSelected(false);
+                AppPreferences.setTemplateType(AppPreferences.TEMPLATE_CUSTOM);
             }
 
         });
 
-        if(FilePath == null){
+        if(AppPreferences.getTemplateFile().toString().equals("")){
             CustomTemplRB.setDisable(true);
             FilePathTextField.setText("");
         }
         else{
-            FilePathTextField.setText(FilePath.toString());
+            FilePathTextField.setText(AppPreferences.getTemplateFile().toString());
         }
-
-
 
         FilePathSelectBtn.textProperty().bind(LC.createStringBinding("templateSelectButton"));
         FilePathSelectBtn.setOnAction(event -> {
 
             File f = fileChooser.showOpenDialog(Root.getScene().getWindow());
 
-            if(f == null){
+            FileInputStream reader = null;
+            InputStream reader2 = null;
 
-            }/**/
-            else{
+            if(f != null){
+
+                try {
+                    Loader loader = new Loader();
+                    reader = new FileInputStream(f);
+                    Template template = Template.create(reader);
+                    reader2 = template.createStream();
+                    LogisimFile.load(reader2, loader); // to see if OK
+                    AppPreferences.setTemplateFile(f, template);
+                    AppPreferences.setTemplateType(AppPreferences.TEMPLATE_CUSTOM);
+                } catch (LoaderException ex) {
+
+                }
+                catch (IOException ex) {
+                    DialogManager.CreateErrorDialog(LC.get("templateErrorTitle"), StringUtil.format(LC.get("templateErrorMessage"), ex.toString()));
+                } finally {
+                    try {
+                        if (reader != null) reader.close();
+                    } catch (IOException ex) { }
+                    try {
+                        if (reader != null) reader2.close();
+                    } catch (IOException ex) { }
+                }
 
             }
 
         });
+
+        switch (AppPreferences.getTemplateType()) {
+            case AppPreferences.TEMPLATE_PLAIN: PlainTemplRB.setSelected(true); break;
+            case AppPreferences.TEMPLATE_EMPTY: EmptyTemplRB.setSelected(true); break;
+            case AppPreferences.TEMPLATE_CUSTOM: CustomTemplRB.setSelected(true); break;
+        }
 
     }
 
@@ -340,7 +378,7 @@ public class PreferencesController extends AbstractController {
 
         AfterAddingCmbx.setOnAction(event -> AppPreferences.ADD_AFTER.set(AfterAddingCmbx.getValue().getValue().toString()));
 
-
+        //ToDO:
         //Radix section preparation
         RadixOption[] opts = RadixOption.OPTIONS;
         PrefOption[] items = new PrefOption[opts.length];
