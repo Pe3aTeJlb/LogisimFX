@@ -6,6 +6,7 @@ package com.cburch.LogisimFX.data;
 import com.cburch.LogisimFX.util.StringGetter;
 
 public class AttributeOption implements AttributeOptionInterface {
+
 	private Object value;
 	private String name;
 	private StringGetter desc;
@@ -28,4 +29,5 @@ public class AttributeOption implements AttributeOptionInterface {
 	public String toString() { return name; }
 
 	public String toDisplayString() { return desc.get(); }
+
 }

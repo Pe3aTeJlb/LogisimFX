@@ -6,6 +6,7 @@ import com.cburch.LogisimFX.circuit.SubcircuitFactory;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.proj.Project;
 
+import com.cburch.logisim.instance.StdAttr;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 
@@ -31,6 +32,17 @@ public class SimulationTreeExplorer extends AbstractTreeExplorer {
                 public void updateItem(Object item, boolean empty) {
 
                     super.updateItem(item, empty) ;
+
+                    setStyle(".tree-cell .tree-disclosure-node .arrow {\n" +
+                            "    -fx-shape: null;\n" +
+                            "    -fx-background-color: null;\n" +
+                            "    -fx-background-image: url(\"plus-arrow.png\");\n" +
+                            "}\n" +
+                            ".tree-cell:expanded .tree-disclosure-node .arrow {\n" +
+                            "    -fx-shape: null;\n" +
+                            "    -fx-background-color: null;\n" +
+                            "    -fx-background-image: url(\"minus-arrow.png\");\n" +
+                            "}");
 
                     if(empty || item == null) {
 

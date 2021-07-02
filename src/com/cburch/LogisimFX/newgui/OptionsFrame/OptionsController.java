@@ -1,16 +1,19 @@
 package com.cburch.LogisimFX.newgui.OptionsFrame;
 
-import com.cburch.LogisimFX.circuit.Circuit;
-import com.cburch.LogisimFX.circuit.SubcircuitFactory;
-import com.cburch.LogisimFX.comp.ComponentFactory;
 import com.cburch.LogisimFX.file.LogisimFile;
+import com.cburch.LogisimFX.file.Options;
 import com.cburch.LogisimFX.newgui.AbstractController;
-import com.cburch.LogisimFX.newgui.ContextMenuManager;
 import com.cburch.LogisimFX.proj.Project;
-
 import com.cburch.LogisimFX.tools.AddTool;
 import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.tools.Tool;
+import com.cburch.LogisimFX.data.AttributeSet;
+import com.cburch.LogisimFX.data.AttributeOption;
+
+
+import javafx.beans.binding.StringBinding;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
@@ -31,13 +34,13 @@ public class OptionsController extends AbstractController {
     private Label SimLimitLbl;
 
     @FXML
-    private ComboBox<?> SimLimitCmbx;
+    private ComboBox<Integer> SimLimitCmbx;
 
     @FXML
     private Label GateUndefinedLbl;
 
     @FXML
-    private ComboBox<?> GateUndefinedCmbx;
+    private ComboBox<ComboOption> GateUndefinedCmbx;
 
     @FXML
     private CheckBox SimRandomnessChbx;
@@ -85,6 +88,10 @@ public class OptionsController extends AbstractController {
     @FXML
     private Button RevertToTemplate;
 
+    private Options opts;
+
+    private AttributeSet attrs;
+
     @FXML
     public void initialize(){
 
@@ -95,6 +102,10 @@ public class OptionsController extends AbstractController {
 
         stage = s;
         proj = project;
+
+        opts = proj.getOptions();
+
+        attrs = opts.getAttributeSet();
 
         String name = proj.getLogisimFile() == null ? "???" : proj.getLogisimFile().getDisplayName().toString();
 
@@ -115,13 +126,53 @@ public class OptionsController extends AbstractController {
         SimulationOptsTab.textProperty().bind(LC.createStringBinding("simulateTitle"));
 
         SimLimitLbl.textProperty().bind(LC.createStringBinding("simulateLimit"));
-       // SimLimitCmbx
+
+        ObservableList<Integer> simlimit = FXCollections.observableArrayList();
+
+        simlimit.addAll(
+                200,
+                500,
+                1000,
+                2000,
+                5000,
+                10000,
+                20000,
+                50000
+        );
+        SimLimitCmbx.setItems(simlimit);
+        SimLimitCmbx.setValue(attrs.getValue(Options.sim_limit_attr));
+        SimLimitCmbx.setOnAction(event -> proj.doAction(OptionsActions.setAttribute(attrs,
+                Options.sim_limit_attr, SimLimitCmbx.getValue())));
+
+
 
         GateUndefinedLbl.textProperty().bind(LC.createStringBinding("gateUndefined"));
 
-        //GateUndefinedCmbx
+        ObservableList<ComboOption> gateUndefined = FXCollections.observableArrayList();
+
+        gateUndefined.addAll(
+                new ComboOption(Options.GATE_UNDEFINED_IGNORE),
+                new ComboOption(Options.GATE_UNDEFINED_ERROR)
+        );
+
+        GateUndefinedCmbx.setCellFactory(lv -> new TranslationCell());
+        GateUndefinedCmbx.setButtonCell(new TranslationCell());
+
+        GateUndefinedCmbx.setItems(gateUndefined);
+
+        GateUndefinedCmbx.setOnAction(event -> {proj.doAction(OptionsActions.setAttribute(attrs,
+                Options.ATTR_GATE_UNDEFINED, GateUndefinedCmbx.getValue()));});
+
+
 
         SimRandomnessChbx.textProperty().bind(LC.createStringBinding("simulateRandomness"));
+        SimRandomnessChbx.setSelected(attrs.getValue(Options.sim_rand_attr)>0);
+        SimRandomnessChbx.setOnAction(event -> {
+            Object val = SimRandomnessChbx.isSelected() ? Options.sim_rand_dflt
+                    : Integer.valueOf(0);
+            proj.doAction(OptionsActions.setAttribute
+                (attrs, Options.sim_rand_attr, val));
+        });
 
     }
 
@@ -225,6 +276,8 @@ public class OptionsController extends AbstractController {
 
         updateTree(TreeExplorer);
 
+        ObservableList<ComboOption> toolbarItems = FXCollections.observableArrayList();
+
     }
 
     private void initMouseOptionsTab(){
@@ -269,4 +322,44 @@ public class OptionsController extends AbstractController {
         System.out.println("test options");
     }
 
+}
+
+class ComboOption {
+
+    private Object value;
+    private StringBinding binding;
+
+    ComboOption(AttributeOption value) {
+        this.value = value;
+        this.binding = null;
+    }
+
+    public StringBinding getBinding() {
+        //ToDo:
+        //if (binding != null)
+            return binding;
+        //if (value instanceof AttributeOption) return ((AttributeOption) value).toDisplayString();
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
+}
+
+class TranslationCell extends ListCell<ComboOption> {
+
+    @Override
+    protected void updateItem(ComboOption item, boolean empty) {
+
+        super.updateItem(item, empty);
+        textProperty().unbind();
+
+        if (empty || item == null) {
+            setText("");
+        } else {
+            textProperty().bind(item.getBinding());
+        }
+
+    }
 }
