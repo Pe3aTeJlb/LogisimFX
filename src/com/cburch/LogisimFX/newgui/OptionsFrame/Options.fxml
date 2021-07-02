@@ -7,40 +7,44 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cburch.LogisimFX.newgui.OptionsFrame.OptionsController">
    <children>
-      <TabPane layoutX="200.0" layoutY="100.0" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <TabPane layoutX="200.0" layoutY="100.0" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
-          <Tab text="Untitled Tab 1">
+          <Tab fx:id="SimulationOptsTab" text="Untitled Tab 1">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <ChoiceBox layoutX="225.0" layoutY="109.0" prefWidth="150.0" />
-                        <ChoiceBox layoutX="225.0" layoutY="186.0" prefWidth="150.0" />
-                        <CheckBox layoutX="264.0" layoutY="248.0" mnemonicParsing="false" text="CheckBox" />
-                        <Label layoutX="120.0" layoutY="113.0" text="Label" />
-                        <Label layoutX="120.0" layoutY="190.0" text="Label" />
+                        <CheckBox fx:id="SimRandomnessChbx" layoutX="264.0" layoutY="248.0" mnemonicParsing="false" text="CheckBox" />
+                        <Label fx:id="SimLimitLbl" layoutX="120.0" layoutY="113.0" text="Label" />
+                        <Label fx:id="GateUndefinedLbl" layoutX="120.0" layoutY="190.0" text="Label" />
+                        <ComboBox fx:id="SimLimitCmbx" layoutX="226.0" layoutY="101.0" prefWidth="150.0" />
+                        <ComboBox fx:id="GateUndefinedCmbx" layoutX="226.0" layoutY="186.0" prefWidth="150.0" />
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
-          <Tab text="Untitled Tab 2">
+          <Tab fx:id="ToolbarOptsTab" text="Untitled Tab 2">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <ListView layoutX="386.0" layoutY="77.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.rightAnchor="15.0" />
-                        <TreeView layoutX="14.0" layoutY="77.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.leftAnchor="15.0" />
+                        <ListView fx:id="ToolbarItemsList" layoutX="386.0" layoutY="14.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0" />
+                        <TreeView fx:id="TreeExplorer" layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0" />
+                        <Button fx:id="AddSeparatorBtn" layoutX="274.0" layoutY="15.0" mnemonicParsing="false" text="Button" />
+                        <Button fx:id="MoveUpBtn" layoutX="274.0" layoutY="54.0" mnemonicParsing="false" text="Button" />
+                        <Button fx:id="MoveDownBtn" layoutX="274.0" layoutY="90.0" mnemonicParsing="false" text="Button" />
+                        <Button fx:id="DeleteBtn" layoutX="274.0" layoutY="126.0" mnemonicParsing="false" text="Button" />
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
-            <Tab text="Untitled Tab">
+            <Tab fx:id="MouseOptsTab" text="Untitled Tab">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
               </content>
             </Tab>
         </tabs>
       </TabPane>
+      <Button fx:id="RevertToTemplate" layoutX="274.0" layoutY="361.0" mnemonicParsing="false" text="Button" />
    </children>
 </AnchorPane>

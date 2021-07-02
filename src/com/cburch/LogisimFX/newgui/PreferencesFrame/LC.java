@@ -1,5 +1,6 @@
 package com.cburch.LogisimFX.newgui.PreferencesFrame;
 
+import com.cburch.LogisimFX.localization.LC_opts;
 import com.cburch.LogisimFX.localization.LC_prefs;
 import com.cburch.LogisimFX.localization.Localizer;
 import javafx.beans.binding.StringBinding;
@@ -27,6 +28,10 @@ public class LC {
 
     public static String get(final String key, final Object... args) {
        return lc.get(key, args);
+    }
+
+    public static StringBinding castToBind(final String string){
+        return lc.castToBind(string);
     }
 
 }

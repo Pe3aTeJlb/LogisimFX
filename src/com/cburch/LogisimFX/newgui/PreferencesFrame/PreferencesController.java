@@ -11,6 +11,9 @@ import com.cburch.logisim.prefs.AppPreferences;
 import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.prefs.Template;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -222,7 +225,8 @@ public class PreferencesController extends AbstractController {
                     Template template = Template.create(reader);
                     reader2 = template.createStream();
                     LogisimFile.load(reader2, loader); // to see if OK
-                    AppPreferences.setTemplateFile(f, template);
+                    //Todo:
+                    //AppPreferences.setTemplateFile(f, template);
                     AppPreferences.setTemplateType(AppPreferences.TEMPLATE_CUSTOM);
                 } catch (LoaderException ex) {
 
@@ -295,20 +299,13 @@ public class PreferencesController extends AbstractController {
         //set locales list
         ObservableList<Label> localeLabels = FXCollections.observableArrayList();
 
+        System.out.println(Locale.getDefault());
+
         for (Locale l: locales) {
 
             Label lb = new Label();
 
-            if(l != Locale.getDefault()){
-
-                //lb.textProperty().bind(new SimpleStringProperty(l.getDisplayName()+ " / " + l.getDisplayName(Locale.getDefault())));
-                lb.setText(l.getDisplayName(l)
-                        + " / " + l.getDisplayName(Locale.getDefault()));
-            }
-            else{
-                //lb.textProperty().bind(new SimpleStringProperty(Locale,l.getDisplayName(),));
-                lb.setText(l.getDisplayName(l));
-            }
+            lb.textProperty().bind(Localizer.getComplexTitleForLocale(l));
 
             lb.setOnMouseClicked(event -> Localizer.setLocale(l));
 

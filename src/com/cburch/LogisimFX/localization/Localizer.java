@@ -29,7 +29,7 @@ public class Localizer {
         locale.addListener((observable, oldValue, newValue) -> setLocale(newValue));
     }
 
-    private static Locale getLocale() {
+    public static Locale getLocale() {
         return locale.get();
     }
 
@@ -40,7 +40,6 @@ public class Localizer {
 
     private static Locale getDefaultLocale() {
         Locale sysDefault = Locale.getDefault();
-        System.out.println(getSupportedLocales().contains(sysDefault) ? sysDefault : Locale.ENGLISH);
         return getSupportedLocales().contains(sysDefault) ? sysDefault : Locale.ENGLISH;
     }
 
@@ -54,6 +53,16 @@ public class Localizer {
                 new Locale("pt","PT")
         ));
     }
+
+    public static StringBinding getLocaleTitle(){
+        return Bindings.createStringBinding(() -> locale.getValue().getDisplayName(locale.getValue()), locale);
+    }
+
+    public static StringBinding getComplexTitleForLocale(Locale l){
+        return Bindings.createStringBinding(() -> l.getDisplayName(l)
+                +"/"+l.getDisplayName(Locale.getDefault()), locale);
+    }
+
 
     public static ObjectProperty<Locale> localeProperty() {
         return locale;
