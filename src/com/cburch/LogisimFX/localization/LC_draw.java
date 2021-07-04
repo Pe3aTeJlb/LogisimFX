@@ -12,7 +12,7 @@ public class LC_draw {
     public static Localizer getInstance(){
 
         if(lc == null){
-            System.out.println("draw localizer created from static");
+            if(Localizer.debug)System.out.println("draw localizer created from static");
             lc = new Localizer(packageName);
         }
 

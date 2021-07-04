@@ -12,9 +12,10 @@ import java.util.*;
 public class Localizer {
 
     private String bundleName;
+    public static Boolean debug = false;
 
     public Localizer(String bundlename){
-        System.out.println("create from "+this.hashCode()+" "+bundlename);
+        if(debug)System.out.println("create from "+this.hashCode()+" "+bundlename);
         bundleName = "com/cburch/"+"LogisimFX/resources/localization/"+bundlename;
     }
 

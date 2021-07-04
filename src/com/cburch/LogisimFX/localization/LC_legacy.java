@@ -12,7 +12,7 @@ public class LC_legacy {
     public static Localizer getInstance(){
 
         if(lc == null){
-            System.out.println("legacy localizer created from static");
+            if(Localizer.debug)System.out.println("legacy localizer created from static");
             lc = new Localizer(packageName);
         }
 

@@ -12,7 +12,7 @@ public class LC_proj {
     public static Localizer getInstance(){
 
         if(lc == null){
-            System.out.println("proj localizer created from static");
+            if(Localizer.debug)System.out.println("proj localizer created from static");
             lc = new Localizer(packageName);
         }
 

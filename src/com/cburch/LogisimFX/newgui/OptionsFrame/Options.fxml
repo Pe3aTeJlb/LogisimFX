@@ -28,23 +28,39 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <ListView fx:id="ToolbarItemsList" layoutX="386.0" layoutY="14.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0" />
-                        <TreeView fx:id="TreeExplorer" layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0" />
+                        <ListView fx:id="ToolbarItemsList" layoutX="386.0" layoutY="14.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0" />
+                        <TreeView fx:id="TreeExplorer" layoutX="14.0" layoutY="14.0" prefHeight="303.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0" />
                         <Button fx:id="AddSeparatorBtn" layoutX="274.0" layoutY="15.0" mnemonicParsing="false" text="Button" />
                         <Button fx:id="MoveUpBtn" layoutX="274.0" layoutY="54.0" mnemonicParsing="false" text="Button" />
                         <Button fx:id="MoveDownBtn" layoutX="274.0" layoutY="90.0" mnemonicParsing="false" text="Button" />
-                        <Button fx:id="DeleteBtn" layoutX="274.0" layoutY="126.0" mnemonicParsing="false" text="Button" />
+                        <Button fx:id="DeleteToolBtn" layoutX="274.0" layoutY="126.0" mnemonicParsing="false" text="Button" />
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
             <Tab fx:id="MouseOptsTab" text="Untitled Tab">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TreeView fx:id="AttrExplorer" layoutX="14.0" layoutY="37.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0" />
+                        <ScrollPane fx:id="AttrTablePane" layoutX="356.0" layoutY="241.0" prefHeight="66.0" prefWidth="228.0" AnchorPane.rightAnchor="15.0">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+                          </content>
+                        </ScrollPane>
+                        <Button fx:id="AttrDeleteBtn" layoutX="444.0" layoutY="193.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="230.0" text="Button" AnchorPane.rightAnchor="15.0" />
+                        <TableView fx:id="BindTable" layoutX="360.0" layoutY="77.0" prefHeight="100.0" prefWidth="230.0" AnchorPane.rightAnchor="15.0">
+                          <columns>
+                            <TableColumn prefWidth="75.0" text="C1" />
+                            <TableColumn prefWidth="75.0" text="C2" />
+                          </columns>
+                        </TableView>
+                        <Button fx:id="BindBtn" layoutX="359.0" layoutY="15.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="230.0" text="Button" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0" />
+                     </children></AnchorPane>
               </content>
             </Tab>
         </tabs>
       </TabPane>
-      <Button fx:id="RevertToTemplate" layoutX="274.0" layoutY="361.0" mnemonicParsing="false" text="Button" />
+      <Button fx:id="RevertToTemplate" layoutX="274.0" layoutY="361.0" mnemonicParsing="false" text="Button" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="250.0" />
    </children>
 </AnchorPane>

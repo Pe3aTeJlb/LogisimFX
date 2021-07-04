@@ -63,6 +63,7 @@ public class MainFrameController extends AbstractController {
         treeExplorerAggregation = new TreeExplorerAggregation(proj);
         setAnchor(0,40,0,0, treeExplorerAggregation);
 
+        mainToolBar = new MainToolBar(proj);
         additionalToolBar = new AdditionalToolBar(proj, treeExplorerAggregation);
         explorerToolBar = new ExplorerToolBar(mainToolBar,additionalToolBar, treeExplorerAggregation);
 
@@ -103,7 +104,6 @@ public class MainFrameController extends AbstractController {
 
 
 
-        mainToolBar = new MainToolBar(proj);
 
         menubar = new CustomMenuBar(explorerToolBar,proj,treeExplorerAggregation);
 
@@ -139,12 +139,6 @@ public class MainFrameController extends AbstractController {
         explorerToolBar.EditCircuit();
     }
 
-    public void manual_UI_Update(){
-
-        treeExplorerAggregation.updateTree();
-
-    }
-
     public void setAttributeTable(Tool tool){
 
         attributeTable.setTool(tool);
@@ -168,6 +162,17 @@ public class MainFrameController extends AbstractController {
         AnchorPane.setRightAnchor(n,right);
         AnchorPane.setBottomAnchor(n,bottom);
     }
+
+    //Manual UI Update
+
+    public void manual_ToolBar_Update(){
+        mainToolBar.ToolsRefresh();
+    }
+
+    public void manual_Explorer_Update(){
+        treeExplorerAggregation.updateTree();
+    }
+
 
     @Override
     public void onClose() {

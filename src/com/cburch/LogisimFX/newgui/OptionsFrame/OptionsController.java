@@ -2,7 +2,9 @@ package com.cburch.LogisimFX.newgui.OptionsFrame;
 
 import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.file.Options;
+import com.cburch.LogisimFX.file.ToolbarData;
 import com.cburch.LogisimFX.newgui.AbstractController;
+import com.cburch.LogisimFX.newgui.MainFrame.AttributeTable;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.tools.AddTool;
 import com.cburch.LogisimFX.tools.Library;
@@ -10,12 +12,14 @@ import com.cburch.LogisimFX.tools.Tool;
 import com.cburch.LogisimFX.data.AttributeSet;
 import com.cburch.LogisimFX.data.AttributeOption;
 
-
+import com.cburch.LogisimFX.util.InputEventUtil;
 import javafx.beans.binding.StringBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 
@@ -56,6 +60,8 @@ public class OptionsController extends AbstractController {
     @FXML
     private ListView<Object> ToolbarItemsList;
 
+    private ObservableList<Object> toolbarItems;
+
     @FXML
     private Button AddSeparatorBtn;
 
@@ -66,22 +72,33 @@ public class OptionsController extends AbstractController {
     private Button MoveDownBtn;
 
     @FXML
-    private Button DeleteBtn;
+    private Button DeleteToolBtn;
 
 
 
     @FXML
     private Tab MouseOptsTab;
 
+    @FXML
+    private Button BindBtn;
 
+    @FXML
+    private TreeView<Object> AttrExplorer;
 
+    @FXML
+    private TableView<ToolBindingDataModel> BindTable;
 
+    @FXML
+    private Button AttrDeleteBtn;
 
+    @FXML
+    private ScrollPane AttrTablePane;
 
+    private AttributeTable attrTable;
 
+    private Tool currTool;
 
-
-
+    private ObservableList<ToolBindingDataModel> toolBindings;
 
 
 
@@ -91,6 +108,8 @@ public class OptionsController extends AbstractController {
     private Options opts;
 
     private AttributeSet attrs;
+
+
 
     @FXML
     public void initialize(){
@@ -176,22 +195,36 @@ public class OptionsController extends AbstractController {
 
     }
 
-    private void initToolbarOptionsTab(){
 
+
+    private void initToolbarOptionsTab(){
 
         ToolbarOptsTab.textProperty().bind(LC.createStringBinding("toolbarTitle"));
 
         AddSeparatorBtn.textProperty().bind(LC.createStringBinding("toolbarAddSeparator"));
-        AddSeparatorBtn.setOnAction(event -> {});
+        AddSeparatorBtn.setOnAction(event -> {
+            proj.getOptions().getToolbarData().addSeparator();
+            updateToolbarItemsList();
+        });
 
         MoveUpBtn.textProperty().bind(LC.createStringBinding("toolbarMoveUp"));
-        MoveUpBtn.setOnAction(event -> {});
+        MoveUpBtn.setOnAction(event -> {
+            doMove(-1);
+            updateToolbarItemsList();
+        });
 
         MoveDownBtn.textProperty().bind(LC.createStringBinding("toolbarMoveDown"));
-        MoveDownBtn.setOnAction(event -> {});
+        MoveDownBtn.setOnAction(event -> {
+            doMove(1);
+            updateToolbarItemsList();
+        });
 
-        DeleteBtn.textProperty().bind(LC.createStringBinding("toolbarRemove"));
-        DeleteBtn.setOnAction(event -> {});
+        DeleteToolBtn.textProperty().bind(LC.createStringBinding("toolbarRemove"));
+        DeleteToolBtn.setOnAction(event -> {
+            proj.doAction(ToolbarActions.removeTool(proj.getOptions().getToolbarData(),
+                ToolbarItemsList.getSelectionModel().getSelectedIndex()));
+            updateToolbarItemsList();
+        });
 
         TreeExplorer.setCellFactory(tree ->{
 
@@ -259,8 +292,9 @@ public class OptionsController extends AbstractController {
 
                         event.consume();
 
-                        if(treeItem.getValue() instanceof AddTool){
-
+                        if(treeItem.getValue() instanceof Tool){
+                            proj.doAction(ToolbarActions.addTool(proj.getOptions().getToolbarData(), (Tool)treeItem.getValue()));
+                            updateToolbarItemsList();
                         }
 
 
@@ -276,17 +310,57 @@ public class OptionsController extends AbstractController {
 
         updateTree(TreeExplorer);
 
-        ObservableList<ComboOption> toolbarItems = FXCollections.observableArrayList();
+
+
+        toolbarItems = FXCollections.observableArrayList();
+
+        ToolbarItemsList.setCellFactory(list ->{
+
+            ListCell<Object> cell = new ListCell<Object>(){
+
+                protected void updateItem(Object item, boolean empty) {
+
+                    super.updateItem(item, empty);
+                    textProperty().unbind();
+
+                    if (empty) {
+
+                        setText(null);
+                        setGraphic(null);
+
+                    }
+                    else if (item instanceof Tool){
+
+                        textProperty().bind(((Tool) item).getDisplayName());
+
+                        ImageView buff = new ImageView(((Tool) item).getIcon().getImage());
+                        graphicProperty().setValue(buff);
+
+                    }
+
+                }
+
+            };
+
+            return cell;
+
+        });
+
+        MultipleSelectionModel<Object> selectionModel = ToolbarItemsList.getSelectionModel();
+        selectionModel.setSelectionMode(SelectionMode.SINGLE);
+        selectionModel.selectedIndexProperty().addListener(
+                (observable, oldValue, newValue) -> {
+
+                    MoveUpBtn.setDisable(selectionModel.selectedIndexProperty().getValue()==0);
+                    MoveDownBtn.setDisable(selectionModel.selectedIndexProperty().getValue()==toolbarItems.size()-1);
+
+                }
+        );
+        updateToolbarItemsList();
 
     }
 
-    private void initMouseOptionsTab(){
-
-        MouseOptsTab.textProperty().bind(LC.createStringBinding("mouseTitle"));
-
-    }
-
-    public void updateTree(TreeView<Object> treeView){
+    private void updateTree(TreeView<Object> treeView){
 
         TreeItem<Object> root = new TreeItem<>(proj.getLogisimFile());
         treeView.setRoot(root);
@@ -317,8 +391,176 @@ public class OptionsController extends AbstractController {
 
     }
 
+    private void updateToolbarItemsList(){
+
+        toolbarItems.clear();
+        toolbarItems.addAll(proj.getOptions().getToolbarData().getContents());
+        ToolbarItemsList.setItems(toolbarItems);
+
+    }
+
+    private void doMove(int delta) {
+        int oldIndex = ToolbarItemsList.getSelectionModel().getSelectedIndex();
+        int newIndex = oldIndex + delta;
+        ToolbarData data = proj.getOptions().getToolbarData();
+        if (oldIndex >= 0 && newIndex >= 0 && newIndex < data.size()) {
+            proj.doAction(ToolbarActions.moveTool(data,
+                    oldIndex, newIndex));
+            //ToolbarItemsList.getSelectionModel().select(newIndex);
+        }
+    }
+
+    public static class ToolBindingDataModel{
+
+        Tool tool;
+        Integer binding;
+
+        ToolBindingDataModel(int i,Tool t){
+            tool = t;
+            binding = i;
+        }
+
+        public StringBinding getTool(){
+            return tool.getDisplayName();
+        }
+
+        public String getBinding(){
+            return InputEventUtil.toDisplayString(binding);
+        }
+
+    }
+
+    private void initMouseOptionsTab(){
+
+        MouseOptsTab.textProperty().bind(LC.createStringBinding("mouseTitle"));
+
+        AttrExplorer.setCellFactory(tree ->{
+
+            TreeCell<Object> cell = new TreeCell<Object>() {
+
+                @Override
+                public void updateItem(Object item, boolean empty) {
+
+                    super.updateItem(item, empty);
+
+                    textProperty().unbind();
+
+                    if(empty || item == null) {
+
+                        setText(null);
+                        setGraphic(null);
+                        setTooltip(null);
+                        setContextMenu(null);
+
+                    } else {
+
+                        if(item instanceof LogisimFile){
+
+                            setText(proj.getLogisimFile().getName());
+                            setGraphic(null);
+                            setTooltip(null);
+
+                        }
+                        else if(item instanceof Library){
+
+                            textProperty().bind(((Library) item).getDisplayName());
+                            setGraphic(null);
+                            setTooltip(null);
+
+                        }
+                        else if(item instanceof Tool){
+
+                            textProperty().bind(((Tool) item).getDisplayName());
+
+                            Tooltip tip = new Tooltip();
+                            tip.textProperty().bind(((Tool)item).getDescription());
+                            setTooltip(tip);
+
+                            setGraphic(((Tool) item).getIcon());
+
+                        }
+                        else{
+                            setText("you fucked up2");
+                        }
+
+                    }
+
+                }
+
+            };
+
+            cell.setOnMouseClicked(event -> {
+
+                if (!cell.isEmpty()) {
+
+                    TreeItem<Object> treeItem = cell.getTreeItem();
+
+                    if (event.getButton().equals(MouseButton.PRIMARY) && !event.isConsumed()) {
+
+                        event.consume();
+
+                        if(treeItem.getValue() instanceof Tool){
+                            currTool=(Tool)treeItem.getValue();
+                            attrTable.setTool(currTool);
+                        }
+
+
+                    }
+
+                }
+
+            });
+
+            return cell;
+
+        });
+
+        updateTree(AttrExplorer);
+
+        attrTable = new AttributeTable();
+        AttrTablePane.setContent(attrTable);
+
+
+        //Binding Table
+
+        toolBindings = FXCollections.observableArrayList();
+
+        BindTable.getColumns().clear();
+
+        TableColumn<ToolBindingDataModel, String> binding = new TableColumn<>();
+        binding.setCellValueFactory(new PropertyValueFactory<>("Binding"));
+
+        TableColumn<ToolBindingDataModel,StringBinding> tool = new TableColumn<>();
+        tool.setCellValueFactory(new PropertyValueFactory<>("Tool"));
+
+        BindTable.getColumns().add(binding);
+        BindTable.getColumns().add(tool);
+
+        for (Integer i: proj.getOptions().getMouseMappings().getMappedModifiers()) {
+            toolBindings.add(new ToolBindingDataModel(i,
+                    proj.getOptions().getMouseMappings().getToolFor(i))
+            );
+        }
+
+        BindTable.setItems(toolBindings);
+
+        /*
+        if (e.getSource() == addArea && curTool != null) {
+				Tool t = curTool.cloneTool();
+				Integer mods = Integer.valueOf(e.getModifiersEx());
+				getProject().doAction(OptionsActions.setMapping(getOptions().getMouseMappings(), mods, t));
+				setSelectedRow(model.getRow(mods));
+			}
+         */
+
+    }
+
+
+
+
     @Override
     public void onClose() {
+        proj.getFrameController().manual_ToolBar_Update();
         System.out.println("test options");
     }
 

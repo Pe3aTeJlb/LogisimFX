@@ -31,6 +31,8 @@ public class MainToolBar extends ToolBar {
 
     private Project proj;
 
+    private String currType = null;
+
     public MainToolBar(Project project){
 
         super();
@@ -60,6 +62,10 @@ public class MainToolBar extends ToolBar {
 
     private void SetRedactCircuitItems(){
 
+        toolsCounter= 1;
+
+        RedactCircuitBtnsList.clear();
+
         ToolbarData data = proj.getLogisimFile().getOptions().getToolbarData();
 
         for (Tool tool : data.getContents()) {
@@ -74,6 +80,8 @@ public class MainToolBar extends ToolBar {
     }
 
     private void SetRedactBlackBoxItems(){
+
+        RedactAppearanceBtnsList.clear();
 
         DrawingAttributeSet attrs = new DrawingAttributeSet();
 
@@ -97,6 +105,8 @@ public class MainToolBar extends ToolBar {
 
     public void SetMainToolBarItems(String ToolBarType){
 
+        currType = ToolBarType;
+
         if(ToolBarType.equals("RedactCircuit")){
             getItems().clear();
             getItems().addAll(RedactCircuitBtnsList);
@@ -106,6 +116,14 @@ public class MainToolBar extends ToolBar {
             getItems().clear();
             getItems().addAll(RedactAppearanceBtnsList);
         }
+
+    }
+
+    public void ToolsRefresh(){
+
+        SetRedactCircuitItems();
+        SetRedactBlackBoxItems();
+        SetMainToolBarItems(currType);
 
     }
 
@@ -141,7 +159,7 @@ public class MainToolBar extends ToolBar {
                 toolsCounter++;
             }
 
-            String bindbuff = " ("+"CTRL+"+ toolsCounter+")";
+            String bindbuff = " ("+"CTRL+"+ (toolsCounter-1)+")";
 
             Tooltip tip = new Tooltip();
             tip.textProperty().bind(tool.getDescription().concat(bindbuff));

@@ -12,7 +12,7 @@ public class LC_file {
     public static Localizer getInstance(){
 
         if(lc == null){
-            System.out.println("file localizer created from static");
+            if(Localizer.debug)System.out.println("file localizer created from static");
             lc = new Localizer(packageName);
         }
 

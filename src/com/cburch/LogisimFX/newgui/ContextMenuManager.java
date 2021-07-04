@@ -126,7 +126,7 @@ public class ContextMenuManager {
         RemoveCirc.textProperty().bind(lc.createStringBinding("projectRemoveCircuitItem"));
         RemoveCirc.setOnAction(event -> {
             ProjectCircuitActions.doRemoveCircuit(proj,circ);
-            proj.getFrameController().manual_UI_Update();
+            proj.getFrameController().manual_Explorer_Update();
         });
 
 
