@@ -200,7 +200,6 @@ public class DialogManager {
 
             String buff = result.get();
             buff.trim();
-            System.out.println(buff);
 
             if (buff.equals("")) {
                 CreateErrorDialog("Error",lc.get("circuitNameMissingError"));

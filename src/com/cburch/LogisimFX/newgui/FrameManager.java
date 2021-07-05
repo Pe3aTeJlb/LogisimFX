@@ -118,7 +118,6 @@ public class FrameManager {
             });
         newStage.show();
 
-        System.out.println(proj.getLogisimFile().getName()+" "+isStartup);
         OpenedMainFrames.put(proj, new Data(newStage,c,isStartup));
         isStartup = false;
 
@@ -127,9 +126,7 @@ public class FrameManager {
 
             // at this moment OMF contains startup frame and another project frame
             for (Project p: OpenedMainFrames.keySet()) {
-                System.out.println(p.getLogisimFile().getName()+" is dirty "+p.isFileDirty());
                 if(!p.isFileDirty() && OpenedMainFrames.get(p).isStartup) {
-                    System.out.println("System close: "+p.getLogisimFile().getName());
                     p.getFrameController().getStage().close();
                     break;
                 }
@@ -143,7 +140,6 @@ public class FrameManager {
     public static void SpamNew(Project proj){
 
         for (Project p: OpenedMainFrames.keySet()) {
-            System.out.println(p.getLogisimFile().getName()+" is dirty "+p.isFileDirty());
             OpenedMainFrames.get(p).isStartup = false;
         }
 

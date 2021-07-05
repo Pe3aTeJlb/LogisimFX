@@ -42,20 +42,39 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TreeView fx:id="AttrExplorer" layoutX="14.0" layoutY="37.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0" />
-                        <ScrollPane fx:id="AttrTablePane" layoutX="356.0" layoutY="241.0" prefHeight="66.0" prefWidth="228.0" AnchorPane.rightAnchor="15.0">
-                          <content>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
-                          </content>
-                        </ScrollPane>
-                        <Button fx:id="AttrDeleteBtn" layoutX="444.0" layoutY="193.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="230.0" text="Button" AnchorPane.rightAnchor="15.0" />
-                        <TableView fx:id="BindTable" layoutX="360.0" layoutY="77.0" prefHeight="100.0" prefWidth="230.0" AnchorPane.rightAnchor="15.0">
-                          <columns>
-                            <TableColumn prefWidth="75.0" text="C1" />
-                            <TableColumn prefWidth="75.0" text="C2" />
-                          </columns>
-                        </TableView>
-                        <Button fx:id="BindBtn" layoutX="359.0" layoutY="15.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="230.0" text="Button" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0" />
+                        <GridPane layoutX="193.0" layoutY="109.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                 <children>
+                                    <TreeView fx:id="AttrExplorer" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+                                 <children>
+                                    <ScrollPane fx:id="AttrTablePane" layoutX="36.0" layoutY="225.0" prefHeight="94.0" prefWidth="228.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="36.0" AnchorPane.rightAnchor="36.0" AnchorPane.topAnchor="225.0">
+                                      <content>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+                                      </content>
+                                    </ScrollPane>
+                                    <Button fx:id="AttrDeleteBtn" layoutX="35.0" layoutY="189.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="230.0" text="Button" AnchorPane.leftAnchor="35.0" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="189.0" />
+                                    <TableView fx:id="BindTable" layoutX="35.0" layoutY="80.0" prefHeight="100.0" prefWidth="230.0" AnchorPane.leftAnchor="35.0" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="80.0">
+                                      <columns>
+                                        <TableColumn prefWidth="75.0" text="C1" />
+                                        <TableColumn prefWidth="75.0" text="C2" />
+                                      </columns>
+                                    </TableView>
+                                    <Button fx:id="BindBtn" layoutX="35.0" layoutY="14.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="230.0" text="Button" AnchorPane.leftAnchor="35.0" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="15.0" />
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </GridPane>
                      </children></AnchorPane>
               </content>
             </Tab>

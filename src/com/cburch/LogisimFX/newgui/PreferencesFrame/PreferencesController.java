@@ -299,8 +299,6 @@ public class PreferencesController extends AbstractController {
         //set locales list
         ObservableList<Label> localeLabels = FXCollections.observableArrayList();
 
-        System.out.println(Locale.getDefault());
-
         for (Locale l: locales) {
 
             Label lb = new Label();

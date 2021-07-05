@@ -11,8 +11,8 @@ import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.tools.Tool;
 import com.cburch.LogisimFX.data.AttributeSet;
 import com.cburch.LogisimFX.data.AttributeOption;
-
 import com.cburch.LogisimFX.util.InputEventUtil;
+
 import javafx.beans.binding.StringBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,6 +22,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
+
+import java.awt.event.MouseEvent;
 
 public class OptionsController extends AbstractController {
 
@@ -126,7 +128,7 @@ public class OptionsController extends AbstractController {
 
         attrs = opts.getAttributeSet();
 
-        String name = proj.getLogisimFile() == null ? "???" : proj.getLogisimFile().getDisplayName().toString();
+        String name = proj.getLogisimFile() == null ? "???" : proj.getLogisimFile().getDisplayName().getValue();
 
         stage.titleProperty().bind(LC.createComplexStringBinding("optionsFrameTitle",name));
 
@@ -410,10 +412,12 @@ public class OptionsController extends AbstractController {
         }
     }
 
+
+
     public static class ToolBindingDataModel{
 
         Tool tool;
-        Integer binding;
+        int binding;
 
         ToolBindingDataModel(int i,Tool t){
             tool = t;
@@ -428,11 +432,17 @@ public class OptionsController extends AbstractController {
             return InputEventUtil.toDisplayString(binding);
         }
 
+        public int getPureBinding(){
+            return binding;
+        }
+
     }
 
     private void initMouseOptionsTab(){
 
         MouseOptsTab.textProperty().bind(LC.createStringBinding("mouseTitle"));
+
+        //Tree explorer
 
         AttrExplorer.setCellFactory(tree ->{
 
@@ -502,6 +512,7 @@ public class OptionsController extends AbstractController {
                         if(treeItem.getValue() instanceof Tool){
                             currTool=(Tool)treeItem.getValue();
                             attrTable.setTool(currTool);
+                            setBindBtnText();
                         }
 
 
@@ -523,6 +534,9 @@ public class OptionsController extends AbstractController {
 
         //Binding Table
 
+        MultipleSelectionModel<ToolBindingDataModel> selectionModel = BindTable.getSelectionModel();
+        selectionModel.setSelectionMode(SelectionMode.SINGLE);
+
         toolBindings = FXCollections.observableArrayList();
 
         BindTable.getColumns().clear();
@@ -530,11 +544,47 @@ public class OptionsController extends AbstractController {
         TableColumn<ToolBindingDataModel, String> binding = new TableColumn<>();
         binding.setCellValueFactory(new PropertyValueFactory<>("Binding"));
 
-        TableColumn<ToolBindingDataModel,StringBinding> tool = new TableColumn<>();
-        tool.setCellValueFactory(new PropertyValueFactory<>("Tool"));
+        TableColumn<ToolBindingDataModel,String> tool = new TableColumn<>();
+        tool.setCellValueFactory(item -> item.getValue().getTool());
 
         BindTable.getColumns().add(binding);
         BindTable.getColumns().add(tool);
+
+        updateBindTable();
+
+        //Bind button
+        setBindBtnText();
+
+
+            //Works only on mouse click
+        BindBtn.setOnMouseClicked(event -> {
+
+           // event.is
+            //System.out.println(event.);
+            //Tool t = currTool.cloneTool();
+            //Integer mods = Integer.valueOf();
+           // proj.doAction(OptionsActions.setMapping(proj.getOptions().getMouseMappings(), mods, t));
+
+
+        });
+
+        //Delete button
+        AttrDeleteBtn.textProperty().bind(LC.createStringBinding("mouseRemoveButton"));
+
+        AttrDeleteBtn.setOnAction(event ->
+                {
+                    proj.doAction(OptionsActions.removeMapping(proj.getOptions().getMouseMappings(),
+                            selectionModel.getSelectedItem().getPureBinding()));
+                    updateBindTable();
+                }
+        );
+
+    }
+
+    private void updateBindTable(){
+
+        toolBindings.clear();
+        BindTable.getItems().clear();
 
         for (Integer i: proj.getOptions().getMouseMappings().getMappedModifiers()) {
             toolBindings.add(new ToolBindingDataModel(i,
@@ -544,14 +594,19 @@ public class OptionsController extends AbstractController {
 
         BindTable.setItems(toolBindings);
 
-        /*
-        if (e.getSource() == addArea && curTool != null) {
-				Tool t = curTool.cloneTool();
-				Integer mods = Integer.valueOf(e.getModifiersEx());
-				getProject().doAction(OptionsActions.setMapping(getOptions().getMouseMappings(), mods, t));
-				setSelectedRow(model.getRow(mods));
-			}
-         */
+    }
+
+    private void setBindBtnText(){
+
+        BindBtn.textProperty().unbind();
+
+        if (currTool == null) {
+            BindBtn.textProperty().bind(LC.createStringBinding("mouseMapNone"));
+            BindBtn.setDisable(true);
+        } else {
+            BindBtn.textProperty().bind(LC.createComplexStringBinding("mouseMapText", currTool.getDisplayName().getValue()));
+            BindBtn.setDisable(false);
+        }
 
     }
 

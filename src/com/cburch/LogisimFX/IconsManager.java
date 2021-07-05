@@ -17,7 +17,6 @@ public class IconsManager {
 
     public static ImageView getImageView(String name) {
 
-        //System.out.println(path + "/" + name);
         Image img = new Image(path + "/" + name);
         return new ImageView(img);
 

@@ -129,8 +129,6 @@ public class SimulationTreeExplorer extends AbstractTreeExplorer {
 
         }
 
-        System.out.println(((CircuitState)root.getValue()).getCircuit().getNonWires().size());
-
     }
 
 }

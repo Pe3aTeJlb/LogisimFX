@@ -29,13 +29,9 @@ public class TreeExplorerAggregation extends TreeView {
     public void setSimulationView(){
 
         currTreeExplorer = simulationTreeExplorer;
-        System.out.println(currTreeExplorer);
 
         this.setCellFactory(simulationTreeExplorer.getCellFactory());
         this.setRoot(simulationTreeExplorer.getRoot());
-
-        //currTreeExplorer.setCellFactory(simulationTreeExplorer.getCellFactory());
-        //currTreeExplorer.setRoot(simulationTreeExplorer.getRoot());
 
         updateTree();
 
@@ -44,8 +40,6 @@ public class TreeExplorerAggregation extends TreeView {
     public void setProjectView(){
 
         currTreeExplorer = projectTreeExplorer;
-
-        System.out.println(currTreeExplorer);
 
         this.setCellFactory(projectTreeExplorer.getCellFactory());
         this.setRoot(projectTreeExplorer.getRoot());
