@@ -9,8 +9,8 @@ import com.cburch.LogisimFX.newgui.CircuitStatisticFrame.CircuitStatisticControl
 import com.cburch.LogisimFX.newgui.HelpFrame.HelpController;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.proj.ProjectActions;
-
 import com.cburch.LogisimFX.instance.Instance;
+
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -216,7 +216,20 @@ public class FrameManager {
     }
 
     public static void CreateExportImageFrame(Project proj){
-        CreateNewFrame("LogisimFX/newgui/ExportImageFrame/ExportImage.fxml", proj, Modality.APPLICATION_MODAL);
+
+        int i = 0;
+        for (Circuit circ : proj.getLogisimFile().getCircuits()) {
+            if (circ.getBounds() != Bounds.EMPTY_BOUNDS) {
+                i++;
+            }
+        }
+
+        if(i>0) {
+            CreateNewFrame("LogisimFX/newgui/ExportImageFrame/ExportImage.fxml", proj, Modality.APPLICATION_MODAL);
+        }else {
+            DialogManager.CreateErrorDialog(LC_gui.getInstance().get("exportEmptyCircuitsTitle"), LC_gui.getInstance().get("exportEmptyCircuitsMessage"));
+        }
+
     }
 
     public static void CreateCircuitAnalysisFrame(Project proj){

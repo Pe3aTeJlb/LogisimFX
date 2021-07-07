@@ -231,4 +231,6 @@ public class CustomCanvas extends Canvas {
         cvcontext.fillRect(-prevX/transform[0],-prevY/transform[0],cv.getWidth()/transform[0],cv.getHeight()/transform[0]);
     }
 
+    public Canvas getCanvas(){return cv;}
+
 }

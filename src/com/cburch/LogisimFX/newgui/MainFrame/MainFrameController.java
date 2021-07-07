@@ -5,15 +5,14 @@ import com.cburch.LogisimFX.newgui.AbstractController;
 import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.circuit.Circuit;
-
 import com.cburch.LogisimFX.tools.Tool;
-import javafx.geometry.NodeOrientation;
+
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.fxml.FXML;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 public class MainFrameController extends AbstractController {
@@ -97,16 +96,12 @@ public class MainFrameController extends AbstractController {
         cv = new CustomCanvas(canvasRoot);
 
 
-
         SplitPane mainSplitPane = new SplitPane(explorerSplitPane,canvasRoot);
         mainSplitPane.setOrientation(Orientation.HORIZONTAL);
         setAnchor(0,50,0,0,mainSplitPane);
 
 
-
-
         menubar = new CustomMenuBar(explorerToolBar,proj,treeExplorerAggregation);
-
 
 
         Root.getChildren().addAll(menubar,mainToolBar,mainSplitPane);
@@ -153,6 +148,8 @@ public class MainFrameController extends AbstractController {
     public Stage getStage(){
         return stage;
     }
+
+    public Canvas getCanvas(){return cv.getCanvas();}
 
 
 

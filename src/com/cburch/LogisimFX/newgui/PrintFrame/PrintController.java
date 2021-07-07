@@ -7,7 +7,7 @@ import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.proj.Project;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;;
+import javafx.collections.ObservableList;
 import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.fxml.FXML;
@@ -59,7 +59,7 @@ public class PrintController extends AbstractController {
  */
 
         OkBtn.setText("Ok");
-        OkBtn.setOnAction(event -> pageSetup(OkBtn,stage));
+        OkBtn.setOnAction(event -> pageSetup(proj.getFrameController().getCanvas(),stage));
 
         CancleBtn.setText("Cancel");
         CancleBtn.setOnAction(event -> stage.close());
