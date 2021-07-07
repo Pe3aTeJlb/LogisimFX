@@ -2,13 +2,12 @@ package com.cburch.LogisimFX.newgui.PrintFrame;
 
 import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.newgui.AbstractController;
-import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.proj.Project;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.collections.ObservableList;;
 import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.fxml.FXML;
@@ -43,8 +42,8 @@ public class PrintController extends AbstractController {
 
     private PrinterJob job;
 
-
     private ObservableList<Circuit> circuits;
+
 
     @FXML
     public void initialize(){
@@ -60,14 +59,10 @@ public class PrintController extends AbstractController {
  */
 
         OkBtn.setText("Ok");
-        OkBtn.setOnAction(event -> {
-            pageSetup(OkBtn,stage);
-        });
+        OkBtn.setOnAction(event -> pageSetup(OkBtn,stage));
 
         CancleBtn.setText("Cancel");
-        CancleBtn.setOnAction(event -> {
-            stage.close();
-        });
+        CancleBtn.setOnAction(event -> stage.close());
 
     }
 
@@ -83,19 +78,8 @@ public class PrintController extends AbstractController {
         proj = project;
 
         circuits = FXCollections.observableArrayList();
-        setCircuitList(true);
 
-        //stage.hide();
-
-        if(circuits.size()==0){
-            DialogManager.CreateErrorDialog(LC.get("printEmptyCircuitsTitle"), LC.get("printEmptyCircuitsMessage"));
-            return;
-        }
-
-
-    }
-
-    public void setCircuitList(boolean includeEmpty) {
+        boolean includeEmpty = true;
 
         MultipleSelectionModel<Circuit> langsSelectionModel = CircuitLstVw.getSelectionModel();
         langsSelectionModel.setSelectionMode(SelectionMode.MULTIPLE);

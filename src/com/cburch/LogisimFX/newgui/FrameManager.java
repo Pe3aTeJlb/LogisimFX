@@ -2,7 +2,9 @@ package com.cburch.LogisimFX.newgui;
 
 import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.circuit.Circuit;
+import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.file.Loader;
+import com.cburch.LogisimFX.localization.LC_gui;
 import com.cburch.LogisimFX.newgui.CircuitStatisticFrame.CircuitStatisticController;
 import com.cburch.LogisimFX.newgui.HelpFrame.HelpController;
 import com.cburch.LogisimFX.proj.Project;
@@ -197,7 +199,20 @@ public class FrameManager {
     }
 
     public static void CreatePrintFrame(Project proj){
-        CreateNewFrame("LogisimFX/newgui/PrintFrame/Print.fxml", proj, Modality.APPLICATION_MODAL);
+
+        int i = 0;
+        for (Circuit circ : proj.getLogisimFile().getCircuits()) {
+            if (circ.getBounds() != Bounds.EMPTY_BOUNDS) {
+                i++;
+            }
+        }
+
+        if(i>0){
+            CreateNewFrame("LogisimFX/newgui/PrintFrame/Print.fxml", proj, Modality.APPLICATION_MODAL);
+        }else{
+            DialogManager.CreateErrorDialog(LC_gui.getInstance().get("printEmptyCircuitsTitle"), LC_gui.getInstance().get("printEmptyCircuitsMessage"));
+        }
+
     }
 
     public static void CreateExportImageFrame(Project proj){
