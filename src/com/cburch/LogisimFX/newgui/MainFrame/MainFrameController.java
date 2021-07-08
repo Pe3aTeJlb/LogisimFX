@@ -12,6 +12,9 @@ import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.fxml.FXML;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -151,6 +154,22 @@ public class MainFrameController extends AbstractController {
 
     public Canvas getCanvas(){return cv.getCanvas();}
 
+    public Node getPrintImage(Circuit circ){
+
+        Circuit currCirc = proj.getCurrentCircuit();
+
+        proj.setCurrentCircuit(circ);
+
+        Node buff = getCanvas();
+        //Todo: get canvas  as new
+        //ImageView buff = new ImageView();
+        //buff.setImage(cv.getPrintImage());
+
+        proj.setCurrentCircuit(currCirc);
+
+        return buff;
+
+    }
 
 
     private void setAnchor(double left,double top, double right, double bottom, Node n){

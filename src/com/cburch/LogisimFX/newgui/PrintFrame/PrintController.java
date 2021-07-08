@@ -8,8 +8,8 @@ import com.cburch.LogisimFX.proj.Project;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.NodeOrientation;
 import javafx.print.PrinterJob;
-import javafx.scene.Node;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -35,10 +35,24 @@ public class PrintController extends AbstractController {
     private TextField HeaderTxtFld;
 
     @FXML
+    private CheckBox RotateToFitChkbx;
+
+    @FXML
+    private Label RotateToFitLbl;
+
+    @FXML
+    private CheckBox PrintViewChkbx;
+
+    @FXML
+    private Label PrintViewLbl;
+
+    @FXML
     private Button OkBtn;
 
     @FXML
     private Button CancleBtn;
+
+
 
     private PrinterJob job;
 
@@ -53,13 +67,12 @@ public class PrintController extends AbstractController {
         HeaderLbl.textProperty().bind(LC.createStringBinding("labelHeader"));
         HeaderTxtFld.setText("%n (%p of %P)");
 
-/*
-        addGb(new JLabel(Strings.get("labelRotateToFit") + " "));
-        addGb(new JLabel(Strings.get("labelPrinterView") + " "));
- */
+        RotateToFitLbl.textProperty().bind(LC.createStringBinding("labelRotateToFit"));
+
+        PrintViewLbl.textProperty().bind(LC.createStringBinding("labelPrinterView"));
 
         OkBtn.setText("Ok");
-        OkBtn.setOnAction(event -> pageSetup(proj.getFrameController().getCanvas(),stage));
+        OkBtn.setOnAction(event -> pageSetup(stage));
 
         CancleBtn.setText("Cancel");
         CancleBtn.setOnAction(event -> stage.close());
@@ -73,7 +86,8 @@ public class PrintController extends AbstractController {
 
         stage.titleProperty().bind(LC.createStringBinding("printParmsTitle"));
         stage.setHeight(300);
-        stage.setWidth(300);
+        stage.setWidth(450);
+        stage.setResizable(false);
 
         proj = project;
 
@@ -102,7 +116,7 @@ public class PrintController extends AbstractController {
 
     }
 
-    private void pageSetup(Node node, Stage owner) {
+    private void pageSetup(Stage owner) {
 
         // Create the PrinterJob
         job = PrinterJob.createPrinterJob();
@@ -117,12 +131,12 @@ public class PrintController extends AbstractController {
 
         if (proceed)
         {
-            printSetup(node,stage);
+            printSetup(stage);
         }
 
     }
 
-    private void printSetup(Node node, Stage owner){
+    private void printSetup(Stage owner){
 
         if (job == null)
         {
@@ -134,21 +148,60 @@ public class PrintController extends AbstractController {
 
         if (proceed)
         {
-            print(job, node);
+            print(job);
         }
 
     }
 
-    private void print(PrinterJob job, Node node) {
+    private void print(PrinterJob job) {
 
-        // Print the node
-        boolean printed = job.printPage(node);
+        MultipleSelectionModel<Circuit> langsSelectionModel = CircuitLstVw.getSelectionModel();
 
-        if (printed)
-        {
+        boolean success = true;
+
+        int pageIndex = 0;
+
+        for (Circuit circ: langsSelectionModel.getSelectedItems()) {
+
+            String header = format(HeaderTxtFld.getText(), pageIndex,
+                    langsSelectionModel.getSelectedItems().size(), circ.getName());
+
+            System.out.println("header "+header);
+
+            // Print the node
+            success &= job.printPage(proj.getFrameController().getPrintImage(circ));
+
+            pageIndex++;
+
+        }
+
+        if (success) {
             job.endJob();
         }
 
+    }
+
+    private String format(String header, int index, int max,
+                                 String circName) {
+        int mark = header.indexOf('%');
+        if (mark < 0) return header;
+        StringBuilder ret = new StringBuilder();
+        int start = 0;
+        for (; mark >= 0 && mark + 1 < header.length();
+             start = mark + 2, mark = header.indexOf('%', start)) {
+            ret.append(header.substring(start, mark));
+            switch (header.charAt(mark + 1)) {
+                case 'n': ret.append(circName); break;
+                case 'p': ret.append("" + index); break;
+                case 'P': ret.append("" + max); break;
+                case '%': ret.append("%"); break;
+                default:  ret.append("%" + header.charAt(mark + 1));
+            }
+        }
+        if (start < header.length()) {
+            ret.append(header.substring(start));
+        }
+        return ret.toString();
     }
 
     @Override

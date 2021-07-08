@@ -1,8 +1,12 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
+import com.cburch.LogisimFX.circuit.Circuit;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 
@@ -232,5 +236,12 @@ public class CustomCanvas extends Canvas {
     }
 
     public Canvas getCanvas(){return cv;}
+
+    public Image getPrintImage(){
+
+        //return cv.snapshot(0,new WritableImage());
+        return null;
+        // return cv.snapshot();
+    }
 
 }

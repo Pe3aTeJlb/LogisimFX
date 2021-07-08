@@ -73,17 +73,13 @@ public class ExportImageController extends AbstractController {
     public void postInitialization(Stage s, Project project) {
 
         stage = s;
-        stage.titleProperty().bind(LC.createStringBinding("printParmsTitle"));
+        stage.titleProperty().bind(LC.createStringBinding("printParamsTitle"));
         stage.setHeight(300);
         stage.setWidth(300);
 
         proj = project;
 
         //setCircuitList(true);
-
-        if(circuits.size()==0){
-            DialogManager.CreateErrorDialog( LC.get("printEmptyCircuitsTitle"), LC.get("printEmptyCircuitsMessage"));
-        }
 
     }
 
