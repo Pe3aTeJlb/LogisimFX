@@ -10,57 +10,96 @@
    <children>
       <TabPane fx:id="TabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
-          <Tab fx:id="TemplateTab" text="1">
+          <Tab fx:id="TemplateTab" text="Template">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <RadioButton fx:id="PlainTemplRB" layoutX="15.0" layoutY="125.0" mnemonicParsing="false" text="RadioButton" />
-                        <RadioButton fx:id="EmptyTemplRB" layoutX="15.0" layoutY="150.0" mnemonicParsing="false" text="RadioButton" />
-                        <RadioButton fx:id="CustomTemplRB" layoutX="15.0" layoutY="175.0" mnemonicParsing="false" text="RadioButton" />
-                        <TextField fx:id="FilePathTextField" editable="false" layoutX="15.0" layoutY="205.0" prefHeight="25.0" prefWidth="300.0" />
-                        <Button fx:id="FilePathSelectBtn" layoutX="325.0" layoutY="205.0" mnemonicParsing="false" text="Button" />
+                        <RadioButton fx:id="PlainTemplRB" layoutX="15.0" layoutY="125.0" mnemonicParsing="false" text="RadioButton" AnchorPane.leftAnchor="15.0" />
+                        <RadioButton fx:id="EmptyTemplRB" layoutX="15.0" layoutY="150.0" mnemonicParsing="false" text="RadioButton" AnchorPane.leftAnchor="15.0" />
+                        <RadioButton fx:id="CustomTemplRB" layoutX="15.0" layoutY="175.0" mnemonicParsing="false" text="RadioButton" AnchorPane.leftAnchor="15.0" />
+                        <TextField fx:id="FilePathTextField" editable="false" layoutX="15.0" layoutY="205.0" prefHeight="25.0" prefWidth="300.0" AnchorPane.leftAnchor="15.0" />
+                        <Button fx:id="FilePathSelectBtn" layoutX="325.0" layoutY="205.0" mnemonicParsing="false" text="Button" AnchorPane.leftAnchor="325.0" />
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
-          <Tab fx:id="InternalizationTab" text="2">
+          <Tab fx:id="InternalizationTab" text="Localization">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Label fx:id="ShapeLbl" layoutX="145.0" layoutY="27.0" text="Label" />
-                        <ListView fx:id="LocaleListView" layoutX="145.0" layoutY="75.0" prefHeight="200.0" prefWidth="200.0" />
-                        <Label fx:id="LocaleLbl" layoutX="145.0" layoutY="58.0" text="Label" />
-                        <CheckBox fx:id="SpecificSymbolsChbx" layoutX="145.0" layoutY="290.0" mnemonicParsing="false" text="CheckBox" />
-                        <ComboBox fx:id="GateShapeCmbx" layoutX="195.0" layoutY="23.0" prefWidth="150.0" />
+                        <GridPane hgap="5.0" layoutX="15.0" layoutY="16.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="290.0" prefWidth="420.0">
+                          <columnConstraints>
+                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" prefWidth="120.0" />
+                              <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" prefWidth="150.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="35.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="194.0" minHeight="10.0" prefHeight="194.0" valignment="TOP" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="92.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label fx:id="ShapeLbl" text="Форма элементов:" />
+                              <ComboBox fx:id="GateShapeCmbx" prefHeight="25.0" prefWidth="205.0" GridPane.columnIndex="1" />
+                              <CheckBox fx:id="SpecificSymbolsChbx" mnemonicParsing="false" text="CheckBox" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label fx:id="LocaleLbl" text="Label" GridPane.rowIndex="1" />
+                              <ListView fx:id="LocaleListView" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                           </children>
+                        </GridPane>
                      </children></AnchorPane>
             </content>
           </Tab>
-            <Tab fx:id="LayoutTab" text="3">
+            <Tab fx:id="LayoutTab" text="Layout">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Label fx:id="AfterAddingLbl" layoutX="35.0" layoutY="200.0" text="Label" />
-                        <CheckBox fx:id="ShowTickRateChbx" layoutX="35.0" layoutY="27.0" mnemonicParsing="false" text="CheckBox" />
-                        <CheckBox fx:id="PrinterViewChbx" layoutX="35.0" layoutY="52.0" mnemonicParsing="false" text="CheckBox" />
-                        <CheckBox fx:id="ShowAttrHaloChbx" layoutX="35.0" layoutY="77.0" mnemonicParsing="false" text="CheckBox" />
-                        <CheckBox fx:id="ShowComponentTipsChbx" layoutX="35.0" layoutY="102.0" mnemonicParsing="false" text="CheckBox" />
-                        <CheckBox fx:id="KeepConnectionsChbx" layoutX="35.0" layoutY="127.0" mnemonicParsing="false" text="CheckBox" />
-                        <CheckBox fx:id="ShowGhostChbx" layoutX="35.0" layoutY="152.0" mnemonicParsing="false" text="CheckBox" />
-                        <Label fx:id="FirstRadixLbl" layoutX="35.0" layoutY="235.0" text="Label" />
-                        <Label fx:id="SecondRadixLbl" layoutX="35.0" layoutY="270.0" text="Label" />
-                        <ComboBox fx:id="AfterAddingCmbx" layoutX="125.0" layoutY="196.0" prefWidth="150.0" />
-                        <ComboBox fx:id="FirstRadixCmbx" layoutX="125.0" layoutY="231.0" prefWidth="150.0" />
-                        <ComboBox fx:id="SecondRadixCmbx" layoutX="125.0" layoutY="266.0" prefWidth="150.0" />
+                        <CheckBox fx:id="ShowTickRateChbx" layoutX="35.0" layoutY="27.0" mnemonicParsing="false" text="CheckBox" AnchorPane.leftAnchor="35.0" />
+                        <CheckBox fx:id="PrinterViewChbx" layoutX="35.0" layoutY="52.0" mnemonicParsing="false" text="CheckBox" AnchorPane.leftAnchor="35.0" />
+                        <CheckBox fx:id="ShowAttrHaloChbx" layoutX="35.0" layoutY="77.0" mnemonicParsing="false" text="CheckBox" AnchorPane.leftAnchor="35.0" />
+                        <CheckBox fx:id="ShowComponentTipsChbx" layoutX="35.0" layoutY="102.0" mnemonicParsing="false" text="CheckBox" AnchorPane.leftAnchor="35.0" />
+                        <CheckBox fx:id="KeepConnectionsChbx" layoutX="35.0" layoutY="127.0" mnemonicParsing="false" text="CheckBox" AnchorPane.leftAnchor="35.0" />
+                        <CheckBox fx:id="ShowGhostChbx" layoutX="35.0" layoutY="152.0" mnemonicParsing="false" text="CheckBox" AnchorPane.leftAnchor="35.0" />
+                        <GridPane hgap="5.0" layoutX="35.0" layoutY="196.0" prefHeight="90.0" prefWidth="405.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="263.0" minWidth="10.0" prefWidth="244.0" />
+                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="160.0" minWidth="10.0" prefWidth="155.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label fx:id="AfterAddingLbl" text="Label" />
+                              <Label fx:id="FirstRadixLbl" text="Label" GridPane.rowIndex="1" />
+                              <Label fx:id="SecondRadixLbl" text="Второе основание при нажатии на провод" GridPane.rowIndex="2" />
+                              <ComboBox fx:id="AfterAddingCmbx" prefWidth="150.0" promptText="Переключиться на инструмент" GridPane.columnIndex="1" />
+                              <ComboBox fx:id="FirstRadixCmbx" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <ComboBox fx:id="SecondRadixCmbx" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                           </children>
+                        </GridPane>
                      </children></AnchorPane>
               </content>
             </Tab>
-            <Tab fx:id="ExperimentalTab" text="4">
+            <Tab fx:id="ExperimentalTab" text="Experimental">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Label fx:id="GraphicsAccelLabel" layoutX="139.0" layoutY="118.0" text="Label" />
-                        <Label fx:id="RestartLogisimLabel" layoutX="145.0" layoutY="194.0" text="Label" />
-                        <ComboBox fx:id="AcceleratorCmbx" layoutX="193.0" layoutY="148.0" prefWidth="150.0" />
+                        <GridPane layoutX="25.0" layoutY="101.0" prefHeight="120.0" prefWidth="400.0">
+                          <columnConstraints>
+                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label fx:id="GraphicsAccelLabel" text="Label" />
+                              <Label fx:id="RestartLogisimLabel" text="Перезагрузите Логизим, чтобы изменения вступили в силу" GridPane.rowIndex="2" />
+                              <ComboBox fx:id="AcceleratorCmbx" prefWidth="150.0" GridPane.rowIndex="1" />
+                           </children>
+                        </GridPane>
                      </children></AnchorPane>
               </content>
             </Tab>

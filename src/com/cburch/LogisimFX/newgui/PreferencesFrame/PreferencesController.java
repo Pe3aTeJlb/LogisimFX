@@ -166,6 +166,8 @@ public class PreferencesController extends AbstractController {
     public void postInitialization(Stage s) {
         stage = s;
         stage.titleProperty().bind(LC.createStringBinding("preferencesFrameTitle"));
+
+        stage.setResizable(false);
     }
 
     private void initTemplateTab(){
