@@ -49,6 +49,9 @@ public class OptionsController extends AbstractController {
     private ComboBox<ComboOption> GateUndefinedCmbx;
 
     @FXML
+    private Label SimRandomnessLbl;
+
+    @FXML
     private CheckBox SimRandomnessChbx;
 
 
@@ -102,6 +105,9 @@ public class OptionsController extends AbstractController {
 
     private ObservableList<ToolBindingDataModel> toolBindings;
 
+    private MultipleSelectionModel<Object> selectionModel;
+
+    private int currSelectedIndex = -1;
 
 
     @FXML
@@ -124,6 +130,9 @@ public class OptionsController extends AbstractController {
         stage = s;
         proj = project;
 
+        stage.setHeight(450);
+        stage.setWidth(500);
+
         opts = proj.getOptions();
 
         attrs = opts.getAttributeSet();
@@ -136,7 +145,7 @@ public class OptionsController extends AbstractController {
         initToolbarOptionsTab();
         initMouseOptionsTab();
 
-        //RevertToTemplate.textProperty().bind();
+        RevertToTemplate.textProperty().bind(LC.createStringBinding("revertButton"));
         RevertToTemplate.setOnAction(event -> {});
 
     }
@@ -186,7 +195,8 @@ public class OptionsController extends AbstractController {
 
 
 
-        SimRandomnessChbx.textProperty().bind(LC.createStringBinding("simulateRandomness"));
+        SimRandomnessLbl.textProperty().bind(LC.createStringBinding("simulateRandomness"));
+
         SimRandomnessChbx.setSelected(attrs.getValue(Options.sim_rand_attr)>0);
         SimRandomnessChbx.setOnAction(event -> {
             Object val = SimRandomnessChbx.isSelected() ? Options.sim_rand_dflt
@@ -211,21 +221,25 @@ public class OptionsController extends AbstractController {
 
         MoveUpBtn.textProperty().bind(LC.createStringBinding("toolbarMoveUp"));
         MoveUpBtn.setOnAction(event -> {
+            currSelectedIndex--;
             doMove(-1);
             updateToolbarItemsList();
         });
 
         MoveDownBtn.textProperty().bind(LC.createStringBinding("toolbarMoveDown"));
         MoveDownBtn.setOnAction(event -> {
+            currSelectedIndex++;
             doMove(1);
             updateToolbarItemsList();
         });
 
         DeleteToolBtn.textProperty().bind(LC.createStringBinding("toolbarRemove"));
         DeleteToolBtn.setOnAction(event -> {
-            proj.doAction(ToolbarActions.removeTool(proj.getOptions().getToolbarData(),
-                ToolbarItemsList.getSelectionModel().getSelectedIndex()));
-            updateToolbarItemsList();
+            if(ToolbarItemsList.getSelectionModel().getSelectedIndex()>=0) {
+                proj.doAction(ToolbarActions.removeTool(proj.getOptions().getToolbarData(),
+                        ToolbarItemsList.getSelectionModel().getSelectedIndex()));
+                updateToolbarItemsList();
+            }
         });
 
         TreeExplorer.setCellFactory(tree ->{
@@ -348,11 +362,12 @@ public class OptionsController extends AbstractController {
 
         });
 
-        MultipleSelectionModel<Object> selectionModel = ToolbarItemsList.getSelectionModel();
+        selectionModel = ToolbarItemsList.getSelectionModel();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
         selectionModel.selectedIndexProperty().addListener(
                 (observable, oldValue, newValue) -> {
-
+                    currSelectedIndex = selectionModel.getSelectedIndex();
+                    System.out.println(currSelectedIndex);
                     MoveUpBtn.setDisable(selectionModel.selectedIndexProperty().getValue()==0);
                     MoveDownBtn.setDisable(selectionModel.selectedIndexProperty().getValue()==toolbarItems.size()-1);
 
@@ -395,9 +410,16 @@ public class OptionsController extends AbstractController {
 
     private void updateToolbarItemsList(){
 
+        int buff = currSelectedIndex;
+
         toolbarItems.clear();
         toolbarItems.addAll(proj.getOptions().getToolbarData().getContents());
         ToolbarItemsList.setItems(toolbarItems);
+
+        currSelectedIndex = buff;
+
+        System.out.println(currSelectedIndex);
+        selectionModel.select(currSelectedIndex);
 
     }
 

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
@@ -9,17 +11,35 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cburch.LogisimFX.newgui.OptionsFrame.OptionsController">
    <children>
-      <TabPane layoutX="200.0" layoutY="100.0" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <TabPane layoutX="200.0" layoutY="100.0" prefHeight="362.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
           <Tab fx:id="SimulationOptsTab" text="Untitled Tab 1">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <CheckBox fx:id="SimRandomnessChbx" layoutX="264.0" layoutY="248.0" mnemonicParsing="false" text="CheckBox" />
-                        <Label fx:id="SimLimitLbl" layoutX="120.0" layoutY="113.0" text="Label" />
-                        <Label fx:id="GateUndefinedLbl" layoutX="120.0" layoutY="190.0" text="Label" />
-                        <ComboBox fx:id="SimLimitCmbx" layoutX="226.0" layoutY="101.0" prefWidth="150.0" />
-                        <ComboBox fx:id="GateUndefinedCmbx" layoutX="226.0" layoutY="186.0" prefWidth="150.0" />
+                        <HBox alignment="CENTER" layoutX="98.0" layoutY="103.0" AnchorPane.bottomAnchor="102.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="103.0">
+                           <children>
+                              <GridPane hgap="5.0" layoutX="150.0" layoutY="98.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="125.0" prefWidth="300.0" vgap="5.0" AnchorPane.bottomAnchor="108.0" AnchorPane.topAnchor="98.0">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="250.0" />
+                                  <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="150.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label fx:id="SimLimitLbl" text="Label" />
+                                    <ComboBox fx:id="SimLimitCmbx" prefWidth="150.0" GridPane.columnIndex="1" />
+                                    <Label fx:id="GateUndefinedLbl" text="Label" GridPane.rowIndex="1" />
+                                    <ComboBox fx:id="GateUndefinedCmbx" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <CheckBox fx:id="SimRandomnessChbx" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <Label fx:id="SimRandomnessLbl" text="fgdfgdfgdfgdfgdfgdfgdfgdfgdfgdfgdfgdf" GridPane.rowIndex="2" />
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </HBox>
                      </children>
                   </AnchorPane>
             </content>
@@ -28,17 +48,39 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <ListView fx:id="ToolbarItemsList" layoutX="386.0" layoutY="14.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0" />
-                        <TreeView fx:id="TreeExplorer" layoutX="14.0" layoutY="14.0" prefHeight="303.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0" />
-                        <Button fx:id="AddSeparatorBtn" layoutX="274.0" layoutY="15.0" mnemonicParsing="false" text="Button" />
-                        <Button fx:id="MoveUpBtn" layoutX="274.0" layoutY="54.0" mnemonicParsing="false" text="Button" />
-                        <Button fx:id="MoveDownBtn" layoutX="274.0" layoutY="90.0" mnemonicParsing="false" text="Button" />
-                        <Button fx:id="DeleteToolBtn" layoutX="274.0" layoutY="126.0" mnemonicParsing="false" text="Button" />
+                        <GridPane hgap="5.0" layoutX="150.0" layoutY="41.0" vgap="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="33.0" minHeight="0.0" prefHeight="33.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="60.0" minHeight="10.0" prefHeight="27.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <ListView fx:id="ToolbarItemsList" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowSpan="8" />
+                              <TreeView fx:id="TreeExplorer" prefHeight="303.0" prefWidth="200.0" GridPane.rowSpan="8" />
+                              <Button fx:id="AddSeparatorBtn" mnemonicParsing="false" prefWidth="150.0" text="Button" GridPane.columnIndex="1" />
+                              <Button fx:id="MoveUpBtn" mnemonicParsing="false" prefWidth="150.0" text="Добавить разделитель" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Button fx:id="MoveDownBtn" mnemonicParsing="false" prefWidth="150.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Button fx:id="DeleteToolBtn" mnemonicParsing="false" prefWidth="150.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                           </children>
+                           <padding>
+                              <Insets left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </GridPane>
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
-            <Tab fx:id="MouseOptsTab" text="Untitled Tab">
+            <Tab fx:id="MouseOptsTab" disable="true" text="Untitled Tab">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -80,6 +122,10 @@
             </Tab>
         </tabs>
       </TabPane>
-      <Button fx:id="RevertToTemplate" layoutX="274.0" layoutY="361.0" mnemonicParsing="false" text="Button" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="250.0" />
+      <HBox alignment="CENTER" layoutX="250.0" layoutY="365.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="250.0">
+         <children>
+            <Button fx:id="RevertToTemplate" alignment="CENTER" layoutX="250.0" layoutY="374.0" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="150.0" text="Вернуть всё к шаблогу" textAlignment="CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="250.0" />
+         </children>
+      </HBox>
    </children>
 </AnchorPane>
