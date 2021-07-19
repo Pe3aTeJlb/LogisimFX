@@ -21,7 +21,7 @@ import java.util.Map;
 public class Constant extends InstanceFactory {
 
 	public static final Attribute<Integer> ATTR_VALUE
-		= Attributes.forHexInteger("value", Strings.getter("constantValueAttr"));
+		= Attributes.forHexInteger("value", LC.createStringBinding("constantValueAttr"));
 
 	public static InstanceFactory FACTORY = new Constant();
 

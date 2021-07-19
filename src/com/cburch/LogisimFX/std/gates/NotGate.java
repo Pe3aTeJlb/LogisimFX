@@ -27,12 +27,12 @@ import javafx.scene.image.ImageView;
 class NotGate extends InstanceFactory {
 	public static final AttributeOption SIZE_NARROW
 		= new AttributeOption(Integer.valueOf(20),
-			Strings.getter("gateSizeNarrowOpt"));
+			LC.createStringBinding("gateSizeNarrowOpt"));
 	public static final AttributeOption SIZE_WIDE
 		= new AttributeOption(Integer.valueOf(30),
-			Strings.getter("gateSizeWideOpt"));
+			LC.createStringBinding("gateSizeWideOpt"));
 	public static final Attribute<AttributeOption> ATTR_SIZE
-		= Attributes.forOption("size", Strings.getter("gateSizeAttr"),
+		= Attributes.forOption("size", LC.createStringBinding("gateSizeAttr"),
 			new AttributeOption[] { SIZE_NARROW, SIZE_WIDE });
 
 	private static final String RECT_LABEL = "1";

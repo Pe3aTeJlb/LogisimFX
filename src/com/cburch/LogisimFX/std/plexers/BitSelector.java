@@ -14,7 +14,7 @@ import java.awt.*;
 
 public class BitSelector extends InstanceFactory {
 	public static final Attribute<BitWidth> GROUP_ATTR
-		= Attributes.forBitWidth("group", Strings.getter("bitSelectorGroupAttr"));
+		= Attributes.forBitWidth("group", LC.createStringBinding("bitSelectorGroupAttr"));
 
 	public BitSelector() {
 		super("BitSelector", LC.createStringBinding("bitSelectorComponent"));

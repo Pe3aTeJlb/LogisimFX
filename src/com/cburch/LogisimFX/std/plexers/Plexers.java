@@ -16,30 +16,30 @@ import javafx.beans.binding.StringBinding;
 
 public class Plexers extends Library {
 	public static final Attribute<BitWidth> ATTR_SELECT
-		= Attributes.forBitWidth("select", Strings.getter("plexerSelectBitsAttr"), 1, 5);
+		= Attributes.forBitWidth("select", LC.createStringBinding("plexerSelectBitsAttr"), 1, 5);
 	public static final Object DEFAULT_SELECT = BitWidth.create(1);
 
 	public static final Attribute<Boolean> ATTR_TRISTATE
-		= Attributes.forBoolean("tristate", Strings.getter("plexerThreeStateAttr"));
+		= Attributes.forBoolean("tristate", LC.createStringBinding("plexerThreeStateAttr"));
 	public static final Object DEFAULT_TRISTATE = Boolean.FALSE;
 
 	public static final AttributeOption DISABLED_FLOATING
-		= new AttributeOption("Z", Strings.getter("plexerDisabledFloating"));
+		= new AttributeOption("Z", LC.createStringBinding("plexerDisabledFloating"));
 	public static final AttributeOption DISABLED_ZERO
-		= new AttributeOption("0", Strings.getter("plexerDisabledZero"));
+		= new AttributeOption("0", LC.createStringBinding("plexerDisabledZero"));
 	public static final Attribute<AttributeOption> ATTR_DISABLED
-		= Attributes.forOption("disabled", Strings.getter("plexerDisabledAttr"),
+		= Attributes.forOption("disabled", LC.createStringBinding("plexerDisabledAttr"),
 				new AttributeOption[] { DISABLED_FLOATING, DISABLED_ZERO });
 
 	public static final Attribute<Boolean> ATTR_ENABLE
-		= Attributes.forBoolean("enable", Strings.getter("plexerEnableAttr"));
+		= Attributes.forBoolean("enable", LC.createStringBinding("plexerEnableAttr"));
 
 	static final AttributeOption SELECT_BOTTOM_LEFT
-		= new AttributeOption("bl", Strings.getter("plexerSelectBottomLeftOption"));
+		= new AttributeOption("bl", LC.createStringBinding("plexerSelectBottomLeftOption"));
 	static final AttributeOption SELECT_TOP_RIGHT
-		= new AttributeOption("tr", Strings.getter("plexerSelectTopRightOption"));
+		= new AttributeOption("tr", LC.createStringBinding("plexerSelectTopRightOption"));
 	static final Attribute<AttributeOption> ATTR_SELECT_LOC = Attributes.forOption("selloc",
-			Strings.getter("plexerSelectLocAttr"),
+			LC.createStringBinding("plexerSelectLocAttr"),
 			new AttributeOption[] { SELECT_BOTTOM_LEFT, SELECT_TOP_RIGHT });
 
 	protected static final int DELAY = 3;

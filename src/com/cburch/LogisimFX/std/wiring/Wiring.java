@@ -20,11 +20,11 @@ import java.util.List;
 public class Wiring extends Library {
 
 	static final AttributeOption GATE_TOP_LEFT
-		= new AttributeOption("tl", Strings.getter("wiringGateTopLeftOption"));
+		= new AttributeOption("tl", LC.createStringBinding("wiringGateTopLeftOption"));
 	static final AttributeOption GATE_BOTTOM_RIGHT
-		= new AttributeOption("br", Strings.getter("wiringGateBottomRightOption"));
+		= new AttributeOption("br", LC.createStringBinding("wiringGateBottomRightOption"));
 	static final Attribute<AttributeOption> ATTR_GATE = Attributes.forOption("gate",
-			Strings.getter("wiringGateAttr"),
+			LC.createStringBinding("wiringGateAttr"),
 			new AttributeOption[] { GATE_TOP_LEFT, GATE_BOTTOM_RIGHT });
 
 	private static Tool[] ADD_TOOLS = {

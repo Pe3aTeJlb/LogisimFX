@@ -15,7 +15,7 @@ import com.cburch.LogisimFX.util.GraphicsUtil;
 
 public class Joystick extends InstanceFactory {
 	static final Attribute<BitWidth> ATTR_WIDTH = Attributes.forBitWidth("bits",
-			Strings.getter("ioBitWidthAttr"), 2, 5);
+			LC.createStringBinding("ioBitWidthAttr"), 2, 5);
 
 	public Joystick() {
 		super("Joystick", LC.createStringBinding("joystickComponent"));

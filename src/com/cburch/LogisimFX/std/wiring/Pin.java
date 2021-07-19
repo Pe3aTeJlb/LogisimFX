@@ -31,20 +31,20 @@ import javafx.scene.image.ImageView;
 public class Pin extends InstanceFactory {
 
 	public static final Attribute<Boolean> ATTR_TRISTATE
-		= Attributes.forBoolean("tristate", Strings.getter("pinThreeStateAttr"));
+		= Attributes.forBoolean("tristate", LC.createStringBinding("pinThreeStateAttr"));
 	public static final Attribute<Boolean> ATTR_TYPE
-		= Attributes.forBoolean("output", Strings.getter("pinOutputAttr"));
+		= Attributes.forBoolean("output", LC.createStringBinding("pinOutputAttr"));
 	public static final Attribute<Direction> ATTR_LABEL_LOC
-		= Attributes.forDirection("labelloc", Strings.getter("pinLabelLocAttr"));
+		= Attributes.forDirection("labelloc", LC.createStringBinding("pinLabelLocAttr"));
 	
 	public static final AttributeOption PULL_NONE
-		= new AttributeOption("none", Strings.getter("pinPullNoneOption"));
+		= new AttributeOption("none", LC.createStringBinding("pinPullNoneOption"));
 	public static final AttributeOption PULL_UP
-		= new AttributeOption("up", Strings.getter("pinPullUpOption"));
+		= new AttributeOption("up", LC.createStringBinding("pinPullUpOption"));
 	public static final AttributeOption PULL_DOWN
-		= new AttributeOption("down", Strings.getter("pinPullDownOption"));
+		= new AttributeOption("down", LC.createStringBinding("pinPullDownOption"));
 	public static final Attribute<AttributeOption> ATTR_PULL
-		= Attributes.forOption("pull", Strings.getter("pinPullAttr"),
+		= Attributes.forOption("pull", LC.createStringBinding("pinPullAttr"),
 				new AttributeOption[] { PULL_NONE, PULL_UP, PULL_DOWN });
 	
 	public static final Pin FACTORY = new Pin();

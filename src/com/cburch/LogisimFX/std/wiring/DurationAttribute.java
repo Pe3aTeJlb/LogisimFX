@@ -8,12 +8,13 @@ import javax.swing.JTextField;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.util.StringGetter;
 import com.cburch.LogisimFX.util.StringUtil;
+import javafx.beans.binding.StringBinding;
 
 public class DurationAttribute extends Attribute<Integer> {
 	private int min;
 	private int max;
 	
-	public DurationAttribute(String name, StringGetter disp, int min, int max) {
+	public DurationAttribute(String name, StringBinding disp, int min, int max) {
 		super(name, disp);
 		this.min = min;
 		this.max = max;

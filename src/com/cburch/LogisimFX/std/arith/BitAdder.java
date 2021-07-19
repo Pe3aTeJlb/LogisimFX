@@ -15,7 +15,7 @@ import java.awt.*;
 
 public class BitAdder extends InstanceFactory {
 	static final Attribute<Integer> NUM_INPUTS
-		= Attributes.forIntegerRange("inputs", Strings.getter("gateInputsAttr"), 1, 32);
+		= Attributes.forIntegerRange("inputs", LC.createStringBinding("gateInputsAttr"), 1, 32);
 	
 	public BitAdder() {
 		super("BitAdder", LC.createStringBinding("bitAdderComponent"));

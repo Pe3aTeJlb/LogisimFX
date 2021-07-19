@@ -63,7 +63,7 @@ public abstract class AbstractComponentFactory implements ComponentFactory {
 		g.drawRect(x + bds.getX(), y + bds.getY(),
 			bds.getWidth(), bds.getHeight());
 	}
-
+/*
 	public void paintIcon(ComponentDrawContext context,
                           int x, int y, AttributeSet attrs) {
 		Graphics g = context.getGraphics();
@@ -81,6 +81,8 @@ public abstract class AbstractComponentFactory implements ComponentFactory {
 			}
 		}
 	}
+
+ */
 	
 	public Object getFeature(Object key, AttributeSet attrs) {
 		return null;

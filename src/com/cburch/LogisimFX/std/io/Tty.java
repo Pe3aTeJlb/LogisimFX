@@ -28,10 +28,10 @@ public class Tty extends InstanceFactory {
 
 	private static final Attribute<Integer> ATTR_COLUMNS
 		= Attributes.forIntegerRange("cols",
-			Strings.getter("ttyColsAttr"), 1, 120);
+			LC.createStringBinding("ttyColsAttr"), 1, 120);
 	private static final Attribute<Integer> ATTR_ROWS
 		= Attributes.forIntegerRange("rows",
-			Strings.getter("ttyRowsAttr"), 1, 48);
+			LC.createStringBinding("ttyRowsAttr"), 1, 48);
 
 	public Tty() {
 		super("TTY", LC.createStringBinding("ttyComponent"));

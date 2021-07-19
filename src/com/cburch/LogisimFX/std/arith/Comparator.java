@@ -10,11 +10,11 @@ import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 
 public class Comparator extends InstanceFactory {
 	private static final AttributeOption SIGNED_OPTION
-		= new AttributeOption("twosComplement", "twosComplement", Strings.getter("twosComplementOption"));
+		= new AttributeOption("twosComplement", "twosComplement", LC.createStringBinding("twosComplementOption"));
 	private static final AttributeOption UNSIGNED_OPTION
-		= new AttributeOption("unsigned", "unsigned", Strings.getter("unsignedOption"));
+		= new AttributeOption("unsigned", "unsigned", LC.createStringBinding("unsignedOption"));
 	private static final Attribute<AttributeOption> MODE_ATTRIBUTE
-		= Attributes.forOption("mode", Strings.getter("comparatorType"),
+		= Attributes.forOption("mode", LC.createStringBinding("comparatorType"),
 				new AttributeOption[] { SIGNED_OPTION, UNSIGNED_OPTION });
 	
 	private static final int IN0   = 0;

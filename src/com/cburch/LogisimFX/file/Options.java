@@ -8,16 +8,16 @@ import com.cburch.LogisimFX.data.*;
 public class Options {
 
 	public static final AttributeOption GATE_UNDEFINED_IGNORE
-	= new AttributeOption("ignore", Strings.getter("gateUndefinedIgnore"));
+	= new AttributeOption("ignore", LC.createStringBinding("gateUndefinedIgnore"));
 	public static final AttributeOption GATE_UNDEFINED_ERROR
-		= new AttributeOption("error", Strings.getter("gateUndefinedError"));
+		= new AttributeOption("error", LC.createStringBinding("gateUndefinedError"));
 
 	public static final Attribute<Integer> sim_limit_attr
-		= Attributes.forInteger("simlimit", Strings.getter("simLimitOption"));
+		= Attributes.forInteger("simlimit", LC.createStringBinding("simLimitOption"));
 	public static final Attribute<Integer> sim_rand_attr
-		= Attributes.forInteger("simrand", Strings.getter("simRandomOption"));
+		= Attributes.forInteger("simrand", LC.createStringBinding("simRandomOption"));
 	public static final Attribute<AttributeOption> ATTR_GATE_UNDEFINED
-		= Attributes.forOption("gateUndefined", Strings.getter("gateUndefinedOption"),
+		= Attributes.forOption("gateUndefined", LC.createStringBinding("gateUndefinedOption"),
 				new AttributeOption[] { GATE_UNDEFINED_IGNORE, GATE_UNDEFINED_ERROR });
 
 	public static final Integer sim_rand_dflt = Integer.valueOf(32);

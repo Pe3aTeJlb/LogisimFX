@@ -15,9 +15,9 @@ import com.cburch.LogisimFX.util.GraphicsUtil;
 
 public class ShiftRegister extends InstanceFactory {
 	static final Attribute<Integer> ATTR_LENGTH = Attributes.forIntegerRange("length",
-			Strings.getter("shiftRegLengthAttr"), 1, 32);
+			LC.createStringBinding("shiftRegLengthAttr"), 1, 32);
 	static final Attribute<Boolean> ATTR_LOAD = Attributes.forBoolean("parallel",
-			Strings.getter("shiftRegParallelAttr"));
+			LC.createStringBinding("shiftRegParallelAttr"));
 	
 	private static final int IN  = 0;
 	private static final int SH  = 1;

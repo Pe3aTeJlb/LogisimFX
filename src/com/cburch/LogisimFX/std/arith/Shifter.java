@@ -14,17 +14,17 @@ import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 
 public class Shifter extends InstanceFactory {
 	static final AttributeOption SHIFT_LOGICAL_LEFT
-		= new AttributeOption("ll", Strings.getter("shiftLogicalLeft"));
+		= new AttributeOption("ll", LC.createStringBinding("shiftLogicalLeft"));
 	static final AttributeOption SHIFT_LOGICAL_RIGHT
-		= new AttributeOption("lr", Strings.getter("shiftLogicalRight"));
+		= new AttributeOption("lr", LC.createStringBinding("shiftLogicalRight"));
 	static final AttributeOption SHIFT_ARITHMETIC_RIGHT
-		= new AttributeOption("ar", Strings.getter("shiftArithmeticRight"));
+		= new AttributeOption("ar", LC.createStringBinding("shiftArithmeticRight"));
 	static final AttributeOption SHIFT_ROLL_LEFT
-		= new AttributeOption("rl", Strings.getter("shiftRollLeft"));
+		= new AttributeOption("rl", LC.createStringBinding("shiftRollLeft"));
 	static final AttributeOption SHIFT_ROLL_RIGHT
-		= new AttributeOption("rr", Strings.getter("shiftRollRight"));
+		= new AttributeOption("rr", LC.createStringBinding("shiftRollRight"));
 	static final Attribute<AttributeOption> ATTR_SHIFT
-		= Attributes.forOption("shift", Strings.getter("shifterShiftAttr"),
+		= Attributes.forOption("shift", LC.createStringBinding("shifterShiftAttr"),
 				new AttributeOption[] { SHIFT_LOGICAL_LEFT, SHIFT_LOGICAL_RIGHT,
 					SHIFT_ARITHMETIC_RIGHT, SHIFT_ROLL_LEFT, SHIFT_ROLL_RIGHT });
 

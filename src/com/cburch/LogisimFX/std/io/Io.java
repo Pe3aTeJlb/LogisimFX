@@ -17,24 +17,24 @@ import java.awt.*;
 import java.util.List;
 
 public class Io extends Library {
-	static final AttributeOption LABEL_CENTER = new AttributeOption("center", "center", Strings.getter("ioLabelCenter"));
+	static final AttributeOption LABEL_CENTER = new AttributeOption("center", "center", LC.createStringBinding("ioLabelCenter"));
 	
 	static final Attribute<Color> ATTR_COLOR = Attributes.forColor("color",
-			Strings.getter("ioColorAttr"));
+			LC.createStringBinding("ioColorAttr"));
 	static final Attribute<Color> ATTR_ON_COLOR
-		= Attributes.forColor("color", Strings.getter("ioOnColor"));
+		= Attributes.forColor("color", LC.createStringBinding("ioOnColor"));
 	static final Attribute<Color> ATTR_OFF_COLOR
-		= Attributes.forColor("offcolor", Strings.getter("ioOffColor"));
+		= Attributes.forColor("offcolor", LC.createStringBinding("ioOffColor"));
 	static final Attribute<Color> ATTR_BACKGROUND
-		= Attributes.forColor("bg", Strings.getter("ioBackgroundColor"));
+		= Attributes.forColor("bg", LC.createStringBinding("ioBackgroundColor"));
 	static final Attribute<Object> ATTR_LABEL_LOC = Attributes.forOption("labelloc",
-			Strings.getter("ioLabelLocAttr"),
+			LC.createStringBinding("ioLabelLocAttr"),
 			new Object[] { LABEL_CENTER, Direction.NORTH, Direction.SOUTH,
 				Direction.EAST, Direction.WEST });
 	static final Attribute<Color> ATTR_LABEL_COLOR = Attributes.forColor("labelcolor",
-			Strings.getter("ioLabelColorAttr"));
+			LC.createStringBinding("ioLabelColorAttr"));
 	static final Attribute<Boolean> ATTR_ACTIVE = Attributes.forBoolean("active",
-			Strings.getter("ioActiveAttr"));
+			LC.createStringBinding("ioActiveAttr"));
 
 	static final Color DEFAULT_BACKGROUND = new Color(255, 255, 255, 0);
 	

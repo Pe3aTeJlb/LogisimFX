@@ -7,6 +7,7 @@ package com.cburch.LogisimFX.data;
 import javax.swing.JComboBox;
 
 import com.cburch.LogisimFX.util.StringGetter;
+import javafx.beans.binding.StringBinding;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -24,13 +25,13 @@ public class BitWidth implements Comparable<BitWidth> {
 	public static class Attribute extends com.cburch.LogisimFX.data.Attribute<BitWidth> {
 		private BitWidth[] choices;
 
-		public Attribute(String name, StringGetter disp) {
+		public Attribute(String name, StringBinding disp) {
 			super(name, disp);
 			ensurePrefab();
 			choices = prefab;
 		}
 
-		public Attribute(String name, StringGetter disp, int min, int max) {
+		public Attribute(String name, StringBinding disp, int min, int max) {
 			super(name, disp);
 			choices = new BitWidth[max - min + 1];
 			for (int i = 0; i < choices.length; i++) {

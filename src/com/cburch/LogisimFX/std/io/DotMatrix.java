@@ -16,19 +16,19 @@ import java.util.Arrays;
 
 public class DotMatrix extends InstanceFactory {
 	static final AttributeOption INPUT_SELECT
-		= new AttributeOption("select", Strings.getter("ioInputSelect"));
+		= new AttributeOption("select", LC.createStringBinding("ioInputSelect"));
 	static final AttributeOption INPUT_COLUMN
-		= new AttributeOption("column", Strings.getter("ioInputColumn"));
+		= new AttributeOption("column", LC.createStringBinding("ioInputColumn"));
 	static final AttributeOption INPUT_ROW
-		= new AttributeOption("row", Strings.getter("ioInputRow"));
+		= new AttributeOption("row", LC.createStringBinding("ioInputRow"));
 
 	static final AttributeOption SHAPE_CIRCLE
-		= new AttributeOption("circle", Strings.getter("ioShapeCircle"));
+		= new AttributeOption("circle", LC.createStringBinding("ioShapeCircle"));
 	static final AttributeOption SHAPE_SQUARE
-		= new AttributeOption("square", Strings.getter("ioShapeSquare"));
+		= new AttributeOption("square", LC.createStringBinding("ioShapeSquare"));
 	
 	static final Attribute<AttributeOption> ATTR_INPUT_TYPE
-		= Attributes.forOption("inputtype", Strings.getter("ioMatrixInput"),
+		= Attributes.forOption("inputtype", LC.createStringBinding("ioMatrixInput"),
 			new AttributeOption[] { INPUT_COLUMN, INPUT_ROW, INPUT_SELECT });
 	static final Attribute<Integer> ATTR_MATRIX_COLS
 		= Attributes.forIntegerRange("matrixcols",

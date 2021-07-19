@@ -4,38 +4,39 @@
 package com.cburch.LogisimFX.instance;
 
 import com.cburch.LogisimFX.data.*;
+import com.cburch.LogisimFX.std.LC;
 
 import java.awt.*;
 
 public interface StdAttr {
 	public static final Attribute<Direction> FACING
-		= Attributes.forDirection("facing", Strings.getter("stdFacingAttr"));
+		= Attributes.forDirection("facing", LC.createStringBinding("stdFacingAttr"));
 
 	public static final Attribute<BitWidth> WIDTH
-		= Attributes.forBitWidth("width", Strings.getter("stdDataWidthAttr"));
+		= Attributes.forBitWidth("width", LC.createStringBinding("stdDataWidthAttr"));
 
 	public static final AttributeOption TRIG_RISING
-		= new AttributeOption("rising", Strings.getter("stdTriggerRising"));
+		= new AttributeOption("rising", LC.createStringBinding("stdTriggerRising"));
 	public static final AttributeOption TRIG_FALLING
-		= new AttributeOption("falling", Strings.getter("stdTriggerFalling"));
+		= new AttributeOption("falling", LC.createStringBinding("stdTriggerFalling"));
 	public static final AttributeOption TRIG_HIGH
-		= new AttributeOption("high", Strings.getter("stdTriggerHigh"));
+		= new AttributeOption("high", LC.createStringBinding("stdTriggerHigh"));
 	public static final AttributeOption TRIG_LOW
-		= new AttributeOption("low", Strings.getter("stdTriggerLow"));
+		= new AttributeOption("low", LC.createStringBinding("stdTriggerLow"));
 	public static final Attribute<AttributeOption> TRIGGER
-		= Attributes.forOption("trigger", Strings.getter("stdTriggerAttr"),
+		= Attributes.forOption("trigger", LC.createStringBinding("stdTriggerAttr"),
 			new AttributeOption[] {
 				TRIG_RISING, TRIG_FALLING, TRIG_HIGH, TRIG_LOW
 			});
 	public static final Attribute<AttributeOption> EDGE_TRIGGER
-		= Attributes.forOption("trigger", Strings.getter("stdTriggerAttr"),
+		= Attributes.forOption("trigger", LC.createStringBinding("stdTriggerAttr"),
 			new AttributeOption[] { TRIG_RISING, TRIG_FALLING });
 
 	public static final Attribute<String> LABEL
-		= Attributes.forString("label", Strings.getter("stdLabelAttr"));
+		= Attributes.forString("label", LC.createStringBinding("stdLabelAttr"));
 
 	public static final Attribute<Font> LABEL_FONT
-		= Attributes.forFont("labelfont", Strings.getter("stdLabelFontAttr"));
+		= Attributes.forFont("labelfont", LC.createStringBinding("stdLabelFontAttr"));
 	public static final Font DEFAULT_LABEL_FONT
 		= new Font("SansSerif", Font.PLAIN, 12);
 }

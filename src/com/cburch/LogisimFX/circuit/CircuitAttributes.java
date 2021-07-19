@@ -15,19 +15,19 @@ import java.util.List;
 
 public class CircuitAttributes extends AbstractAttributeSet {
 	public static final Attribute<String> NAME_ATTR
-		= Attributes.forString("circuit", Strings.getter("circuitName"));
+		= Attributes.forString("circuit", LC.createStringBinding("circuitName"));
 	
 	public static final Attribute<Direction> LABEL_LOCATION_ATTR
-		= Attributes.forDirection("labelloc", Strings.getter("circuitLabelLocAttr"));
+		= Attributes.forDirection("labelloc", LC.createStringBinding("circuitLabelLocAttr"));
 
 	public static final Attribute<String> CIRCUIT_LABEL_ATTR
-		= Attributes.forString("clabel", Strings.getter("circuitLabelAttr"));
+		= Attributes.forString("clabel", LC.createStringBinding("circuitLabelAttr"));
 	
 	public static final Attribute<Direction> CIRCUIT_LABEL_FACING_ATTR
-		= Attributes.forDirection("clabelup", Strings.getter("circuitLabelDirAttr"));
+		= Attributes.forDirection("clabelup", LC.createStringBinding("circuitLabelDirAttr"));
 	
 	public static final Attribute<Font> CIRCUIT_LABEL_FONT_ATTR
-		= Attributes.forFont("clabelfont", Strings.getter("circuitLabelFontAttr"));
+		= Attributes.forFont("clabelfont", LC.createStringBinding("circuitLabelFontAttr"));
 	
 	private static final Attribute<?>[] STATIC_ATTRS = {
 		NAME_ATTR, CIRCUIT_LABEL_ATTR, CIRCUIT_LABEL_FACING_ATTR, CIRCUIT_LABEL_FONT_ATTR,

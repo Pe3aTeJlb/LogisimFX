@@ -20,11 +20,11 @@ import java.awt.*;
 
 public class Transistor extends InstanceFactory {
 	static final AttributeOption TYPE_P
-		= new AttributeOption("p", Strings.getter("transistorTypeP"));
+		= new AttributeOption("p", LC.createStringBinding("transistorTypeP"));
 	static final AttributeOption TYPE_N
-		= new AttributeOption("n", Strings.getter("transistorTypeN"));
+		= new AttributeOption("n", LC.createStringBinding("transistorTypeN"));
 	static final Attribute<AttributeOption> ATTR_TYPE
-		= Attributes.forOption("type", Strings.getter("transistorTypeAttr"),
+		= Attributes.forOption("type", LC.createStringBinding("transistorTypeAttr"),
 				new AttributeOption[] { TYPE_P, TYPE_N });
 	
 	static final int OUTPUT = 0;

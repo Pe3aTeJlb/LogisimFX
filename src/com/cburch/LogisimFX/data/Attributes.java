@@ -9,6 +9,7 @@ import com.cburch.LogisimFX.util.FontUtil;
 import com.cburch.LogisimFX.util.JInputComponent;
 import com.cburch.LogisimFX.util.StringGetter;
 import com.connectina.swing.fontchooser.JFontChooser;
+import javafx.beans.binding.StringBinding;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableCell;
@@ -36,7 +37,12 @@ public class Attributes {
 
 	}
 
-	private static StringGetter getter(String s) { return new ConstantGetter(s); }
+	private static StringBinding getter(String s) { return new StringBinding() {
+		@Override
+		protected String computeValue() {
+			return s;
+		}
+	}; }
 	
 	//
 	// methods with display name == standard name
@@ -96,55 +102,55 @@ public class Attributes {
 	//
 	// methods with internationalization support
 	//
-	public static Attribute<String> forString(String name, StringGetter disp) {
+	public static Attribute<String> forString(String name, StringBinding disp) {
 		return new StringAttribute(name, disp);
 	}
 
-	public static <V> Attribute<V> forOption(String name, StringGetter disp, V[] vals) {
+	public static <V> Attribute<V> forOption(String name, StringBinding disp, V[] vals) {
 		return new OptionAttribute<V>(name, disp, vals);
 	}
 
-	public static Attribute<Integer> forInteger(String name, StringGetter disp) {
+	public static Attribute<Integer> forInteger(String name, StringBinding disp) {
 		return new IntegerAttribute(name, disp);
 	}
 
-	public static Attribute<Integer> forHexInteger(String name, StringGetter disp) {
+	public static Attribute<Integer> forHexInteger(String name, StringBinding disp) {
 		return new HexIntegerAttribute(name, disp);
 	}
 
-	public static Attribute<Integer> forIntegerRange(String name, StringGetter disp, int start, int end) {
+	public static Attribute<Integer> forIntegerRange(String name, StringBinding disp, int start, int end) {
 		return new IntegerRangeAttribute(name, disp, start, end);
 	}
 
-	public static Attribute<Double> forDouble(String name, StringGetter disp) {
+	public static Attribute<Double> forDouble(String name, StringBinding disp) {
 		return new DoubleAttribute(name, disp);
 	}
 
-	public static Attribute<Boolean> forBoolean(String name, StringGetter disp) {
+	public static Attribute<Boolean> forBoolean(String name, StringBinding disp) {
 		return new BooleanAttribute(name, disp);
 	}
 
-	public static Attribute<Direction> forDirection(String name, StringGetter disp) {
+	public static Attribute<Direction> forDirection(String name, StringBinding disp) {
 		return new DirectionAttribute(name, disp);
 	}
 
-	public static Attribute<BitWidth> forBitWidth(String name, StringGetter disp) {
+	public static Attribute<BitWidth> forBitWidth(String name, StringBinding disp) {
 		return new BitWidth.Attribute(name, disp);
 	}
 
-	public static Attribute<BitWidth> forBitWidth(String name, StringGetter disp, int min, int max) {
+	public static Attribute<BitWidth> forBitWidth(String name, StringBinding disp, int min, int max) {
 		return new BitWidth.Attribute(name, disp, min, max);
 	}
 
-	public static Attribute<Font> forFont(String name, StringGetter disp) {
+	public static Attribute<Font> forFont(String name, StringBinding disp) {
 		return new FontAttribute(name, disp);
 	}
 
-	public static Attribute<Location> forLocation(String name, StringGetter disp) {
+	public static Attribute<Location> forLocation(String name, StringBinding disp) {
 		return new LocationAttribute(name, disp);
 	}
 
-	public static Attribute<Color> forColor(String name, StringGetter disp) {
+	public static Attribute<Color> forColor(String name, StringBinding disp) {
 		return new ColorAttribute(name, disp);
 	}
 
@@ -153,7 +159,7 @@ public class Attributes {
 
 	private static class StringAttribute extends Attribute<String> {
 
-		private StringAttribute(String name, StringGetter disp) {
+		private StringAttribute(String name, StringBinding disp) {
 			super(name, disp);
 		}
 
@@ -192,7 +198,7 @@ public class Attributes {
 
 		private V[] vals;
 
-		private OptionAttribute(String name, StringGetter disp, V[] vals) {
+		private OptionAttribute(String name, StringBinding disp, V[] vals) {
 			super(name, disp);
 			this.vals = vals;
 		}
@@ -241,7 +247,7 @@ public class Attributes {
 
 	private static class IntegerAttribute extends Attribute<Integer> {
 
-		private IntegerAttribute(String name, StringGetter disp) {
+		private IntegerAttribute(String name, StringBinding disp) {
 			super(name, disp);
 		}
 
@@ -254,7 +260,7 @@ public class Attributes {
 
 	private static class HexIntegerAttribute extends Attribute<Integer> {
 
-		private HexIntegerAttribute(String name, StringGetter disp) {
+		private HexIntegerAttribute(String name, StringBinding disp) {
 			super(name, disp);
 		}
 
@@ -291,7 +297,7 @@ public class Attributes {
 
 	private static class DoubleAttribute extends Attribute<Double> {
 
-		private DoubleAttribute(String name, StringGetter disp) {
+		private DoubleAttribute(String name, StringBinding disp) {
 			super(name, disp);
 		}
 
@@ -306,7 +312,7 @@ public class Attributes {
 
 		private static Boolean[] vals = { Boolean.TRUE, Boolean.FALSE };
 
-		private BooleanAttribute(String name, StringGetter disp) {
+		private BooleanAttribute(String name, StringBinding disp) {
 			super(name, disp, vals);
 		}
 
@@ -329,7 +335,7 @@ public class Attributes {
 		Integer[] options = null;
 		int start;
 		int end;
-		private IntegerRangeAttribute(String name, StringGetter disp, int start, int end) {
+		private IntegerRangeAttribute(String name, StringBinding disp, int start, int end) {
 			super(name, disp);
 			this.start = start;
 			this.end = end;
@@ -372,7 +378,7 @@ public class Attributes {
 			Direction.WEST,
 		};
 
-		public DirectionAttribute(String name, StringGetter disp) {
+		public DirectionAttribute(String name, StringBinding disp) {
 			super(name, disp, vals);
 		}
 
@@ -390,7 +396,7 @@ public class Attributes {
 
 	private static class FontAttribute extends Attribute<Font> {
 
-		private FontAttribute(String name, StringGetter disp) {
+		private FontAttribute(String name, StringBinding disp) {
 			super(name, disp);
 		}
 
@@ -439,7 +445,7 @@ public class Attributes {
 
 	private static class LocationAttribute extends Attribute<Location> {
 
-		public LocationAttribute(String name, StringGetter desc) {
+		public LocationAttribute(String name, StringBinding desc) {
 			super(name, desc);
 		}
 
@@ -452,7 +458,7 @@ public class Attributes {
 
 	private static class ColorAttribute extends Attribute<Color> {
 
-		public ColorAttribute(String name, StringGetter desc) {
+		public ColorAttribute(String name, StringBinding desc) {
 			super(name, desc);
 		}
 

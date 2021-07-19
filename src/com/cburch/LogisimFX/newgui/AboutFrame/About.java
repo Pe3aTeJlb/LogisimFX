@@ -51,8 +51,8 @@ public class About extends AbstractController {
     private Value upper = Value.FALSE;
     private Value lower = Value.TRUE;
 
-    private final int CircOffsetX = 50;
-    private final int CircOffsetY = 50;
+    private final int CircOffsetX = 20;
+    private final int CircOffsetY = 35;
 
 
     /** Time to spend freezing the credits before after after scrolling */
@@ -226,12 +226,12 @@ public class About extends AbstractController {
         g.setFill(gateColor);
         g.setStroke(gateColor);
 
-        drawWires(0,0);
-        drawNot(0, 0, 70+CircOffsetX, 10+CircOffsetY);
-        drawNot(0, 0, 70+CircOffsetX, 110+CircOffsetY);
-        drawAnd(0, 0, 130+CircOffsetX, 30+CircOffsetY);
-        drawAnd(0, 0, 130+CircOffsetX, 90+CircOffsetY);
-        drawOr(0, 0, 220+CircOffsetX, 60+CircOffsetY);
+        drawWires(50, 87);
+        drawNot(CircOffsetX, CircOffsetY, 70+CircOffsetX, 10+CircOffsetY);
+        drawNot(CircOffsetX, CircOffsetY, 70+CircOffsetX, 110+CircOffsetY);
+        drawAnd(CircOffsetX, CircOffsetY, 130+CircOffsetX, 30+CircOffsetY);
+        drawAnd(CircOffsetX, CircOffsetY, 130+CircOffsetX, 90+CircOffsetY);
+        drawOr(CircOffsetX, CircOffsetY, 220+CircOffsetX, 60+CircOffsetY);
 
 
         drawVersion(5,5);
@@ -365,9 +365,9 @@ public class About extends AbstractController {
         int x;
         int y;
 
-        //g.setStroke(Paint.valueOf(upper.toString()));
-        //g.setFill();
-        g.setStroke(Color.BLUE);
+        g.setStroke(upper.getColor());
+        g.setFill(upper.getColor());
+
         x = toX(x0, 20);
         y = toY(y0, 10);
         g.fillOval(x - 7, y - 7, 14, 14);
@@ -376,11 +376,16 @@ public class About extends AbstractController {
         y = toY(y0, 70);
         g.strokeLine(x, y, toX(x0, 80), y);
 
-        //g.setColor(upperNot.getColor());
+
+        g.setStroke(upperNot.getColor());
+        g.setFill(upperNot.getColor());
+
         y = toY(y0, 10);
         g.strokeLine((toX(x0, 70)), y, toX(x0, 80), y);
 
-       // g.setColor(lower.getColor());
+        g.setStroke(lower.getColor());
+        g.setFill(lower.getColor());
+
         x = toX(x0, 30);
         y = toY(y0, 110);
         g.fillOval(x - 7, y - 7, 14, 14);
@@ -389,11 +394,15 @@ public class About extends AbstractController {
         y = toY(y0, 50);
         g.strokeLine(x, y, toX(x0, 80), y);
 
-        //g.setColor(lowerNot.getColor());
+        g.setStroke(lowerNot.getColor());
+        g.setFill(lowerNot.getColor());
+
         y = toY(y0, 110);
         g.strokeLine((toX(x0, 70)), y, toX(x0, 80), y);
 
-        //g.setColor((upperAnd.getColor());
+        g.setStroke(upperAnd.getColor());
+        g.setFill(upperAnd.getColor());
+
         x = toX(x0, 150);
         y = toY(y0, 30);
         g.strokeLine((toX(x0, 130)), y, x, y);
@@ -401,14 +410,18 @@ public class About extends AbstractController {
         y = toY(y0, 45);
         g.strokeLine(x, y, toX(x0, 174), y);
 
-        //g.setColor(lowerAnd.getColor());
+        g.setStroke(lowerAnd.getColor());
+        g.setFill(lowerAnd.getColor());
+
         y = toY(y0, 90);
         g.strokeLine((toX(x0, 130)), y, x, y);
         g.strokeLine(x, y, x, toY(y0, 75));
         y = toY(y0, 75);
         g.strokeLine(x, y, toX(x0, 174), y);
 
-        //g.setColor(out.getColor());
+        g.setStroke(out.getColor());
+        g.setFill(out.getColor());
+
         y = toY(y0, 60);
         g.strokeLine(toX(x0, 220), y, toX(x0, 240), y);
 

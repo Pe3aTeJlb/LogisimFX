@@ -13,15 +13,15 @@ import java.awt.*;
 
 public class BitFinder extends InstanceFactory {
 	static final AttributeOption LOW_ONE
-		= new AttributeOption("low1", Strings.getter("bitFinderLowOption", "1"));
+		= new AttributeOption("low1", LC.createStringBinding("bitFinderLowOption", "1"));
 	static final AttributeOption HIGH_ONE
-	= new AttributeOption("high1", Strings.getter("bitFinderHighOption", "1"));
+	= new AttributeOption("high1", LC.createStringBinding("bitFinderHighOption", "1"));
 	static final AttributeOption LOW_ZERO
-		= new AttributeOption("low0", Strings.getter("bitFinderLowOption", "0"));
+		= new AttributeOption("low0", LC.createStringBinding("bitFinderLowOption", "0"));
 	static final AttributeOption HIGH_ZERO
-		= new AttributeOption("high0", Strings.getter("bitFinderHighOption", "0"));
+		= new AttributeOption("high0", LC.createStringBinding("bitFinderHighOption", "0"));
 	static final Attribute<AttributeOption> TYPE
-		= Attributes.forOption("type", Strings.getter("bitFinderTypeAttr"),
+		= Attributes.forOption("type", LC.createStringBinding("bitFinderTypeAttr"),
 				new AttributeOption[] { LOW_ONE, HIGH_ONE, LOW_ZERO, HIGH_ZERO });
 	
 	public BitFinder() {

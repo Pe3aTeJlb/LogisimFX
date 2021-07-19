@@ -16,14 +16,14 @@ import com.cburch.LogisimFX.proj.Project;
 
 public class Ram extends Mem {
 	static final AttributeOption BUS_COMBINED
-		= new AttributeOption("combined", Strings.getter("ramBusSynchCombined"));
+		= new AttributeOption("combined", LC.createStringBinding("ramBusSynchCombined"));
 	static final AttributeOption BUS_ASYNCH
-		= new AttributeOption("asynch", Strings.getter("ramBusAsynchCombined"));
+		= new AttributeOption("asynch", LC.createStringBinding("ramBusAsynchCombined"));
 	static final AttributeOption BUS_SEPARATE
-		= new AttributeOption("separate", Strings.getter("ramBusSeparate"));
+		= new AttributeOption("separate", LC.createStringBinding("ramBusSeparate"));
 
 	static final Attribute<AttributeOption> ATTR_BUS = Attributes.forOption("bus",
-			Strings.getter("ramBusAttr"),
+			LC.createStringBinding("ramBusAttr"),
 			new AttributeOption[] { BUS_COMBINED, BUS_ASYNCH, BUS_SEPARATE });
 
 	private static Attribute<?>[] ATTRIBUTES = {

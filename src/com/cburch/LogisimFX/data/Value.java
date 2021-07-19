@@ -3,10 +3,11 @@
 
 package com.cburch.LogisimFX.data;
 
-import java.awt.Color;
 import java.util.Arrays;
 
 import com.cburch.LogisimFX.util.Cache;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 
 public class Value {
 
@@ -19,11 +20,11 @@ public class Value {
 	public static final int MAX_WIDTH = 32;
 
 	public static final Color NIL_COLOR = Color.GRAY;
-	public static final Color FALSE_COLOR = new Color(0, 100, 0);
-	public static final Color TRUE_COLOR = new Color(0, 210, 0);
-	public static final Color UNKNOWN_COLOR = new Color(40, 40, 255);
-	public static final Color ERROR_COLOR = new Color(192, 0, 0);
-	public static final Color WIDTH_ERROR_COLOR = new Color(255, 123, 0);
+	public static final Color FALSE_COLOR = Color.rgb(0, 100, 0);
+	public static final Color TRUE_COLOR = Color.rgb(0, 210, 0);
+	public static final Color UNKNOWN_COLOR = Color.rgb(40, 40, 255);
+	public static final Color ERROR_COLOR = Color.rgb(192, 0, 0);
+	public static final Color WIDTH_ERROR_COLOR = Color.rgb(255, 123, 0);
 	public static final Color MULTI_COLOR = Color.BLACK;
 	
 	private static final Cache cache = new Cache();
@@ -411,7 +412,7 @@ public class Value {
 		}
 	}
 
-	public Color getColor() {
+	public Paint getColor() {
 		if (error != 0) {
 			return ERROR_COLOR;
 		} else if (width == 0) {

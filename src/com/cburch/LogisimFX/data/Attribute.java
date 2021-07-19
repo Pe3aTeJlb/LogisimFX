@@ -4,6 +4,7 @@
 package com.cburch.LogisimFX.data;
 
 import com.cburch.LogisimFX.util.StringGetter;
+import javafx.beans.binding.StringBinding;
 import javafx.scene.Node;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TextField;
@@ -15,9 +16,9 @@ import java.awt.*;
 public abstract class Attribute<V> {
 
 	private String name;
-	private StringGetter disp;
+	private StringBinding disp;
 
-	public Attribute(String name, StringGetter disp) {
+	public Attribute(String name, StringBinding disp) {
 		this.name = name;
 		this.disp = disp;
 	}
@@ -32,7 +33,7 @@ public abstract class Attribute<V> {
 	}
 
 	public String getDisplayName() {
-		return disp.get();
+		return disp.getValue();
 	}
 
 	public Node getCell(V value){

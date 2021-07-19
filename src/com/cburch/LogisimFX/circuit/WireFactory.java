@@ -82,4 +82,9 @@ class WireFactory extends AbstractComponentFactory {
 			g.drawLine(x, y, x, y + len);
 		}
 	}
+
+	@Override
+	public void paintIcon(ComponentDrawContext context, int x, int y, AttributeSet attrs) {
+
+	}
 }

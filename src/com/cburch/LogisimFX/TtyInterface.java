@@ -119,7 +119,7 @@ public class TtyInterface {
 		FileStatistics.Count total = stats.getTotalWithSubcircuits();
 		int maxName = 0;
 		for (FileStatistics.Count count : stats.getCounts()) {
-			int nameLength = count.getFactory().getDisplayName().length();
+			int nameLength = count.getFactory().getDisplayName().getValue().length();
 			if (nameLength > maxName) maxName = nameLength;
 		}
 		String fmt = "%" + countDigits(total.getUniqueCount()) + "d\t"
@@ -127,7 +127,7 @@ public class TtyInterface {
 		String fmtNormal = fmt + "%-" + maxName + "s\t%s\n";
 		for (FileStatistics.Count count : stats.getCounts()) {
 			Library lib = count.getLibrary();
-			String libName = lib == null ? "-" : lib.getDisplayName();
+			String libName = lib == null ? "-" : lib.getDisplayName().getValue();
 			System.out.printf(fmtNormal, //OK
 					Integer.valueOf(count.getUniqueCount()),
 					Integer.valueOf(count.getRecursiveCount()),

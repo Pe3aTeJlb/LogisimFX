@@ -11,6 +11,7 @@ import java.util.WeakHashMap;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.MenuExtender;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.JoinedConfigurator;
@@ -34,9 +35,9 @@ abstract class Mem extends InstanceFactory {
 	// size. And second, I'd alter the MemContents class's PAGE_SIZE_BITS constant
 	// to 14 so that its "page table" isn't quite so big.
 	public static final Attribute<BitWidth> ADDR_ATTR = Attributes.forBitWidth(
-			"addrWidth", Strings.getter("ramAddrWidthAttr"), 2, 24);
+			"addrWidth", LC.createStringBinding("ramAddrWidthAttr"), 2, 24);
 	public static final Attribute<BitWidth> DATA_ATTR = Attributes.forBitWidth(
-			"dataWidth", Strings.getter("ramDataWidthAttr"));
+			"dataWidth", LC.createStringBinding("ramDataWidthAttr"));
 	
 	// port-related constants
 	static final int DATA = 0;

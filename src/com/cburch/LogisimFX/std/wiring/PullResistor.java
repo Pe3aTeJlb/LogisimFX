@@ -21,11 +21,11 @@ import javafx.scene.image.ImageView;
 public class PullResistor extends InstanceFactory {
 
 	public static final Attribute<AttributeOption> ATTR_PULL_TYPE
-		= Attributes.forOption("pull", Strings.getter("pullTypeAttr"),
+		= Attributes.forOption("pull", LC.createStringBinding("pullTypeAttr"),
 				new AttributeOption[] {
-					new AttributeOption(Value.FALSE, "0", Strings.getter("pullZeroType")),
-					new AttributeOption(Value.TRUE,  "1", Strings.getter("pullOneType")),
-					new AttributeOption(Value.ERROR, "X", Strings.getter("pullErrorType"))
+					new AttributeOption(Value.FALSE, "0", LC.createStringBinding("pullZeroType")),
+					new AttributeOption(Value.TRUE,  "1", LC.createStringBinding("pullOneType")),
+					new AttributeOption(Value.ERROR, "X", LC.createStringBinding("pullErrorType"))
 			});
 
 	public static final PullResistor FACTORY = new PullResistor();

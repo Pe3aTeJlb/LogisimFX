@@ -16,23 +16,23 @@ import java.util.List;
 
 class SplitterAttributes extends AbstractAttributeSet {
 	public static final AttributeOption APPEAR_LEGACY
-		= new AttributeOption("legacy", Strings.getter("splitterAppearanceLegacy"));
+		= new AttributeOption("legacy", LC.createStringBinding("splitterAppearanceLegacy"));
 	public static final AttributeOption APPEAR_LEFT
-		= new AttributeOption("left", Strings.getter("splitterAppearanceLeft"));
+		= new AttributeOption("left", LC.createStringBinding("splitterAppearanceLeft"));
 	public static final AttributeOption APPEAR_RIGHT
-		= new AttributeOption("right", Strings.getter("splitterAppearanceRight"));
+		= new AttributeOption("right", LC.createStringBinding("splitterAppearanceRight"));
 	public static final AttributeOption APPEAR_CENTER
-		= new AttributeOption("center", Strings.getter("splitterAppearanceCenter"));
+		= new AttributeOption("center", LC.createStringBinding("splitterAppearanceCenter"));
 	
 	public static final Attribute<AttributeOption> ATTR_APPEARANCE
-		= Attributes.forOption("appear", Strings.getter("splitterAppearanceAttr"),
+		= Attributes.forOption("appear", LC.createStringBinding("splitterAppearanceAttr"),
 				new AttributeOption[] { APPEAR_LEFT, APPEAR_RIGHT, APPEAR_CENTER,
 					APPEAR_LEGACY});
 	
 	public static final Attribute<BitWidth> ATTR_WIDTH
-		= Attributes.forBitWidth("incoming", Strings.getter("splitterBitWidthAttr"));
+		= Attributes.forBitWidth("incoming", LC.createStringBinding("splitterBitWidthAttr"));
 	public static final Attribute<Integer> ATTR_FANOUT
-		= Attributes.forIntegerRange("fanout", Strings.getter("splitterFanOutAttr"), 1, 32);
+		= Attributes.forIntegerRange("fanout", LC.createStringBinding("splitterFanOutAttr"), 1, 32);
 
 	private static final List<Attribute<?>> INIT_ATTRIBUTES
 		= Arrays.asList(new Attribute<?>[] {
@@ -79,7 +79,7 @@ class SplitterAttributes extends AbstractAttributeSet {
 		BitOutOption[] options;
 
 		private BitOutAttribute(int which, BitOutOption[] options) {
-			super("bit" + which, Strings.getter("splitterBitAttr", "" + which));
+			super("bit" + which, LC.createStringBinding("splitterBitAttr", "" + which));
 			this.which = which;
 			this.options = options;
 		}

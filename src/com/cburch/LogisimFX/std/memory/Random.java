@@ -14,7 +14,7 @@ import com.cburch.LogisimFX.util.StringUtil;
 
 public class Random extends InstanceFactory {
 	private static final Attribute<Integer> ATTR_SEED
-		= Attributes.forInteger("seed", Strings.getter("randomSeedAttr"));
+		= Attributes.forInteger("seed", LC.createStringBinding("randomSeedAttr"));
 
 	private static final int OUT = 0;
 	private static final int CK  = 1;

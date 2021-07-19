@@ -25,11 +25,11 @@ import javafx.scene.image.ImageView;
 class ControlledBuffer extends InstanceFactory {
 
 	private static final AttributeOption RIGHT_HANDED
-		= new AttributeOption("right", Strings.getter("controlledRightHanded"));
+		= new AttributeOption("right", LC.createStringBinding("controlledRightHanded"));
 	private static final AttributeOption LEFT_HANDED
-		= new AttributeOption("left", Strings.getter("controlledLeftHanded"));
+		= new AttributeOption("left", LC.createStringBinding("controlledLeftHanded"));
 	private static final Attribute<AttributeOption> ATTR_CONTROL
-		= Attributes.forOption("control", Strings.getter("controlledControlOption"),
+		= Attributes.forOption("control", LC.createStringBinding("controlledControlOption"),
 				new AttributeOption[] { RIGHT_HANDED, LEFT_HANDED });
 
 	public static ComponentFactory FACTORY_BUFFER = new ControlledBuffer(false);

@@ -17,28 +17,28 @@ import java.awt.*;
 public class Text extends InstanceFactory {
 
 	public static Attribute<String> ATTR_TEXT = Attributes.forString("text",
-			Strings.getter("textTextAttr"));
+			LC.createStringBinding("textTextAttr"));
 	public static Attribute<Font> ATTR_FONT = Attributes.forFont("font",
-		Strings.getter("textFontAttr"));
+			LC.createStringBinding("textFontAttr"));
 	public static Attribute<AttributeOption> ATTR_HALIGN = Attributes.forOption("halign",
-		Strings.getter("textHorzAlignAttr"), new AttributeOption[] {
+			LC.createStringBinding("textHorzAlignAttr"), new AttributeOption[] {
 			new AttributeOption(Integer.valueOf(TextField.H_LEFT),
-				"left", Strings.getter("textHorzAlignLeftOpt")),
+				"left", LC.createStringBinding("textHorzAlignLeftOpt")),
 			new AttributeOption(Integer.valueOf(TextField.H_RIGHT),
-				"right", Strings.getter("textHorzAlignRightOpt")),
+				"right", LC.createStringBinding("textHorzAlignRightOpt")),
 			new AttributeOption(Integer.valueOf(TextField.H_CENTER),
-				"center", Strings.getter("textHorzAlignCenterOpt")),
+				"center", LC.createStringBinding("textHorzAlignCenterOpt")),
 		});
 	public static Attribute<AttributeOption> ATTR_VALIGN = Attributes.forOption("valign",
-		Strings.getter("textVertAlignAttr"), new AttributeOption[] {
+			LC.createStringBinding("textVertAlignAttr"), new AttributeOption[] {
 			new AttributeOption(Integer.valueOf(TextField.V_TOP),
-				"top", Strings.getter("textVertAlignTopOpt")),
+				"top", LC.createStringBinding("textVertAlignTopOpt")),
 			new AttributeOption(Integer.valueOf(TextField.V_BASELINE),
-				"base", Strings.getter("textVertAlignBaseOpt")),
+				"base", LC.createStringBinding("textVertAlignBaseOpt")),
 			new AttributeOption(Integer.valueOf(TextField.V_BOTTOM),
-				"bottom", Strings.getter("textVertAlignBottomOpt")),
+				"bottom", LC.createStringBinding("textVertAlignBottomOpt")),
 			new AttributeOption(Integer.valueOf(TextField.H_CENTER),
-				"center", Strings.getter("textVertAlignCenterOpt")),
+				"center", LC.createStringBinding("textVertAlignCenterOpt")),
 		});
 
 	public static final Text FACTORY = new Text();

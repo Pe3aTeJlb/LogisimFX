@@ -15,18 +15,18 @@ import com.cburch.LogisimFX.util.StringUtil;
 
 public class Counter extends InstanceFactory {
 	static final AttributeOption ON_GOAL_WRAP = new AttributeOption("wrap",
-			"wrap", Strings.getter("counterGoalWrap"));
+			"wrap", LC.createStringBinding("counterGoalWrap"));
 	static final AttributeOption ON_GOAL_STAY = new AttributeOption("stay",
-			"stay", Strings.getter("counterGoalStay"));
+			"stay", LC.createStringBinding("counterGoalStay"));
 	static final AttributeOption ON_GOAL_CONT = new AttributeOption("continue",
-			"continue", Strings.getter("counterGoalContinue"));
+			"continue", LC.createStringBinding("counterGoalContinue"));
 	static final AttributeOption ON_GOAL_LOAD = new AttributeOption("load",
-			"load", Strings.getter("counterGoalLoad"));
+			"load", LC.createStringBinding("counterGoalLoad"));
 
 	static final Attribute<Integer> ATTR_MAX = Attributes.forHexInteger("max",
-			Strings.getter("counterMaxAttr"));
+			LC.createStringBinding("counterMaxAttr"));
 	static final Attribute<AttributeOption> ATTR_ON_GOAL = Attributes.forOption("ongoal",
-			Strings.getter("counterGoalAttr"),
+			LC.createStringBinding("counterGoalAttr"),
 			new AttributeOption[] { ON_GOAL_WRAP, ON_GOAL_STAY, ON_GOAL_CONT,
 				ON_GOAL_LOAD });
 

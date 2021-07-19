@@ -17,7 +17,7 @@ import java.util.List;
 public class AppearanceAnchor extends AppearanceElement {
 
 	public static final Attribute<Direction> FACING
-		= Attributes.forDirection("facing", Strings.getter("appearanceFacingAttr"));
+		= Attributes.forDirection("facing", LC.createStringBinding("appearanceFacingAttr"));
 	static final List<Attribute<?>> ATTRIBUTES
 		= UnmodifiableList.create(new Attribute<?>[] { FACING });
 

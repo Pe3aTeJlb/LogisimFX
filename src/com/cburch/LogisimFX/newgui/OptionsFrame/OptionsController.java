@@ -23,7 +23,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 
-import java.awt.event.MouseEvent;
 
 public class OptionsController extends AbstractController {
 
@@ -189,6 +188,16 @@ public class OptionsController extends AbstractController {
         GateUndefinedCmbx.setButtonCell(new TranslationCell());
 
         GateUndefinedCmbx.setItems(gateUndefined);
+
+        //default value
+        for (ComboOption opt: gateUndefined) {
+
+            if (opt.getValue().equals(attrs.getValue(Options.ATTR_GATE_UNDEFINED))) {
+                GateUndefinedCmbx.setValue(opt);
+                break;
+            }
+
+        }
 
         GateUndefinedCmbx.setOnAction(event -> {proj.doAction(OptionsActions.setAttribute(attrs,
                 Options.ATTR_GATE_UNDEFINED, GateUndefinedCmbx.getValue()));});
@@ -654,10 +663,9 @@ class ComboOption {
     }
 
     public StringBinding getBinding() {
-        //ToDo:
-        //if (binding != null)
-            return binding;
-        //if (value instanceof AttributeOption) return ((AttributeOption) value).toDisplayString();
+        if (binding != null) return binding;
+        if (value instanceof AttributeOption) return ((AttributeOption) value).getStringBinding();
+        return null;
     }
 
     public Object getValue() {

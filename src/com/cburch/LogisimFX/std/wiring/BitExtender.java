@@ -15,16 +15,16 @@ import com.cburch.LogisimFX.util.GraphicsUtil;
 
 public class BitExtender extends InstanceFactory {
 	private static final Attribute<BitWidth> ATTR_IN_WIDTH
-		= Attributes.forBitWidth("in_width", Strings.getter("extenderInAttr"));
+		= Attributes.forBitWidth("in_width", LC.createStringBinding("extenderInAttr"));
 	private static final Attribute<BitWidth> ATTR_OUT_WIDTH
-		= Attributes.forBitWidth("out_width", Strings.getter("extenderOutAttr"));
+		= Attributes.forBitWidth("out_width", LC.createStringBinding("extenderOutAttr"));
 	private static final Attribute<AttributeOption> ATTR_TYPE
-		= Attributes.forOption("type", Strings.getter("extenderTypeAttr"),
+		= Attributes.forOption("type", LC.createStringBinding("extenderTypeAttr"),
 			new AttributeOption[] {
-				new AttributeOption("zero", "zero", Strings.getter("extenderZeroType")),
-				new AttributeOption("one", "one", Strings.getter("extenderOneType")),
-				new AttributeOption("sign", "sign", Strings.getter("extenderSignType")),
-				new AttributeOption("input", "input", Strings.getter("extenderInputType")),
+				new AttributeOption("zero", "zero", LC.createStringBinding("extenderZeroType")),
+				new AttributeOption("one", "one", LC.createStringBinding("extenderOneType")),
+				new AttributeOption("sign", "sign", LC.createStringBinding("extenderSignType")),
+				new AttributeOption("input", "input", LC.createStringBinding("extenderInputType")),
 			});
 	
 	public static final BitExtender FACTORY = new BitExtender();

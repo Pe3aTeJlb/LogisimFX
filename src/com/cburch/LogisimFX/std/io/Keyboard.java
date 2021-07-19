@@ -31,7 +31,7 @@ public class Keyboard extends InstanceFactory {
 
 	private static final Attribute<Integer> ATTR_BUFFER
 		= Attributes.forIntegerRange("buflen",
-				Strings.getter("keybBufferLengthAttr"), 1, 256);
+			LC.createStringBinding("keybBufferLengthAttr"), 1, 256);
 
 	public Keyboard() {
 		super("Keyboard", LC.createStringBinding("keyboardComponent"));

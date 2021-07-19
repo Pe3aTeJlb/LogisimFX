@@ -381,7 +381,7 @@ public class PreferencesController extends AbstractController {
         PrefOption[] items = new PrefOption[opts.length];
 
         for (int j = 0; j < RadixOption.OPTIONS.length; j++) {
-            //items[j] = new PrefOption(opts[j].getSaveString(), opts[j].getDisplayGetter());
+            items[j] = new PrefOption(opts[j].getSaveString(), opts[j].getDisplayGetter());
         }
 
         ObservableList<PrefOption> radix = FXCollections.observableArrayList();
@@ -399,10 +399,10 @@ public class PreferencesController extends AbstractController {
         //default value
         for (PrefOption pref: FirstRadixCmbx.getItems()) {
 
-            //if (pref.getValue().equals(AppPreferences.POKE_WIRE_RADIX1.get())) {
-            //    FirstRadixCmbx.setValue(pref);
-            //    break;
-            //}
+            if (pref.getValue().equals(AppPreferences.POKE_WIRE_RADIX1.get())) {
+                FirstRadixCmbx.setValue(pref);
+                break;
+            }
 
         }
 
@@ -421,10 +421,10 @@ public class PreferencesController extends AbstractController {
         //default value
         for (PrefOption pref: SecondRadixCmbx.getItems()) {
 
-            //if (pref.getValue().equals(AppPreferences.POKE_WIRE_RADIX2.get())) {
-             //   SecondRadixCmbx.setValue(pref);
-            //    break;
-           // }
+            if (pref.getValue().equals(AppPreferences.POKE_WIRE_RADIX2.get())) {
+                SecondRadixCmbx.setValue(pref);
+                break;
+            }
 
         }
 

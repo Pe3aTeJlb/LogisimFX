@@ -22,11 +22,11 @@ import javafx.scene.image.ImageView;
 
 public class Clock extends InstanceFactory {
 	public static final Attribute<Integer> ATTR_HIGH
-		= new DurationAttribute("highDuration", Strings.getter("clockHighAttr"),
+		= new DurationAttribute("highDuration", LC.createStringBinding("clockHighAttr"),
 				1, Integer.MAX_VALUE);
 
 	public static final Attribute<Integer> ATTR_LOW
-		= new DurationAttribute("lowDuration", Strings.getter("clockLowAttr"),
+		= new DurationAttribute("lowDuration", LC.createStringBinding("clockLowAttr"),
 				1, Integer.MAX_VALUE);
 
 	public static final Clock FACTORY = new Clock();

@@ -5,6 +5,7 @@ package com.cburch.LogisimFX.circuit;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.util.StringGetter;
+import javafx.beans.binding.StringBinding;
 
 public abstract class RadixOption extends AttributeOption {
 	public static final RadixOption RADIX_2 = new Radix2();
@@ -17,7 +18,7 @@ public abstract class RadixOption extends AttributeOption {
 		RADIX_2, RADIX_8, RADIX_10_SIGNED, RADIX_10_UNSIGNED, RADIX_16
 	};
 	public static final Attribute<RadixOption> ATTRIBUTE
-		= Attributes.forOption("radix", Strings.getter("radixAttr"), OPTIONS);
+		= Attributes.forOption("radix", LC.createStringBinding("radixAttr"), OPTIONS);
 	
 	public static RadixOption decode(String value) {
 		for (RadixOption opt : OPTIONS) {
@@ -29,15 +30,15 @@ public abstract class RadixOption extends AttributeOption {
 	}
 	
 	private String saveName;
-	private StringGetter displayGetter;
+	private StringBinding displayGetter;
 
-	private RadixOption(String saveName, StringGetter displayGetter) {
+	private RadixOption(String saveName, StringBinding displayGetter) {
 		super(saveName, displayGetter);
 		this.saveName = saveName;
 		this.displayGetter = displayGetter;
 	}
 	
-	public StringGetter getDisplayGetter() {
+	public StringBinding getDisplayGetter() {
 		return displayGetter;
 	}
 	
@@ -63,7 +64,7 @@ public abstract class RadixOption extends AttributeOption {
 	
 	private static class Radix2 extends RadixOption {
 		private Radix2() {
-			super("2", Strings.getter("radix2"));
+			super("2", LC.createStringBinding("radix2"));
 		}
 		
 		@Override
@@ -86,7 +87,7 @@ public abstract class RadixOption extends AttributeOption {
 	
 	private static class Radix10Signed extends RadixOption {
 		private Radix10Signed() {
-			super("10signed", Strings.getter("radix10Signed"));
+			super("10signed", LC.createStringBinding("radix10Signed"));
 		}
 		
 		@Override
@@ -114,7 +115,7 @@ public abstract class RadixOption extends AttributeOption {
 	
 	private static class Radix10Unsigned extends RadixOption {
 		private Radix10Unsigned() {
-			super("10unsigned", Strings.getter("radix10Unsigned"));
+			super("10unsigned", LC.createStringBinding("radix10Unsigned"));
 		}
 		
 		@Override
@@ -141,7 +142,7 @@ public abstract class RadixOption extends AttributeOption {
 	
 	private static class Radix8 extends RadixOption {
 		private Radix8() {
-			super("8", Strings.getter("radix8"));
+			super("8", LC.createStringBinding("radix8"));
 		}
 		
 		@Override
@@ -162,7 +163,7 @@ public abstract class RadixOption extends AttributeOption {
 	
 	private static class Radix16 extends RadixOption {
 		private Radix16() {
-			super("16", Strings.getter("radix16"));
+			super("16", LC.createStringBinding("radix16"));
 		}
 		
 		@Override

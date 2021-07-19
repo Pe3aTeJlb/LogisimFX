@@ -22,14 +22,14 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 	public static final int WIDTH = 3;
 
 	public static final AttributeOption VALUE_HORZ
-		= new AttributeOption("horz", Strings.getter("wireDirectionHorzOption"));
+		= new AttributeOption("horz", LC.createStringBinding("wireDirectionHorzOption"));
 	public static final AttributeOption VALUE_VERT
-		= new AttributeOption("vert", Strings.getter("wireDirectionVertOption"));
+		= new AttributeOption("vert", LC.createStringBinding("wireDirectionVertOption"));
 	public static final Attribute<AttributeOption> dir_attr
-		= Attributes.forOption("direction", Strings.getter("wireDirectionAttr"),
+		= Attributes.forOption("direction", LC.createStringBinding("wireDirectionAttr"),
 			new AttributeOption[] { VALUE_HORZ, VALUE_VERT });
 	public static final Attribute<Integer> len_attr
-		= Attributes.forInteger("length", Strings.getter("wireLengthAttr"));
+		= Attributes.forInteger("length", LC.createStringBinding("wireLengthAttr"));
 
 	private static final List<Attribute<?>> ATTRIBUTES
 		= Arrays.asList(new Attribute<?>[] { dir_attr, len_attr });
