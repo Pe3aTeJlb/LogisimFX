@@ -3,13 +3,11 @@
 
 package com.cburch.LogisimFX.std.wiring;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -25,8 +23,10 @@ import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.Icons;
 import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.circuit.RadixOption;
+
 import com.cburch.logisim.gui.main.Canvas;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 
 public class Pin extends InstanceFactory {
 

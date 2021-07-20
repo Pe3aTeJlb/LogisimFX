@@ -1,29 +1,30 @@
 package com.cburch.LogisimFX.newgui.AboutFrame;
 
+import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.newgui.AbstractController;
 import com.cburch.LogisimFX.Main;
 import com.cburch.LogisimFX.data.Value;
+
+import com.sun.javafx.tk.FontMetrics;
+import com.sun.javafx.tk.Toolkit;
+
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.ArcType;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
-import java.net.URL;
 import java.util.ArrayList;
 
 
 public class About extends AbstractController {
-
-    @FXML
-    private AnchorPane root;
 
     @FXML
     private Canvas cv;
@@ -34,25 +35,18 @@ public class About extends AbstractController {
 
     private AnimationTimer update;
 
-    private final Color fadeColor = Color.rgb(255, 255, 255, 0);
-    private final Color headerColor = Color.rgb(143,0,0,0);
-    private final Color gateColor = Color.GREEN;
+    private final Color headerColor = Color.rgb(0,178,255,1);
+    private final Color gateColor = Color.DARKGRAY;
 
-    private final Font headerFont = new Font("Monospaced",72);
-    private final Font versionFont = new Font("Serif", 32);
-    private final Font copyrightFont = new Font("Serif", 18);
-
-    /*
-    private final Font headerFont = new Font("Monospaced", Font.BOLD, 72);
-    private final Font versionFont = new Font("Serif", Font.PLAIN | Font.ITALIC, 32);
-    private final Font copyrightFont = new Font("Serif", Font.ITALIC, 18);
-     */
+    private final Font headerFont = Font.font("Monospaced",FontWeight.BOLD, FontPosture.ITALIC,72);
+    private final Font versionFont = Font.font("Serif", FontWeight.NORMAL, FontPosture.ITALIC, 32);
+    private final Font copyrightFont = Font.font("Serif", FontWeight.NORMAL, FontPosture.ITALIC, 18);
 
     private Value upper = Value.FALSE;
     private Value lower = Value.TRUE;
 
     private final int CircOffsetX = 20;
-    private final int CircOffsetY = 35;
+    private final int CircOffsetY = 40;
 
 
     /** Time to spend freezing the credits before after after scrolling */
@@ -63,8 +57,12 @@ public class About extends AbstractController {
 
     /** Path to Hendrix College's logo - if you want your own logo included,
      * please add it separately rather than replacing this. */
-    private static final String HENDRIX_PATH = "Logisimfx/resources/hendrix.png";
-    private static final int HENDRIX_WIDTH = 50;
+    private static final String HENDRIX_PATH = "hendrix.png";
+    private static final int HENDRIX_WIDTH = 80;
+
+    /** Path to Pplos Stuido logo  */
+    private static final String PPLOS_PATH = "pplosstudio.png";
+    private static final int PPLOS_WIDTH = 80;
 
     private static class CreditsLine {
         private int y;
@@ -89,12 +87,10 @@ public class About extends AbstractController {
     private ArrayList<About.CreditsLine> lines = new ArrayList<>();
 
     private Color[] colorBase;
-    private Paint[] paintSteady;
     private Font[] font;
 
     private int scroll;
     private long start;
-    private float fadeStop;
 
     private int initialLines; // number of lines to show in initial freeze
     private int initialHeight; // computed in code based on above
@@ -104,21 +100,7 @@ public class About extends AbstractController {
     @FXML
     public void initialize(){
 
-        start = System.currentTimeMillis();
-
         g = cv.getGraphicsContext2D();
-
-        setCreditsLines();
-
-        update = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                start = System.currentTimeMillis();
-                Update();
-            }
-        };
-
-        update.start();
 
     }
 
@@ -129,19 +111,28 @@ public class About extends AbstractController {
         stage.setTitle("LogisimFX " + Main.VERSION_NAME);
         stage.setResizable(false);
 
+        updateCanvasSize();
+
+        setCreditsLines();
+
+        update = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                Update();
+            }
+        };
+
+        start = System.currentTimeMillis();
+        update.start();
+
     }
 
     private void setCreditsLines(){
 
         scroll = 0;
 
-        int prefWidth = (int)root.getWidth();
-        int prefHeight = (int)root.getHeight();
-
-        fadeStop = (float) (prefHeight / 4.0);
-
         colorBase = new Color[] {
-                Color.rgb(143,0,0),
+                Color.rgb(143, 0, 0),
                 Color.rgb(48, 0, 96),
                 Color.rgb(48, 0, 96),
         };
@@ -151,17 +142,8 @@ public class About extends AbstractController {
                 new Font("Sans Serif", 18),
         };
 
-        paintSteady = new Paint[colorBase.length];
-        for (int i = 0; i < colorBase.length; i++) {
-            Color hue = colorBase[i];
-            Stop[] stops = { new Stop(0, derive(hue, 0)), new Stop(1, hue)};
-            paintSteady[i] = new LinearGradient(0.0f, 0.0f,
-                    0.0f, fadeStop, true,CycleMethod.NO_CYCLE, stops);
-        }
-
-        URL url = About.class.getClassLoader().getResource(HENDRIX_PATH);
-        Image hendrixLogo = null;
-
+        Image hendrixLogo = IconsManager.getLogo(HENDRIX_PATH);
+        Image pplosLogo = IconsManager.getLogo(PPLOS_PATH);
 
         // Logisim's policy concerning who is given credit:
         // Past contributors are not acknowledged in the About dialog for the current
@@ -169,12 +151,27 @@ public class About extends AbstractController {
         // Guide. Current contributors appear in both locations.
 
         linesHeight = 0; // computed in paintComponent
-        lines.add(new About.CreditsLine(1, "www.cburch.com/logisim/"));
-        lines.add(new About.CreditsLine(0, LC.get("creditsRoleLead"),
-                hendrixLogo, HENDRIX_WIDTH));
-        lines.add(new About.CreditsLine(1, "Carl Burch"));
-        lines.add(new About.CreditsLine(2, "Hendrix College"));
+
+        lines.add(new About.CreditsLine(1, "sites.google.com/view/pplosstudio"));
+        lines.add(new About.CreditsLine(1, "Pplos Studio",pplosLogo, PPLOS_WIDTH));
+        lines.add(new About.CreditsLine(1, " "));
+        lines.add(new About.CreditsLine(1, " "));
+
         initialLines = lines.size();
+
+        lines.add(new About.CreditsLine(0, LC.get("creditsRoleLead")));
+        lines.add(new About.CreditsLine(1, "Pe3aTeJlb"));
+
+        lines.add(new About.CreditsLine(0, LC.get("creditsRoleProgrammer")));
+        lines.add(new About.CreditsLine(1, "TexHoMa|‾"));
+
+        lines.add(new About.CreditsLine(0, LC.get("creditsRoleProgrammer")));
+        lines.add(new About.CreditsLine(1, "Kolhozniy punk"));
+
+        lines.add(new About.CreditsLine(1, ""));
+        lines.add(new About.CreditsLine(1, ""));
+        lines.add(new About.CreditsLine(1, ""));
+
         lines.add(new About.CreditsLine(0, LC.get("creditsRoleGerman")));
         lines.add(new About.CreditsLine(1, "Uwe Zimmerman"));
         lines.add(new About.CreditsLine(2, "Uppsala universitet"));
@@ -193,8 +190,11 @@ public class About extends AbstractController {
         lines.add(new About.CreditsLine(2, "\u041C\u043E\u0441\u043A\u043E\u0432\u0441\u043A\u0438\u0439 \u0433\u043E\u0441\u0443\u0434\u0430\u0440\u0441\u0442\u0432\u0435\u043D\u043D\u044B\u0439"));
         lines.add(new About.CreditsLine(2, "\u0443\u043D\u0438\u0432\u0435\u0440\u0441\u0438\u0442\u0435\u0442 \u043F\u0435\u0447\u0430\u0442\u0438"));
 
+
+
         /* If you fork Logisim, feel free to change the above lines, but
          * please do not change these last four lines! */
+
         lines.add(new About.CreditsLine(0, LC.get("creditsRoleOriginal"),
                 hendrixLogo, HENDRIX_WIDTH));
         lines.add(new About.CreditsLine(1, "Carl Burch"));
@@ -203,7 +203,7 @@ public class About extends AbstractController {
 
     }
 
-    private Color derive(Color base, int alpha) {
+    private Color derive(Color base, float alpha) {
         return new Color(base.getRed(), base.getGreen(), base.getBlue(), alpha);
     }
 
@@ -214,35 +214,29 @@ public class About extends AbstractController {
 
         updateCanvasSize();
 
-        setScroll();
-        updateCredits();
-
-
         long elapse = System.currentTimeMillis() - start;
         int count = (int) (elapse / 500) % 4;
+        scroll = (int)elapse;
+
         upper = (count == 2 || count == 3) ? Value.TRUE : Value.FALSE;
         lower = (count == 1 || count == 2) ? Value.TRUE : Value.FALSE;
+
+        g.setLineWidth(4);
+
+        drawWires(50, 100);
 
         g.setFill(gateColor);
         g.setStroke(gateColor);
 
-        drawWires(50, 87);
         drawNot(CircOffsetX, CircOffsetY, 70+CircOffsetX, 10+CircOffsetY);
         drawNot(CircOffsetX, CircOffsetY, 70+CircOffsetX, 110+CircOffsetY);
         drawAnd(CircOffsetX, CircOffsetY, 130+CircOffsetX, 30+CircOffsetY);
         drawAnd(CircOffsetX, CircOffsetY, 130+CircOffsetX, 90+CircOffsetY);
         drawOr(CircOffsetX, CircOffsetY, 220+CircOffsetX, 60+CircOffsetY);
 
+        updateCredits();
 
         drawVersion(5,5);
-
-    }
-
-    private void setScroll(){
-
-        long elapse = System.currentTimeMillis() - start;
-        scroll = (int)elapse;
-
     }
 
     private void updateCanvasSize(){
@@ -257,53 +251,40 @@ public class About extends AbstractController {
 
     private void updateCredits(){
 
+        FontMetrics[] fms = new FontMetrics[font.length];
+        for (int i = 0; i < fms.length; i++) {
+            fms[i] = Toolkit.getToolkit().getFontLoader().getFontMetrics(font[i]);
+        }
+
         if (linesHeight == 0) {
 
-            int y = 3*height/4;
+            int y = 0;
             int index = -1;
 
             for (About.CreditsLine line : lines) {
 
-                Font f = font[line.type];
-
                 index++;
+
                 if (index == initialLines) initialHeight = y;
                 if (line.type == 0) y += 10;
 
+                FontMetrics fm = fms[line.type];
 
-                line.y = y + (int)f.getSize();
-                y += (int)f.getSize();
+                line.y = y + (int)fm.getAscent();
+                y += (int)fm.getLineHeight();
+
             }
             linesHeight = y;
-
         }
 
-        Paint[] paint = paintSteady;
-        int yPos = 0;
-        int initY = height-100;
-        int maxY = height/4;
+        int yPos;
+        int initY =  Math.min(0, initialHeight - height);
+        int maxY = linesHeight - height - initY;
         int totalMillis = 2 * MILLIS_FREEZE + (linesHeight + height) * MILLIS_PER_PIXEL;
         int offs = scroll % totalMillis;
 
         if (offs >= 0 && offs < MILLIS_FREEZE) {
-
-            // frozen before starting the credits scroll
-            int a = 255 * (MILLIS_FREEZE - offs) / MILLIS_FREEZE;
-            if (a > 245) {
-                paint = null;
-            } else if (a < 15) {
-                paint = paintSteady;
-            } else {
-                paint = new Paint[colorBase.length];
-                for (int i = 0; i < paint.length; i++) {
-                    Color hue = colorBase[i];
-                    Stop[] stops = { new Stop(150, derive(hue, 0)), new Stop(300, hue)};
-                    paint[i] =new LinearGradient(0.0f, 0.0f,
-                            0.0f, fadeStop, true,CycleMethod.NO_CYCLE, stops);
-                }
-            }
             yPos = initY;
-
         } else if (offs < MILLIS_FREEZE + maxY * MILLIS_PER_PIXEL) {
             // scrolling through credits
             yPos = initY + (offs - MILLIS_FREEZE) / MILLIS_PER_PIXEL;
@@ -316,38 +297,45 @@ public class About extends AbstractController {
         } else {
             // scrolling next credits onto screen
             int millis = offs - 2 * MILLIS_FREEZE - (linesHeight - initY) * MILLIS_PER_PIXEL;
-            paint = null;
-            yPos = height + millis / MILLIS_PER_PIXEL;
+            yPos = -height + millis / MILLIS_PER_PIXEL;
         }
 
-        int centerX = (int)cv.getWidth() / 5;
-        maxY = 3*height/4;
+        int centerX = (int)cv.getWidth()/2;
+        maxY = height/4;
 
         for (About.CreditsLine line : lines) {
 
             int y = line.y - yPos;
-            //if (y < -100 || y > maxY + 50) continue;
+            if (y < -100 || y < maxY) continue;
 
             int type = line.type;
 
-            if (paint == null) {
+            if((line.y - yPos < height-100)) {
+
+                float currPos = line.y - yPos;
+
+                float alpha = 1 - ((height-currPos-100)/(height-100-maxY));
+                alpha = Math.max(0,alpha);
+                alpha = Math.min(1,alpha);
+
+                Color fadeout = derive(colorBase[type], alpha);
+                g.setStroke(fadeout);
+                g.setFill(fadeout);
+
+            }else {
                 g.setStroke(colorBase[type]);
                 g.setFill(colorBase[type]);
-            } else {
-                g.setStroke(paint[type]);
-                g.setFill(paint[type]);
             }
 
             g.setFont(font[type]);
-            //int textWidth = fms[type].stringWidth(line.text);
-            int textWidth = 5;
-            System.out.println(line.y);
-            g.fillText(line.text, centerX, line.y - yPos);
+            int textWidth = (int)fms[type].computeStringWidth(line.text);
+
+            g.fillText(line.text, centerX-textWidth/2,  line.y - yPos);
 
             Image img = line.img;
             if (img != null) {
                 int x = width - line.imgWidth;
-                int top = y - (int)font[type].getSize();
+                int top = y - (int) fms[type].getAscent();
                 g.drawImage(img, x,top);
             }
 
@@ -475,8 +463,8 @@ public class About extends AbstractController {
 
         String str;
 
-        g.setStroke(Color.RED);
-        g.setFill(Color.RED);
+        g.setStroke(headerColor);
+        g.setFill(headerColor);
 
         g.setFont(headerFont);
         g.fillText("LogisimFX", x, y + 60);
@@ -490,6 +478,8 @@ public class About extends AbstractController {
         g.fillText(str, x+150, y + 90);
     }
 
+
+
     private int toX(int x0, int offs) {
         return x0 + offs * 3 / 2;
     }
@@ -502,9 +492,7 @@ public class About extends AbstractController {
         return offs * 3 / 2;
     }
 
-
-    private void clearRect40K()
-    {
+    private void clearRect40K() {
 
         g.setFill(Color.WHITE);
         g.fillRect(0,0,(cv.getWidth())*2,(cv.getHeight())*2);
@@ -512,7 +500,6 @@ public class About extends AbstractController {
 
     @Override
     public void onClose() {
-
         update.stop();
         System.out.println("About closed");
     }

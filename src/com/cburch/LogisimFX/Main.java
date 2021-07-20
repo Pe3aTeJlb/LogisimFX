@@ -15,7 +15,8 @@ public class Main extends Application {
 
     public static final LogisimVersion VERSION = LogisimVersion.get(2, 7, 1);
     public static final String VERSION_NAME = VERSION.toString();
-    public static final int COPYRIGHT_YEAR = 2011;
+    public static final int COPYRIGHT_YEAR = 2021;
+
     private static String[] arguments;
 
     public static void main(String[] args) {
@@ -26,28 +27,6 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        FXMLLoader  loader = new FXMLLoader(ClassLoader.getSystemResource(
-                "com/cburch/LogisimFX/newgui/AboutFrame/About.fxml"));
-        Parent root = null;
-
-        try {
-            root = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        Stage newStage = new Stage();
-        newStage.setScene(new Scene(root, 450, 350));
-
-        AbstractController c = loader.getController();
-        c.postInitialization(newStage);
-
-        newStage.getIcons().add(IconsManager.LogisimFX);
-
-        newStage.show();
-
-
-        /*
         Startup startup = Startup.parseArgs(arguments);
 
         if (startup == null) {
@@ -55,8 +34,6 @@ public class Main extends Application {
         } else {
             startup.run();
         }
-
-         */
 
     }
 }

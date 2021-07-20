@@ -9,11 +9,11 @@ public class IconsManager {
 
     private static final String path = "com/cburch/LogisimFX/resources/icons";
 
+    private static final String logoPath = "com/cburch/LogisimFX/resources/logo";
+
     public static ImageView getIcon(String name) {
         return getImageView(name);
     }
-
-
 
     public static ImageView getImageView(String name) {
 
@@ -25,6 +25,13 @@ public class IconsManager {
     public static Image getImage(String name){
 
         Image img = new Image(path + "/" + name);
+        return img;
+
+    }
+
+    public static Image getLogo(String name){
+
+        Image img = new Image(logoPath + "/" + name);
         return img;
 
     }

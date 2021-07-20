@@ -96,7 +96,7 @@ public class MainFrameController extends AbstractController {
         AnchorPane canvasRoot = new AnchorPane();
         canvasRoot.setMinSize(0,0);
 
-        cv = new CustomCanvas(canvasRoot);
+        cv = new CustomCanvas(canvasRoot, proj);
 
 
         SplitPane mainSplitPane = new SplitPane(explorerSplitPane,canvasRoot);

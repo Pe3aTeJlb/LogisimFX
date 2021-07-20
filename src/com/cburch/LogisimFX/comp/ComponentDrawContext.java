@@ -17,30 +17,27 @@ import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.circuit.WireSet;
 import com.cburch.LogisimFX.prefs.AppPreferences;
+import javafx.scene.canvas.GraphicsContext;
 
 public class ComponentDrawContext {
 	private static final int PIN_OFFS = 2;
 	private static final int PIN_RAD = 4;
 
-	private java.awt.Component dest;
 	private Circuit circuit;
 	private CircuitState circuitState;
-	private Graphics base;
-	private Graphics g;
+	private GraphicsContext cvcontext;
 	private boolean showState;
 	private boolean showColor;
 	private boolean printView;
 	private WireSet highlightedWires;
 	private InstancePainter instancePainter;
 
-	public ComponentDrawContext(java.awt.Component dest,
+	public ComponentDrawContext(
 			Circuit circuit, CircuitState circuitState,
-			Graphics base, Graphics g, boolean printView) {
-		this.dest = dest;
+			GraphicsContext cvcontext, boolean printView) {
 		this.circuit = circuit;
 		this.circuitState = circuitState;
-		this.base = base;
-		this.g = g;
+		this.cvcontext = cvcontext;
 		this.showState = true;
 		this.showColor = true;
 		this.printView = printView;
@@ -48,10 +45,10 @@ public class ComponentDrawContext {
 		this.instancePainter = new InstancePainter(this, null);
 	}
 
-	public ComponentDrawContext(java.awt.Component dest,
+	public ComponentDrawContext(
 			Circuit circuit, CircuitState circuitState,
-			Graphics base, Graphics g) {
-		this(dest, circuit, circuitState, base, g, false);
+			GraphicsContext cvcontext) {
+		this(circuit, circuitState, cvcontext, false);
 	}
 	
 	public void setShowState(boolean value) {
@@ -84,10 +81,6 @@ public class ComponentDrawContext {
 
 	public boolean shouldDrawColor() {
 		return !printView && showColor;
-	}
-
-	public java.awt.Component getDestination() {
-		return dest;
 	}
 
 	public Graphics getGraphics() {
