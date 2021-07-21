@@ -15,6 +15,8 @@ import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.instance.InstancePainter;
 import com.cburch.LogisimFX.util.GraphicsUtil;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.shape.ArcType;
 
 public class PainterShaped {	
 	private static final GeneralPath PATH_NARROW;
@@ -65,15 +67,16 @@ public class PainterShaped {
 	private static HashMap<Integer,int[]> INPUT_LENGTHS = new HashMap<Integer,int[]>();
 	
 	static void paintAnd(InstancePainter painter, int width, int height) {
-		Graphics g = painter.getGraphics();
-		GraphicsUtil.switchToWidth(g, 2);
-		int[] xp = new int[] { -width / 2, -width + 1, -width + 1, -width / 2 }; 
-		int[] yp = new int[] { -width / 2, -width / 2, width / 2, width / 2 };
-		GraphicsUtil.drawCenteredArc(g, -width / 2, 0, width / 2, -90, 180);
+		GraphicsContext g = painter.getGraphics();
+		g.setLineWidth(2);
+		double[] xp = new double[] { -width / 2, -width + 1, -width + 1, -width / 2 };
+		double[] yp = new double[] { -width / 2, -width / 2, width / 2, width / 2 };
+		g.strokeArc(-width / 2, 0, width / 2,width / 2,-90, 180, ArcType.OPEN);
+		//GraphicsUtil.drawCenteredArc(g, -width / 2, 0, width / 2, -90, 180);
 
-		g.drawPolyline(xp, yp, 4);
+		g.strokePolyline(xp, yp, 4);
 		if (height > width) {
-			g.drawLine(-width + 1, -height / 2, -width + 1, height / 2);
+			g.strokeLine(-width + 1, -height / 2, -width + 1, height / 2);
 		}
 	}
 	

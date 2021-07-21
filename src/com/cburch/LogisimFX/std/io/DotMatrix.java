@@ -8,8 +8,9 @@ import com.cburch.LogisimFX.instance.*;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.std.wiring.DurationAttribute;
 import com.cburch.LogisimFX.util.GraphicsUtil;
+import javafx.scene.paint.Color;
 
-import java.awt.*;
+
 import java.util.Arrays;
 
 // TODO repropagate when rows/cols change
@@ -32,15 +33,15 @@ public class DotMatrix extends InstanceFactory {
 			new AttributeOption[] { INPUT_COLUMN, INPUT_ROW, INPUT_SELECT });
 	static final Attribute<Integer> ATTR_MATRIX_COLS
 		= Attributes.forIntegerRange("matrixcols",
-				Strings.getter("ioMatrixCols"), 1, Value.MAX_WIDTH);
+				LC.createStringBinding("ioMatrixCols"), 1, Value.MAX_WIDTH);
 	static final Attribute<Integer> ATTR_MATRIX_ROWS
 		= Attributes.forIntegerRange("matrixrows",
-				Strings.getter("ioMatrixRows"), 1, Value.MAX_WIDTH);
+			LC.createStringBinding("ioMatrixRows"), 1, Value.MAX_WIDTH);
 	static final Attribute<AttributeOption> ATTR_DOT_SHAPE
-		= Attributes.forOption("dotshape", Strings.getter("ioMatrixShape"),
+		= Attributes.forOption("dotshape", LC.createStringBinding("ioMatrixShape"),
 			new AttributeOption[] { SHAPE_CIRCLE, SHAPE_SQUARE });
 	static final Attribute<Integer> ATTR_PERSIST = new DurationAttribute("persist",
-			Strings.getter("ioMatrixPersistenceAttr"), 0, Integer.MAX_VALUE);
+			LC.createStringBinding("ioMatrixPersistenceAttr"), 0, Integer.MAX_VALUE);
 
 	public DotMatrix() {
 		super("DotMatrix", LC.createStringBinding("dotMatrixComponent"));
@@ -50,7 +51,7 @@ public class DotMatrix extends InstanceFactory {
 				ATTR_PERSIST, ATTR_DOT_SHAPE
 			}, new Object[] {
 				INPUT_COLUMN, Integer.valueOf(5), Integer.valueOf(7),
-				Color.GREEN, Color.DARK_GRAY, Integer.valueOf(0), SHAPE_SQUARE
+				Color.GREEN, Color.DARKGRAY, Integer.valueOf(0), SHAPE_SQUARE
 			});
 		setIcon("dotmat.gif");
 	}

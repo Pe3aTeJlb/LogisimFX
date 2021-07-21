@@ -122,7 +122,7 @@ public class Rom extends Mem {
 
 	private static class ContentsAttribute extends Attribute<MemContents> {
 		public ContentsAttribute() {
-			super("contents", Strings.getter("romContentsAttr"));
+			super("contents", LC.createStringBinding("romContentsAttr"));
 		}
 
 		@Override

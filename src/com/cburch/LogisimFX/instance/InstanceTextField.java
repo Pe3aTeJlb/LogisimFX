@@ -3,7 +3,6 @@
 
 package com.cburch.LogisimFX.instance;
 
-import java.awt.Font;
 import java.awt.Graphics;
 
 import com.cburch.LogisimFX.comp.*;
@@ -14,6 +13,7 @@ import com.cburch.LogisimFX.tools.TextEditable;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.logisim.gui.main.Canvas;
 import com.cburch.LogisimFX.proj.Action;
+import javafx.scene.text.Font;
 
 public class InstanceTextField implements AttributeListener, TextFieldListener,
         TextEditable {
@@ -87,9 +87,7 @@ public class InstanceTextField implements AttributeListener, TextFieldListener,
 
 	void draw(Component comp, ComponentDrawContext context) {
 		if (field != null) {
-			Graphics g = context.getGraphics().create();
-			field.draw(g);
-			g.dispose();
+			field.draw(context.getGraphics());
 		}
 	}
 

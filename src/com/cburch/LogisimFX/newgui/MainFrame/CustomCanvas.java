@@ -3,14 +3,15 @@ package com.cburch.LogisimFX.newgui.MainFrame;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.circuit.WidthIncompatibilityData;
+import com.cburch.LogisimFX.circuit.WireSet;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.prefs.AppPreferences;
 import com.cburch.LogisimFX.proj.Project;
 
-import com.cburch.LogisimFX.tools.Tool;
 import com.cburch.LogisimFX.util.GraphicsUtil;
+
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -19,6 +20,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 
 import java.awt.event.MouseEvent;
+import java.util.Collections;
 import java.util.Set;
 
 public class CustomCanvas extends Canvas {
@@ -47,6 +49,9 @@ public class CustomCanvas extends Canvas {
     private AnimationTimer update;
 
     private Project proj;
+
+    private WireSet highlightedWires = WireSet.EMPTY;
+    private static final Set<Component> NO_COMPONENTS = Collections.emptySet();
 
     public CustomCanvas(AnchorPane rt, Project project){
 
@@ -88,8 +93,9 @@ public class CustomCanvas extends Canvas {
         );
 
         drawBackground();
-/*
+
         drawWithUserState();
+        /*
         drawWidthIncompatibilityData();
 
         Circuit circ = proj.getCurrentCircuit();
@@ -158,8 +164,9 @@ public class CustomCanvas extends Canvas {
     private void drawWithUserState() {
 
         Circuit circ = proj.getCurrentCircuit();
-        Selection sel = proj.getSelection();
-        Set<Component> hidden;
+        //Selection sel = proj.getSelection();
+        Set<Component> hidden = NO_COMPONENTS;
+        /*
         Tool dragTool = canvas.getDragTool();
         if (dragTool == null) {
             hidden = NO_COMPONENTS;
@@ -168,6 +175,8 @@ public class CustomCanvas extends Canvas {
             if (hidden == null) hidden = NO_COMPONENTS;
         }
 
+         */
+/*
         // draw halo around component whose attributes we are viewing
         boolean showHalo = AppPreferences.ATTRIBUTE_HALO.getBoolean();
         if (showHalo && haloedComponent != null && haloedCircuit == circ
@@ -179,22 +188,23 @@ public class CustomCanvas extends Canvas {
             int h = bds.getHeight();
             double a = com.cburch.logisim.gui.main.Canvas.SQRT_2 * w;
             double b = com.cburch.logisim.gui.main.Canvas.SQRT_2 * h;
-            g.drawOval((int) Math.round(bds.getX() + w/2.0 - a/2.0),
+            cvcontext.fillOval().drawOval((int) Math.round(bds.getX() + w/2.0 - a/2.0),
                     (int) Math.round(bds.getY() + h/2.0 - b/2.0),
                     (int) Math.round(a), (int) Math.round(b));
             GraphicsUtil.switchToWidth(g, 1);
             g.setColor(java.awt.Color.BLACK);
         }
 
+
+ */
         // draw circuit and selection
         CircuitState circState = proj.getCircuitState();
         boolean printerView = AppPreferences.PRINTER_VIEW.getBoolean();
-        ComponentDrawContext context = new com.cburch.logisim.comp.ComponentDrawContext(canvas,
-                circ, circState, base, g, printerView);
+        ComponentDrawContext context = new ComponentDrawContext(circ, circState, cvcontext, printerView);
         context.setHighlightedWires(highlightedWires);
         circ.draw(context, hidden);
-        sel.draw(context, hidden);
-
+        //sel.draw(context, hidden);
+/*
         // draw tool
         Tool tool = dragTool != null ? dragTool : proj.getTool();
         if (tool != null && !canvas.isPopupMenuUp()) {
@@ -204,6 +214,8 @@ public class CustomCanvas extends Canvas {
             gCopy.dispose();
         }
 
+
+ */
     }
 
     private void drawWidthIncompatibilityData() {

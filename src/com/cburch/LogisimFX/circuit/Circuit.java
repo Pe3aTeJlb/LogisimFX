@@ -14,7 +14,6 @@ import com.cburch.LogisimFX.std.wiring.Clock;
 import com.cburch.LogisimFX.util.CollectionUtil;
 import com.cburch.LogisimFX.util.EventSourceWeakSupport;
 
-import java.awt.*;
 import java.util.List;
 import java.util.*;
 
@@ -395,28 +394,16 @@ public class Circuit {
 	// Graphics methods
 	//
 	public void draw(ComponentDrawContext context, Collection<Component> hidden) {
-		Graphics g = context.getGraphics();
-		Graphics g_copy = g.create();
-		context.setGraphics(g_copy);
+
 		wires.draw(context, hidden);
 
 		if (hidden == null || hidden.size() == 0) {
 			for (Component c : comps) {
-				Graphics g_new = g.create();
-				context.setGraphics(g_new);
-				g_copy.dispose();
-				g_copy = g_new;
-
 				c.draw(context);
 			}
 		} else {
 			for (Component c : comps) {
 				if (!hidden.contains(c)) {
-					Graphics g_new = g.create();
-					context.setGraphics(g_new);
-					g_copy.dispose();
-					g_copy = g_new;
-
 					try {
 						c.draw(context);
 					} catch (RuntimeException e) {
@@ -426,8 +413,7 @@ public class Circuit {
 				}
 			}
 		}
-		context.setGraphics(g);
-		g_copy.dispose();
+
 	}
 
 	//

@@ -25,6 +25,7 @@ import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.circuit.RadixOption;
 
 import com.cburch.logisim.gui.main.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
@@ -90,7 +91,7 @@ public class Pin extends InstanceFactory {
 		paintIconBase(painter);
 		BitWidth w = painter.getAttributeValue(StdAttr.WIDTH);
 		if (!w.equals(BitWidth.ONE)) {
-			Graphics g = painter.getGraphics();
+			GraphicsContext g = painter.getGraphics();
 			g.setColor(ICON_WIDTH_COLOR);
 			g.setFont(ICON_WIDTH_FONT);
 			GraphicsUtil.drawCenteredText(g, "" + w.getWidth(), 10, 9);

@@ -9,8 +9,7 @@ import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.circuit.WireSet;
 import com.cburch.LogisimFX.proj.Project;
-
-import java.awt.*;
+import javafx.scene.canvas.GraphicsContext;
 
 public class InstancePainter implements InstanceState {
 	private ComponentDrawContext context;
@@ -61,7 +60,7 @@ public class InstancePainter implements InstanceState {
 		return context.getDestination();
 	}
 
-	public Graphics getGraphics() {
+	public GraphicsContext getGraphics() {
 		return context.getGraphics();
 	}
 

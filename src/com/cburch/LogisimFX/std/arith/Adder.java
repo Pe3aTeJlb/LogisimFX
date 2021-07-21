@@ -8,8 +8,8 @@ import com.cburch.LogisimFX.instance.*;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
-
-import java.awt.*;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class Adder extends InstanceFactory {
 	static final int PER_DELAY = 1;
@@ -64,10 +64,11 @@ public class Adder extends InstanceFactory {
 	
 	@Override
 	public void paintInstance(InstancePainter painter) {
-		Graphics g = painter.getGraphics();
+		GraphicsContext g = painter.getGraphics();
 		painter.drawBounds();
 
-		g.setColor(Color.GRAY);
+		g.setFill(Color.GRAY);
+		g.setStroke(Color.GRAY);
 		painter.drawPort(IN0);
 		painter.drawPort(IN1);
 		painter.drawPort(OUT);
