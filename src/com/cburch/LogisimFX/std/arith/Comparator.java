@@ -9,6 +9,7 @@ import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 
 public class Comparator extends InstanceFactory {
+
 	private static final AttributeOption SIGNED_OPTION
 		= new AttributeOption("twosComplement", "twosComplement", LC.createStringBinding("twosComplementOption"));
 	private static final AttributeOption UNSIGNED_OPTION
@@ -24,6 +25,7 @@ public class Comparator extends InstanceFactory {
 	private static final int LT    = 4;
 
 	public Comparator() {
+
 		super("Comparator", LC.createStringBinding("comparatorComponent"));
 		setAttributes(new Attribute[] { StdAttr.WIDTH, MODE_ATTRIBUTE },
 				new Object[] { BitWidth.create(8), SIGNED_OPTION });
@@ -37,16 +39,18 @@ public class Comparator extends InstanceFactory {
 		ps[GT]  = new Port(  0, -10, Port.OUTPUT, 1);
 		ps[EQ]  = new Port(  0,   0, Port.OUTPUT, 1);
 		ps[LT]  = new Port(  0,  10, Port.OUTPUT, 1);
-		ps[IN0].setToolTip(Strings.getter("comparatorInputATip"));
-		ps[IN1].setToolTip(Strings.getter("comparatorInputBTip"));
-		ps[GT].setToolTip(Strings.getter("comparatorGreaterTip"));
-		ps[EQ].setToolTip(Strings.getter("comparatorEqualTip"));
-		ps[LT].setToolTip(Strings.getter("comparatorLessTip"));
+		ps[IN0].setToolTip(LC.createStringBinding("comparatorInputATip"));
+		ps[IN1].setToolTip(LC.createStringBinding("comparatorInputBTip"));
+		ps[GT].setToolTip(LC.createStringBinding("comparatorGreaterTip"));
+		ps[EQ].setToolTip(LC.createStringBinding("comparatorEqualTip"));
+		ps[LT].setToolTip(LC.createStringBinding("comparatorLessTip"));
 		setPorts(ps);
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		// get attributes
 		BitWidth dataWidth = state.getAttributeValue(StdAttr.WIDTH);
 
@@ -95,16 +99,19 @@ public class Comparator extends InstanceFactory {
 		state.setPort(GT, gt, delay);
 		state.setPort(EQ, eq, delay);
 		state.setPort(LT, lt, delay);
+
 	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
+
 		painter.drawBounds();
 		painter.drawPort(IN0);
 		painter.drawPort(IN1);
 		painter.drawPort(GT, ">", Direction.WEST);
 		painter.drawPort(EQ, "=", Direction.WEST);
 		painter.drawPort(LT, "<", Direction.WEST);
+
 	}
 	
 	
@@ -120,4 +127,5 @@ public class Comparator extends InstanceFactory {
 	protected void instanceAttributeChanged(Instance instance, Attribute<?> attr) {
 		instance.fireInvalidated();
 	}
+
 }

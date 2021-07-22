@@ -7,11 +7,13 @@ import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
-import com.cburch.LogisimFX.util.GraphicsUtil;
+
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Adder extends InstanceFactory {
+
 	static final int PER_DELAY = 1;
 
 	private static final int IN0   = 0;
@@ -37,16 +39,18 @@ public class Adder extends InstanceFactory {
 		ps[OUT]   = new Port(  0,   0, Port.OUTPUT, StdAttr.WIDTH);
 		ps[C_IN]  = new Port(-20, -20, Port.INPUT,  1);
 		ps[C_OUT] = new Port(-20,  20, Port.INPUT,  1);
-		ps[IN0].setToolTip(Strings.getter("adderInputTip"));
-		ps[IN1].setToolTip(Strings.getter("adderInputTip"));
-		ps[OUT].setToolTip(Strings.getter("adderOutputTip"));
-		ps[C_IN].setToolTip(Strings.getter("adderCarryInTip"));
-		ps[C_OUT].setToolTip(Strings.getter("adderCarryOutTip"));
+		ps[IN0].setToolTip(LC.createStringBinding("adderInputTip"));
+		ps[IN1].setToolTip(LC.createStringBinding("adderInputTip"));
+		ps[OUT].setToolTip(LC.createStringBinding("adderOutputTip"));
+		ps[C_IN].setToolTip(LC.createStringBinding("adderCarryInTip"));
+		ps[C_OUT].setToolTip(LC.createStringBinding("adderCarryOutTip"));
 		setPorts(ps);
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		// get attributes
 		BitWidth dataWidth = state.getAttributeValue(StdAttr.WIDTH);
 
@@ -60,10 +64,12 @@ public class Adder extends InstanceFactory {
 		int delay = (dataWidth.getWidth() + 2) * PER_DELAY;
 		state.setPort(OUT,   outs[0], delay);
 		state.setPort(C_OUT, outs[1], delay);
+
 	}
 	
 	@Override
 	public void paintInstance(InstancePainter painter) {
+
 		GraphicsContext g = painter.getGraphics();
 		painter.drawBounds();
 
@@ -78,14 +84,17 @@ public class Adder extends InstanceFactory {
 		Location loc = painter.getLocation();
 		int x = loc.getX();
 		int y = loc.getY();
-		GraphicsUtil.switchToWidth(g, 2);
-		g.setColor(Color.BLACK);
-		g.drawLine(x - 15, y, x - 5, y);
-		g.drawLine(x - 10, y - 5, x - 10, y + 5);
-		GraphicsUtil.switchToWidth(g, 1);
+		g.setLineWidth(2);
+		g.setFill(Color.BLACK);
+		g.setStroke(Color.BLACK);
+		g.strokeLine(x - 15, y, x - 5, y);
+		g.strokeLine(x - 10, y - 5, x - 10, y + 5);
+		g.setLineWidth(1);
+
 	}
 
 	static Value[] computeSum(BitWidth width, Value a, Value b, Value c_in) {
+
 		int w = width.getWidth();
 		if (c_in == Value.UNKNOWN || c_in == Value.NIL) c_in = Value.FALSE;
 		if (a.isFullyDefined() && b.isFullyDefined() && c_in.isFullyDefined()) {
@@ -130,5 +139,7 @@ public class Adder extends InstanceFactory {
 			}
 			return new Value[] { Value.create(bits), carry };
 		}
+
 	}
+
 }

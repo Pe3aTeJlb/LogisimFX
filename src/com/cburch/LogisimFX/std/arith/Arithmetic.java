@@ -9,6 +9,7 @@ import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.FactoryDescription;
 import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.tools.Tool;
+
 import javafx.beans.binding.StringBinding;
 
 public class Arithmetic extends Library {

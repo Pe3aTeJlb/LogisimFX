@@ -9,15 +9,16 @@ import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.IntegerConfigurator;
 import com.cburch.LogisimFX.tools.key.JoinedConfigurator;
-import com.cburch.LogisimFX.util.GraphicsUtil;
 
-import java.awt.*;
+import javafx.scene.canvas.GraphicsContext;
 
 public class BitAdder extends InstanceFactory {
+
 	static final Attribute<Integer> NUM_INPUTS
 		= Attributes.forIntegerRange("inputs", LC.createStringBinding("gateInputsAttr"), 1, 32);
 	
 	public BitAdder() {
+
 		super("BitAdder", LC.createStringBinding("bitAdderComponent"));
 		setAttributes(new Attribute[] {
 				StdAttr.WIDTH, NUM_INPUTS
@@ -28,33 +29,41 @@ public class BitAdder extends InstanceFactory {
 				new IntegerConfigurator(NUM_INPUTS, 1, 32, 0),
 				new BitWidthConfigurator(StdAttr.WIDTH)));
 		setIcon("bitadder.gif");
+
 	}
 	
 	@Override
 	public Bounds getOffsetBounds(AttributeSet attrs) {
+
 		int inputs = attrs.getValue(NUM_INPUTS).intValue();
 		int h = Math.max(40, 10 * inputs);
 		int y = inputs < 4 ? 20 : (((inputs - 1) / 2) * 10 + 5);
 		return Bounds.create(-40, -y, 40, h);
+
 	}
 	
 	@Override
 	protected void configureNewInstance(Instance instance) {
+
 		configurePorts(instance);
 		instance.addAttributeListener();
+
 	}
 	
 	@Override
 	protected void instanceAttributeChanged(Instance instance, Attribute<?> attr) {
+
 		if (attr == StdAttr.WIDTH) {
 			configurePorts(instance);
 		} else if (attr == NUM_INPUTS) {
 			configurePorts(instance);
 			instance.recomputeBounds();
 		}
+
 	}
 	
 	private void configurePorts(Instance instance) {
+
 		BitWidth inWidth = instance.getAttributeValue(StdAttr.WIDTH);
 		int inputs = instance.getAttributeValue(NUM_INPUTS).intValue();
 		int outWidth = computeOutputBits(inWidth.getWidth(), inputs);
@@ -70,23 +79,27 @@ public class BitAdder extends InstanceFactory {
 
 		Port[] ps = new Port[inputs + 1];
 		ps[0] = new Port(0, 0, Port.OUTPUT, BitWidth.create(outWidth));
-		ps[0].setToolTip(Strings.getter("bitAdderOutputManyTip"));
+		ps[0].setToolTip(LC.createStringBinding("bitAdderOutputManyTip"));
 		for (int i = 0; i < inputs; i++) {
 			ps[i + 1] = new Port(-40, y + i * dy, Port.INPUT, inWidth);
-			ps[i + 1].setToolTip(Strings.getter("bitAdderInputTip"));
+			ps[i + 1].setToolTip(LC.createStringBinding("bitAdderInputTip"));
 		}
 		instance.setPorts(ps);
+
 	}
 	
 	private int computeOutputBits(int width, int inputs) {
+
 		int maxBits = width * inputs;
 		int outWidth = 1;
 		while ((1 << outWidth) <= maxBits) outWidth++;
 		return outWidth;
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		int width = state.getAttributeValue(StdAttr.WIDTH).getWidth();
 		int inputs = state.getAttributeValue(NUM_INPUTS).intValue();
 
@@ -122,21 +135,24 @@ public class BitAdder extends InstanceFactory {
 
 		int delay = out.length * Adder.PER_DELAY;
 		state.setPort(0, Value.create(out), delay);
+
 	}
 	
 	@Override
 	public void paintInstance(InstancePainter painter) {
-		Graphics g = painter.getGraphics();
+
+		GraphicsContext g = painter.getGraphics();
 		painter.drawBounds();
 		painter.drawPorts();
-		
-		GraphicsUtil.switchToWidth(g, 2);
+
+		g.setLineWidth(2);
 		Location loc = painter.getLocation();
 		int x = loc.getX() - 10;
 		int y = loc.getY();
-		g.drawLine(x - 2, y - 5, x - 2, y + 5);
-		g.drawLine(x + 2, y - 5, x + 2, y + 5);
-		g.drawLine(x - 5, y - 2, x + 5, y - 2);
-		g.drawLine(x - 5, y + 2, x + 5, y + 2);
+		g.strokeLine(x - 2, y - 5, x - 2, y + 5);
+		g.strokeLine(x + 2, y - 5, x + 2, y + 5);
+		g.strokeLine(x - 5, y - 2, x + 5, y - 2);
+		g.strokeLine(x - 5, y + 2, x + 5, y + 2);
+
 	}
 }

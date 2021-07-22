@@ -8,12 +8,15 @@ import java.util.List;
 
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.*;
+
 import javafx.beans.binding.StringBinding;
 
 public class Base extends Library {
+
 	private List<Tool> tools = null;
 
 	public Base() {
+
 		SelectTool select = new SelectTool();
 		WiringTool wiring = new WiringTool();
 		
@@ -26,6 +29,7 @@ public class Base extends Library {
 			new MenuTool(),
 			new AddTool(Text.FACTORY),
 		});
+
 	}
 
 	@Override

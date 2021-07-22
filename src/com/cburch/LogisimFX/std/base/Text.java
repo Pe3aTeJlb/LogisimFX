@@ -12,7 +12,12 @@ import com.cburch.LogisimFX.instance.InstanceState;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+
 import java.awt.*;
+
 
 public class Text extends InstanceFactory {
 
@@ -44,9 +49,11 @@ public class Text extends InstanceFactory {
 	public static final Text FACTORY = new Text();
 
 	private Text() {
+
 		super("Text", LC.createStringBinding("textComponent"));
 		setIcon("text.gif");
 		setShouldSnap(false);
+
 	}
 	
 	@Override
@@ -56,6 +63,7 @@ public class Text extends InstanceFactory {
 
 	@Override
 	public Bounds getOffsetBounds(AttributeSet attrsBase) {
+
 		TextAttributes attrs = (TextAttributes) attrsBase;
 		String text = attrs.getText();
 		if (text == null || text.equals("")) {
@@ -68,13 +76,15 @@ public class Text extends InstanceFactory {
 			}
 			return bds == null ? Bounds.EMPTY_BOUNDS : bds;
 		}
+
 	}
 
 	private Bounds estimateBounds(TextAttributes attrs) {
+
 		// TODO - you can imagine being more clever here
 		String text = attrs.getText();
 		if (text == null || text.length() == 0) return Bounds.EMPTY_BOUNDS;
-		int size = attrs.getFont().getSize();
+		int size = (int)attrs.getFont().getSize();
 		int h = size;
 		int w = size * text.length() / 2;
 		int ha = attrs.getHorizontalAlign();
@@ -96,6 +106,7 @@ public class Text extends InstanceFactory {
 			y = -h;
 		}
 		return Bounds.create(x, y, w, h);
+
 	}
 
 	//
@@ -103,13 +114,14 @@ public class Text extends InstanceFactory {
 	//
 	@Override
 	public void paintGhost(InstancePainter painter) {
+
 		TextAttributes attrs = (TextAttributes) painter.getAttributeSet();
 		String text = attrs.getText();
 		if (text == null || text.equals("")) return;
 		
 		int halign = attrs.getHorizontalAlign();
 		int valign = attrs.getVerticalAlign();
-		Graphics g = painter.getGraphics();
+		GraphicsContext g = painter.getGraphics();
 		Font old = g.getFont();
 		g.setFont(attrs.getFont());
 		GraphicsUtil.drawText(g, text, 0, 0, halign, valign);
@@ -129,18 +141,22 @@ public class Text extends InstanceFactory {
 		}
 				
 		g.setFont(old);
+
 	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
+
 		Location loc = painter.getLocation();
 		int x = loc.getX();
 		int y = loc.getY();
-		Graphics g = painter.getGraphics();
+		GraphicsContext g = painter.getGraphics();
 		g.translate(x, y);
-		g.setColor(Color.BLACK);
+		g.setFill(Color.BLACK);
+		g.setStroke(Color.BLACK);
 		paintGhost(painter);
 		g.translate(-x, -y);
+
 	}
 
 	//
@@ -148,24 +164,31 @@ public class Text extends InstanceFactory {
 	//
 	@Override
 	protected void configureNewInstance(Instance instance) {
+
 		configureLabel(instance);
 		instance.addAttributeListener();
+
 	}
 	
 	@Override
 	protected void instanceAttributeChanged(Instance instance, Attribute<?> attr) {
+
 		if (attr == ATTR_HALIGN || attr == ATTR_VALIGN) {
 			configureLabel(instance);
 		}
+
 	}
 	
 	private void configureLabel(Instance instance) {
+
 		TextAttributes attrs = (TextAttributes) instance.getAttributeSet();
 		Location loc = instance.getLocation();
 		instance.setTextField(ATTR_TEXT, ATTR_FONT, loc.getX(), loc.getY(),
 				attrs.getHorizontalAlign(), attrs.getVerticalAlign());
+
 	}      
 
 	@Override
 	public void propagate(InstanceState state) { }
+
 }

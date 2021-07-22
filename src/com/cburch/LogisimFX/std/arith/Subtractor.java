@@ -7,11 +7,12 @@ import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
-import com.cburch.LogisimFX.util.GraphicsUtil;
 
-import java.awt.*;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class Subtractor extends InstanceFactory {
+
 	private static final int IN0   = 0;
 	private static final int IN1   = 1;
 	private static final int OUT   = 2;
@@ -19,6 +20,7 @@ public class Subtractor extends InstanceFactory {
 	private static final int B_OUT = 4;
 
 	public Subtractor() {
+
 		super("Subtractor", LC.createStringBinding("subtractorComponent"));
 		setAttributes(new Attribute[] { StdAttr.WIDTH },
 				new Object[] { BitWidth.create(8) });
@@ -32,16 +34,18 @@ public class Subtractor extends InstanceFactory {
 		ps[OUT]   = new Port(  0,   0, Port.OUTPUT, StdAttr.WIDTH);
 		ps[B_IN]  = new Port(-20, -20, Port.INPUT,  1);
 		ps[B_OUT] = new Port(-20,  20, Port.OUTPUT, 1);
-		ps[IN0].setToolTip(Strings.getter("subtractorMinuendTip"));
-		ps[IN1].setToolTip(Strings.getter("subtractorSubtrahendTip"));
-		ps[OUT].setToolTip(Strings.getter("subtractorOutputTip"));
-		ps[B_IN].setToolTip(Strings.getter("subtractorBorrowInTip"));
-		ps[B_OUT].setToolTip(Strings.getter("subtractorBorrowOutTip"));
+		ps[IN0].setToolTip(LC.createStringBinding("subtractorMinuendTip"));
+		ps[IN1].setToolTip(LC.createStringBinding("subtractorSubtrahendTip"));
+		ps[OUT].setToolTip(LC.createStringBinding("subtractorOutputTip"));
+		ps[B_IN].setToolTip(LC.createStringBinding("subtractorBorrowInTip"));
+		ps[B_OUT].setToolTip(LC.createStringBinding("subtractorBorrowOutTip"));
 		setPorts(ps);
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		// get attributes
 		BitWidth data = state.getAttributeValue(StdAttr.WIDTH);
 
@@ -56,14 +60,17 @@ public class Subtractor extends InstanceFactory {
 		int delay = (data.getWidth() + 4) * Adder.PER_DELAY;
 		state.setPort(OUT,   outs[0],       delay);
 		state.setPort(B_OUT, outs[1].not(), delay);
+
 	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
-		Graphics g = painter.getGraphics();
+
+		GraphicsContext g = painter.getGraphics();
 		painter.drawBounds();
 
-		g.setColor(Color.GRAY);
+		g.setFill(Color.GRAY);
+		g.setStroke(Color.GRAY);
 		painter.drawPort(IN0);
 		painter.drawPort(IN1);
 		painter.drawPort(OUT);
@@ -73,9 +80,11 @@ public class Subtractor extends InstanceFactory {
 		Location loc = painter.getLocation();
 		int x = loc.getX();
 		int y = loc.getY();
-		GraphicsUtil.switchToWidth(g, 2);
-		g.setColor(Color.BLACK);
-		g.drawLine(x - 15, y, x - 5, y);
-		GraphicsUtil.switchToWidth(g, 1);
+		g.setLineWidth(2);
+		g.setFill(Color.BLACK);
+		g.setStroke(Color.BLACK);
+		g.strokeLine(x - 15, y, x - 5, y);
+		g.setLineWidth(1);
+
 	}
 }

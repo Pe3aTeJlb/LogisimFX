@@ -9,9 +9,11 @@ import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
-import java.awt.*;
+import javafx.scene.canvas.GraphicsContext;
+
 
 public class BitFinder extends InstanceFactory {
+
 	static final AttributeOption LOW_ONE
 		= new AttributeOption("low1", LC.createStringBinding("bitFinderLowOption", "1"));
 	static final AttributeOption HIGH_ONE
@@ -25,6 +27,7 @@ public class BitFinder extends InstanceFactory {
 				new AttributeOption[] { LOW_ONE, HIGH_ONE, LOW_ZERO, HIGH_ZERO });
 	
 	public BitFinder() {
+
 		super("BitFinder", LC.createStringBinding("bitFinderComponent"));
 		setAttributes(new Attribute[] {
 				StdAttr.WIDTH, TYPE
@@ -33,6 +36,7 @@ public class BitFinder extends InstanceFactory {
 			});
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
 		setIcon("bitfindr.gif");
+
 	}
 	
 	@Override
@@ -42,20 +46,25 @@ public class BitFinder extends InstanceFactory {
 	
 	@Override
 	protected void configureNewInstance(Instance instance) {
+
 		configurePorts(instance);
 		instance.addAttributeListener();
+
 	}
 	
 	@Override
 	protected void instanceAttributeChanged(Instance instance, Attribute<?> attr) {
+
 		if (attr == StdAttr.WIDTH) {
 			configurePorts(instance);
 		} else if (attr == TYPE) {
 			instance.fireInvalidated();
 		}
+
 	}
 	
 	private void configurePorts(Instance instance) {
+
 		BitWidth inWidth = instance.getAttributeValue(StdAttr.WIDTH);
 		int outWidth = computeOutputBits(inWidth.getWidth() - 1);
 
@@ -66,30 +75,34 @@ public class BitFinder extends InstanceFactory {
 		
 		Object type = instance.getAttributeValue(TYPE);
 		if (type == HIGH_ZERO) {
-			ps[0].setToolTip(Strings.getter("bitFinderPresentTip", "0"));
-			ps[1].setToolTip(Strings.getter("bitFinderIndexHighTip", "0"));
+			ps[0].setToolTip(LC.createStringBinding("bitFinderPresentTip", "0"));
+			ps[1].setToolTip(LC.createStringBinding("bitFinderIndexHighTip", "0"));
 		} else if (type == LOW_ZERO) {
-			ps[0].setToolTip(Strings.getter("bitFinderPresentTip", "0"));
-			ps[1].setToolTip(Strings.getter("bitFinderIndexLowTip", "0"));
+			ps[0].setToolTip(LC.createStringBinding("bitFinderPresentTip", "0"));
+			ps[1].setToolTip(LC.createStringBinding("bitFinderIndexLowTip", "0"));
 		} else if (type == HIGH_ONE) {
-			ps[0].setToolTip(Strings.getter("bitFinderPresentTip", "1"));
-			ps[1].setToolTip(Strings.getter("bitFinderIndexHighTip", "1"));
+			ps[0].setToolTip(LC.createStringBinding("bitFinderPresentTip", "1"));
+			ps[1].setToolTip(LC.createStringBinding("bitFinderIndexHighTip", "1"));
 		} else {
-			ps[0].setToolTip(Strings.getter("bitFinderPresentTip", "1"));
-			ps[1].setToolTip(Strings.getter("bitFinderIndexLowTip", "1"));
+			ps[0].setToolTip(LC.createStringBinding("bitFinderPresentTip", "1"));
+			ps[1].setToolTip(LC.createStringBinding("bitFinderIndexLowTip", "1"));
 		}
-		ps[2].setToolTip(Strings.getter("bitFinderInputTip"));
+		ps[2].setToolTip(LC.createStringBinding("bitFinderInputTip"));
 		instance.setPorts(ps);
+
 	}
 	
 	private int computeOutputBits(int maxBits) {
+
 		int outWidth = 1;
 		while ((1 << outWidth) <= maxBits) outWidth++;
 		return outWidth;
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		int width = state.getAttributeValue(StdAttr.WIDTH).getWidth();
 		int outWidth = computeOutputBits(width - 1);
 		Object type = state.getAttributeValue(TYPE);
@@ -127,29 +140,31 @@ public class BitFinder extends InstanceFactory {
 		int delay = outWidth * Adder.PER_DELAY;
 		state.setPort(0, present, delay);
 		state.setPort(1, index, delay);
+
 	}
 	
 	@Override
 	public void paintInstance(InstancePainter painter) {
-		Graphics g = painter.getGraphics();
+
+		GraphicsContext g = painter.getGraphics();
 		painter.drawBounds();
 		painter.drawPorts();
 		
-		String top = Strings.get("bitFinderFindLabel");
+		String top = LC.get("bitFinderFindLabel");
 		String mid;
 		String bot;
 		Object type = painter.getAttributeValue(TYPE);
 		if (type == HIGH_ZERO) {
-			mid = Strings.get("bitFinderHighLabel");
+			mid = LC.get("bitFinderHighLabel");
 			bot = "0";
 		} else if (type == LOW_ZERO) {
-			mid = Strings.get("bitFinderLowLabel");
+			mid = LC.get("bitFinderLowLabel");
 			bot = "0";
 		} else if (type == HIGH_ONE) {
-			mid = Strings.get("bitFinderHighLabel");
+			mid = LC.get("bitFinderHighLabel");
 			bot = "1";
 		} else {
-			mid = Strings.get("bitFinderLowLabel");
+			mid = LC.get("bitFinderLowLabel");
 			bot = "1";
 		}
 		
@@ -159,5 +174,7 @@ public class BitFinder extends InstanceFactory {
 		GraphicsUtil.drawCenteredText(g, top, x, y0 + 8);
 		GraphicsUtil.drawCenteredText(g, mid, x, y0 + 20);
 		GraphicsUtil.drawCenteredText(g, bot, x, y0 + 32);
+
 	}
+
 }

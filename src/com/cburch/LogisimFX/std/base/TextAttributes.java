@@ -3,17 +3,19 @@
 
 package com.cburch.LogisimFX.std.base;
 
-import java.awt.Font;
-import java.util.Arrays;
-import java.util.List;
-
 import com.cburch.LogisimFX.data.AbstractAttributeSet;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.AttributeOption;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.instance.StdAttr;
 
+import javafx.scene.text.Font;
+
+import java.util.Arrays;
+import java.util.List;
+
 class TextAttributes extends AbstractAttributeSet {
+
 	private static final List<Attribute<?>> ATTRIBUTES
 		= Arrays.asList(new Attribute<?>[] {
 			Text.ATTR_TEXT, Text.ATTR_FONT, Text.ATTR_HALIGN, Text.ATTR_VALIGN
@@ -26,11 +28,13 @@ class TextAttributes extends AbstractAttributeSet {
 	private Bounds offsetBounds;
 
 	public TextAttributes() {
+
 		text = "";
 		font = StdAttr.DEFAULT_LABEL_FONT;
 		halign = Text.ATTR_HALIGN.parse("center");
 		valign = Text.ATTR_VALIGN.parse("base");
 		offsetBounds = null;
+
 	}
 
 	String getText() {
@@ -54,12 +58,15 @@ class TextAttributes extends AbstractAttributeSet {
 	}
 
 	boolean setOffsetBounds(Bounds value) {
+
 		Bounds old = offsetBounds;
 		boolean same = old == null ? value == null : old.equals(value);
 		if (!same) {
 			offsetBounds = value;
 		}
+
 		return !same;
+
 	}
 
 	@Override
@@ -75,15 +82,19 @@ class TextAttributes extends AbstractAttributeSet {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <V> V getValue(Attribute<V> attr) {
+
 		if (attr == Text.ATTR_TEXT) return (V) text;
 		if (attr == Text.ATTR_FONT) return (V) font;
 		if (attr == Text.ATTR_HALIGN) return (V) halign;
 		if (attr == Text.ATTR_VALIGN) return (V) valign;
+
 		return null;
+
 	}
 
 	@Override
 	public <V> void setValue(Attribute<V> attr, V value) {
+
 		if (attr == Text.ATTR_TEXT) {
 			text = (String) value;
 		} else if (attr == Text.ATTR_FONT) {
@@ -97,6 +108,7 @@ class TextAttributes extends AbstractAttributeSet {
 		}
 		offsetBounds = null;
 		fireAttributeValueChanged(attr, value);
+
 	}
 
 }

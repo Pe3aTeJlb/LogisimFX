@@ -3,16 +3,16 @@
 
 package com.cburch.LogisimFX.std.arith;
 
-import java.awt.Color;
-import java.awt.Graphics;
-
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
-import com.cburch.LogisimFX.util.GraphicsUtil;
+
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class Multiplier extends InstanceFactory {
+
 	static final int PER_DELAY = 1;
 
 	private static final int IN0   = 0;
@@ -22,6 +22,7 @@ public class Multiplier extends InstanceFactory {
 	private static final int C_OUT = 4;
 
 	public Multiplier() {
+
 		super("Multiplier", LC.createStringBinding("multiplierComponent"));
 		setAttributes(new Attribute[] { StdAttr.WIDTH },
 				new Object[] { BitWidth.create(8) });
@@ -35,16 +36,18 @@ public class Multiplier extends InstanceFactory {
 		ps[OUT]   = new Port(  0,   0, Port.OUTPUT, StdAttr.WIDTH);
 		ps[C_IN]  = new Port(-20, -20, Port.INPUT,  StdAttr.WIDTH);
 		ps[C_OUT] = new Port(-20,  20, Port.OUTPUT, StdAttr.WIDTH);
-		ps[IN0].setToolTip(Strings.getter("multiplierInputTip"));
-		ps[IN1].setToolTip(Strings.getter("multiplierInputTip"));
-		ps[OUT].setToolTip(Strings.getter("multiplierOutputTip"));
-		ps[C_IN].setToolTip(Strings.getter("multiplierCarryInTip"));
-		ps[C_OUT].setToolTip(Strings.getter("multiplierCarryOutTip"));
+		ps[IN0].setToolTip(LC.createStringBinding("multiplierInputTip"));
+		ps[IN1].setToolTip(LC.createStringBinding("multiplierInputTip"));
+		ps[OUT].setToolTip(LC.createStringBinding("multiplierOutputTip"));
+		ps[C_IN].setToolTip(LC.createStringBinding("multiplierCarryInTip"));
+		ps[C_OUT].setToolTip(LC.createStringBinding("multiplierCarryOutTip"));
 		setPorts(ps);
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		// get attributes
 		BitWidth dataWidth = state.getAttributeValue(StdAttr.WIDTH);
 
@@ -58,14 +61,17 @@ public class Multiplier extends InstanceFactory {
 		int delay = dataWidth.getWidth() * (dataWidth.getWidth() + 2) * PER_DELAY;
 		state.setPort(OUT,   outs[0], delay);
 		state.setPort(C_OUT, outs[1], delay);
+
 	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
-		Graphics g = painter.getGraphics();
+
+		GraphicsContext g = painter.getGraphics();
 		painter.drawBounds();
 
-		g.setColor(Color.GRAY);
+		g.setFill(Color.GRAY);
+		g.setStroke(Color.GRAY);
 		painter.drawPort(IN0);
 		painter.drawPort(IN1);
 		painter.drawPort(OUT);
@@ -75,15 +81,18 @@ public class Multiplier extends InstanceFactory {
 		Location loc = painter.getLocation();
 		int x = loc.getX();
 		int y = loc.getY();
-		GraphicsUtil.switchToWidth(g, 2);
-		g.setColor(Color.BLACK);
-		g.drawLine(x - 15, y - 5, x - 5, y + 5);
-		g.drawLine(x - 15, y + 5, x - 5, y - 5);
-		GraphicsUtil.switchToWidth(g, 1);
+		g.setLineWidth(2);
+		g.setFill(Color.BLACK);
+		g.setStroke(Color.BLACK);
+		g.strokeLine(x - 15, y - 5, x - 5, y + 5);
+		g.strokeLine(x - 15, y + 5, x - 5, y - 5);
+		g.setLineWidth(1);
+
 	}
 
 
 	static Value[] computeProduct(BitWidth width, Value a, Value b, Value c_in) {
+
 		int w = width.getWidth();
 		if (c_in == Value.NIL || c_in.isUnknown()) c_in = Value.createKnown(width, 0);
 		if (a.isFullyDefined() && b.isFullyDefined() && c_in.isFullyDefined()) {
@@ -122,23 +131,29 @@ public class Multiplier extends InstanceFactory {
 			return new Value[] { Value.create(bits),
 					error < w ? Value.createError(width) : Value.createUnknown(width) };
 		}
+
 	}
 	
 	private static int findUnknown(Value[] vals) {
+
 		for (int i = 0; i < vals.length; i++) {
 			if (!vals[i].isFullyDefined()) return i;
 		}
 		return vals.length;
+
 	}
 	
 	private static int findError(Value[] vals) {
+
 		for (int i = 0; i < vals.length; i++) {
 			if (vals[i].isErrorValue()) return i;
 		}
 		return vals.length;
+
 	}
 	
 	private static int getKnown(Value[] vals) {
+
 		int ret = 0;
 		for (int i = 0; i < vals.length; i++) {
 			int val = vals[i].toIntValue();
@@ -146,5 +161,6 @@ public class Multiplier extends InstanceFactory {
 			ret |= val << i;
 		}
 		return ret;
+
 	}
 }
