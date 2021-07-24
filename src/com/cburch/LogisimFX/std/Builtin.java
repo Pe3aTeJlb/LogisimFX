@@ -12,6 +12,7 @@ import com.cburch.LogisimFX.std.plexers.Plexers;
 import com.cburch.LogisimFX.std.wiring.Wiring;
 import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.tools.Tool;
+
 import javafx.beans.binding.StringBinding;
 
 import java.util.Arrays;
@@ -19,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class Builtin extends Library {
+
 	private List<Library> libraries = null;
 
 	public Builtin() {
@@ -46,4 +48,5 @@ public class Builtin extends Library {
 	public List<Library> getLibraries() {
 		return libraries;
 	}
+
 }

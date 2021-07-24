@@ -33,4 +33,8 @@ public class LC {
        return lc.get(key, args);
     }
 
+    public static String getFormatted(final String key, final String... args) {
+        return lc.getFormatted(key, args);
+    }
+
 }
