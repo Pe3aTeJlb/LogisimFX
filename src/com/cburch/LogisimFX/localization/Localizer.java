@@ -92,4 +92,8 @@ public class Localizer {
         }else{ return null;}
     }
 
+    public String getFormatted(final String key, String... strings) {
+        return StringUtil.format(get(key),strings);
+    }
+
 }
