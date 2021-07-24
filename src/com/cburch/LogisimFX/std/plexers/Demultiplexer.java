@@ -10,11 +10,14 @@ import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.JoinedConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.LogisimVersion;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
-import java.awt.*;
 
 public class Demultiplexer extends InstanceFactory {
+
 	public Demultiplexer() {
+
 		super("Demultiplexer", LC.createStringBinding("demultiplexerComponent"));
 		setAttributes(new Attribute[] {
 				StdAttr.FACING, Plexers.ATTR_SELECT_LOC, Plexers.ATTR_SELECT, StdAttr.WIDTH,
@@ -28,20 +31,24 @@ public class Demultiplexer extends InstanceFactory {
 				new BitWidthConfigurator(StdAttr.WIDTH)));
 		setFacingAttribute(StdAttr.FACING);
 		setIcon("demultiplexer.gif");
+
 	}
 	
 	@Override
 	public Object getDefaultAttributeValue(Attribute<?> attr, LogisimVersion ver) {
+
 		if (attr == Plexers.ATTR_ENABLE) {
 			int newer = ver.compareTo(LogisimVersion.get(2, 6, 3, 220));
 			return Boolean.valueOf(newer >= 0);
 		} else {
 			return super.getDefaultAttributeValue(attr, ver);
 		}
+
 	}
 
 	@Override
 	public Bounds getOffsetBounds(AttributeSet attrs) {
+
 		Direction facing = attrs.getValue(StdAttr.FACING);
 		BitWidth select = attrs.getValue(Plexers.ATTR_SELECT);
 		int outputs = 1 << select.getWidth();
@@ -53,22 +60,28 @@ public class Demultiplexer extends InstanceFactory {
 					40, outputs * 10 + 20);
 		}
 		return bds.rotate(Direction.EAST, facing, 0, 0);
+
 	}
 	
 	@Override
 	public boolean contains(Location loc, AttributeSet attrs) {
+
 		Direction facing = attrs.getValue(StdAttr.FACING).reverse();
 		return Plexers.contains(loc, getOffsetBounds(attrs), facing);
+
 	}
 
 	@Override
 	protected void configureNewInstance(Instance instance) {
+
 		instance.addAttributeListener();
 		updatePorts(instance);
+
 	}
 
 	@Override
 	protected void instanceAttributeChanged(Instance instance, Attribute<?> attr) {
+
 		if (attr == StdAttr.FACING || attr == Plexers.ATTR_SELECT_LOC
 				|| attr == Plexers.ATTR_SELECT) {
 			instance.recomputeBounds();
@@ -78,9 +91,11 @@ public class Demultiplexer extends InstanceFactory {
 		} else if (attr == Plexers.ATTR_TRISTATE || attr == Plexers.ATTR_DISABLED) {
 			instance.fireInvalidated();
 		}
+
 	}
 
 	private void updatePorts(Instance instance) {
+
 		Direction facing = instance.getAttributeValue(StdAttr.FACING);
 		Object selectLoc = instance.getAttributeValue(Plexers.ATTR_SELECT_LOC);
 		BitWidth data = instance.getAttributeValue(StdAttr.WIDTH);
@@ -144,19 +159,21 @@ public class Demultiplexer extends InstanceFactory {
 		ps[ps.length - 1] = new Port(0, 0, Port.INPUT, data.getWidth());
 		
 		for (int i = 0; i < outputs; i++) {
-			ps[i].setToolTip(Strings.getter("demultiplexerOutTip", "" + i));
+			ps[i].setToolTip(LC.createStringBinding("demultiplexerOutTip", "" + i));
 		}
-		ps[outputs].setToolTip(Strings.getter("demultiplexerSelectTip"));
+		ps[outputs].setToolTip(LC.createStringBinding("demultiplexerSelectTip"));
 		if (enable) {
-			ps[outputs + 1].setToolTip(Strings.getter("demultiplexerEnableTip"));
+			ps[outputs + 1].setToolTip(LC.createStringBinding("demultiplexerEnableTip"));
 		}
-		ps[ps.length - 1].setToolTip(Strings.getter("demultiplexerInTip"));
+		ps[ps.length - 1].setToolTip(LC.createStringBinding("demultiplexerInTip"));
 
 		instance.setPorts(ps);
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		// get attributes
 		BitWidth data = state.getAttributeValue(StdAttr.WIDTH);
 		BitWidth select = state.getAttributeValue(Plexers.ATTR_SELECT);
@@ -196,19 +213,23 @@ public class Demultiplexer extends InstanceFactory {
 		for (int i = 0; i < outputs; i++) {
 			state.setPort(i, i == outIndex ? out : others, Plexers.DELAY);
 		}
+
 	}
 	
 	@Override
 	public void paintGhost(InstancePainter painter) {
+
 		Direction facing = painter.getAttributeValue(StdAttr.FACING);
 		BitWidth select = painter.getAttributeValue(Plexers.ATTR_SELECT);
 		Plexers.drawTrapezoid(painter.getGraphics(), painter.getBounds(),
 				facing.reverse(), select.getWidth() == 1 ? 10 : 20);
+
 	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
-		Graphics g = painter.getGraphics();
+
+		GraphicsContext g = painter.getGraphics();
 		Bounds bds = painter.getBounds();
 		Direction facing = painter.getAttributeValue(StdAttr.FACING);
 		BitWidth select = painter.getAttributeValue(Plexers.ATTR_SELECT);
@@ -216,7 +237,7 @@ public class Demultiplexer extends InstanceFactory {
 		int outputs = 1 << select.getWidth();
 
 		// draw select and enable inputs
-		GraphicsUtil.switchToWidth(g, 3);
+		g.setLineWidth(3);
 		boolean vertical = facing == Direction.NORTH || facing == Direction.SOUTH;
 		Object selectLoc = painter.getAttributeValue(Plexers.ATTR_SELECT_LOC);
 		int selMult = selectLoc == Plexers.SELECT_BOTTOM_LEFT ? 1 : -1;
@@ -225,19 +246,21 @@ public class Demultiplexer extends InstanceFactory {
 		if (outputs == 2) { // draw select wire
 			Location sel = painter.getInstance().getPortLocation(outputs);
 			if (painter.getShowState()) {
-				g.setColor(painter.getPort(outputs).getColor());
+				g.setFill(painter.getPort(outputs).getColor());
+				g.setStroke(painter.getPort(outputs).getColor());
 			}
-			g.drawLine(sel.getX(), sel.getY(), sel.getX() + 2 * dx, sel.getY() + 2 * dy);
+			g.strokeLine(sel.getX(), sel.getY(), sel.getX() + 2 * dx, sel.getY() + 2 * dy);
 		}
 		if (enable) {
 			Location en = painter.getInstance().getPortLocation(outputs + 1);
 			if (painter.getShowState()) {
-				g.setColor(painter.getPort(outputs + 1).getColor());
+				g.setFill(painter.getPort(outputs + 1).getColor());
+				g.setStroke(painter.getPort(outputs + 1).getColor());
 			}
 			int len = outputs == 2 ? 6 : 4;
-			g.drawLine(en.getX(), en.getY(), en.getX() + len * dx, en.getY() + len * dy);
+			g.strokeLine(en.getX(), en.getY(), en.getX() + len * dx, en.getY() + len * dy);
 		}
-		GraphicsUtil.switchToWidth(g, 1);
+		g.setLineWidth(1);
 		
 		// draw a circle indicating where the select input is located
 		Multiplexer.drawSelectCircle(g, bds, painter.getInstance().getPortLocation(outputs));
@@ -263,16 +286,20 @@ public class Demultiplexer extends InstanceFactory {
 			y0 = 15;
 			halign = GraphicsUtil.H_RIGHT;
 		}
-		g.setColor(Color.GRAY);
+		g.setFill(Color.GRAY);
+		g.setStroke(Color.GRAY);
 		GraphicsUtil.drawText(g, "0", bds.getX() + x0, bds.getY() + y0,
 				halign, GraphicsUtil.V_BASELINE);
 
 		// draw trapezoid, "DMX" label, and ports
-		g.setColor(Color.BLACK);
+		g.setFill(Color.BLACK);
+		g.setStroke(Color.BLACK);
 		Plexers.drawTrapezoid(g, bds, facing.reverse(), select.getWidth() == 1 ? 10 : 20);
 		GraphicsUtil.drawCenteredText(g, "DMX",
 				bds.getX() + bds.getWidth() / 2,
 				bds.getY() + bds.getHeight() / 2);
 		painter.drawPorts();
+
 	}
+
 }

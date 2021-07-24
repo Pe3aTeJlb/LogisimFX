@@ -163,4 +163,5 @@ public class Multiplier extends InstanceFactory {
 		return ret;
 
 	}
+
 }

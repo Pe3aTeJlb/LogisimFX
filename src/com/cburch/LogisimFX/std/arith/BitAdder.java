@@ -155,4 +155,5 @@ public class BitAdder extends InstanceFactory {
 		g.strokeLine(x - 5, y + 2, x + 5, y + 2);
 
 	}
+
 }

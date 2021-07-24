@@ -23,6 +23,7 @@ public class Adder extends InstanceFactory {
 	private static final int C_OUT = 4;
 	
 	public Adder() {
+
 		super("Adder", LC.createStringBinding("adderComponent"));
 		setAttributes(new Attribute[] {
 				StdAttr.WIDTH

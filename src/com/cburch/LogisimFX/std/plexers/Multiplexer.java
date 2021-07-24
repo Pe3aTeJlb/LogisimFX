@@ -3,9 +3,6 @@
 
 package com.cburch.LogisimFX.std.plexers;
 
-import java.awt.Color;
-import java.awt.Graphics;
-
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
 import com.cburch.LogisimFX.std.LC;
@@ -13,9 +10,13 @@ import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.JoinedConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.LogisimVersion;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class Multiplexer extends InstanceFactory {
+
 	public Multiplexer() {
+
 		super("Multiplexer", LC.createStringBinding("multiplexerComponent"));
 		setAttributes(new Attribute[] {
 				StdAttr.FACING, Plexers.ATTR_SELECT_LOC, Plexers.ATTR_SELECT, StdAttr.WIDTH,
@@ -29,20 +30,24 @@ public class Multiplexer extends InstanceFactory {
 				new BitWidthConfigurator(StdAttr.WIDTH)));
 		setIcon("multiplexer.gif");
 		setFacingAttribute(StdAttr.FACING);
+
 	}
 
 	@Override
 	public Object getDefaultAttributeValue(Attribute<?> attr, LogisimVersion ver) {
+
 		if (attr == Plexers.ATTR_ENABLE) {
 			int newer = ver.compareTo(LogisimVersion.get(2, 6, 3, 220));
 			return Boolean.valueOf(newer >= 0);
 		} else {
 			return super.getDefaultAttributeValue(attr, ver);
 		}
+
 	}
 
 	@Override
 	public Bounds getOffsetBounds(AttributeSet attrs) {
+
 		Direction dir = attrs.getValue(StdAttr.FACING);
 		BitWidth select = attrs.getValue(Plexers.ATTR_SELECT);
 		int inputs = 1 << select.getWidth();
@@ -53,22 +58,28 @@ public class Multiplexer extends InstanceFactory {
 			int length = inputs * 10 + 20;
 			return Bounds.create(-40, offs, 40, length).rotate(Direction.EAST, dir, 0, 0);
 		}
+
 	}
 
 	@Override
 	public boolean contains(Location loc, AttributeSet attrs) {
+
 		Direction facing = attrs.getValue(StdAttr.FACING);
 		return Plexers.contains(loc, getOffsetBounds(attrs), facing);
+
 	}
 
 	@Override
 	protected void configureNewInstance(Instance instance) {
+
 		instance.addAttributeListener();
 		updatePorts(instance);
+
 	}
 
 	@Override
 	protected void instanceAttributeChanged(Instance instance, Attribute<?> attr) {
+
 		if (attr == StdAttr.FACING || attr == Plexers.ATTR_SELECT_LOC
 				|| attr == Plexers.ATTR_SELECT) {
 			instance.recomputeBounds();
@@ -78,9 +89,11 @@ public class Multiplexer extends InstanceFactory {
 		} else if (attr == Plexers.ATTR_DISABLED) {
 			instance.fireInvalidated();
 		}
+
 	}
 
 	private void updatePorts(Instance instance) {
+
 		Direction dir = instance.getAttributeValue(StdAttr.FACING);
 		Object selectLoc = instance.getAttributeValue(Plexers.ATTR_SELECT_LOC);
 		BitWidth data = instance.getAttributeValue(StdAttr.WIDTH);
@@ -145,19 +158,21 @@ public class Multiplexer extends InstanceFactory {
 		ps[ps.length - 1] = new Port(0, 0, Port.OUTPUT, data.getWidth());
 
 		for (int i = 0; i < inputs; i++) {
-			ps[i].setToolTip(Strings.getter("multiplexerInTip", "" + i));
+			ps[i].setToolTip(LC.createStringBinding("multiplexerInTip", "" + i));
 		}
-		ps[inputs].setToolTip(Strings.getter("multiplexerSelectTip"));
+		ps[inputs].setToolTip(LC.createStringBinding("multiplexerSelectTip"));
 		if (enable) {
-			ps[inputs + 1].setToolTip(Strings.getter("multiplexerEnableTip"));
+			ps[inputs + 1].setToolTip(LC.createStringBinding("multiplexerEnableTip"));
 		}
-		ps[ps.length - 1].setToolTip(Strings.getter("multiplexerOutTip"));
+		ps[ps.length - 1].setToolTip(LC.createStringBinding("multiplexerOutTip"));
 
 		instance.setPorts(ps);
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		BitWidth data = state.getAttributeValue(StdAttr.WIDTH);
 		BitWidth select = state.getAttributeValue(Plexers.ATTR_SELECT);
 		boolean enable = state.getAttributeValue(Plexers.ATTR_ENABLE).booleanValue();
@@ -181,19 +196,23 @@ public class Multiplexer extends InstanceFactory {
 			}
 		}
 		state.setPort(inputs + (enable ? 2 : 1), out, Plexers.DELAY);
+
 	}
 	
 	@Override
 	public void paintGhost(InstancePainter painter) {
+
 		Direction facing = painter.getAttributeValue(StdAttr.FACING);
 		BitWidth select = painter.getAttributeValue(Plexers.ATTR_SELECT);
 		Plexers.drawTrapezoid(painter.getGraphics(), painter.getBounds(),
 				facing, select.getWidth() == 1 ? 10 : 20);
+
 	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
-		Graphics g = painter.getGraphics();
+
+		GraphicsContext g = painter.getGraphics();
 		Bounds bds = painter.getBounds();
 		Direction facing = painter.getAttributeValue(StdAttr.FACING);
 		BitWidth select = painter.getAttributeValue(Plexers.ATTR_SELECT);
@@ -201,7 +220,7 @@ public class Multiplexer extends InstanceFactory {
 		int inputs = 1 << select.getWidth();
 		
 		// draw stubs for select/enable inputs that aren't on instance boundary
-		GraphicsUtil.switchToWidth(g, 3);
+		g.setLineWidth(3);
 		boolean vertical = facing != Direction.NORTH && facing != Direction.SOUTH;
 		Object selectLoc = painter.getAttributeValue(Plexers.ATTR_SELECT_LOC);
 		int selMult = selectLoc == Plexers.SELECT_BOTTOM_LEFT ? 1 : -1;
@@ -210,21 +229,23 @@ public class Multiplexer extends InstanceFactory {
 		if (inputs == 2) { // draw select wire
 			Location pt = painter.getInstance().getPortLocation(inputs);
 			if (painter.getShowState()) {
-				g.setColor(painter.getPort(inputs).getColor());
+				g.setFill(painter.getPort(inputs).getColor());
+				g.setStroke(painter.getPort(inputs).getColor());
 			}
-			g.drawLine(pt.getX() - 2 * dx, pt.getY() - 2 * dy,
+			g.strokeLine(pt.getX() - 2 * dx, pt.getY() - 2 * dy,
 					pt.getX(), pt.getY());
 		}
 		if (enable) {
 			Location en = painter.getInstance().getPortLocation(inputs + 1);
 			if (painter.getShowState()) {
-				g.setColor(painter.getPort(inputs + 1).getColor());
+				g.setFill(painter.getPort(inputs + 1).getColor());
+				g.setStroke(painter.getPort(inputs + 1).getColor());
 			}
 			int len = inputs == 2 ? 6 : 4;
-			g.drawLine(en.getX() - len * dx, en.getY() - len * dy,
+			g.strokeLine(en.getX() - len * dx, en.getY() - len * dy,
 					en.getX(), en.getY());
 		}
-		GraphicsUtil.switchToWidth(g, 1);
+		g.setLineWidth(1);
 		
 		// draw a circle indicating where the select input is located
 		Multiplexer.drawSelectCircle(g, bds, painter.getInstance().getPortLocation(inputs));
@@ -250,19 +271,23 @@ public class Multiplexer extends InstanceFactory {
 			y0 = bds.getY() + 15;
 			halign = GraphicsUtil.H_LEFT;
 		}
-		g.setColor(Color.GRAY);
+		g.setFill(Color.GRAY);
+		g.setStroke(Color.GRAY);
 		GraphicsUtil.drawText(g, "0", x0, y0, halign, GraphicsUtil.V_BASELINE);
 		
 		// draw the trapezoid, "MUX" string, the individual ports
-		g.setColor(Color.BLACK);
+		g.setFill(Color.BLACK);
+		g.setStroke(Color.BLACK);
 		Plexers.drawTrapezoid(g, bds, facing, select.getWidth() == 1 ? 10 : 20);
 		GraphicsUtil.drawCenteredText(g, "MUX",
 				bds.getX() + bds.getWidth() / 2,
 				bds.getY() + bds.getHeight() / 2);
 		painter.drawPorts();
+
 	}
 	
-	static void drawSelectCircle(Graphics g, Bounds bds, Location loc) {
+	static void drawSelectCircle(GraphicsContext g, Bounds bds, Location loc) {
+
 		int locDelta = Math.max(bds.getHeight(), bds.getWidth()) <= 50 ? 8 : 6;
 		Location circLoc;
 		if (bds.getHeight() >= bds.getWidth()) { // vertically oriented
@@ -278,7 +303,10 @@ public class Multiplexer extends InstanceFactory {
 				circLoc = loc.translate(-locDelta, 0);
 			}
 		}
-		g.setColor(Color.LIGHT_GRAY);
+		g.setFill(Color.LIGHTGRAY);
+		g.setStroke(Color.LIGHTGRAY);
 		g.fillOval(circLoc.getX() - 3, circLoc.getY() - 3, 6, 6);
+
 	}
+
 }

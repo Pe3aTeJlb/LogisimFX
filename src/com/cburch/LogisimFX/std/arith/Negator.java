@@ -86,4 +86,5 @@ public class Negator extends InstanceFactory {
 		painter.drawPort(OUT, "-x", Direction.WEST);
 
 	}
+
 }

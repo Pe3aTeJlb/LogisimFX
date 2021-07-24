@@ -87,4 +87,5 @@ public class Subtractor extends InstanceFactory {
 		g.setLineWidth(1);
 
 	}
+
 }

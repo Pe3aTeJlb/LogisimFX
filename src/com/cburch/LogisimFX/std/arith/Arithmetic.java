@@ -49,10 +49,13 @@ public class Arithmetic extends Library {
 
 	@Override
 	public List<Tool> getTools() {
+
 		if (tools == null) {
 			tools = FactoryDescription.getTools(Arithmetic.class, DESCRIPTIONS);
 		}
+
 		return tools;
+
 	}
 
 }

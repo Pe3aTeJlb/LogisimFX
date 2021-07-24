@@ -3,22 +3,23 @@
 
 package com.cburch.LogisimFX.std.plexers;
 
-import java.awt.Color;
-import java.awt.Graphics;
-
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class PriorityEncoder extends InstanceFactory {
+
 	private static final int OUT = 0;
 	private static final int EN_IN = 1;
 	private static final int EN_OUT = 2;
 	private static final int GS = 3;
 	
 	public PriorityEncoder() {
+
 		super("Priority Encoder", LC.createStringBinding("priorityEncoderComponent"));
 		setAttributes(new Attribute[] {
 				StdAttr.FACING, Plexers.ATTR_SELECT, Plexers.ATTR_DISABLED
@@ -28,10 +29,12 @@ public class PriorityEncoder extends InstanceFactory {
 		setKeyConfigurator(new BitWidthConfigurator(Plexers.ATTR_SELECT, 1, 5, 0));
 		setIcon("priencod.gif");
 		setFacingAttribute(StdAttr.FACING);
+
 	}
 	
 	@Override
 	public Bounds getOffsetBounds(AttributeSet attrs) {
+
 		Direction dir = attrs.getValue(StdAttr.FACING);
 		BitWidth select = attrs.getValue(Plexers.ATTR_SELECT);
 		int inputs = 1 << select.getWidth();
@@ -46,16 +49,20 @@ public class PriorityEncoder extends InstanceFactory {
 		} else { // dir == Direction.EAST
 			return Bounds.create(-40, offs, 40, len);
 		}
+
 	}
 
 	@Override
 	protected void configureNewInstance(Instance instance) {
+
 		instance.addAttributeListener();
 		updatePorts(instance);
+
 	}
 	
 	@Override
 	protected void instanceAttributeChanged(Instance instance, Attribute<?> attr) {
+
 		if (attr == StdAttr.FACING || attr == Plexers.ATTR_SELECT) {
 			instance.recomputeBounds();
 			updatePorts(instance);
@@ -64,9 +71,11 @@ public class PriorityEncoder extends InstanceFactory {
 		} else if (attr == Plexers.ATTR_DISABLED) {
 			instance.fireInvalidated();
 		}
+
 	}
 
 	private void updatePorts(Instance instance) {
+
 		Object dir = instance.getAttributeValue(StdAttr.FACING);
 		BitWidth select = instance.getAttributeValue(Plexers.ATTR_SELECT);
 		int n = 1 << select.getWidth();
@@ -94,18 +103,20 @@ public class PriorityEncoder extends InstanceFactory {
 		}
 
 		for (int i = 0; i < n; i++) {
-			ps[i].setToolTip(Strings.getter("priorityEncoderInTip", "" + i));
+			ps[i].setToolTip(LC.createStringBinding("priorityEncoderInTip", "" + i));
 		}
-		ps[n + OUT].setToolTip(Strings.getter("priorityEncoderOutTip"));
-		ps[n + EN_IN].setToolTip(Strings.getter("priorityEncoderEnableInTip"));
-		ps[n + EN_OUT].setToolTip(Strings.getter("priorityEncoderEnableOutTip"));
-		ps[n + GS].setToolTip(Strings.getter("priorityEncoderGroupSignalTip"));
+		ps[n + OUT].setToolTip(LC.createStringBinding("priorityEncoderOutTip"));
+		ps[n + EN_IN].setToolTip(LC.createStringBinding("priorityEncoderEnableInTip"));
+		ps[n + EN_OUT].setToolTip(LC.createStringBinding("priorityEncoderEnableOutTip"));
+		ps[n + GS].setToolTip(LC.createStringBinding("priorityEncoderGroupSignalTip"));
 
 		instance.setPorts(ps);
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		BitWidth select = state.getAttributeValue(Plexers.ATTR_SELECT);
 		int n = 1 << select.getWidth();
 		boolean enabled = state.getPort(n + EN_IN) != Value.FALSE;
@@ -134,16 +145,19 @@ public class PriorityEncoder extends InstanceFactory {
 			state.setPort(n + EN_OUT, Value.FALSE, Plexers.DELAY);
 			state.setPort(n + GS, Value.TRUE, Plexers.DELAY);
 		}
+
 	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
-		Graphics g = painter.getGraphics();
+
+		GraphicsContext g = painter.getGraphics();
 		Direction facing = painter.getAttributeValue(StdAttr.FACING);
 
 		painter.drawBounds();
 		Bounds bds = painter.getBounds();
-		g.setColor(Color.GRAY);
+		g.setFill(Color.GRAY);
+		g.setStroke(Color.GRAY);
 		int x0;
 		int y0;
 		int halign;
@@ -165,11 +179,14 @@ public class PriorityEncoder extends InstanceFactory {
 			halign = GraphicsUtil.H_LEFT;
 		}
 		GraphicsUtil.drawText(g, "0", x0, y0, halign, GraphicsUtil.V_BASELINE);
-		g.setColor(Color.BLACK);
+		g.setFill(Color.BLACK);
+		g.setStroke(Color.BLACK);
 		GraphicsUtil.drawCenteredText(g, "Pri",
 				bds.getX() + bds.getWidth() / 2,
 				bds.getY() + bds.getHeight() / 2);
 		painter.drawPorts();
+
 	}
+
 }
 

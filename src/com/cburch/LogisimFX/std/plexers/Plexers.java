@@ -3,7 +3,6 @@
 
 package com.cburch.LogisimFX.std.plexers;
 
-import java.awt.Graphics;
 import java.util.List;
 
 import com.cburch.LogisimFX.data.*;
@@ -11,10 +10,12 @@ import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.FactoryDescription;
 import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.tools.Tool;
-import com.cburch.LogisimFX.util.GraphicsUtil;
+
 import javafx.beans.binding.StringBinding;
+import javafx.scene.canvas.GraphicsContext;
 
 public class Plexers extends Library {
+
 	public static final Attribute<BitWidth> ATTR_SELECT
 		= Attributes.forBitWidth("select", LC.createStringBinding("plexerSelectBitsAttr"), 1, 5);
 	public static final Object DEFAULT_SELECT = BitWidth.create(1);
@@ -69,20 +70,22 @@ public class Plexers extends Library {
 
 	@Override
 	public List<Tool> getTools() {
+
 		if (tools == null) {
 			tools = FactoryDescription.getTools(Plexers.class, DESCRIPTIONS);
 		}
 		return tools;
+
 	}
 
-	static void drawTrapezoid(Graphics g, Bounds bds, Direction facing,
-                              int facingLean) {
+	static void drawTrapezoid(GraphicsContext g, Bounds bds, Direction facing,
+							  int facingLean) {
 		int wid = bds.getWidth();
 		int ht = bds.getHeight();
 		int x0 = bds.getX(); int x1 = x0 + wid;
 		int y0 = bds.getY(); int y1 = y0 + ht;
-		int[] xp = { x0, x1, x1, x0 };
-		int[] yp = { y0, y0, y1, y1 };
+		double[] xp = { x0, x1, x1, x0 };
+		double[] yp = { y0, y0, y1, y1 };
 		if (facing == Direction.WEST) {
 			yp[0] += facingLean; yp[3] -= facingLean;
 		} else if (facing == Direction.NORTH) {
@@ -92,11 +95,12 @@ public class Plexers extends Library {
 		} else {
 			yp[1] += facingLean; yp[2] -= facingLean;
 		}
-		GraphicsUtil.switchToWidth(g, 2);
-		g.drawPolygon(xp, yp, 4);
+		g.setLineWidth(2);
+		g.strokePolygon(xp, yp, 4);
 	}
 	
 	static boolean contains(Location loc, Bounds bds, Direction facing) {
+
 		if (bds.contains(loc, 1)) {
 			int x = loc.getX();
 			int y = loc.getY();
@@ -128,5 +132,7 @@ public class Plexers extends Library {
 		} else {
 			return false;
 		}
+
 	}
+
 }

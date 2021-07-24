@@ -10,13 +10,16 @@ import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.JoinedConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
-import java.awt.*;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class BitSelector extends InstanceFactory {
+
 	public static final Attribute<BitWidth> GROUP_ATTR
 		= Attributes.forBitWidth("group", LC.createStringBinding("bitSelectorGroupAttr"));
 
 	public BitSelector() {
+
 		super("BitSelector", LC.createStringBinding("bitSelectorComponent"));
 		setAttributes(new Attribute[] {
 				StdAttr.FACING, StdAttr.WIDTH, GROUP_ATTR
@@ -29,32 +32,40 @@ public class BitSelector extends InstanceFactory {
 
 		setIcon("bitSelector.gif");
 		setFacingAttribute(StdAttr.FACING);
+
 	}
 	
 	@Override
 	public Bounds getOffsetBounds(AttributeSet attrs) {
+
 		Direction facing = attrs.getValue(StdAttr.FACING);
 		Bounds base = Bounds.create(-30, -15, 30, 30);
 		return base.rotate(Direction.EAST, facing, 0, 0);
+
 	}
 	
 	@Override
 	protected void configureNewInstance(Instance instance) {
+
 		instance.addAttributeListener();
 		updatePorts(instance);
+
 	}
 	
 	@Override
 	protected void instanceAttributeChanged(Instance instance, Attribute<?> attr) {
+
 		if (attr == StdAttr.FACING) {
 			instance.recomputeBounds();
 			updatePorts(instance);
 		} else if (attr == StdAttr.WIDTH || attr == GROUP_ATTR) {
 			updatePorts(instance);
 		}
+
 	}
 
 	private void updatePorts(Instance instance) {
+
 		Direction facing = instance.getAttributeValue(StdAttr.FACING);
 		BitWidth data = instance.getAttributeValue(StdAttr.WIDTH);
 		BitWidth group = instance.getAttributeValue(GROUP_ATTR);
@@ -85,14 +96,16 @@ public class BitSelector extends InstanceFactory {
 		ps[0] = new Port(0, 0, Port.OUTPUT, group.getWidth());
 		ps[1] = new Port(inPt.getX(), inPt.getY(), Port.INPUT, data.getWidth());
 		ps[2] = new Port(selPt.getX(), selPt.getY(), Port.INPUT, select.getWidth());
-		ps[0].setToolTip(Strings.getter("bitSelectorOutputTip"));
-		ps[1].setToolTip(Strings.getter("bitSelectorDataTip"));
-		ps[2].setToolTip(Strings.getter("bitSelectorSelectTip"));
+		ps[0].setToolTip(LC.createStringBinding("bitSelectorOutputTip"));
+		ps[1].setToolTip(LC.createStringBinding("bitSelectorDataTip"));
+		ps[2].setToolTip(LC.createStringBinding("bitSelectorSelectTip"));
 		instance.setPorts(ps);
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		Value data = state.getPort(1);
 		Value select = state.getPort(2);
 		BitWidth groupBits = state.getAttributeValue(GROUP_ATTR);
@@ -118,25 +131,32 @@ public class BitSelector extends InstanceFactory {
 			}
 		}
 		state.setPort(0, group, Plexers.DELAY);
+
 	}
 
 	@Override
 	public void paintGhost(InstancePainter painter) {
+
 		Plexers.drawTrapezoid(painter.getGraphics(), painter.getBounds(),
 				painter.getAttributeValue(StdAttr.FACING), 9);
+
 	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
-		Graphics g = painter.getGraphics();
+
+		GraphicsContext g = painter.getGraphics();
 		Direction facing = painter.getAttributeValue(StdAttr.FACING);
 
 		Plexers.drawTrapezoid(g, painter.getBounds(), facing, 9);
 		Bounds bds = painter.getBounds();
-		g.setColor(Color.BLACK);
+		g.setFill(Color.BLACK);
+		g.setStroke(Color.BLACK);
 		GraphicsUtil.drawCenteredText(g, "Sel",
 				bds.getX() + bds.getWidth() / 2,
 				bds.getY() + bds.getHeight() / 2);
 		painter.drawPorts();
+
 	}
+
 }
