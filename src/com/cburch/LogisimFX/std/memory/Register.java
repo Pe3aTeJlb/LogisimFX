@@ -3,9 +3,6 @@
 
 package com.cburch.LogisimFX.std.memory;
 
-import java.awt.Color;
-import java.awt.Graphics;
-
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
 import com.cburch.LogisimFX.std.LC;
@@ -13,7 +10,11 @@ import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.StringUtil;
 
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+
 public class Register extends InstanceFactory {
+
 	private static final int DELAY = 8;
 	private static final int OUT = 0;
 	private static final int IN  = 1;
@@ -22,6 +23,7 @@ public class Register extends InstanceFactory {
 	private static final int EN  = 4;
 
 	public Register() {
+
 		super("Register", LC.createStringBinding("registerComponent"));
 		setAttributes(new Attribute[] {
 				StdAttr.WIDTH, StdAttr.TRIGGER,
@@ -42,12 +44,13 @@ public class Register extends InstanceFactory {
 		ps[CK]  = new Port(-20, 20, Port.INPUT, 1);
 		ps[CLR] = new Port(-10, 20, Port.INPUT, 1);
 		ps[EN]  = new Port(-30, 10, Port.INPUT, 1);
-		ps[OUT].setToolTip(Strings.getter("registerQTip"));
-		ps[IN].setToolTip(Strings.getter("registerDTip"));
-		ps[CK].setToolTip(Strings.getter("registerClkTip"));
-		ps[CLR].setToolTip(Strings.getter("registerClrTip"));
-		ps[EN].setToolTip(Strings.getter("registerEnableTip"));
+		ps[OUT].setToolTip(LC.createStringBinding("registerQTip"));
+		ps[IN].setToolTip(LC.createStringBinding("registerDTip"));
+		ps[CK].setToolTip(LC.createStringBinding("registerClkTip"));
+		ps[CLR].setToolTip(LC.createStringBinding("registerClrTip"));
+		ps[EN].setToolTip(LC.createStringBinding("registerEnableTip"));
 		setPorts(ps);
+
 	}
 	
 	@Override
@@ -82,7 +85,7 @@ public class Register extends InstanceFactory {
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
-		Graphics g = painter.getGraphics();
+		GraphicsContext g = painter.getGraphics();
 		Bounds bds = painter.getBounds();
 		RegisterData state = (RegisterData) painter.getData();
 		BitWidth widthVal = painter.getAttributeValue(StdAttr.WIDTH);
@@ -118,10 +121,12 @@ public class Register extends InstanceFactory {
 			painter.drawPort(IN);
 			painter.drawPort(OUT);
 		}
-		g.setColor(Color.GRAY);
+		g.setFill(Color.GRAY);
+		g.setStroke(Color.GRAY);
 		painter.drawPort(CLR, "0", Direction.SOUTH);
 		painter.drawPort(EN, Strings.get("memEnableLabel"), Direction.EAST);
-		g.setColor(Color.BLACK);
+		g.setFill(Color.BLACK);
+		g.setStroke(Color.BLACK);
 		painter.drawClock(CK, Direction.NORTH);
 
 		// draw contents

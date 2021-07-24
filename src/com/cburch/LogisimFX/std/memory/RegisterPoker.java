@@ -9,6 +9,7 @@ import com.cburch.LogisimFX.instance.InstancePainter;
 import com.cburch.LogisimFX.instance.InstancePoker;
 import com.cburch.LogisimFX.instance.InstanceState;
 import com.cburch.LogisimFX.instance.StdAttr;
+import javafx.scene.canvas.GraphicsContext;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -37,7 +38,7 @@ public class RegisterPoker extends InstancePoker {
 		int width = dataWidth == null ? 8 : dataWidth.getWidth();
 		int len = (width + 3) / 4;
 
-		Graphics g = painter.getGraphics();
+		GraphicsContext g = painter.getGraphics();
 		g.setColor(Color.RED);
 		if (len > 4) {
 			g.drawRect(bds.getX(), bds.getY() + 3, bds.getWidth(), 25);

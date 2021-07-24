@@ -6,23 +6,30 @@ package com.cburch.LogisimFX.std.memory;
 import java.util.Arrays;
 
 class MemContentsSub {
+
 	private MemContentsSub() { }
 	
 	static ContentsInterface createContents(int size, int bits) {
+
 		if (bits <= 8)       return new ByteContents(size);
 		else if (bits <= 16) return new ShortContents(size);
 		else                return new IntContents(size);
+
 	}
 	
 	static abstract class ContentsInterface implements Cloneable {
+
 		@Override
 		public ContentsInterface clone() {
+
 			try {
 				return (ContentsInterface) super.clone();
 			} catch (CloneNotSupportedException e) {
 				return this;
 			}
+
 		}
+
 		abstract int getLength();
 		abstract int get(int addr);
 		abstract void set(int addr, int value);
@@ -30,27 +37,37 @@ class MemContentsSub {
 		abstract void load(int start, int[] values, int mask);
 
 		boolean matches(int[] values, int start, int mask) {
+
 			for (int i = 0; i < values.length; i++) {
 				if (get(start + i) != (values[i] & mask)) return false;
 			}
+
 			return true;
+
 		}
 		
 		int[] get(int start, int len) {
+
 			int[] ret = new int[len];
 			for (int i = 0; i < ret.length; i++) ret[i] = get(start + i);
 			return ret;
+
 		}
 		
 		boolean isClear() {
+
 			for (int i = 0, n = getLength(); i < n; i++) {
 				if (get(i) != 0) return false;
 			}
+
 			return true;
+
 		}
+
 	}
 	
 	private static class ByteContents extends ContentsInterface {
+
 		private byte[] data;
 	
 		public ByteContents(int size) {
@@ -59,10 +76,12 @@ class MemContentsSub {
 		
 		@Override
 		public ByteContents clone() {
+
 			ByteContents ret = (ByteContents) super.clone();
 			ret.data = new byte[this.data.length];
 			System.arraycopy(this.data, 0, ret.data, 0, this.data.length);
 			return ret;
+
 		}
 		
 		//
@@ -80,12 +99,14 @@ class MemContentsSub {
 		
 		@Override
 		void set(int addr, int value) {
+
 			if (addr >= 0 && addr < data.length) {
 				byte oldValue = data[addr];
 				if (value != oldValue) {
 					data[addr] = (byte) value;
 				}
 			}
+
 		}
 	
 		@Override
@@ -95,14 +116,18 @@ class MemContentsSub {
 	
 		@Override
 		void load(int start, int[] values, int mask) {
+
 			int n = Math.min(values.length, data.length - start);
 			for (int i = 0; i < n; i++) {
 				data[start + i] = (byte) (values[i] & mask);
 			}
+
 		}
+
 	}
 
 	private static class ShortContents extends ContentsInterface {
+
 		private short[] data;
 	
 		public ShortContents(int size) {
@@ -132,12 +157,14 @@ class MemContentsSub {
 		
 		@Override
 		void set(int addr, int value) {
+
 			if (addr >= 0 && addr < data.length) {
 				short oldValue = data[addr];
 				if (value != oldValue) {
 					data[addr] = (short) value;
 				}
 			}
+
 		}
 	
 		@Override
@@ -147,14 +174,18 @@ class MemContentsSub {
 	
 		@Override
 		void load(int start, int[] values, int mask) {
+
 			int n = Math.min(values.length, data.length - start);
 			for (int i = 0; i < n; i++) {
 				data[start + i] = (short) (values[i] & mask);
 			}
+
 		}
+
 	}
 	
 	private static class IntContents extends ContentsInterface {
+
 		private int[] data;
 	
 		public IntContents(int size) {
@@ -163,10 +194,12 @@ class MemContentsSub {
 		
 		@Override
 		public IntContents clone() {
+
 			IntContents ret = (IntContents) super.clone();
 			ret.data = new int[this.data.length];
 			System.arraycopy(this.data, 0, ret.data, 0, this.data.length);
 			return ret;
+
 		}
 		
 		//
@@ -184,12 +217,14 @@ class MemContentsSub {
 		
 		@Override
 		void set(int addr, int value) {
+
 			if (addr >= 0 && addr < data.length) {
 				int oldValue = data[addr];
 				if (value != oldValue) {
 					data[addr] = value;
 				}
 			}
+
 		}
 	
 		@Override
@@ -204,5 +239,7 @@ class MemContentsSub {
 				data[i] = values[i] & mask;
 			}
 		}
+
 	}
+
 }

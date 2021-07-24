@@ -10,18 +10,23 @@ import com.cburch.LogisimFX.instance.InstanceState;
 import com.cburch.LogisimFX.instance.StdAttr;
 
 public class ShiftRegisterLogger extends InstanceLogger {
+
 	@Override
 	public Object[] getLogOptions(InstanceState state) {
+
 		Integer stages = state.getAttributeValue(ShiftRegister.ATTR_LENGTH);
 		Object[] ret = new Object[stages.intValue()];
 		for (int i = 0; i < ret.length; i++) {
 			ret[i] = Integer.valueOf(i);
 		}
+
 		return ret;
+
 	}
 	
 	@Override
 	public String getLogName(InstanceState state, Object option) {
+
 		String inName = state.getAttributeValue(StdAttr.LABEL);
 		if (inName == null || inName.equals("")) {
 			inName = Strings.get("shiftRegisterComponent")
@@ -32,10 +37,12 @@ public class ShiftRegisterLogger extends InstanceLogger {
 		} else {
 			return inName;
 		}
+
 	}
 
 	@Override
 	public Value getLogValue(InstanceState state, Object option) {
+
 		BitWidth dataWidth = state.getAttributeValue(StdAttr.WIDTH);
 		if (dataWidth == null) dataWidth = BitWidth.create(0);
 		ShiftRegisterData data = (ShiftRegisterData) state.getData();
@@ -45,5 +52,7 @@ public class ShiftRegisterLogger extends InstanceLogger {
 			int index = option == null ? 0 : ((Integer) option).intValue(); 
 			return data.get(index);
 		}
+
 	}
+
 }

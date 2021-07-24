@@ -9,7 +9,9 @@ import com.cburch.LogisimFX.proj.Action;
 import com.cburch.LogisimFX.proj.Project;
 
 class RomContentsListener implements HexModelListener {
+
 	private static class Change extends Action {
+
 		private RomContentsListener source;
 		private MemContents contents;
 		private long start;
@@ -19,11 +21,13 @@ class RomContentsListener implements HexModelListener {
 		
 		Change(RomContentsListener source, MemContents contents,
                long start, int[] oldValues, int[] newValues) {
+
 			this.source = source;
 			this.contents = contents;
 			this.start = start;
 			this.oldValues = oldValues;
 			this.newValues = newValues;
+
 		}
 
 		@Override
@@ -33,6 +37,7 @@ class RomContentsListener implements HexModelListener {
 
 		@Override
 		public void doIt(Project proj) {
+
 			if (!completed) {
 				completed = true;
 				try {
@@ -42,10 +47,12 @@ class RomContentsListener implements HexModelListener {
 					source.setEnabled(true);
 				}
 			}
+
 		}
 
 		@Override
 		public void undo(Project proj) {
+
 			if (completed) {
 				completed = false;
 				try {
@@ -55,21 +62,26 @@ class RomContentsListener implements HexModelListener {
 					source.setEnabled(true);
 				}
 			}
+
 		}
 		
 		@Override
 		public boolean shouldAppendTo(Action other) {
+
 			if (other instanceof Change) {
 				Change o = (Change) other;
 				long oEnd = o.start + o.newValues.length;
 				long end = start + newValues.length;
 				if (oEnd >= start && end >= o.start) return true;
 			}
+
 			return super.shouldAppendTo(other);
+
 		}
 		
 		@Override
 		public Action append(Action other) {
+
 			if (other instanceof Change) {
 				Change o = (Change) other;
 				long oEnd = o.start + o.newValues.length;
@@ -86,8 +98,11 @@ class RomContentsListener implements HexModelListener {
 					return new Change(source, contents, nStart, nOld, nNew);
 				}
 			}
+
 			return super.append(other);
+
 		}
+
 	}
 
 	Project proj;
@@ -108,6 +123,7 @@ class RomContentsListener implements HexModelListener {
 	
 	public void bytesChanged(HexModel source, long start,
 			long numBytes, int[] oldValues) {
+
 		if (enabled && proj != null && oldValues != null) {
 			// this change needs to be logged in the undo log
 			int[] newValues = new int[oldValues.length];
@@ -117,5 +133,7 @@ class RomContentsListener implements HexModelListener {
 			proj.doAction(new Change(this, (MemContents) source,
 					start, oldValues, newValues));
 		}
+
 	}
+
 }

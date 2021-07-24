@@ -7,9 +7,12 @@ import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.std.LC;
 
 public class JKFlipFlop extends AbstractFlipFlop {
+
 	public JKFlipFlop() {
+
 		super("J-K Flip-Flop", "jkFlipFlop.gif",
 				LC.createStringBinding("jkFlipFlopComponent"), 2, false);
+
 	}
 
 	@Override
@@ -19,6 +22,7 @@ public class JKFlipFlop extends AbstractFlipFlop {
 
 	@Override
 	protected Value computeValue(Value[] inputs, Value curValue) {
+
 		if (inputs[0] == Value.FALSE) {
 			if (inputs[1] == Value.FALSE) {
 				return curValue;
@@ -32,6 +36,8 @@ public class JKFlipFlop extends AbstractFlipFlop {
 				return curValue.not();
 			}
 		}
+
 		return Value.UNKNOWN;
+
 	}
 }

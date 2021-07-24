@@ -3,7 +3,6 @@
 
 package com.cburch.LogisimFX.std.memory;
 
-import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -13,8 +12,10 @@ import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.logisim.gui.hex.HexFrame;
 import com.cburch.LogisimFX.proj.Project;
+import javafx.scene.paint.Color;
 
 public class Ram extends Mem {
+
 	static final AttributeOption BUS_COMBINED
 		= new AttributeOption("combined", LC.createStringBinding("ramBusSynchCombined"));
 	static final AttributeOption BUS_ASYNCH
@@ -74,20 +75,20 @@ public class Ram extends Mem {
 
 		configureStandardPorts(instance, ps);
 		ps[OE]  = new Port(-50, 40, Port.INPUT, 1);
-		ps[OE].setToolTip(Strings.getter("ramOETip"));
+		ps[OE].setToolTip(LC.createStringBinding("ramOETip"));
 		ps[CLR] = new Port(-30, 40, Port.INPUT, 1);
-		ps[CLR].setToolTip(Strings.getter("ramClrTip"));
+		ps[CLR].setToolTip(LC.createStringBinding("ramClrTip"));
 		if (!asynch) {
 			ps[CLK] = new Port(-70, 40, Port.INPUT, 1);
-			ps[CLK].setToolTip(Strings.getter("ramClkTip"));
+			ps[CLK].setToolTip(LC.createStringBinding("ramClkTip"));
 		}
 		if (separate) {
 			ps[WE] = new Port(-110, 40, Port.INPUT, 1);
-			ps[WE].setToolTip(Strings.getter("ramWETip"));
+			ps[WE].setToolTip(LC.createStringBinding("ramWETip"));
 			ps[DIN] = new Port(-140, 20, Port.INPUT, DATA_ATTR);
-			ps[DIN].setToolTip(Strings.getter("ramInTip"));
+			ps[DIN].setToolTip(LC.createStringBinding("ramInTip"));
 		} else {
-			ps[DATA].setToolTip(Strings.getter("ramBusTip"));
+			ps[DATA].setToolTip(LC.createStringBinding("ramBusTip"));
 		}
 		instance.setPorts(ps);
 	}
@@ -202,7 +203,8 @@ public class Ram extends Mem {
 
 		if (separate) {
 			painter.drawPort(WE, Strings.get("ramWELabel"), Direction.SOUTH);
-			painter.getGraphics().setColor(Color.BLACK);
+			painter.getGraphics().setFill(Color.BLACK);
+			painter.getGraphics().setStroke(Color.BLACK);
 			painter.drawPort(DIN, Strings.get("ramDataLabel"), Direction.EAST);
 		}
 	}

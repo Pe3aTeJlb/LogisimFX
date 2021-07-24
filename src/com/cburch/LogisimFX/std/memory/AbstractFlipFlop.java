@@ -5,20 +5,24 @@ package com.cburch.LogisimFX.std.memory;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.util.GraphicsUtil;
-import com.cburch.LogisimFX.util.StringGetter;
-import javafx.beans.binding.StringBinding;
 
-import java.awt.*;
+import javafx.beans.binding.StringBinding;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+
 import java.awt.event.MouseEvent;
 
 abstract class AbstractFlipFlop extends InstanceFactory {
+
 	private static final int STD_PORTS = 6;
 	
 	private Attribute<AttributeOption> triggerAttribute;
 	
 	protected AbstractFlipFlop(String name, String iconName, StringBinding desc,
 			int numInputs, boolean allowLevelTriggers) {
+
 		super(name, desc);
 		setIcon(iconName);
 		triggerAttribute = allowLevelTriggers ? StdAttr.TRIGGER : StdAttr.EDGE_TRIGGER;
@@ -47,13 +51,14 @@ abstract class AbstractFlipFlop extends InstanceFactory {
 		ps[numInputs + 3] = new Port(-10, 30, Port.INPUT,  1);
 		ps[numInputs + 4] = new Port(-30, 30, Port.INPUT,  1);
 		ps[numInputs + 5] = new Port(-20, 30, Port.INPUT,  1);
-		ps[numInputs].setToolTip(Strings.getter("flipFlopClockTip"));
-		ps[numInputs + 1].setToolTip(Strings.getter("flipFlopQTip"));
-		ps[numInputs + 2].setToolTip(Strings.getter("flipFlopNotQTip"));
-		ps[numInputs + 3].setToolTip(Strings.getter("flipFlopResetTip"));
-		ps[numInputs + 4].setToolTip(Strings.getter("flipFlopPresetTip"));
-		ps[numInputs + 5].setToolTip(Strings.getter("flipFlopEnableTip"));
+		ps[numInputs].setToolTip(LC.createStringBinding("flipFlopClockTip"));
+		ps[numInputs + 1].setToolTip(LC.createStringBinding("flipFlopQTip"));
+		ps[numInputs + 2].setToolTip(LC.createStringBinding("flipFlopNotQTip"));
+		ps[numInputs + 3].setToolTip(LC.createStringBinding("flipFlopResetTip"));
+		ps[numInputs + 4].setToolTip(LC.createStringBinding("flipFlopPresetTip"));
+		ps[numInputs + 5].setToolTip(LC.createStringBinding("flipFlopEnableTip"));
 		setPorts(ps);
+
 	}
 
 	//
@@ -69,14 +74,17 @@ abstract class AbstractFlipFlop extends InstanceFactory {
 	//
 	@Override
 	protected void configureNewInstance(Instance instance) {
+
 		Bounds bds = instance.getBounds();
 		instance.setTextField(StdAttr.LABEL, StdAttr.LABEL_FONT,
 				bds.getX() + bds.getWidth() / 2, bds.getY() - 3,
 				GraphicsUtil.H_CENTER, GraphicsUtil.V_BASELINE);
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		boolean changed = false;
 		StateData data = (StateData) state.getData();
 		if (data == null) {
@@ -111,11 +119,13 @@ abstract class AbstractFlipFlop extends InstanceFactory {
 
 		state.setPort(n + 1, data.curValue, Memory.DELAY);
 		state.setPort(n + 2, data.curValue.not(), Memory.DELAY);
+
 	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
-		Graphics g = painter.getGraphics();
+
+		GraphicsContext g = painter.getGraphics();
 		painter.drawBounds();
 		painter.drawLabel();
 		if (painter.getShowState()) {
@@ -124,48 +134,64 @@ abstract class AbstractFlipFlop extends InstanceFactory {
 			if (myState != null) {
 				int x = loc.getX();
 				int y = loc.getY();
-				g.setColor(myState.curValue.getColor());
+				g.setFill(myState.curValue.getColor());
+				g.setStroke(myState.curValue.getColor());
 				g.fillOval(x - 26, y + 4, 13, 13);
-				g.setColor(Color.WHITE);
+				g.setFill(Color.WHITE);
+				g.setStroke(Color.WHITE);
 				GraphicsUtil.drawCenteredText(g,
 					myState.curValue.toDisplayString(), x - 19, y + 9);
-				g.setColor(Color.BLACK);
+				g.setFill(Color.BLACK);
+				g.setStroke(Color.BLACK);
 			}
 		}
 		
 		int n = getPorts().size() - STD_PORTS;
-		g.setColor(Color.GRAY);
+		g.setFill(Color.GRAY);
+		g.setStroke(Color.GRAY);
 		painter.drawPort(n + 3, "0", Direction.SOUTH);
 		painter.drawPort(n + 4, "1", Direction.SOUTH);
 		painter.drawPort(n + 5, Strings.get("memEnableLabel"), Direction.SOUTH);
-		g.setColor(Color.BLACK);
+
+		g.setFill(Color.BLACK);
+		g.setStroke(Color.BLACK);
 		for (int i = 0; i < n; i++) {
 			painter.drawPort(i, getInputName(i), Direction.EAST);
 		}
 		painter.drawClock(n, Direction.EAST);
 		painter.drawPort(n + 1, "Q", Direction.WEST);
 		painter.drawPort(n + 2);
+
 	}
 
 	private static class StateData extends ClockState implements InstanceData {
+
 		Value curValue  = Value.FALSE;
+
 	}
 
 	public static class Logger extends InstanceLogger {
+
 		@Override
 		public String getLogName(InstanceState state, Object option) {
+
 			String ret = state.getAttributeValue(StdAttr.LABEL);
 			return ret != null && !ret.equals("") ? ret : null;
+
 		}
 
 		@Override
 		public Value getLogValue(InstanceState state, Object option) {
+
 			StateData s = (StateData) state.getData();
 			return s == null ? Value.FALSE : s.curValue;
+
 		}
+
 	}
 
 	public static class Poker extends InstancePoker {
+
 		boolean isPressed = true;
 
 		@Override
@@ -175,6 +201,7 @@ abstract class AbstractFlipFlop extends InstanceFactory {
 		
 		@Override
 		public void mouseReleased(InstanceState state, MouseEvent e) {
+
 			if (isPressed && isInside(state, e)) {
 				StateData myState = (StateData) state.getData();
 				if (myState == null) return;
@@ -183,14 +210,19 @@ abstract class AbstractFlipFlop extends InstanceFactory {
 				state.fireInvalidated();
 			}
 			isPressed = false;
+
 		}
 
 		private boolean isInside(InstanceState state, MouseEvent e) {
+
 			Location loc = state.getInstance().getLocation();
 			int dx = e.getX() - (loc.getX() - 20);
 			int dy = e.getY() - (loc.getY() + 10);
 			int d2 = dx * dx + dy * dy;
 			return d2 < 8 * 8;
+
 		}
+
 	}
+
 }

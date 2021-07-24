@@ -3,8 +3,6 @@
 
 package com.cburch.LogisimFX.std.memory;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
@@ -13,12 +11,16 @@ import com.cburch.LogisimFX.instance.InstancePainter;
 import com.cburch.LogisimFX.instance.InstancePoker;
 import com.cburch.LogisimFX.instance.InstanceState;
 import com.cburch.LogisimFX.proj.Project;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class MemPoker extends InstancePoker {
+
 	private MemPoker sub;
 
 	@Override
 	public boolean init(InstanceState state, MouseEvent event) {
+
 		Bounds bds = state.getInstance().getBounds();
 		MemState data = (MemState) state.getData();
 		long addr = data.getAddressAt(event.getX() - bds.getX(),
@@ -30,7 +32,9 @@ public class MemPoker extends InstancePoker {
 		} else {
 			sub = new DataPoker(state, data, addr);
 		}
+
 		return true;
+
 	}
 	
 	@Override
@@ -47,10 +51,12 @@ public class MemPoker extends InstancePoker {
 	}
 	
 	private static class DataPoker extends MemPoker {
+
 		int initValue;
 		int curValue;
 
 		private DataPoker(InstanceState state, MemState data, long addr) {
+
 			data.setCursor(addr);
 			initValue = data.getContents().get(data.getCursor());
 			curValue = initValue;
@@ -62,32 +68,42 @@ public class MemPoker extends InstancePoker {
 					((RomAttributes) attrs).setProject(proj);
 				}
 			}
+
 		}
 	
 		@Override
 		public Bounds getBounds(InstancePainter painter) {
+
 			MemState data = (MemState) painter.getData();
 			Bounds inBounds = painter.getInstance().getBounds();
 			return data.getBounds(data.getCursor(), inBounds);
+
 		}
 	
 		@Override
 		public void paint(InstancePainter painter) {
+
 			Bounds bds = getBounds(painter);
-			Graphics g = painter.getGraphics();
-			g.setColor(Color.RED);
-			g.drawRect(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight());
-			g.setColor(Color.BLACK);
+			GraphicsContext g = painter.getGraphics();
+			g.setFill(Color.RED);
+			g.setStroke(Color.RED);
+			g.strokeRect(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight());
+			g.setFill(Color.BLACK);
+			g.setStroke(Color.BLACK);
+
 		}
 	
 		@Override
 		public void stopEditing(InstanceState state) {
+
 			MemState data = (MemState) state.getData();
 			data.setCursor(-1);
+
 		}
 	
 		@Override
 		public void keyTyped(InstanceState state, KeyEvent e) {
+
 			char c = e.getKeyChar();
 			int val = Character.digit(e.getKeyChar(), 16);
 			MemState data = (MemState) state.getData();
@@ -102,36 +118,47 @@ public class MemPoker extends InstancePoker {
 			} else if (c == '\u0008' || c == '\u007f') {
 				moveTo(data, data.getCursor() - 1);
 			}
+
 		}
 	
 		private void moveTo(MemState data, long addr) {
+
 			if (data.isValidAddr(addr)) {
 				data.setCursor(addr);
 				data.scrollToShow(addr);
 				initValue = data.getContents().get(addr);
 				curValue = initValue;
 			}
+
 		}
 	}
 
 	private static class AddrPoker extends MemPoker {
+
 		@Override
 		public Bounds getBounds(InstancePainter painter) {
+
 			MemState data = (MemState) painter.getData();
 			return data.getBounds(-1, painter.getBounds());
+
 		}
 	
 		@Override
 		public void paint(InstancePainter painter) {
+
 			Bounds bds = getBounds(painter);
-			Graphics g = painter.getGraphics();
-			g.setColor(Color.RED);
-			g.drawRect(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight());
-			g.setColor(Color.BLACK);
+			GraphicsContext g = painter.getGraphics();
+			g.setFill(Color.RED);
+			g.setStroke(Color.RED);
+			g.strokeRect(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight());
+			g.setFill(Color.BLACK);
+			g.setStroke(Color.BLACK);
+
 		}
 	
 		@Override
 		public void keyTyped(InstanceState state, KeyEvent e) {
+
 			char c = e.getKeyChar();
 			int val = Character.digit(e.getKeyChar(), 16);
 			MemState data = (MemState) state.getData();
@@ -145,6 +172,9 @@ public class MemPoker extends InstancePoker {
 			} else if (c == '\u0008' || c == '\u007f') {
 				data.setScroll(data.getScroll() - data.getColumns());
 			}
+
 		}
+
 	}
+
 }

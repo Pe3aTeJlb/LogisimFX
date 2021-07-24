@@ -7,6 +7,7 @@ import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.instance.StdAttr;
 
 class ClockState implements Cloneable {
+
 	private Value lastClock;
 	
 	public ClockState() {
@@ -15,12 +16,15 @@ class ClockState implements Cloneable {
 	
 	@Override
 	public ClockState clone() {
+
 		try {
 			return (ClockState) super.clone();
 		} catch (CloneNotSupportedException e) { return null; }
+
 	}
 		
 	public boolean updateClock(Value newClock, Object trigger) {
+
 		Value oldClock = lastClock;
 		lastClock = newClock;
 		if (trigger == null || trigger == StdAttr.TRIG_RISING) {
@@ -34,5 +38,7 @@ class ClockState implements Cloneable {
 		} else {
 			return oldClock == Value.FALSE && newClock == Value.TRUE;
 		}
+
 	}
+
 }

@@ -7,9 +7,12 @@ import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.std.LC;
 
 public class DFlipFlop extends AbstractFlipFlop {
+
 	public DFlipFlop() {
+
 		super("D Flip-Flop", "dFlipFlop.gif",
 				LC.createStringBinding("dFlipFlopComponent"), 1, true);
+
 	}
 
 	@Override
@@ -21,4 +24,5 @@ public class DFlipFlop extends AbstractFlipFlop {
 	protected Value computeValue(Value[] inputs, Value curValue) {
 		return inputs[0];
 	}
+
 }

@@ -29,6 +29,7 @@ import java.util.StringTokenizer;
 import java.util.WeakHashMap;
 
 public class Rom extends Mem {
+
 	public static Attribute<MemContents> CONTENTS_ATTR = new ContentsAttribute();
 	
 	// The following is so that instance's MemListeners aren't freed by the

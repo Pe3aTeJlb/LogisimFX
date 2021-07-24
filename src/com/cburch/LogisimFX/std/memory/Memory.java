@@ -12,6 +12,7 @@ import com.cburch.LogisimFX.tools.Tool;
 import javafx.beans.binding.StringBinding;
 
 public class Memory extends Library {
+
 	protected static final int DELAY = 5;
 	
 	private static FactoryDescription[] DESCRIPTIONS = {
@@ -49,9 +50,13 @@ public class Memory extends Library {
 
 	@Override
 	public List<Tool> getTools() {
+
 		if (tools == null) {
 			tools = FactoryDescription.getTools(Memory.class, DESCRIPTIONS);
 		}
+
 		return tools;
+
 	}
+
 }

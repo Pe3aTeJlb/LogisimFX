@@ -3,17 +3,17 @@
 
 package com.cburch.LogisimFX.std.memory;
 
-import java.awt.Color;
-import java.awt.Graphics;
-
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.StringUtil;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class Counter extends InstanceFactory {
+
 	static final AttributeOption ON_GOAL_WRAP = new AttributeOption("wrap",
 			"wrap", LC.createStringBinding("counterGoalWrap"));
 	static final AttributeOption ON_GOAL_STAY = new AttributeOption("stay",
@@ -55,13 +55,13 @@ public class Counter extends InstanceFactory {
 		ps[LD]  = new Port(-30, -10, Port.INPUT, 1);
 		ps[CT]  = new Port(-30,  10, Port.INPUT, 1);
 		ps[CARRY] = new Port(0,  10, Port.OUTPUT, 1);
-		ps[OUT].setToolTip(Strings.getter("counterQTip"));
-		ps[IN].setToolTip(Strings.getter("counterDataTip"));
-		ps[CK].setToolTip(Strings.getter("counterClockTip"));
-		ps[CLR].setToolTip(Strings.getter("counterResetTip"));
-		ps[LD].setToolTip(Strings.getter("counterLoadTip"));
-		ps[CT].setToolTip(Strings.getter("counterEnableTip"));
-		ps[CARRY].setToolTip(Strings.getter("counterCarryTip"));
+		ps[OUT].setToolTip(LC.createStringBinding("counterQTip"));
+		ps[IN].setToolTip(LC.createStringBinding("counterDataTip"));
+		ps[CK].setToolTip(LC.createStringBinding("counterClockTip"));
+		ps[CLR].setToolTip(LC.createStringBinding("counterResetTip"));
+		ps[LD].setToolTip(LC.createStringBinding("counterLoadTip"));
+		ps[CT].setToolTip(LC.createStringBinding("counterEnableTip"));
+		ps[CARRY].setToolTip(LC.createStringBinding("counterCarryTip"));
 		setPorts(ps);
 	}
 	
@@ -155,7 +155,7 @@ public class Counter extends InstanceFactory {
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
-		Graphics g = painter.getGraphics();
+		GraphicsContext g = painter.getGraphics();
 		Bounds bds = painter.getBounds();
 		RegisterData state = (RegisterData) painter.getData();
 		BitWidth widthVal = painter.getAttributeValue(StdAttr.WIDTH);
@@ -191,12 +191,14 @@ public class Counter extends InstanceFactory {
 			painter.drawPort(IN);
 			painter.drawPort(OUT);
 		}
-		g.setColor(Color.GRAY);
+		g.setFill(Color.GRAY);
+		g.setStroke(Color.GRAY);
 		painter.drawPort(LD);
 		painter.drawPort(CARRY);
 		painter.drawPort(CLR, "0", Direction.SOUTH);
 		painter.drawPort(CT, Strings.get("counterEnableLabel"), Direction.EAST);
-		g.setColor(Color.BLACK);
+		g.setFill(Color.BLACK);
+		g.setStroke(Color.BLACK);
 		painter.drawClock(CK, Direction.NORTH);
 
 		// draw contents

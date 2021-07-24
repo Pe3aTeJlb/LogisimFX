@@ -3,17 +3,17 @@
 
 package com.cburch.LogisimFX.std.memory;
 
-import java.awt.Color;
-import java.awt.Graphics;
-
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.instance.InstanceData;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.StringUtil;
 import com.cburch.hex.HexModel;
 import com.cburch.hex.HexModelListener;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 class MemState implements InstanceData, Cloneable, HexModelListener {
+
 	private static final int ROWS = 4; // rows in memory display
 
 	private static final int TABLE_WIDTH12 = 80; // width of table for addr bits <= 12
@@ -35,25 +35,30 @@ class MemState implements InstanceData, Cloneable, HexModelListener {
 	private long curAddr = -1;
 
 	MemState(MemContents contents) {
+
 		this.contents = contents;
 		setBits(contents.getLogLength(), contents.getWidth());
 		contents.addHexModelListener(this);
+
 	}
 
 	@Override
 	public MemState clone() {
+
 		try {
 			MemState ret = (MemState) super.clone();
 			ret.contents = contents.clone();
 			ret.contents.addHexModelListener(ret);
 			return ret;
 		} catch (CloneNotSupportedException e) { return null; }
+
 	}
 
 	//
 	// methods for accessing the address bits
 	//
 	private void setBits(int addrBits, int dataBits) {
+
 		if (contents == null) {
 			contents = MemContents.create(addrBits, dataBits);
 		} else {
@@ -74,6 +79,7 @@ class MemState implements InstanceData, Cloneable, HexModelListener {
 		if (curAddr - newLast > 0) curAddr = -1;
 		long maxScroll = Math.max(0, newLast + 1 - (ROWS - 1) * columns);
 		if (curScroll > maxScroll) curScroll = maxScroll;
+
 	}
 
 	public MemContents getContents() {
@@ -96,8 +102,10 @@ class MemState implements InstanceData, Cloneable, HexModelListener {
 	}
 	
 	boolean isValidAddr(long addr) {
+
 		int addrBits = contents.getLogLength();
 		return addr >>> addrBits == 0;
+
 	}
 	
 	int getRows() {
@@ -132,6 +140,7 @@ class MemState implements InstanceData, Cloneable, HexModelListener {
 	}
 
 	void scrollToShow(long addr) {
+
 		if (isValidAddr(addr)) {
 			addr = addr / columns * columns;
 			long curTop = curScroll / columns * columns;
@@ -142,19 +151,23 @@ class MemState implements InstanceData, Cloneable, HexModelListener {
 				if (curScroll < 0) curScroll = 0;
 			}
 		}
+
 	}
 
 	void setScroll(long addr) {
+
 		long maxAddr = getLastAddress() - ROWS * columns;
 		if (addr > maxAddr) addr = maxAddr; // note: maxAddr could be negative
 		if (addr < 0) addr = 0;
 		curScroll = addr;
+
 	}
 	
 	//
 	// graphical methods
 	//
 	public long getAddressAt(int x, int y) {
+
 		int addrBits = getAddrBits();
 		int boxX = addrBits <= 12 ? ENTRY_XOFFS12 : ENTRY_XOFFS32;
 		int boxW = addrBits <= 12 ? TABLE_WIDTH12 : TABLE_WIDTH32;
@@ -169,9 +182,11 @@ class MemState implements InstanceData, Cloneable, HexModelListener {
 		int row = (y - ENTRY_YOFFS) / ENTRY_HEIGHT;
 		long ret = (curScroll / columns * columns) + columns * row + col;
 		return isValidAddr(ret) ? ret : getLastAddress();
+
 	}
 	
 	public Bounds getBounds(long addr, Bounds bds) {
+
 		int addrBits = getAddrBits();
 		int boxX = bds.getX() + (addrBits <= 12 ? ENTRY_XOFFS12 : ENTRY_XOFFS32);
 		int boxW = addrBits <= 12 ? TABLE_WIDTH12 : TABLE_WIDTH32;
@@ -185,18 +200,20 @@ class MemState implements InstanceData, Cloneable, HexModelListener {
 			int bdsY = addrToY(bds, addr);
 			return Bounds.create(bdsX, bdsY, boxW / columns, ENTRY_HEIGHT);
 		}
+
 	}
 
-	public void paint(Graphics g, int leftX, int topY) {
+	public void paint(GraphicsContext g, int leftX, int topY) {
+
 		int addrBits = getAddrBits();
 		int dataBits = contents.getWidth();
 		int boxX = leftX + (addrBits <= 12 ? ENTRY_XOFFS12 : ENTRY_XOFFS32);
 		int boxY = topY + ENTRY_YOFFS;
 		int boxW = addrBits <= 12 ? TABLE_WIDTH12 : TABLE_WIDTH32;
 		int boxH = ROWS * ENTRY_HEIGHT;
-		
-		GraphicsUtil.switchToWidth(g, 1);
-		g.drawRect(boxX, boxY, boxW, boxH);
+
+		g.setLineWidth(1);
+		g.strokeRect(boxX, boxY, boxW, boxH);
 		int entryWidth = boxW / columns;
 		for (int row = 0; row < ROWS; row++) {
 			long addr = (curScroll / columns * columns) + columns * row;
@@ -204,21 +221,25 @@ class MemState implements InstanceData, Cloneable, HexModelListener {
 			int y = boxY + ENTRY_HEIGHT * row;
 			int yoffs = ENTRY_HEIGHT - 3;
 			if (isValidAddr(addr)) {
-				g.setColor(Color.GRAY);
+				g.setFill(Color.GRAY);
+				g.setStroke(Color.GRAY);
 				GraphicsUtil.drawText(g, StringUtil.toHexString(getAddrBits(), (int) addr),
 						x - 2, y + yoffs,
 						GraphicsUtil.H_RIGHT, GraphicsUtil.V_BASELINE);
 			}
-			g.setColor(Color.BLACK);
+			g.setFill(Color.BLACK);
+			g.setStroke(Color.BLACK);
 			for (int col = 0; col < columns && isValidAddr(addr); col++) {
 				int val = contents.get(addr);
 				if (addr == curAddr) {
 					g.fillRect(x, y, entryWidth, ENTRY_HEIGHT);
-					g.setColor(Color.WHITE);
+					g.setFill(Color.WHITE);
+					g.setStroke(Color.WHITE);
 					GraphicsUtil.drawText(g, StringUtil.toHexString(dataBits, val),
 							x + entryWidth / 2, y + yoffs,
 							GraphicsUtil.H_CENTER, GraphicsUtil.V_BASELINE);
-					g.setColor(Color.BLACK);
+					g.setFill(Color.BLACK);
+					g.setStroke(Color.BLACK);
 				} else {
 					GraphicsUtil.drawText(g, StringUtil.toHexString(dataBits, val),
 							x + entryWidth / 2, y + yoffs,
@@ -228,9 +249,11 @@ class MemState implements InstanceData, Cloneable, HexModelListener {
 				x += entryWidth;
 			}
 		}
+
 	}
 
 	private int addrToX(Bounds bds, long addr) {
+
 		int addrBits = getAddrBits();
 		int boxX = bds.getX() + (addrBits <= 12 ? ENTRY_XOFFS12 : ENTRY_XOFFS32);
 		int boxW = addrBits <= 12 ? TABLE_WIDTH12 : TABLE_WIDTH32;
@@ -241,13 +264,16 @@ class MemState implements InstanceData, Cloneable, HexModelListener {
 		int col = (int) (addr - row * columns);
 		if (col < 0 || col >= columns) return -1;
 		return boxX + boxW * col / columns;
+
 	}
 
 	private int addrToY(Bounds bds, long addr) {
+
 		long topRow = curScroll / columns;
 		long row = addr / columns;
 		if (row < topRow || row >= topRow + ROWS) return -1;
 		return (int) (bds.getY() + ENTRY_YOFFS + ENTRY_HEIGHT * (row - topRow));
+
 	}
 
 	public void metainfoChanged(HexModel source) {
@@ -255,4 +281,5 @@ class MemState implements InstanceData, Cloneable, HexModelListener {
 	}
 
 	public void bytesChanged(HexModel source, long start, long numBytes, int[] oldValues) { }
+
 }

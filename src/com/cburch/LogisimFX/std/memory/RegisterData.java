@@ -6,6 +6,7 @@ package com.cburch.LogisimFX.std.memory;
 import com.cburch.LogisimFX.instance.InstanceData;
 
 class RegisterData extends ClockState implements InstanceData {
+
 	int value;
 
 	public RegisterData() {
@@ -19,4 +20,5 @@ class RegisterData extends ClockState implements InstanceData {
 	public int getValue() {
 		return value;
 	}
+
 }

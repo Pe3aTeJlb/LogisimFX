@@ -7,9 +7,12 @@ import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.std.LC;
 
 public class SRFlipFlop extends AbstractFlipFlop {
+
 	public SRFlipFlop() {
+
 		super("S-R Flip-Flop", "srFlipFlop.gif",
 				LC.createStringBinding("srFlipFlopComponent"), 2, true);
+
 	}
 
 	@Override
@@ -19,6 +22,7 @@ public class SRFlipFlop extends AbstractFlipFlop {
 
 	@Override
 	protected Value computeValue(Value[] inputs, Value curValue) {
+
 		if (inputs[0] == Value.FALSE) {
 			if (inputs[1] == Value.FALSE) {
 				return curValue;
@@ -32,6 +36,9 @@ public class SRFlipFlop extends AbstractFlipFlop {
 				return Value.ERROR;
 			}
 		}
+
 		return Value.UNKNOWN;
+
 	}
+
 }

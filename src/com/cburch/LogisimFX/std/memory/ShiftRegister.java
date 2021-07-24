@@ -12,8 +12,10 @@ import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.IntegerConfigurator;
 import com.cburch.LogisimFX.tools.key.JoinedConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
+import javafx.scene.canvas.GraphicsContext;
 
 public class ShiftRegister extends InstanceFactory {
+
 	static final Attribute<Integer> ATTR_LENGTH = Attributes.forIntegerRange("length",
 			LC.createStringBinding("shiftRegLengthAttr"), 1, 32);
 	static final Attribute<Boolean> ATTR_LOAD = Attributes.forBoolean("parallel",
@@ -27,6 +29,7 @@ public class ShiftRegister extends InstanceFactory {
 	private static final int LD  = 5;
 
 	public ShiftRegister() {
+
 		super("Shift Register", LC.createStringBinding("shiftRegisterComponent"));
 		setAttributes(new Attribute[] {
 				StdAttr.WIDTH, ATTR_LENGTH, ATTR_LOAD, StdAttr.EDGE_TRIGGER,
@@ -42,10 +45,12 @@ public class ShiftRegister extends InstanceFactory {
 		setIcon("shiftreg.gif");
 		setInstanceLogger(ShiftRegisterLogger.class);
 		setInstancePoker(ShiftRegisterPoker.class);
+
 	}
 	
 	@Override
 	public Bounds getOffsetBounds(AttributeSet attrs) {
+
 		Object parallel = attrs.getValue(ATTR_LOAD);
 		if (parallel == null || ((Boolean) parallel).booleanValue()) {
 			int len = attrs.getValue(ATTR_LENGTH).intValue();
@@ -53,23 +58,29 @@ public class ShiftRegister extends InstanceFactory {
 		} else {
 			return Bounds.create(0, -20, 30, 40);
 		}
+
 	}
 	
 	@Override
 	protected void configureNewInstance(Instance instance) {
+
 		configurePorts(instance);
 		instance.addAttributeListener();
+
 	}
 	
 	@Override
 	protected void instanceAttributeChanged(Instance instance, Attribute<?> attr) {
+
 		if (attr == ATTR_LOAD || attr == ATTR_LENGTH || attr == StdAttr.WIDTH) {
 			instance.recomputeBounds();
 			configurePorts(instance);
 		}
+
 	}
 	
 	private void configurePorts(Instance instance) {
+
 		BitWidth widthObj = instance.getAttributeValue(StdAttr.WIDTH);
 		int width = widthObj.getWidth();
 		Boolean parallelObj = instance.getAttributeValue(ATTR_LOAD);
@@ -80,7 +91,7 @@ public class ShiftRegister extends InstanceFactory {
 			int len = lenObj == null ? 8 : lenObj.intValue();
 			ps = new Port[6 + 2 * len];
 			ps[LD] = new Port(10, -20, Port.INPUT, 1);
-			ps[LD].setToolTip(Strings.getter("shiftRegLoadTip"));
+			ps[LD].setToolTip(LC.createStringBinding("shiftRegLoadTip"));
 			for (int i = 0; i < len; i++) {
 				ps[6 + 2 * i]     = new Port(20 + 10 * i, -20, Port.INPUT, width);
 				ps[6 + 2 * i + 1] = new Port(20 + 10 * i,  20, Port.OUTPUT, width);
@@ -93,17 +104,18 @@ public class ShiftRegister extends InstanceFactory {
 		ps[IN]  = new Port( 0,   0, Port.INPUT, width);
 		ps[CK]  = new Port( 0,  10, Port.INPUT, 1);
 		ps[CLR] = new Port(10,  20, Port.INPUT, 1);
-		ps[OUT].setToolTip(Strings.getter("shiftRegOutTip"));
-		ps[SH].setToolTip(Strings.getter("shiftRegShiftTip"));
-		ps[IN].setToolTip(Strings.getter("shiftRegInTip"));
-		ps[CK].setToolTip(Strings.getter("shiftRegClockTip"));
-		ps[CLR].setToolTip(Strings.getter("shiftRegClearTip"));
+		ps[OUT].setToolTip(LC.createStringBinding("shiftRegOutTip"));
+		ps[SH].setToolTip(LC.createStringBinding("shiftRegShiftTip"));
+		ps[IN].setToolTip(LC.createStringBinding("shiftRegInTip"));
+		ps[CK].setToolTip(LC.createStringBinding("shiftRegClockTip"));
+		ps[CLR].setToolTip(LC.createStringBinding("shiftRegClearTip"));
 		instance.setPorts(ps);
 
 		instance.setTextField(StdAttr.LABEL, StdAttr.LABEL_FONT,
 				bds.getX() + bds.getWidth() / 2,
 				bds.getY() + bds.getHeight() / 4,
 				GraphicsUtil.H_CENTER, GraphicsUtil.V_CENTER);
+
 	}
 	
 	private ShiftRegisterData getData(InstanceState state) {
@@ -174,7 +186,7 @@ public class ShiftRegister extends InstanceFactory {
 					} else {
 						y += 3 * bds.getHeight() / 4;
 					}
-					Graphics g = painter.getGraphics();
+					GraphicsContext g = painter.getGraphics();
 					for (int i = 0; i < len; i++) {
 						String s = data.get(len - 1 - i).toHexString();
 						GraphicsUtil.drawCenteredText(g, s, x, y);
@@ -186,13 +198,13 @@ public class ShiftRegister extends InstanceFactory {
 				int x = bds.getX() + bds.getWidth() / 2;
 				int y = bds.getY();
 				int h = bds.getHeight();
-				Graphics g = painter.getGraphics();
+				GraphicsContext g = painter.getGraphics();
 				Object label = painter.getAttributeValue(StdAttr.LABEL);
 				if (label == null || label.equals("")) {
-					String a = Strings.get("shiftRegisterLabel1");
+					String a = LC.get("shiftRegisterLabel1");
 					GraphicsUtil.drawCenteredText(g, a, x, y + h / 4);
 				}
-				String b = Strings.get("shiftRegisterLabel2", "" + len,
+				String b = LC.getFormatted("shiftRegisterLabel2", "" + len,
 						"" + wid);
 				GraphicsUtil.drawCenteredText(g, b, x, y + 3 * h / 4);
 			}

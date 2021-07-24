@@ -3,8 +3,6 @@
 
 package com.cburch.LogisimFX.std.memory;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.io.File;
 import java.io.IOException;
 import java.util.WeakHashMap;
@@ -16,7 +14,6 @@ import com.cburch.LogisimFX.tools.MenuExtender;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.JoinedConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
-import com.cburch.LogisimFX.util.StringGetter;
 import com.cburch.LogisimFX.util.StringUtil;
 import com.cburch.hex.HexModel;
 import com.cburch.hex.HexModelListener;
@@ -24,9 +21,13 @@ import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.logisim.gui.hex.HexFile;
 import com.cburch.logisim.gui.hex.HexFrame;
 import com.cburch.LogisimFX.proj.Project;
+
 import javafx.beans.binding.StringBinding;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 abstract class Mem extends InstanceFactory {
+
 	// Note: The code is meant to be able to handle up to 32-bit addresses, but it
 	// hasn't been debugged thoroughly. There are two definite changes I would
 	// make if I were to extend the address bits: First, there would need to be some
@@ -51,6 +52,7 @@ abstract class Mem extends InstanceFactory {
 	private WeakHashMap<Instance,File> currentInstanceFiles;
 
 	Mem(String name, StringBinding desc, int extraPorts) {
+
 		super(name, desc);
 		currentInstanceFiles = new WeakHashMap<Instance,File>();
 		setInstancePoker(MemPoker.class);
@@ -59,6 +61,7 @@ abstract class Mem extends InstanceFactory {
 				new BitWidthConfigurator(DATA_ATTR)));
 
 		setOffsetBounds(Bounds.create(-140, -40, 140, 80));
+
 	}
 	
 	abstract void configurePorts(Instance instance);
@@ -76,17 +79,20 @@ abstract class Mem extends InstanceFactory {
 	}
 	
 	void configureStandardPorts(Instance instance, Port[] ps) {
+
 		ps[DATA] = new Port(   0,  0, Port.INOUT, DATA_ATTR);
 		ps[ADDR] = new Port(-140,  0, Port.INPUT, ADDR_ATTR);
 		ps[CS]   = new Port( -90, 40, Port.INPUT, 1);
-		ps[DATA].setToolTip(Strings.getter("memDataTip"));
-		ps[ADDR].setToolTip(Strings.getter("memAddrTip"));
-		ps[CS].setToolTip(Strings.getter("memCSTip"));
+		ps[DATA].setToolTip(LC.createStringBinding("memDataTip"));
+		ps[ADDR].setToolTip(LC.createStringBinding("memAddrTip"));
+		ps[CS].setToolTip(LC.createStringBinding("memCSTip"));
+
 	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
-		Graphics g = painter.getGraphics();
+
+		GraphicsContext g = painter.getGraphics();
 		Bounds bds = painter.getBounds();
 
 		// draw boundary
@@ -137,8 +143,10 @@ abstract class Mem extends InstanceFactory {
 		// draw input and output ports
 		painter.drawPort(DATA, Strings.get("ramDataLabel"), Direction.WEST);
 		painter.drawPort(ADDR, Strings.get("ramAddrLabel"), Direction.EAST);
-		g.setColor(Color.GRAY);
+		g.setFill(Color.GRAY);
+		g.setStroke(Color.GRAY);
 		painter.drawPort(CS, Strings.get("ramCSLabel"), Direction.SOUTH);
+
 	}
 	
 	File getCurrentImage(Instance instance) {
@@ -150,19 +158,24 @@ abstract class Mem extends InstanceFactory {
 	}
 	
 	public void loadImage(InstanceState instanceState, File imageFile)
-			throws IOException { 
+			throws IOException {
+
 		MemState s = this.getState(instanceState);
 		HexFile.open(s.getContents(), imageFile);
 		this.setCurrentImage(instanceState.getInstance(), imageFile);
+
 	}
 
 	@Override
 	protected Object getInstanceFeature(Instance instance, Object key) {
+
 		if (key == MenuExtender.class) return new MemMenu(this, instance);
 		return super.getInstanceFeature(instance, key);
+
 	}
 	
 	static class MemListener implements HexModelListener {
+
 		Instance instance;
 		
 		MemListener(Instance instance) { this.instance = instance; }
@@ -173,5 +186,7 @@ abstract class Mem extends InstanceFactory {
 				long numBytes, int[] values) {
 			instance.fireInvalidated();
 		}
+
 	}
+
 }

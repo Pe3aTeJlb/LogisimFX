@@ -11,6 +11,7 @@ import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.StringUtil;
+import javafx.scene.canvas.GraphicsContext;
 
 public class Random extends InstanceFactory {
 	private static final Attribute<Integer> ATTR_SEED
@@ -41,10 +42,10 @@ public class Random extends InstanceFactory {
 		ps[CK]  = new Port(-30, -10, Port.INPUT, 1);
 		ps[NXT] = new Port(-30,  10, Port.INPUT, 1);
 		ps[RST] = new Port(-20,  20, Port.INPUT, 1);
-		ps[OUT].setToolTip(Strings.getter("randomQTip"));
-		ps[CK].setToolTip(Strings.getter("randomClockTip"));
-		ps[NXT].setToolTip(Strings.getter("randomNextTip"));
-		ps[RST].setToolTip(Strings.getter("randomResetTip"));
+		ps[OUT].setToolTip(LC.createStringBinding("randomQTip"));
+		ps[CK].setToolTip(LC.createStringBinding("randomClockTip"));
+		ps[NXT].setToolTip(LC.createStringBinding("randomNextTip"));
+		ps[RST].setToolTip(LC.createStringBinding("randomResetTip"));
 		setPorts(ps);
 	}
 
@@ -79,7 +80,7 @@ public class Random extends InstanceFactory {
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
-		Graphics g = painter.getGraphics();
+		GraphicsContext g = painter.getGraphics();
 		Bounds bds = painter.getBounds();
 		StateData state = (StateData) painter.getData();
 		BitWidth widthVal = painter.getAttributeValue(StdAttr.WIDTH);
