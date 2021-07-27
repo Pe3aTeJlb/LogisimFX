@@ -5,12 +5,12 @@ package com.cburch.LogisimFX.std.plexers;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.JoinedConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.LogisimVersion;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 
@@ -229,7 +229,7 @@ public class Demultiplexer extends InstanceFactory {
 	@Override
 	public void paintInstance(InstancePainter painter) {
 
-		GraphicsContext g = painter.getGraphics();
+		Graphics g = painter.getGraphics();
 		Bounds bds = painter.getBounds();
 		Direction facing = painter.getAttributeValue(StdAttr.FACING);
 		BitWidth select = painter.getAttributeValue(Plexers.ATTR_SELECT);
@@ -246,19 +246,17 @@ public class Demultiplexer extends InstanceFactory {
 		if (outputs == 2) { // draw select wire
 			Location sel = painter.getInstance().getPortLocation(outputs);
 			if (painter.getShowState()) {
-				g.setFill(painter.getPort(outputs).getColor());
-				g.setStroke(painter.getPort(outputs).getColor());
+				g.setColor(painter.getPort(outputs).getColor());
 			}
-			g.strokeLine(sel.getX(), sel.getY(), sel.getX() + 2 * dx, sel.getY() + 2 * dy);
+			g.c.strokeLine(sel.getX(), sel.getY(), sel.getX() + 2 * dx, sel.getY() + 2 * dy);
 		}
 		if (enable) {
 			Location en = painter.getInstance().getPortLocation(outputs + 1);
 			if (painter.getShowState()) {
-				g.setFill(painter.getPort(outputs + 1).getColor());
-				g.setStroke(painter.getPort(outputs + 1).getColor());
+				g.setColor(painter.getPort(outputs + 1).getColor());
 			}
 			int len = outputs == 2 ? 6 : 4;
-			g.strokeLine(en.getX(), en.getY(), en.getX() + len * dx, en.getY() + len * dy);
+			g.c.strokeLine(en.getX(), en.getY(), en.getX() + len * dx, en.getY() + len * dy);
 		}
 		g.setLineWidth(1);
 		
@@ -286,19 +284,19 @@ public class Demultiplexer extends InstanceFactory {
 			y0 = 15;
 			halign = GraphicsUtil.H_RIGHT;
 		}
-		g.setFill(Color.GRAY);
-		g.setStroke(Color.GRAY);
+		g.setColor(Color.GRAY);
 		GraphicsUtil.drawText(g, "0", bds.getX() + x0, bds.getY() + y0,
 				halign, GraphicsUtil.V_BASELINE);
 
 		// draw trapezoid, "DMX" label, and ports
-		g.setFill(Color.BLACK);
-		g.setStroke(Color.BLACK);
+		g.setColor(Color.BLACK);
 		Plexers.drawTrapezoid(g, bds, facing.reverse(), select.getWidth() == 1 ? 10 : 20);
 		GraphicsUtil.drawCenteredText(g, "DMX",
 				bds.getX() + bds.getWidth() / 2,
 				bds.getY() + bds.getHeight() / 2);
 		painter.drawPorts();
+
+		g.toDefault();
 
 	}
 

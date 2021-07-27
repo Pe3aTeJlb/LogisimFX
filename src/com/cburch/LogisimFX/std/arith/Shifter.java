@@ -5,6 +5,7 @@ package com.cburch.LogisimFX.std.arith;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 
@@ -154,7 +155,7 @@ public class Shifter extends InstanceFactory {
 	@Override
 	public void paintInstance(InstancePainter painter) {
 
-		GraphicsContext g = painter.getGraphics();
+		Graphics g = painter.getGraphics();
 		painter.drawBounds();
 
 		painter.drawPorts();
@@ -163,39 +164,40 @@ public class Shifter extends InstanceFactory {
 		int x = loc.getX() - 15;
 		int y = loc.getY();
 		Object shift = painter.getAttributeValue(ATTR_SHIFT);
-		g.setFill(Color.BLACK);
-		g.setStroke(Color.BLACK);
+		g.setColor(Color.BLACK);
 		if (shift == SHIFT_LOGICAL_RIGHT) {
-			g.fillRect(x, y - 1, 8, 3);
+			g.c.fillRect(x, y - 1, 8, 3);
 			drawArrow(g, x + 10, y, -4);
 		} else if (shift == SHIFT_ARITHMETIC_RIGHT) {
-			g.fillRect(x, y - 1, 2, 3);
-			g.fillRect(x + 3, y - 1, 5, 3);
+			g.c.fillRect(x, y - 1, 2, 3);
+			g.c.fillRect(x + 3, y - 1, 5, 3);
 			drawArrow(g, x + 10, y, -4);
 		} else if (shift == SHIFT_ROLL_RIGHT) {
-			g.fillRect(x, y - 1, 5, 3);
-			g.fillRect(x + 8, y - 7, 2, 8);
-			g.fillRect(x, y - 7, 2, 8);
-			g.fillRect(x, y - 7, 10, 2);
+			g.c.fillRect(x, y - 1, 5, 3);
+			g.c.fillRect(x + 8, y - 7, 2, 8);
+			g.c.fillRect(x, y - 7, 2, 8);
+			g.c.fillRect(x, y - 7, 10, 2);
 			drawArrow(g, x + 8, y, -4);
 		} else if (shift == SHIFT_ROLL_LEFT) {
-			g.fillRect(x + 6, y - 1, 4, 3);
-			g.fillRect(x + 8, y - 7, 2, 8);
-			g.fillRect(x, y - 7, 2, 8);
-			g.fillRect(x, y - 7, 10, 2);
+			g.c.fillRect(x + 6, y - 1, 4, 3);
+			g.c.fillRect(x + 8, y - 7, 2, 8);
+			g.c.fillRect(x, y - 7, 2, 8);
+			g.c.fillRect(x, y - 7, 10, 2);
 			drawArrow(g, x + 3, y, 4);
 		} else { // SHIFT_LOGICAL_LEFT
-			g.fillRect(x + 2, y - 1, 8, 3);
+			g.c.fillRect(x + 2, y - 1, 8, 3);
 			drawArrow(g, x, y, 4);
 		}
 
+		g.toDefault();
+
 	}
 	
-	private void drawArrow(GraphicsContext g, int x, int y, int d) {
+	private void drawArrow(Graphics g, int x, int y, int d) {
 
 		double[] px = { x + d, x, x + d };
 		double[] py = { y + d, y, y - d };
-		g.fillPolygon(px, py, 3);
+		g.c.fillPolygon(px, py, 3);
 
 	}
 

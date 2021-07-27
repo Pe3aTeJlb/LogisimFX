@@ -6,11 +6,12 @@ package com.cburch.LogisimFX.std.gates;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.StdAttr;
 import com.cburch.LogisimFX.std.LC;
+import javafx.scene.text.Font;
 
-import java.awt.*;
 import java.util.List;
 
 class GateAttributes extends AbstractAttributeSet {
+
 	static final int MAX_INPUTS = 32;
 	static final int DELAY = 1;
 
@@ -77,6 +78,7 @@ class GateAttributes extends AbstractAttributeSet {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <V> V getValue(Attribute<V> attr) {
+
 		if (attr == StdAttr.FACING) return (V) facing;
 		if (attr == StdAttr.WIDTH) return (V) width;
 		if (attr == StdAttr.LABEL) return (V) label;
@@ -91,10 +93,12 @@ class GateAttributes extends AbstractAttributeSet {
 			return (V) Boolean.valueOf(bit == 1);
 		}
 		return null;
+
 	}
 
 	@Override
 	public <V> void setValue(Attribute<V> attr, V value) {
+
 		if (attr == StdAttr.WIDTH) {
 			width = (BitWidth) value;
 			int bits = width.getWidth();
@@ -126,5 +130,7 @@ class GateAttributes extends AbstractAttributeSet {
 			throw new IllegalArgumentException("unrecognized argument");
 		}
 		fireAttributeValueChanged(attr, value);
+
 	}
+
 }

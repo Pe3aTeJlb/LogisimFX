@@ -9,9 +9,11 @@ import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.StdAttr;
 
 class CounterAttributes extends AbstractAttributeSet {
+
 	private AttributeSet base;
 	
 	public CounterAttributes() {
+
 		base = AttributeSets.fixedSet(new Attribute<?>[] {
 				StdAttr.WIDTH, Counter.ATTR_MAX, Counter.ATTR_ON_GOAL,
 				StdAttr.EDGE_TRIGGER,
@@ -22,6 +24,7 @@ class CounterAttributes extends AbstractAttributeSet {
 				StdAttr.TRIG_RISING,
 				"", StdAttr.DEFAULT_LABEL_FONT
 			});
+
 	}
 
 	@Override
@@ -41,6 +44,7 @@ class CounterAttributes extends AbstractAttributeSet {
 
 	@Override
 	public <V> void setValue(Attribute<V> attr, V value) {
+
 		Object oldValue = base.getValue(attr);
 		if (oldValue == null ? value == null : oldValue.equals(value)) return;
 
@@ -80,6 +84,7 @@ class CounterAttributes extends AbstractAttributeSet {
 			base.setValue(Counter.ATTR_MAX, newMax);
 			fireAttributeValueChanged(Counter.ATTR_MAX, newMax);
 		}
+
 	}
 
 	@Override
@@ -101,4 +106,5 @@ class CounterAttributes extends AbstractAttributeSet {
 	public void setReadOnly(Attribute<?> attr, boolean value) {
 		base.setReadOnly(attr, value);
 	}
+
 }

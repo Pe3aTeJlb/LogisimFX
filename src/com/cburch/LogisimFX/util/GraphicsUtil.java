@@ -3,14 +3,16 @@
 
 package com.cburch.LogisimFX.util;
 
-import java.awt.BasicStroke;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.sun.javafx.tk.FontMetrics;
+import com.sun.javafx.tk.Toolkit;
+import javafx.scene.shape.ArcType;
+import javafx.scene.text.Font;
+
+import java.awt.*;
 
 public class GraphicsUtil {
+
 	public static final int H_LEFT = -1;
 	public static final int H_CENTER = 0;
 	public static final int H_RIGHT = 1;
@@ -20,34 +22,32 @@ public class GraphicsUtil {
 	public static final int V_BOTTOM = 2;
 	public static final int V_CENTER_OVERALL = 3;
 
-	static public void switchToWidth(Graphics g, int width) {
-		if (g instanceof Graphics2D) {
-			Graphics2D g2 = (Graphics2D) g;
-			g2.setStroke(new BasicStroke((float) width));
-		}
-	}
-
 	static public void drawCenteredArc(Graphics g, int x, int y,
-			int r, int start, int dist) {
-		g.drawArc(x - r, y - r, 2 * r, 2 * r, start, dist);
+									   int r, int start, int dist) {
+
+		g.c.strokeArc(x - r, y - r, 2 * r, 2 * r, start, dist, ArcType.OPEN);
+
 	}
 
 	static public Rectangle getTextBounds(Graphics g, Font font,
 			String text, int x, int y, int halign, int valign) {
+
 		if (g == null) return new Rectangle(x, y, 0, 0);
 		Font oldfont = g.getFont();
 		if (font != null) g.setFont(font);
 		Rectangle ret = getTextBounds(g, text, x, y, halign, valign);
 		if (font != null) g.setFont(oldfont);
 		return ret;
+
 	}
 	static public Rectangle getTextBounds(Graphics g, String text,
 			int x, int y, int halign, int valign) {
+
 		if (g == null) return new Rectangle(x, y, 0, 0);
-		FontMetrics mets = g.getFontMetrics();
-		int width = mets.stringWidth(text);
-		int ascent = mets.getAscent();
-		int descent = mets.getDescent();
+		FontMetrics mets = Toolkit.getToolkit().getFontLoader().getFontMetrics(g.getFont());
+		int width = (int)mets.computeStringWidth(text);
+		int ascent = (int)mets.getAscent();
+		int descent = (int)mets.getDescent();
 		int height = ascent + descent;
 		
 		Rectangle ret = new Rectangle(x, y, width, height);
@@ -56,6 +56,7 @@ public class GraphicsUtil {
 			case H_RIGHT:  ret.translate(-width, 0); break;
 			default: ;
 		}
+
 		switch (valign) {
 			case V_TOP:      break;
 			case V_CENTER:   ret.translate(0, -(ascent / 2)); break;
@@ -64,36 +65,50 @@ public class GraphicsUtil {
 			case V_BOTTOM:   ret.translate(0, -height); break;
 			default: ;
 		}
+
 		return ret;
+
 	}
 
 	static public void drawText(Graphics g, Font font,
 			String text, int x, int y, int halign, int valign) {
+
 		Font oldfont = g.getFont();
 		if (font != null) g.setFont(font);
 		drawText(g, text, x, y, halign, valign);
 		if (font != null) g.setFont(oldfont);
+
 	}
 	static public void drawText(Graphics g, String text,
 			int x, int y, int halign, int valign) {
+
 		if (text.length() == 0) return;
 		Rectangle bd = getTextBounds(g, text, x, y, halign, valign);
-		g.drawString(text, bd.x, bd.y + g.getFontMetrics().getAscent());
+		double buf = g.getLineWidth();
+		g.setLineWidth(1);
+		g.c.fillText(text, bd.x,
+				bd.y + g.getFontMetrics().getAscent());
+		g.setLineWidth(buf);
 	}
 	static public void drawCenteredText(Graphics g, String text,
 			int x, int y) {
+
 		drawText(g, text, x, y, H_CENTER, V_CENTER);
+
 	}
 
 	static public void drawArrow(Graphics g, int x0, int y0, int x1, int y1,
 			int headLength, int headAngle) {
+
 		double offs = headAngle * Math.PI / 180.0;
 		double angle = Math.atan2(y0 - y1, x0 - x1);
-		int[] xs = { x1 + (int) (headLength * Math.cos(angle + offs)), x1,
+		double[] xs = { x1 + (int) (headLength * Math.cos(angle + offs)), x1,
 			x1 + (int) (headLength * Math.cos(angle - offs)) };
-		int[] ys = { y1 + (int) (headLength * Math.sin(angle + offs)), y1,
+		double[] ys = { y1 + (int) (headLength * Math.sin(angle + offs)), y1,
 			y1 + (int) (headLength * Math.sin(angle - offs)) };
-		g.drawLine(x0, y0, x1, y1);
-		g.drawPolyline(xs, ys, 3);
+		g.c.strokeLine(x0, y0, x1, y1);
+		g.c.strokePolyline(xs, ys, 3);
+
 	}
+
 }

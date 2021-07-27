@@ -5,9 +5,11 @@ package com.cburch.LogisimFX.std.io;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.std.wiring.DurationAttribute;
-import com.cburch.LogisimFX.util.GraphicsUtil;
+
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 
@@ -16,6 +18,7 @@ import java.util.Arrays;
 // TODO repropagate when rows/cols change
 
 public class DotMatrix extends InstanceFactory {
+
 	static final AttributeOption INPUT_SELECT
 		= new AttributeOption("select", LC.createStringBinding("ioInputSelect"));
 	static final AttributeOption INPUT_COLUMN
@@ -44,6 +47,7 @@ public class DotMatrix extends InstanceFactory {
 			LC.createStringBinding("ioMatrixPersistenceAttr"), 0, Integer.MAX_VALUE);
 
 	public DotMatrix() {
+
 		super("DotMatrix", LC.createStringBinding("dotMatrixComponent"));
 		setAttributes(new Attribute<?>[] {
 				ATTR_INPUT_TYPE, ATTR_MATRIX_COLS, ATTR_MATRIX_ROWS,
@@ -54,10 +58,12 @@ public class DotMatrix extends InstanceFactory {
 				Color.GREEN, Color.DARKGRAY, Integer.valueOf(0), SHAPE_SQUARE
 			});
 		setIcon("dotmat.gif");
+
 	}
 
 	@Override
 	public Bounds getOffsetBounds(AttributeSet attrs) {
+
 		Object input = attrs.getValue(ATTR_INPUT_TYPE);
 		int cols = attrs.getValue(ATTR_MATRIX_COLS).intValue();
 		int rows = attrs.getValue(ATTR_MATRIX_ROWS).intValue();
@@ -72,24 +78,30 @@ public class DotMatrix extends InstanceFactory {
 				return Bounds.create(0, -5 * rows + 5, 10 * cols, 10 * rows);
 			}
 		}
+
 	}
 
 	@Override
 	protected void configureNewInstance(Instance instance) {
+
 		instance.addAttributeListener();
 		updatePorts(instance);
+
 	}
 
 	@Override
 	protected void instanceAttributeChanged(Instance instance, Attribute<?> attr) {
+
 		if (attr == ATTR_MATRIX_ROWS || attr == ATTR_MATRIX_COLS
 				|| attr == ATTR_INPUT_TYPE) {
 			instance.recomputeBounds();
 			updatePorts(instance);
 		}
+
 	}
 
 	private void updatePorts(Instance instance) {
+
 		Object input = instance.getAttributeValue(ATTR_INPUT_TYPE);
 		int rows = instance.getAttributeValue(ATTR_MATRIX_ROWS).intValue();
 		int cols = instance.getAttributeValue(ATTR_MATRIX_COLS).intValue();
@@ -117,9 +129,11 @@ public class DotMatrix extends InstanceFactory {
 			}
 		}
 		instance.setPorts(ps);
+
 	}
 
 	private State getState(InstanceState state) {
+
 		int rows = state.getAttributeValue(ATTR_MATRIX_ROWS).intValue();
 		int cols = state.getAttributeValue(ATTR_MATRIX_COLS).intValue();
 		long clock = state.getTickCount();
@@ -131,11 +145,14 @@ public class DotMatrix extends InstanceFactory {
 		} else {
 			data.updateSize(rows, cols, clock);
 		}
+
 		return data;
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		Object type = state.getAttributeValue(ATTR_INPUT_TYPE);
 		int rows = state.getAttributeValue(ATTR_MATRIX_ROWS).intValue();
 		int cols = state.getAttributeValue(ATTR_MATRIX_COLS).intValue();
@@ -156,10 +173,12 @@ public class DotMatrix extends InstanceFactory {
 		} else {
 			throw new RuntimeException("unexpected matrix type");
 		}
+
 	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
+
 		Color onColor = painter.getAttributeValue(Io.ATTR_ON_COLOR);
 		Color offColor = painter.getAttributeValue(Io.ATTR_OFF_COLOR);
 		boolean drawSquare = painter.getAttributeValue(ATTR_DOT_SHAPE) == SHAPE_SQUARE;
@@ -183,22 +202,26 @@ public class DotMatrix extends InstanceFactory {
 					else c = Value.ERROR_COLOR;
 					g.setColor(c);
 					
-					if (drawSquare) g.fillRect(x, y, 10, 10);
-					else g.fillOval(x + 1, y + 1, 8, 8);
+					if (drawSquare) g.c.fillRect(x, y, 10, 10);
+					else g.c.fillOval(x + 1, y + 1, 8, 8);
 				} else {
 					g.setColor(Color.GRAY);
-					g.fillOval(x + 1, y + 1, 8, 8);
+					g.c.fillOval(x + 1, y + 1, 8, 8);
 				}
 			}
 		}
 		g.setColor(Color.BLACK);
-		GraphicsUtil.switchToWidth(g, 2);
-		g.drawRect(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight());
-		GraphicsUtil.switchToWidth(g, 1);
+		g.setLineWidth(2);
+		g.c.strokeRect(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight());
+		g.toDefaultLineWidth();
 		painter.drawPorts();
+
+		g.toDefault();
+
 	}
 	
 	private static class State implements InstanceData, Cloneable {
+
 		private int rows;
 		private int cols;
 		private Value[] grid;
@@ -212,6 +235,7 @@ public class DotMatrix extends InstanceFactory {
 		
 		@Override
 		public Object clone() {
+
 			try {
 				State ret = (State) super.clone();
 				ret.grid = this.grid.clone();
@@ -220,9 +244,11 @@ public class DotMatrix extends InstanceFactory {
 			} catch (CloneNotSupportedException e) {
 				return null;
 			}
+
 		}
 		
 		private void updateSize(int rows, int cols, long curClock) {
+
 			if (this.rows != rows || this.cols != cols) {
 				this.rows = rows;
 				this.cols = cols;
@@ -232,18 +258,23 @@ public class DotMatrix extends InstanceFactory {
 				Arrays.fill(grid, Value.UNKNOWN);
 				Arrays.fill(persistTo, curClock - 1);
 			}
+
 		}
 		
 		private Value get(int row, int col, long curTick) {
+
 			int index = row * cols + col;
 			Value ret = grid[index];
 			if (ret == Value.FALSE && persistTo[index] - curTick >= 0) {
 				ret = Value.TRUE;
 			}
+
 			return ret;
+
 		}
 		
 		private void setRow(int index, Value rowVector, long persist) {
+
 			int gridloc = (index + 1) * cols - 1;
 			int stride = -1;
 			Value[] vals = rowVector.getAll();
@@ -257,9 +288,11 @@ public class DotMatrix extends InstanceFactory {
 					persistTo[gridloc] = persist;
 				}
 			}
+
 		}
 		
 		private void setColumn(int index, Value colVector, long persist) {
+
 			int gridloc = (rows - 1) * cols + index;
 			int stride = -cols;
 			Value[] vals = colVector.getAll();
@@ -273,9 +306,11 @@ public class DotMatrix extends InstanceFactory {
 					persistTo[gridloc] = persist;
 				}
 			}
+
 		}
 		
 		private void setSelect(Value rowVector, Value colVector, long persist) {
+
 			Value[] rowVals = rowVector.getAll();
 			Value[] colVals = colVector.getAll();
 			int gridloc = 0;
@@ -303,5 +338,7 @@ public class DotMatrix extends InstanceFactory {
 				}
 			}
 		}
+
 	}
+
 }

@@ -3,12 +3,7 @@
 
 package com.cburch.LogisimFX.std.gates;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.util.Map;
-
-import javax.swing.Icon;
 
 import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.analyze.model.Expression;
@@ -16,15 +11,18 @@ import com.cburch.LogisimFX.analyze.model.Expressions;
 import com.cburch.LogisimFX.comp.TextField;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
-import com.cburch.LogisimFX.util.Icons;
 import com.cburch.LogisimFX.circuit.ExpressionComputer;
 import com.cburch.LogisimFX.prefs.AppPreferences;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 
 class NotGate extends InstanceFactory {
+
 	public static final AttributeOption SIZE_NARROW
 		= new AttributeOption(Integer.valueOf(20),
 			LC.createStringBinding("gateSizeNarrowOpt"));
@@ -61,6 +59,7 @@ class NotGate extends InstanceFactory {
 
 	@Override
 	public Bounds getOffsetBounds(AttributeSet attrs) {
+
 		Object value = attrs.getValue(ATTR_SIZE);
 		if (value == SIZE_NARROW) {
 			Direction facing = attrs.getValue(StdAttr.FACING);
@@ -75,14 +74,17 @@ class NotGate extends InstanceFactory {
 			if (facing == Direction.WEST) return Bounds.create(0, -9, 30, 18);
 			return Bounds.create(-30, -9, 30, 18);
 		}
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		Value in = state.getPort(1);
 		Value out = in.not();
 		out = Buffer.repair(state, out);
 		state.setPort(0, out, GateAttributes.DELAY);
+
 	}
 
 	//
@@ -90,23 +92,28 @@ class NotGate extends InstanceFactory {
 	//
 	@Override
 	protected void configureNewInstance(Instance instance) {
+
 		configurePorts(instance);
 		instance.addAttributeListener();
 		String gateShape = AppPreferences.GATE_SHAPE.get();
 		configureLabel(instance, gateShape.equals(AppPreferences.SHAPE_RECTANGULAR), null);
+
 	}
 
 	@Override
 	protected void instanceAttributeChanged(Instance instance, Attribute<?> attr) {
+
 		if (attr == ATTR_SIZE || attr == StdAttr.FACING) {
 			instance.recomputeBounds();
 			configurePorts(instance);
 			String gateShape = AppPreferences.GATE_SHAPE.get();
 			configureLabel(instance, gateShape.equals(AppPreferences.SHAPE_RECTANGULAR), null);
 		}
+
 	}
 
 	private void configurePorts(Instance instance) {
+
 		Object size = instance.getAttributeValue(ATTR_SIZE);
 		Direction facing = instance.getAttributeValue(StdAttr.FACING);
 		int dx = size == SIZE_NARROW ? -20 : -30;
@@ -116,10 +123,12 @@ class NotGate extends InstanceFactory {
 		Location out = Location.create(0, 0).translate(facing, dx);
 		ports[1] = new Port(out.getX(), out.getY(), Port.INPUT, StdAttr.WIDTH);
 		instance.setPorts(ports);
+
 	}
 
 	@Override
 	protected Object getInstanceFeature(final Instance instance, Object key) {
+
 		if (key == ExpressionComputer.class) {
 			return new ExpressionComputer() {
 				public void computeExpression(Map<Location, Expression> expressionMap) {
@@ -130,7 +139,9 @@ class NotGate extends InstanceFactory {
 				}
 			};
 		}
+
 		return super.getInstanceFeature(instance, key);
+
 	}
 
 	//
@@ -185,23 +196,28 @@ class NotGate extends InstanceFactory {
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
+
 		painter.getGraphics().setColor(Color.BLACK);
 		paintBase(painter);
 		painter.drawPorts();
 		painter.drawLabel();
+
+		painter.getGraphics().toDefault();
+
 	}
 
 	private void paintBase(InstancePainter painter) {
+
 		Graphics g = painter.getGraphics();
 		Direction facing = painter.getAttributeValue(StdAttr.FACING);
 		Location loc = painter.getLocation();
 		int x = loc.getX();
 		int y = loc.getY();
-		g.translate(x, y);
+		g.c.translate(x, y);
 		double rotate = 0.0;
-		if (facing != null && facing != Direction.EAST && g instanceof Graphics2D) {
+		if (facing != null && facing != Direction.EAST) {
 			rotate = -facing.toRadians();
-			((Graphics2D) g).rotate(rotate);
+			g.c.rotate(rotate);
 		}
 
 		Object shape = painter.getGateShape();
@@ -215,27 +231,31 @@ class NotGate extends InstanceFactory {
 		}
 		
 		if (rotate != 0.0) {
-			((Graphics2D) g).rotate(-rotate);
+			g.c.rotate(-rotate);
 		}
-		g.translate(-x, -y);
+		g.c.translate(-x, -y);
+
 	}
 
 	private void paintRectangularBase(Graphics g, InstancePainter painter) {
-		GraphicsUtil.switchToWidth(g, 2);
+
+		g.setLineWidth(2);
 		if (painter.getAttributeValue(ATTR_SIZE) == SIZE_NARROW) {
-			g.drawRect(-20, -9, 14, 18);
+			g.c.strokeRect(-20, -9, 14, 18);
 			GraphicsUtil.drawCenteredText(g, RECT_LABEL, -13, 0);
-			g.drawOval(-6, -3, 6, 6);
+			g.c.strokeOval(-6, -3, 6, 6);
 		} else {
-			g.drawRect(-30, -9, 20, 18);
+			g.c.strokeRect(-30, -9, 20, 18);
 			GraphicsUtil.drawCenteredText(g, RECT_LABEL, -20, 0);
-			g.drawOval(-10, -5, 9, 9);
+			g.c.strokeOval(-10, -5, 9, 9);
 		}
-		GraphicsUtil.switchToWidth(g, 1);
+		g.setLineWidth(1);
+
 	}
 	
 	static void configureLabel(Instance instance, boolean isRectangular,
                                Location control) {
+
 		Object facing = instance.getAttributeValue(StdAttr.FACING);
 		Bounds bds = instance.getBounds();
 		int x;
@@ -258,5 +278,7 @@ class NotGate extends InstanceFactory {
 		}
 		instance.setTextField(StdAttr.LABEL, StdAttr.LABEL_FONT, x, y,
 				halign, TextField.V_BASELINE);
+
 	}
+
 }

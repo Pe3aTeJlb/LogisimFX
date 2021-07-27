@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 class PinAttributes extends ProbeAttributes {
+
 	public static PinAttributes instance = new PinAttributes();
 
 	private static final List<Attribute<?>> ATTRIBUTES
@@ -35,11 +36,13 @@ class PinAttributes extends ProbeAttributes {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <V> V getValue(Attribute<V> attr) {
+
 		if (attr == StdAttr.WIDTH) return (V) width;
 		if (attr == Pin.ATTR_TRISTATE) return (V) Boolean.valueOf(threeState);
 		if (attr == Pin.ATTR_TYPE) return (V) Boolean.valueOf(type == EndData.OUTPUT_ONLY);
 		if (attr == Pin.ATTR_PULL) return (V) pull;
 		return super.getValue(attr);
+
 	}
 	
 	boolean isOutput() {
@@ -52,6 +55,7 @@ class PinAttributes extends ProbeAttributes {
 
 	@Override
 	public <V> void setValue(Attribute<V> attr, V value) {
+
 		if (attr == StdAttr.WIDTH) {
 			width = (BitWidth) value;
 		} else if (attr == Pin.ATTR_TRISTATE) {
@@ -65,7 +69,9 @@ class PinAttributes extends ProbeAttributes {
 			return;
 		}
 		fireAttributeValueChanged(attr, value);
+
 	}
+
 }
 
 

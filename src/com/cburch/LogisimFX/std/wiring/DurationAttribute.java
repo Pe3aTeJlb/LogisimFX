@@ -6,22 +6,26 @@ package com.cburch.LogisimFX.std.wiring;
 import javax.swing.JTextField;
 
 import com.cburch.LogisimFX.data.Attribute;
-import com.cburch.LogisimFX.util.StringGetter;
 import com.cburch.LogisimFX.util.StringUtil;
+
 import javafx.beans.binding.StringBinding;
 
 public class DurationAttribute extends Attribute<Integer> {
+
 	private int min;
 	private int max;
 	
 	public DurationAttribute(String name, StringBinding disp, int min, int max) {
+
 		super(name, disp);
 		this.min = min;
 		this.max = max;
+
 	}
 
 	@Override
 	public Integer parse(String value) {
+
 		try {
 			Integer ret = Integer.valueOf(value);
 			if (ret.intValue() < min) {
@@ -33,23 +37,28 @@ public class DurationAttribute extends Attribute<Integer> {
 		} catch (NumberFormatException e) {
 			throw new NumberFormatException(Strings.get("freqInvalidMessage"));
 		}
+
 	}
 
 	@Override
 	public String toDisplayString(Integer value) {
+
 		if (value.equals(Integer.valueOf(1))) {
 			return Strings.get("clockDurationOneValue");
 		} else {
 			return StringUtil.format(Strings.get("clockDurationValue"),
 					value.toString());
 		}
+
 	}
 
 	@Override
 	public java.awt.Component getCellEditor(Integer value) {
+
 		JTextField field = new JTextField();
 		field.setText(value.toString());
 		return field;
+
 	}
 
 }

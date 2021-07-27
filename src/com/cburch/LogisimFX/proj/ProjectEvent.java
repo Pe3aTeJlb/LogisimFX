@@ -7,8 +7,8 @@ import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.tools.Tool;
 
-
 public class ProjectEvent {
+
 	public final static int ACTION_SET_FILE     = 0; // change file
 	public final static int ACTION_SET_CURRENT  = 1; // change current
 	public final static int ACTION_SET_TOOL     = 2; // change tool

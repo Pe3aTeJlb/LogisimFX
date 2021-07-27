@@ -5,12 +5,12 @@ package com.cburch.LogisimFX.std.plexers;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.JoinedConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class BitSelector extends InstanceFactory {
@@ -145,17 +145,18 @@ public class BitSelector extends InstanceFactory {
 	@Override
 	public void paintInstance(InstancePainter painter) {
 
-		GraphicsContext g = painter.getGraphics();
+		Graphics g = painter.getGraphics();
 		Direction facing = painter.getAttributeValue(StdAttr.FACING);
 
 		Plexers.drawTrapezoid(g, painter.getBounds(), facing, 9);
 		Bounds bds = painter.getBounds();
-		g.setFill(Color.BLACK);
-		g.setStroke(Color.BLACK);
+		g.setColor(Color.BLACK);
 		GraphicsUtil.drawCenteredText(g, "Sel",
 				bds.getX() + bds.getWidth() / 2,
 				bds.getY() + bds.getHeight() / 2);
 		painter.drawPorts();
+
+		g.toDefault();
 
 	}
 

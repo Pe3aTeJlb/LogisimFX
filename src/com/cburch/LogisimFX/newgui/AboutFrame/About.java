@@ -12,9 +12,10 @@ import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.effect.BoxBlur;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
+import javafx.scene.paint.*;
 import javafx.scene.shape.ArcType;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
@@ -309,12 +310,13 @@ public class About extends AbstractController {
             if (y < -100 || y < maxY) continue;
 
             int type = line.type;
+            float alpha = 0;
 
             if((line.y - yPos < height-100)) {
 
                 float currPos = line.y - yPos;
 
-                float alpha = 1 - ((height-currPos-100)/(height-100-maxY));
+                alpha = 1 - ((height-currPos-100)/(height-100-maxY));
                 alpha = Math.max(0,alpha);
                 alpha = Math.min(1,alpha);
 
@@ -334,9 +336,19 @@ public class About extends AbstractController {
 
             Image img = line.img;
             if (img != null) {
+
+                Stop[] stops = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.RED)};
+                LinearGradient lg1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
+
                 int x = width - line.imgWidth;
                 int top = y - (int) fms[type].getAscent();
+
+                if((line.y - yPos < height-100)) {
+                    g.setGlobalAlpha(alpha);
+                }
                 g.drawImage(img, x,top);
+                g.setGlobalAlpha(1);
+
             }
 
         }

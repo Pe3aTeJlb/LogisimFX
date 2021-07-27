@@ -149,7 +149,6 @@ public class XmlCircuitReader extends CircuitTransaction {
 			}
 		}
 		ComponentFactory source = ((AddTool) tool).getFactory();
-
 		// Determine attributes
 		String loc_str = elt.getAttribute("loc");
 		AttributeSet attrs = source.createAttributeSet();

@@ -3,10 +3,9 @@
 
 package com.cburch.LogisimFX.std.memory;
 
-import java.awt.Graphics;
-
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.IntegerConfigurator;
@@ -119,6 +118,7 @@ public class ShiftRegister extends InstanceFactory {
 	}
 	
 	private ShiftRegisterData getData(InstanceState state) {
+
 		BitWidth width = state.getAttributeValue(StdAttr.WIDTH);
 		Integer lenObj = state.getAttributeValue(ATTR_LENGTH);
 		int length = lenObj == null ? 8 : lenObj.intValue();
@@ -130,10 +130,12 @@ public class ShiftRegister extends InstanceFactory {
 			data.setDimensions(width, length);
 		}
 		return data;
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		Object triggerType = state.getAttributeValue(StdAttr.EDGE_TRIGGER);
 		boolean parallel = state.getAttributeValue(ATTR_LOAD).booleanValue();
 		ShiftRegisterData data = getData(state);
@@ -159,10 +161,12 @@ public class ShiftRegister extends InstanceFactory {
 				state.setPort(6 + 2 * i + 1, data.get(len - 1 - i), 4);
 			}
 		}
+
 	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
+
 		// draw boundary, label
 		painter.drawBounds();
 		painter.drawLabel();
@@ -186,7 +190,7 @@ public class ShiftRegister extends InstanceFactory {
 					} else {
 						y += 3 * bds.getHeight() / 4;
 					}
-					GraphicsContext g = painter.getGraphics();
+					Graphics g = painter.getGraphics();
 					for (int i = 0; i < len; i++) {
 						String s = data.get(len - 1 - i).toHexString();
 						GraphicsUtil.drawCenteredText(g, s, x, y);
@@ -198,7 +202,7 @@ public class ShiftRegister extends InstanceFactory {
 				int x = bds.getX() + bds.getWidth() / 2;
 				int y = bds.getY();
 				int h = bds.getHeight();
-				GraphicsContext g = painter.getGraphics();
+				Graphics g = painter.getGraphics();
 				Object label = painter.getAttributeValue(StdAttr.LABEL);
 				if (label == null || label.equals("")) {
 					String a = LC.get("shiftRegisterLabel1");
@@ -216,5 +220,7 @@ public class ShiftRegister extends InstanceFactory {
 			if (i != CK) painter.drawPort(i);
 		}
 		painter.drawClock(CK, Direction.EAST);
+
 	}
+
 }

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.WeakHashMap;
 
 class RomAttributes extends AbstractAttributeSet {
+
 	private static List<Attribute<?>> ATTRIBUTES = Arrays.asList(new Attribute<?>[] {
 			Mem.ADDR_ATTR, Mem.DATA_ATTR, Rom.CONTENTS_ATTR
 		});
@@ -24,13 +25,16 @@ class RomAttributes extends AbstractAttributeSet {
 		= new WeakHashMap<MemContents,HexFrame>();
 
 	static void register(MemContents value, Project proj) {
+
 		if (proj == null || listenerRegistry.containsKey(value)) return;
 		RomContentsListener l = new RomContentsListener(proj);
 		value.addHexModelListener(l);
 		listenerRegistry.put(value, l);
+
 	}
 	
 	static HexFrame getHexFrame(MemContents value, Project proj) {
+
 		synchronized(windowRegistry) {
 			HexFrame ret = windowRegistry.get(value);
 			if (ret == null) {
@@ -39,6 +43,7 @@ class RomAttributes extends AbstractAttributeSet {
 			}
 			return ret;
 		}
+
 	}
 
 	private BitWidth addrBits = BitWidth.create(8);
@@ -55,10 +60,12 @@ class RomAttributes extends AbstractAttributeSet {
 	
 	@Override
 	protected void copyInto(AbstractAttributeSet dest) {
+
 		RomAttributes d = (RomAttributes) dest;
 		d.addrBits = addrBits;
 		d.dataBits = dataBits;
 		d.contents = contents.clone();
+
 	}
 	
 	@Override
@@ -69,14 +76,17 @@ class RomAttributes extends AbstractAttributeSet {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <V> V getValue(Attribute<V> attr) {
+
 		if (attr == Mem.ADDR_ATTR) return (V) addrBits;
 		if (attr == Mem.DATA_ATTR) return (V) dataBits;
 		if (attr == Rom.CONTENTS_ATTR) return (V) contents;
 		return null;
+
 	}
 	
 	@Override
 	public <V> void setValue(Attribute<V> attr, V value) {
+
 		if (attr == Mem.ADDR_ATTR) {
 			addrBits = (BitWidth) value;
 			contents.setDimensions(addrBits.getWidth(), dataBits.getWidth());
@@ -87,5 +97,7 @@ class RomAttributes extends AbstractAttributeSet {
 			contents = (MemContents) value;
 		}
 		fireAttributeValueChanged(attr, value);
+
 	}
+
 }

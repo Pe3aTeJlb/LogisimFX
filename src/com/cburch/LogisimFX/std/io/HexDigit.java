@@ -3,21 +3,22 @@
 
 package com.cburch.LogisimFX.std.io;
 
-import java.awt.Color;
-
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.BitWidth;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.instance.*;
 import com.cburch.LogisimFX.std.LC;
+import javafx.scene.paint.Color;
 
 public class HexDigit extends InstanceFactory {
+
 	public HexDigit() {
+
 		super("Hex Digit Display", LC.createStringBinding("hexDigitComponent"));
 		setAttributes(new Attribute[] { Io.ATTR_ON_COLOR, Io.ATTR_OFF_COLOR,
 					Io.ATTR_BACKGROUND },
-				new Object[] { new Color(240, 0, 0), SevenSegment.DEFAULT_OFF,
+				new Object[] { Color.color(0.941, 0, 0), SevenSegment.DEFAULT_OFF,
 					Io.DEFAULT_BACKGROUND });
 		setPorts(new Port[] {
 				new Port( 0, 0, Port.INPUT, 4),
@@ -25,10 +26,12 @@ public class HexDigit extends InstanceFactory {
 			});
 		setOffsetBounds(Bounds.create(-15, -60, 40, 60));
 		setIcon("hexdig.gif");
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		int summary = 0;
 		Value baseVal = state.getPort(0);
 		if (baseVal == null) baseVal = Value.createUnknown(BitWidth.create(4));
@@ -69,10 +72,12 @@ public class HexDigit extends InstanceFactory {
 		} else {
 			data.setValue(value);
 		}
+
 	}
 	
 	@Override
 	public void paintInstance(InstancePainter painter) {
 		SevenSegment.drawBase(painter);
 	}
+
 }

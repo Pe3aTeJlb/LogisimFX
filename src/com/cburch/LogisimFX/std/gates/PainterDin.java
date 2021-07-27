@@ -3,16 +3,19 @@
 
 package com.cburch.LogisimFX.std.gates;
 
-import java.awt.Color;
-import java.awt.Graphics;
+
 import java.util.HashMap;
 
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.instance.InstancePainter;
-import com.cburch.LogisimFX.util.GraphicsUtil;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.ArcType;
 
 class PainterDin {
+
 	private PainterDin() { }
 	
 	static final int AND = 0;
@@ -24,26 +27,35 @@ class PainterDin {
 	
 	static void paintAnd(InstancePainter painter, int width, int height,
                          boolean drawBubble) {
+
 		paint(painter, width, height, drawBubble, AND);
+
 	}
 
 	static void paintOr(InstancePainter painter, int width, int height,
                         boolean drawBubble) {
+
 		paint(painter, width, height, drawBubble, OR);
+
 	}
 
 	static void paintXor(InstancePainter painter, int width, int height,
                          boolean drawBubble) {
+
 		paint(painter, width, height, drawBubble, XOR);
+
 	}
 
 	static void paintXnor(InstancePainter painter, int width, int height,
                           boolean drawBubble) {
+
 		paint(painter, width, height, drawBubble, XNOR);
+
 	}
 
 	private static void paint(InstancePainter painter, int width, int height,
                               boolean drawBubble, int dinType) {
+
 		Graphics g = painter.getGraphics();
 		int x = 0;
 		int xMid = -width;
@@ -61,45 +73,47 @@ class PainterDin {
 			int elen = Math.min(diam / 2 - 10, 20);
 			int ex0 = xMid + (diam / 2 - elen) / 2;
 			int ex1 = ex0 + elen;
-			g.drawLine(ex0, -5, ex1, -5);
-			g.drawLine(ex0, 0, ex1, 0);
-			g.drawLine(ex0, 5, ex1, 5);
+			g.c.strokeLine(ex0, -5, ex1, -5);
+			g.c.strokeLine(ex0, 0, ex1, 0);
+			g.c.strokeLine(ex0, 5, ex1, 5);
 			if (dinType == XOR) {
 				int exMid = ex0 + elen / 2;
-				g.drawLine(exMid, -8, exMid, 8);
+				g.c.strokeLine(exMid, -8, exMid, 8);
 			}
 		} else {
 			throw new IllegalArgumentException("unrecognized shape");
 		}
-
-		GraphicsUtil.switchToWidth(g, 2);
+		g.setLineWidth(2);
 		int x0 = xMid - diam / 2;
-		Color oldColor = g.getColor();
+		Paint oldColor = g.getPaint();
 		if (painter.getShowState()) {
 			Value val = painter.getPort(0);
 			g.setColor(val.getColor());
+
 		}
-		g.drawLine(x0 + diam, 0, 0, 0);
+		g.c.strokeLine(x0 + diam, 0, 0, 0);
 		g.setColor(oldColor);
 		if (height <= diam) {
-			g.drawArc(x0, y0, diam, diam, -90, 180);
+			g.c.strokeArc(x0, y0, diam, diam, -90, 180, ArcType.CHORD);
 		} else {
 			int x1 = x0 + diam;
 			int yy0 = -(height - diam) / 2;
 			int yy1 = (height - diam) / 2;
-			g.drawArc(x0, y0, diam, diam, 0, 90);
-			g.drawLine(x1, yy0, x1, yy1);
-			g.drawArc(x0, y0 + height - diam, diam, diam, -90, 90);
+			g.c.strokeArc(x0, y0, diam, diam, 0, 90, ArcType.CHORD);
+			g.c.strokeLine(x1, yy0, x1, yy1);
+			g.c.strokeArc(x0, y0 + height - diam, diam, diam, -90, 90, ArcType.CHORD);
 		}
-		g.drawLine(xMid, y0, xMid, y0 + height);
+		g.c.strokeLine(xMid, y0, xMid, y0 + height);
 		if (drawBubble) {
-			g.fillOval(x0 + diam - 4, -4, 8, 8);
+			g.c.fillOval(x0 + diam - 4, -4, 8, 8);
 			xMid += 4;
 		}
+
 	}
 
 	private static void paintOrLines(InstancePainter painter,
                                      int width, int height, boolean hasBubble) {
+
 		GateAttributes baseAttrs = (GateAttributes) painter.getAttributeSet();
 		int inputs = baseAttrs.inputs;
 		GateAttributes attrs = (GateAttributes) OrGate.FACTORY.createAttributeSet();
@@ -130,14 +144,16 @@ class PainterDin {
 
 		AbstractGate factory = hasBubble ? NorGate.FACTORY : OrGate.FACTORY;
 		boolean printView = painter.isPrintView() && painter.getInstance() != null;
-		GraphicsUtil.switchToWidth(g, 2);
+		g.setLineWidth(2);
 		for (int i = 0; i < inputs; i++) {
 			if (!printView || painter.isPortConnected(i)) {
 				Location loc = factory.getInputOffset(attrs, i);
 				int x = loc.getX();
 				int y = loc.getY();
-				g.drawLine(x, y, x + lens[i], y);
+				g.c.strokeLine(x, y, x + lens[i], y);
 			}
 		}
+
 	}
+
 }

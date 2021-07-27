@@ -5,12 +5,12 @@ package com.cburch.LogisimFX.std.plexers;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.LogisimVersion;
 
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 
@@ -227,7 +227,7 @@ public class Decoder extends InstanceFactory {
 	@Override
 	public void paintInstance(InstancePainter painter) {
 
-		GraphicsContext g = painter.getGraphics();
+		Graphics g = painter.getGraphics();
 		Bounds bds = painter.getBounds();
 		Direction facing = painter.getAttributeValue(StdAttr.FACING);
 		Object selectLoc = painter.getAttributeValue(Plexers.ATTR_SELECT_LOC);
@@ -243,20 +243,18 @@ public class Decoder extends InstanceFactory {
 		int dy = vertical ? 0 : -selMult;
 		if (outputs == 2) { // draw select wire
 			if (painter.getShowState()) {
-				g.setFill(painter.getPort(outputs).getColor());
-				g.setStroke(painter.getPort(outputs).getColor());
+				g.setColor(painter.getPort(outputs).getColor());
 			}
 			Location pt = painter.getInstance().getPortLocation(outputs);
-			g.strokeLine(pt.getX(), pt.getY(), pt.getX() + 2 * dx, pt.getY() + 2 * dy);
+			g.c.strokeLine(pt.getX(), pt.getY(), pt.getX() + 2 * dx, pt.getY() + 2 * dy);
 		}
 		if (enable) {
 			Location en = painter.getInstance().getPortLocation(outputs + 1);
 			int len = outputs == 2 ? 6 : 4;
 			if (painter.getShowState()) {
-				g.setFill(painter.getPort(outputs + 1).getColor());
-				g.setStroke(painter.getPort(outputs + 1).getColor());
+				g.setColor((painter.getPort(outputs + 1).getColor()));
 			}
-			g.strokeLine(en.getX(), en.getY(), en.getX() + len * dx, en.getY() + len * dy);
+			g.c.strokeLine(en.getX(), en.getY(), en.getX() + len * dx, en.getY() + len * dy);
 		}
 		g.setLineWidth(1);
 		
@@ -284,19 +282,19 @@ public class Decoder extends InstanceFactory {
 			y0 = 15;
 			halign = GraphicsUtil.H_RIGHT;
 		}
-		g.setFill(Color.GRAY);
-		g.setStroke(Color.GRAY);
+		g.setColor(Color.GRAY);
 		GraphicsUtil.drawText(g, "0", bds.getX() + x0, bds.getY() + y0,
 				halign, GraphicsUtil.V_BASELINE);
 		
 		// draw trapezoid, "Decd", and ports
-		g.setFill(Color.BLACK);
-		g.setStroke(Color.BLACK);
+		g.setColor(Color.BLACK);
 		Plexers.drawTrapezoid(g, bds, facing.reverse(), outputs == 2 ? 10 : 20);
 		GraphicsUtil.drawCenteredText(g, "Decd",
 				bds.getX() + bds.getWidth() / 2,
 				bds.getY() + bds.getHeight() / 2);
 		painter.drawPorts();
+
+		g.toDefault();
 
 	}
 

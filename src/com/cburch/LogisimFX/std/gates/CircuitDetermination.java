@@ -14,6 +14,7 @@ import com.cburch.LogisimFX.comp.ComponentFactory;
  * be laid down in a circuit. This intermediate representation permits
  * easy manipulation of an expression's translation. */
 abstract class CircuitDetermination {
+
 	/** Ensures that all gates have only two inputs. */
 	void convertToTwoInputs() { }
 

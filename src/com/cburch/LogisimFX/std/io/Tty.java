@@ -3,17 +3,20 @@
 
 package com.cburch.LogisimFX.std.io;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
-import com.cburch.LogisimFX.util.GraphicsUtil;
+
+import com.sun.javafx.tk.FontMetrics;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 
 public class Tty extends InstanceFactory {
+
 	private static final int CLR = 0;
 	private static final int CK = 1;
 	private static final int WE = 2;
@@ -22,9 +25,9 @@ public class Tty extends InstanceFactory {
 	private static final int BORDER = 5;
 	private static final int ROW_HEIGHT = 15;
 	private static final int COL_WIDTH = 7; 
-	private static final Color DEFAULT_BACKGROUND = new Color(0, 0, 0, 64);
+	private static final Color DEFAULT_BACKGROUND = Color.color(0, 0, 0, 0.250);
 	
-	private static final Font DEFAULT_FONT = new Font("monospaced", Font.PLAIN, 12);
+	private static final Font DEFAULT_FONT = Font.font("monospaced", FontWeight.NORMAL, FontPosture.REGULAR, 12);
 
 	private static final Attribute<Integer> ATTR_COLUMNS
 		= Attributes.forIntegerRange("cols",
@@ -49,10 +52,10 @@ public class Tty extends InstanceFactory {
 		ps[CK]  = new Port( 0,   0, Port.INPUT, 1);
 		ps[WE]  = new Port(10,  10, Port.INPUT, 1);
 		ps[IN]  = new Port( 0, -10, Port.INPUT, 7);
-		ps[CLR].setToolTip(Strings.getter("ttyClearTip"));
-		ps[CK].setToolTip(Strings.getter("ttyClockTip"));
-		ps[WE].setToolTip(Strings.getter("ttyEnableTip"));
-		ps[IN].setToolTip(Strings.getter("ttyInputTip"));
+		ps[CLR].setToolTip(LC.createStringBinding("ttyClearTip"));
+		ps[CK].setToolTip(LC.createStringBinding("ttyClockTip"));
+		ps[WE].setToolTip(LC.createStringBinding("ttyEnableTip"));
+		ps[IN].setToolTip(LC.createStringBinding("ttyInputTip"));
 		setPorts(ps);
 	}
 
@@ -106,29 +109,33 @@ public class Tty extends InstanceFactory {
 
 	@Override
 	public void paintGhost(InstancePainter painter) {
+
 		Graphics g = painter.getGraphics();
-		GraphicsUtil.switchToWidth(g, 2);
+		g.setLineWidth(2);
 		Bounds bds = painter.getBounds();
-		g.drawRoundRect(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight(),
+		g.c.strokeRoundRect(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight(),
 				10, 10);
+		g.toDefaultFont();
+
 	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
+
 		boolean showState = painter.getShowState();
 		Graphics g = painter.getGraphics();
 		Bounds bds = painter.getBounds();
 		painter.drawClock(CK, Direction.EAST);
 		if (painter.shouldDrawColor()) {
 			g.setColor(painter.getAttributeValue(Io.ATTR_BACKGROUND));
-			g.fillRoundRect(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight(),
+			g.c.fillRoundRect(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight(),
 					10, 10);
 		}
-		GraphicsUtil.switchToWidth(g, 2);
+		g.setLineWidth(2);
 		g.setColor(Color.BLACK);
-		g.drawRoundRect(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight(),
+		g.c.strokeRoundRect(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight(),
 				2 * BORDER, 2 * BORDER);
-		GraphicsUtil.switchToWidth(g, 1);
+		g.setLineWidth(1);
 		painter.drawPort(CLR);
 		painter.drawPort(WE);
 		painter.drawPort(IN);
@@ -151,32 +158,36 @@ public class Tty extends InstanceFactory {
 
 			g.setFont(DEFAULT_FONT);
 			g.setColor(painter.getAttributeValue(Io.ATTR_COLOR));
-			FontMetrics fm = g.getFontMetrics();
+			FontMetrics fm = painter.getFontMetrics();
 			int x = bds.getX() + BORDER;
-			int y = bds.getY() + BORDER + (ROW_HEIGHT + fm.getAscent()) / 2;
+			int y = bds.getY() + BORDER + (ROW_HEIGHT + (int)fm.getAscent()) / 2;
 			for (int i = 0; i < rows; i++) {
-				g.drawString(rowData[i], x, y);
+				g.c.strokeText(rowData[i], x, y);
 				if (i == curRow) {
-					int x0 = x + fm.stringWidth(rowData[i].substring(0, curCol));
-					g.drawLine(x0, y - fm.getAscent(), x0, y);
+					int x0 = x + (int)fm.computeStringWidth(rowData[i].substring(0, curCol));
+					g.c.strokeLine(x0, y - fm.getAscent(), x0, y);
 				}
 				y += ROW_HEIGHT;
 			}
 		} else {
-			String str = Strings.get("ttyDesc", "" + rows, "" + cols);
-			FontMetrics fm = g.getFontMetrics();
-			int strWidth = fm.stringWidth(str);
+			String str = LC.getFormatted("ttyDesc", "" + rows, "" + cols);
+			FontMetrics fm = painter.getFontMetrics();
+			int strWidth = (int)fm.computeStringWidth(str);
 			if (strWidth + BORDER > bds.getWidth()) {
-				str = Strings.get("ttyDescShort");
-				strWidth = fm.stringWidth(str);
+				str = LC.get("ttyDescShort");
+				strWidth = (int)fm.computeStringWidth(str);
 			}
 			int x = bds.getX() + (bds.getWidth() - strWidth) / 2;
-			int y = bds.getY() + (bds.getHeight() + fm.getAscent()) / 2;
-			g.drawString(str, x, y);
+			int y = bds.getY() + (bds.getHeight() + (int)fm.getAscent()) / 2;
+			g.c.strokeText(str, x, y);
 		}
+
+		g.toDefaultFont();
+
 	}
 
 	private TtyState getTtyState(InstanceState state) {
+
 		int rows = getRowCount(state.getAttributeValue(ATTR_ROWS));
 		int cols = getColumnCount(state.getAttributeValue(ATTR_COLUMNS));
 		TtyState ret = (TtyState) state.getData();
@@ -186,21 +197,30 @@ public class Tty extends InstanceFactory {
 		} else {
 			ret.updateSize(rows, cols);
 		}
+
 		return ret;
+
 	}
 	
 	public void sendToStdout(InstanceState state) {
+
 		TtyState tty = getTtyState(state);
 		tty.setSendStdout(true);
+
 	}
 	
 	private static int getRowCount(Object val) {
+
 		if (val instanceof Integer) return ((Integer) val).intValue();
 		else return 4;
+
 	}
 	
 	private static int getColumnCount(Object val) {
+
 		if (val instanceof Integer) return ((Integer) val).intValue();
 		else return 16;
+
 	}
+
 }

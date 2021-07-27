@@ -3,18 +3,21 @@
 
 package com.cburch.LogisimFX.std.wiring;
 
-import java.awt.Color;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-
 import com.cburch.LogisimFX.comp.TextField;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
+import com.sun.javafx.tk.FontMetrics;
+
+import com.sun.javafx.tk.Toolkit;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class Tunnel extends InstanceFactory {
+
 	public static final Tunnel FACTORY = new Tunnel();
 
 	static final int MARGIN = 3;
@@ -24,10 +27,12 @@ public class Tunnel extends InstanceFactory {
 	static final int ARROW_MAX_WIDTH = 20;
 
 	public Tunnel() {
+
 		super("Tunnel", LC.createStringBinding("tunnelComponent"));
 		setIcon("tunnel.gif");
 		setFacingAttribute(StdAttr.FACING);
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
+
 	}
 
 	@Override
@@ -37,17 +42,19 @@ public class Tunnel extends InstanceFactory {
 
 	@Override
 	public Bounds getOffsetBounds(AttributeSet attrsBase) {
+
 		TunnelAttributes attrs = (TunnelAttributes) attrsBase;
 		Bounds bds = attrs.getOffsetBounds();
 		if (bds != null) {
 			return bds;
 		} else {
-			int ht = attrs.getFont().getSize();
+			int ht = (int)attrs.getFont().getSize();
 			int wd = ht * attrs.getLabel().length() / 2;
 			bds = computeBounds(attrs, wd, ht, null, "");
 			attrs.setOffsetBounds(bds);
 			return bds;
 		}
+
 	}
 	
 	//
@@ -55,15 +62,16 @@ public class Tunnel extends InstanceFactory {
 	//
 	@Override
 	public void paintGhost(InstancePainter painter) {
+
 		TunnelAttributes attrs = (TunnelAttributes) painter.getAttributeSet();
 		Direction facing = attrs.getFacing();
 		String label = attrs.getLabel();
 		
 		Graphics g = painter.getGraphics();
 		g.setFont(attrs.getFont());
-		FontMetrics fm = g.getFontMetrics();
-		Bounds bds = computeBounds(attrs, fm.stringWidth(label),
-				fm.getAscent() + fm.getDescent(), g, label);
+		FontMetrics fm = Toolkit.getToolkit().getFontLoader().getFontMetrics(g.getFont());
+		Bounds bds = computeBounds(attrs, (int)fm.computeStringWidth(label),
+				(int)fm.getAscent() + (int)fm.getDescent(), g, label);
 		if (attrs.setOffsetBounds(bds)) {
 			Instance instance = painter.getInstance();
 			if (instance != null) instance.recomputeBounds();
@@ -74,60 +82,65 @@ public class Tunnel extends InstanceFactory {
 		int x1 = x0 + bds.getWidth();
 		int y1 = y0 + bds.getHeight();
 		int mw = ARROW_MAX_WIDTH / 2;
-		int[] xp;
-		int[] yp;
+		double[] xp;
+		double[] yp;
 		if (facing == Direction.NORTH) {
 			int yb = y0 + ARROW_DEPTH;
 			if (x1 - x0 <= ARROW_MAX_WIDTH) {
-				xp = new int[] { x0, 0,  x1, x1, x0 };
-				yp = new int[] { yb, y0, yb, y1, y1 };
+				xp = new double[] { x0, 0,  x1, x1, x0 };
+				yp = new double[] { yb, y0, yb, y1, y1 };
 			} else {
-				xp = new int[] { x0, -mw, 0,  mw, x1, x1, x0 };
-				yp = new int[] { yb, yb,  y0, yb, yb, y1, y1 };
+				xp = new double[] { x0, -mw, 0,  mw, x1, x1, x0 };
+				yp = new double[] { yb, yb,  y0, yb, yb, y1, y1 };
 			}
 		} else if (facing == Direction.SOUTH) {
 			int yb = y1 - ARROW_DEPTH;
 			if (x1 - x0 <= ARROW_MAX_WIDTH) {
-				xp = new int[] { x0, x1, x1, 0,  x0 };
-				yp = new int[] { y0, y0, yb, y1, yb };
+				xp = new double[] { x0, x1, x1, 0,  x0 };
+				yp = new double[] { y0, y0, yb, y1, yb };
 			} else {
-				xp = new int[] { x0, x1, x1, mw, 0,  -mw, x0 };
-				yp = new int[] { y0, y0, yb, yb, y1, yb,  yb };
+				xp = new double[] { x0, x1, x1, mw, 0,  -mw, x0 };
+				yp = new double[] { y0, y0, yb, yb, y1, yb,  yb };
 			}
 		} else if (facing == Direction.EAST) {
 			int xb = x1 - ARROW_DEPTH;
 			if (y1 - y0 <= ARROW_MAX_WIDTH) {
-				xp = new int[] { x0, xb, x1, xb, x0 };
-				yp = new int[] { y0, y0, 0,  y1, y1 };
+				xp = new double[] { x0, xb, x1, xb, x0 };
+				yp = new double[] { y0, y0, 0,  y1, y1 };
 			} else {
-				xp = new int[] { x0, xb, xb,  x1, xb, xb, x0 };
-				yp = new int[] { y0, y0, -mw, 0,  mw,  y1, y1 };
+				xp = new double[] { x0, xb, xb,  x1, xb, xb, x0 };
+				yp = new double[] { y0, y0, -mw, 0,  mw,  y1, y1 };
 			}
 		} else {
 			int xb = x0 + ARROW_DEPTH;
 			if (y1 - y0 <= ARROW_MAX_WIDTH) {
-				xp = new int[] { xb, x1, x1, xb, x0 };
-				yp = new int[] { y0, y0, y1, y1, 0  };
+				xp = new double[] { xb, x1, x1, xb, x0 };
+				yp = new double[] { y0, y0, y1, y1, 0  };
 			} else {
-				xp = new int[] { xb, x1, x1, xb, xb, x0, xb  };
-				yp = new int[] { y0, y0, y1, y1, mw, 0,  -mw };
+				xp = new double[] { xb, x1, x1, xb, xb, x0, xb  };
+				yp = new double[] { y0, y0, y1, y1, mw, 0,  -mw };
 			}
 		}
-		GraphicsUtil.switchToWidth(g, 2);
-		g.drawPolygon(xp, yp, xp.length);
+		g.setLineWidth(2);
+		g.c.strokePolygon(xp, yp, xp.length);
+		g.toDefault();
+
 	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
+
 		Location loc = painter.getLocation();
 		int x = loc.getX();
 		int y = loc.getY();
 		Graphics g = painter.getGraphics();
-		g.translate(x, y);
+		g.c.translate(x, y);
 		g.setColor(Color.BLACK);
 		paintGhost(painter);
-		g.translate(-x, -y);
+		g.c.translate(-x, -y);
 		painter.drawPorts();
+		g.toDefault();
+
 	}
 	
 	//
@@ -135,41 +148,48 @@ public class Tunnel extends InstanceFactory {
 	//
 	@Override
 	protected void configureNewInstance(Instance instance) {
+
 		instance.addAttributeListener();
 		instance.setPorts(new Port[] {
 				new Port(0, 0, Port.INOUT, StdAttr.WIDTH)
 			});
 		configureLabel(instance);
+
 	}
 	
 	@Override
 	protected void instanceAttributeChanged(Instance instance, Attribute<?> attr) {
+
 		if (attr == StdAttr.FACING) {
 			configureLabel(instance);
 			instance.recomputeBounds();
 		} else if (attr == StdAttr.LABEL || attr == StdAttr.LABEL_FONT) {
 			instance.recomputeBounds();
 		}
+
 	}
 	
 	@Override
 	public void propagate(InstanceState state) {
-		; // nothing to do - handled by circuit
+		 // nothing to do - handled by circuit
 	}
 	
 	//
 	// private methods
 	//
 	private void configureLabel(Instance instance) {
+
 		TunnelAttributes attrs = (TunnelAttributes) instance.getAttributeSet();
 		Location loc = instance.getLocation();
 		instance.setTextField(StdAttr.LABEL, StdAttr.LABEL_FONT,
 				loc.getX() + attrs.getLabelX(), loc.getY() + attrs.getLabelY(),
 				attrs.getLabelHAlign(), attrs.getLabelVAlign());
+
 	}
 
 	private Bounds computeBounds(TunnelAttributes attrs, int textWidth,
-                                 int textHeight, Graphics g, String label) {
+								 int textHeight, Graphics g, String label) {
+
 		int x = attrs.getLabelX();
 		int y = attrs.getLabelY();
 		int halign = attrs.getLabelHAlign();
@@ -197,5 +217,7 @@ public class Tunnel extends InstanceFactory {
 		}
 
 		return Bounds.create(bx, by, bw, bh).expand(MARGIN).add(0, 0);
+
 	}
+
 }

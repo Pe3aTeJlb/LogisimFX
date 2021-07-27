@@ -9,8 +9,8 @@ import com.cburch.LogisimFX.data.BitWidth;
 import com.cburch.LogisimFX.data.Direction;
 import com.cburch.LogisimFX.instance.StdAttr;
 import com.cburch.LogisimFX.circuit.RadixOption;
+import javafx.scene.text.Font;
 
-import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -45,16 +45,19 @@ class ProbeAttributes extends AbstractAttributeSet {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <E> E getValue(Attribute<E> attr) {
+
 		if (attr == StdAttr.FACING) return (E) facing;
 		if (attr == StdAttr.LABEL) return (E) label;
 		if (attr == Pin.ATTR_LABEL_LOC) return (E) labelloc;
 		if (attr == StdAttr.LABEL_FONT) return (E) labelfont;
 		if (attr == RadixOption.ATTRIBUTE) return (E) radix;
 		return null;
+
 	}
 
 	@Override
 	public <V> void setValue(Attribute<V> attr, V value) {
+
 		if (attr == StdAttr.FACING) {
 			facing = (Direction) value;
 		} else if (attr == StdAttr.LABEL) {
@@ -69,7 +72,9 @@ class ProbeAttributes extends AbstractAttributeSet {
 			throw new IllegalArgumentException("unknown attribute");
 		}
 		fireAttributeValueChanged(attr, value);
+
 	}
+
 }
 
 

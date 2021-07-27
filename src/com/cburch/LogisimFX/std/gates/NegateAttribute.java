@@ -9,25 +9,30 @@ import com.cburch.LogisimFX.data.Direction;
 import com.cburch.LogisimFX.util.StringUtil;
 
 class NegateAttribute extends Attribute<Boolean> {
+
 	private static Attribute<Boolean> BOOLEAN_ATTR = Attributes.forBoolean("negateDummy");
 	
 	int index;
 	private Direction side;
 	
 	public NegateAttribute(int index, Direction side) {
+
 		super("negate" + index, null);
 		this.index = index;
 		this.side = side;
+
 	}
 	
 	@Override
 	public boolean equals(Object other) {
+
 		if (other instanceof NegateAttribute) {
 			NegateAttribute o = (NegateAttribute) other;
 			return this.index == o.index && this.side == o.side;
 		} else {
 			return false;
 		}
+
 	}
 	
 	@Override
@@ -37,11 +42,13 @@ class NegateAttribute extends Attribute<Boolean> {
 	
 	@Override
 	public String getDisplayName() {
+
 		String ret = StringUtil.format(Strings.get("gateNegateAttr"), "" + (index + 1));
 		if (side != null) {
 			ret += " (" + side.toVerticalDisplayString() + ")"; 
 		}
 		return ret;
+
 	}
 
 	@Override

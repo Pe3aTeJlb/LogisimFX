@@ -10,8 +10,9 @@ import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.instance.InstancePainter;
 import com.cburch.LogisimFX.instance.InstancePoker;
 import com.cburch.LogisimFX.instance.InstanceState;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.proj.Project;
-import javafx.scene.canvas.GraphicsContext;
+
 import javafx.scene.paint.Color;
 
 public class MemPoker extends InstancePoker {
@@ -84,12 +85,10 @@ public class MemPoker extends InstancePoker {
 		public void paint(InstancePainter painter) {
 
 			Bounds bds = getBounds(painter);
-			GraphicsContext g = painter.getGraphics();
-			g.setFill(Color.RED);
-			g.setStroke(Color.RED);
-			g.strokeRect(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight());
-			g.setFill(Color.BLACK);
-			g.setStroke(Color.BLACK);
+			Graphics g = painter.getGraphics();
+			g.setColor(Color.RED);
+			g.c.strokeRect(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight());
+			g.setColor(Color.BLACK);
 
 		}
 	
@@ -147,12 +146,12 @@ public class MemPoker extends InstancePoker {
 		public void paint(InstancePainter painter) {
 
 			Bounds bds = getBounds(painter);
-			GraphicsContext g = painter.getGraphics();
-			g.setFill(Color.RED);
-			g.setStroke(Color.RED);
-			g.strokeRect(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight());
-			g.setFill(Color.BLACK);
-			g.setStroke(Color.BLACK);
+			Graphics g = painter.getGraphics();
+			g.setColor(Color.RED);
+			g.c.strokeRect(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight());
+			g.setColor(Color.BLACK);
+
+			g.toDefault();
 
 		}
 	

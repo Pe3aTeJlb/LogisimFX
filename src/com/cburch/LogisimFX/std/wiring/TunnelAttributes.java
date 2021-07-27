@@ -3,7 +3,6 @@
 
 package com.cburch.LogisimFX.std.wiring;
 
-import java.awt.Font;
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,7 +10,10 @@ import com.cburch.LogisimFX.comp.TextField;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.StdAttr;
 
+import javafx.scene.text.Font;
+
 class TunnelAttributes extends AbstractAttributeSet {
+
 	private static final List<Attribute<?>> ATTRIBUTES
 		= Arrays.asList(new Attribute<?>[] {
 			StdAttr.FACING, StdAttr.WIDTH, StdAttr.LABEL, StdAttr.LABEL_FONT
@@ -28,12 +30,14 @@ class TunnelAttributes extends AbstractAttributeSet {
 	private int labelVAlign;
 	
 	public TunnelAttributes() {
+
 		facing = Direction.WEST;
 		width = BitWidth.ONE;
 		label = "";
 		labelFont = StdAttr.DEFAULT_LABEL_FONT;
 		offsetBounds = null;
 		configureLabel();
+
 	}
 
 	Direction getFacing() {
@@ -58,12 +62,15 @@ class TunnelAttributes extends AbstractAttributeSet {
 	int getLabelVAlign() { return labelVAlign; }
 	
 	boolean setOffsetBounds(Bounds value) {
+
 		Bounds old = offsetBounds;
 		boolean same = old == null ? value == null : old.equals(value);
 		if (!same) {
 			offsetBounds = value;
 		}
+
 		return !same;
+
 	}
 
 	@Override
@@ -79,15 +86,19 @@ class TunnelAttributes extends AbstractAttributeSet {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <V> V getValue(Attribute<V> attr) {
+
 		if (attr == StdAttr.FACING) return (V) facing;
 		if (attr == StdAttr.WIDTH) return (V) width;
 		if (attr == StdAttr.LABEL) return (V) label;
 		if (attr == StdAttr.LABEL_FONT) return (V) labelFont;
+
 		return null;
+
 	}
 
 	@Override
 	public <V> void setValue(Attribute<V> attr, V value) {
+
 		if (attr == StdAttr.FACING) {
 			facing = (Direction) value;
 			configureLabel();
@@ -102,9 +113,11 @@ class TunnelAttributes extends AbstractAttributeSet {
 		}
 		offsetBounds = null;
 		fireAttributeValueChanged(attr, value);
+
 	}
 
 	private void configureLabel() {
+
 		Direction facing = this.facing;
 		int x;
 		int y;
@@ -136,5 +149,7 @@ class TunnelAttributes extends AbstractAttributeSet {
 		labelY = y;
 		labelHAlign = halign;
 		labelVAlign = valign;
+
 	}
+
 }

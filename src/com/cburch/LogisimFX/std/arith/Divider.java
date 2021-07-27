@@ -5,6 +5,7 @@ package com.cburch.LogisimFX.std.arith;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 
@@ -67,11 +68,10 @@ public class Divider extends InstanceFactory {
 	@Override
 	public void paintInstance(InstancePainter painter) {
 
-		GraphicsContext g = painter.getGraphics();
+		Graphics g = painter.getGraphics();
 		painter.drawBounds();
 
-		g.setFill(Color.GRAY);
-		g.setStroke(Color.GRAY);
+		g.setColor(Color.GRAY);
 		painter.drawPort(IN0);
 		painter.drawPort(IN1);
 		painter.drawPort(OUT);
@@ -82,12 +82,12 @@ public class Divider extends InstanceFactory {
 		int x = loc.getX();
 		int y = loc.getY();
 		g.setLineWidth(2);
-		g.setFill(Color.BLACK);
-		g.setStroke(Color.BLACK);
-		g.fillOval(x - 12, y - 7, 4, 4);
-		g.strokeLine(x - 15, y, x - 5, y);
-		g.fillOval(x - 12, y + 3, 4, 4);
-		g.setLineWidth(1);
+		g.setColor(Color.BLACK);
+		g.c.fillOval(x - 12, y - 7, 4, 4);
+		g.c.strokeLine(x - 15, y, x - 5, y);
+		g.c.fillOval(x - 12, y + 3, 4, 4);
+
+		g.toDefault();
 
 	}
 

@@ -5,6 +5,7 @@ package com.cburch.LogisimFX.std.memory;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
@@ -55,14 +56,17 @@ public class Register extends InstanceFactory {
 	
 	@Override
 	protected void configureNewInstance(Instance instance) {
+
 		Bounds bds = instance.getBounds();
 		instance.setTextField(StdAttr.LABEL, StdAttr.LABEL_FONT,
 				bds.getX() + bds.getWidth() / 2, bds.getY() - 3,
 				GraphicsUtil.H_CENTER, GraphicsUtil.V_BASELINE);
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		RegisterData data = (RegisterData) state.getData();
 		if (data == null) {
 			data = new RegisterData();
@@ -81,11 +85,13 @@ public class Register extends InstanceFactory {
 		} 
 
 		state.setPort(OUT, Value.createKnown(dataWidth, data.value), DELAY);
+
 	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
-		GraphicsContext g = painter.getGraphics();
+
+		Graphics g = painter.getGraphics();
 		Bounds bds = painter.getBounds();
 		RegisterData state = (RegisterData) painter.getData();
 		BitWidth widthVal = painter.getAttributeValue(StdAttr.WIDTH);
@@ -121,12 +127,10 @@ public class Register extends InstanceFactory {
 			painter.drawPort(IN);
 			painter.drawPort(OUT);
 		}
-		g.setFill(Color.GRAY);
-		g.setStroke(Color.GRAY);
+		g.setColor(Color.GRAY);
 		painter.drawPort(CLR, "0", Direction.SOUTH);
 		painter.drawPort(EN, Strings.get("memEnableLabel"), Direction.EAST);
-		g.setFill(Color.BLACK);
-		g.setStroke(Color.BLACK);
+		g.setColor(Color.BLACK);
 		painter.drawClock(CK, Direction.NORTH);
 
 		// draw contents
@@ -139,5 +143,9 @@ public class Register extends InstanceFactory {
 			GraphicsUtil.drawText(g, b, bds.getX() + 15, bds.getY() + 15,
 					GraphicsUtil.H_CENTER, GraphicsUtil.V_TOP);
 		}
+
+		g.toDefault();
+
 	}
+
 }

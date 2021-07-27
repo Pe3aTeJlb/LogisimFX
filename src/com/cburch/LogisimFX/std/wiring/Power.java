@@ -7,18 +7,17 @@
 
 package com.cburch.LogisimFX.std.wiring;
 
-import java.awt.Graphics2D;
-
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
-import com.cburch.LogisimFX.util.GraphicsUtil;
-
 import com.cburch.LogisimFX.circuit.Wire;
 
 public class Power extends InstanceFactory {
+
 	public Power() {
+
 		super("Power", LC.createStringBinding("powerComponent"));
 		setIcon("power.gif");
 		setAttributes(new Attribute[] { StdAttr.FACING, StdAttr.WIDTH },
@@ -26,6 +25,7 @@ public class Power extends InstanceFactory {
 		setFacingAttribute(StdAttr.FACING);
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
 		setPorts(new Port[] { new Port(0, 0, Port.OUTPUT, StdAttr.WIDTH) });
+
 	}
 
 	@Override
@@ -35,27 +35,35 @@ public class Power extends InstanceFactory {
 
 	@Override
 	protected void instanceAttributeChanged(Instance instance, Attribute<?> attr) {
+
 		if (attr == StdAttr.FACING) {
 			instance.recomputeBounds();
 		}
+
 	}
 
 	@Override
 	public Bounds getOffsetBounds(AttributeSet attrs) {
+
 		return Bounds.create(0, -8, 15, 16)
 			.rotate(Direction.EAST, attrs.getValue(StdAttr.FACING), 0, 0);
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		BitWidth width = state.getAttributeValue(StdAttr.WIDTH);
 		state.setPort(0, Value.repeat(Value.TRUE, width.getWidth()), 1);
+
 	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
+
 		drawInstance(painter, false);
 		painter.drawPorts();
+
 	}
 
 	@Override
@@ -64,28 +72,33 @@ public class Power extends InstanceFactory {
 	}
 
 	private void drawInstance(InstancePainter painter, boolean isGhost) {
-		Graphics2D g = (Graphics2D) painter.getGraphics().create();
+
+		Graphics g = painter.getGraphics();
 		Location loc = painter.getLocation();
-		g.translate(loc.getX(), loc.getY());
+		g.c.translate(loc.getX(), loc.getY());
 
 		Direction from = painter.getAttributeValue(StdAttr.FACING);
 		int degrees = Direction.EAST.toDegrees() - from.toDegrees();
 		double radians = Math.toRadians((degrees + 360) % 360);
-		g.rotate(radians);
+		g.rotate(degrees);
 
-		GraphicsUtil.switchToWidth(g, Wire.WIDTH);
+		g.setLineWidth(Wire.WIDTH);
 		if (!isGhost && painter.getShowState()) {
 			g.setColor(painter.getPort(0).getColor());
 		}
-		g.drawLine(0, 0, 5, 0);
+		g.c.strokeLine(0, 0, 5, 0);
 
-		GraphicsUtil.switchToWidth(g, 1);
+		g.setLineWidth(1);
 		if (!isGhost && painter.shouldDrawColor()) {
 			BitWidth width = painter.getAttributeValue(StdAttr.WIDTH);
 			g.setColor(Value.repeat(Value.TRUE, width.getWidth()).getColor());
 		}
-		g.drawPolygon(new int[] { 6, 14, 6 }, new int[] { -8, 0, 8 }, 3);
+		g.c.strokePolygon(new double[] { 6, 14, 6 }, new double[] { -8, 0, 8 }, 3);
 
-		g.dispose();
+		g.c.translate(0, 0);
+		g.rotate(-degrees);
+		g.toDefault();
+
 	}
+
 }

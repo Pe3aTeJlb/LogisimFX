@@ -3,24 +3,26 @@
 
 package com.cburch.LogisimFX.std.gates;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.util.Map;
 
 import com.cburch.LogisimFX.analyze.model.Expression;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.circuit.ExpressionComputer;
 import com.cburch.LogisimFX.file.Options;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 class Buffer extends InstanceFactory {
+
 	public static InstanceFactory FACTORY = new Buffer();
 
 	private Buffer() {
+
 		super("Buffer", LC.createStringBinding("bufferComponent"));
 		setAttributes(new Attribute[] { StdAttr.FACING, StdAttr.WIDTH,
 					GateAttributes.ATTR_OUTPUT, StdAttr.LABEL, StdAttr.LABEL_FONT },
@@ -33,22 +35,27 @@ class Buffer extends InstanceFactory {
 				new Port(0, 0, Port.OUTPUT, StdAttr.WIDTH),
 				new Port(0, -20, Port.INPUT, StdAttr.WIDTH),
 		});
+
 	}
 
 	@Override
 	public Bounds getOffsetBounds(AttributeSet attrs) {
+
 		Direction facing = attrs.getValue(StdAttr.FACING);
 		if (facing == Direction.SOUTH) return Bounds.create(-9, -20, 18, 20);
 		if (facing == Direction.NORTH) return Bounds.create(-9, 0, 18, 20);
 		if (facing == Direction.WEST) return Bounds.create(0, -9, 20, 18);
 		return Bounds.create(-20, -9, 20, 18);
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		Value in = state.getPort(1);
 		in = Buffer.repair(state, in);
 		state.setPort(0, in, GateAttributes.DELAY);
+
 	}
 
 	//
@@ -56,21 +63,26 @@ class Buffer extends InstanceFactory {
 	//
 	@Override
 	protected void configureNewInstance(Instance instance) {
+
 		configurePorts(instance);
 		instance.addAttributeListener();
 		NotGate.configureLabel(instance, false, null);
+
 	}
 
 	@Override
 	protected void instanceAttributeChanged(Instance instance, Attribute<?> attr) {
+
 		if (attr == StdAttr.FACING) {
 			instance.recomputeBounds();
 			configurePorts(instance);
 			NotGate.configureLabel(instance, false, null);
 		}
+
 	}
 
 	private void configurePorts(Instance instance) {
+
 		Direction facing = instance.getAttributeValue(StdAttr.FACING);
 
 		Port[] ports = new Port[2];
@@ -78,10 +90,12 @@ class Buffer extends InstanceFactory {
 		Location out = Location.create(0, 0).translate(facing, -20);
 		ports[1] = new Port(out.getX(), out.getY(), Port.INPUT, StdAttr.WIDTH);
 		instance.setPorts(ports);
+
 	}
 
 	@Override
 	public Object getInstanceFeature(final Instance instance, Object key) {
+
 		if (key == ExpressionComputer.class) {
 			return new ExpressionComputer() {
 				public void computeExpression(Map<Location, Expression> expressionMap) {
@@ -93,6 +107,7 @@ class Buffer extends InstanceFactory {
 			};
 		}
 		return super.getInstanceFeature(instance, key);
+
 	}
 
 	//
@@ -100,50 +115,60 @@ class Buffer extends InstanceFactory {
 	//
 	@Override
 	public void paintGhost(InstancePainter painter) {
+
 		paintBase(painter);
+
 	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
+
 		Graphics g = painter.getGraphics();
 		g.setColor(Color.BLACK);
 		paintBase(painter);
 		painter.drawPorts();
 		painter.drawLabel();
+		g.toDefault();
+
 	}
 
 	private void paintBase(InstancePainter painter) {
+
 		Direction facing = painter.getAttributeValue(StdAttr.FACING);
 		Location loc = painter.getLocation();
 		int x = loc.getX();
 		int y = loc.getY();
 		Graphics g = painter.getGraphics();
-		g.translate(x, y);
+		g.c.translate(x, y);
 		double rotate = 0.0;
-		if (facing != Direction.EAST && g instanceof Graphics2D) {
+		if (facing != Direction.EAST) {
 			rotate = -facing.toRadians();
-			((Graphics2D) g).rotate(rotate);
+			g.c.rotate(rotate);
 		}
 
-		GraphicsUtil.switchToWidth(g, 2);
-		int[] xp = new int[4];
-		int[] yp = new int[4];
+		g.setLineWidth(2);
+		double[] xp = new double[4];
+		double[] yp = new double[4];
 		xp[0] = 0;   yp[0] =  0;
 		xp[1] = -19; yp[1] = -7;
 		xp[2] = -19; yp[2] =  7;
 		xp[3] = 0;   yp[3] =  0;
-		g.drawPolyline(xp, yp, 4);
+		g.c.strokePolyline(xp, yp, 4);
 
 		if (rotate != 0.0) {
-			((Graphics2D) g).rotate(-rotate);
+			g.c.rotate(-rotate);
 		}
-		g.translate(-x, -y);
+		g.c.translate(-x, -y);
+
+		g.toDefault();
+
 	}
 
 	//
 	// static methods - shared with other classes
 	//
 	static Value repair(InstanceState state, Value v) {
+
 		AttributeSet opts = state.getProject().getOptions().getAttributeSet();
 		Object onUndefined = opts.getValue(Options.ATTR_GATE_UNDEFINED);
 		boolean errorIfUndefined = onUndefined.equals(Options.GATE_UNDEFINED_ERROR);
@@ -165,5 +190,7 @@ class Buffer extends InstanceFactory {
 
 		Object outType = state.getAttributeValue(GateAttributes.ATTR_OUTPUT);
 		return AbstractGate.pullOutput(repaired, outType);
+
 	}
+
 }

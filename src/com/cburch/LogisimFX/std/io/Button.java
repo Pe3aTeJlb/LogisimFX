@@ -3,20 +3,22 @@
 
 package com.cburch.LogisimFX.std.io;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.event.MouseEvent;
-
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.circuit.Wire;
 
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+
 public class Button extends InstanceFactory {
+
 	private static final int DEPTH = 3;
 
 	public Button() {
+
 		super("Button", LC.createStringBinding("buttonComponent"));
 		setAttributes(new Attribute[] {
 				StdAttr.FACING, Io.ATTR_COLOR,
@@ -32,31 +34,39 @@ public class Button extends InstanceFactory {
 		setPorts(new Port[] { new Port(0, 0, Port.OUTPUT, 1) });
 		setInstancePoker(Poker.class);
 		setInstanceLogger(Logger.class);
+
 	}
 
 	@Override
 	public Bounds getOffsetBounds(AttributeSet attrs) {
+
 		Direction facing = attrs.getValue(StdAttr.FACING);
 		return Bounds.create(-20, -10, 20, 20).rotate(Direction.EAST, facing, 0, 0);
+
 	}
 
 	@Override
 	protected void configureNewInstance(Instance instance) {
+
 		instance.addAttributeListener();
 		computeTextField(instance);
+
 	}
 
 	@Override
 	protected void instanceAttributeChanged(Instance instance, Attribute<?> attr) {
+
 		if (attr == StdAttr.FACING) {
 			instance.recomputeBounds();
 			computeTextField(instance);
 		} else if (attr == Io.ATTR_LABEL_LOC) {
 			computeTextField(instance);
 		}
+
 	}
 
 	private void computeTextField(Instance instance) {
+
 		Direction facing = instance.getAttributeValue(StdAttr.FACING);
 		Object labelLoc = instance.getAttributeValue(Io.ATTR_LABEL_LOC);
 
@@ -93,17 +103,21 @@ public class Button extends InstanceFactory {
 
 		instance.setTextField(StdAttr.LABEL, StdAttr.LABEL_FONT,
 				x, y, halign, valign);
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		InstanceDataSingleton data = (InstanceDataSingleton) state.getData();
 		Value val = data == null ? Value.FALSE : (Value) data.getValue();
 		state.setPort(0, val, 1);
+
 	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
+
 		Bounds bds = painter.getBounds();
 		int x = bds.getX();
 		int y = bds.getY();
@@ -120,8 +134,8 @@ public class Button extends InstanceFactory {
 
 		Color color = painter.getAttributeValue(Io.ATTR_COLOR);
 		if (!painter.shouldDrawColor()) {
-			int hue = (color.getRed() + color.getGreen() + color.getBlue()) / 3;
-			color = new Color(hue, hue, hue);
+			int hue = (int)(color.getRed() + color.getGreen() + color.getBlue()) / 3;
+			color = Color.color(hue, hue, hue);
 		}
 
 		Graphics g = painter.getGraphics();
@@ -142,39 +156,43 @@ public class Button extends InstanceFactory {
 				Location p = painter.getLocation();
 				int px = p.getX();
 				int py = p.getY();
-				GraphicsUtil.switchToWidth(g, Wire.WIDTH);
+				g.setLineWidth(Wire.WIDTH);
 				g.setColor(Value.TRUE_COLOR);
-				if (facing == Direction.NORTH) g.drawLine(px, py, px, py + 10);
-				else                          g.drawLine(px, py, px + 10, py);
-				GraphicsUtil.switchToWidth(g, 1);
+				if (facing == Direction.NORTH) g.c.strokeLine(px, py, px, py + 10);
+				else                          g.c.strokeLine(px, py, px + 10, py);
+				g.setLineWidth(1);
 			}
-			
+
 			g.setColor(color);
-			g.fillRect(x, y, w - DEPTH, h - DEPTH);
+			g.c.fillRect(x, y, w - DEPTH, h - DEPTH);
 			g.setColor(Color.BLACK);
-			g.drawRect(x, y, w - DEPTH, h - DEPTH);
+			g.c.strokeRect(x, y, w - DEPTH, h - DEPTH);
 		} else {
 			depress = 0;
-			int[] xp = new int[] { x, x + w - DEPTH, x + w, x + w, x + DEPTH, x };
-			int[] yp = new int[] { y, y, y + DEPTH, y + h, y + h, y + h - DEPTH };
+			double[] xp = new double[] { x, x + w - DEPTH, x + w, x + w, x + DEPTH, x };
+			double[] yp = new double[] { y, y, y + DEPTH, y + h, y + h, y + h - DEPTH };
 			g.setColor(color.darker());
-			g.fillPolygon(xp, yp, xp.length);
+			g.c.fillPolygon(xp, yp, xp.length);
 			g.setColor(color);
-			g.fillRect(x, y, w - DEPTH, h - DEPTH);
+			g.c.fillRect(x, y, w - DEPTH, h - DEPTH);
 			g.setColor(Color.BLACK);
-			g.drawRect(x, y, w - DEPTH, h - DEPTH);
-			g.drawLine(x + w - DEPTH, y + h - DEPTH, x + w, y + h);
-			g.drawPolygon(xp, yp, xp.length);
+			g.c.strokeRect(x, y, w - DEPTH, h - DEPTH);
+			g.c.strokeLine(x + w - DEPTH, y + h - DEPTH, x + w, y + h);
+			g.c.strokePolygon(xp, yp, xp.length);
 		}
 		
-		g.translate(depress, depress);
+		g.c.translate(depress, depress);
 		g.setColor(painter.getAttributeValue(Io.ATTR_LABEL_COLOR));
 		painter.drawLabel();
-		g.translate(-depress, -depress);
+		g.c.translate(-depress, -depress);
 		painter.drawPorts();
+
+		g.toDefault();
+
 	}
 	
 	public static class Poker extends InstancePoker {
+
 		@Override
 		public void mousePressed(InstanceState state, MouseEvent e) {
 			setValue(state, Value.TRUE);
@@ -194,9 +212,11 @@ public class Button extends InstanceFactory {
 			}
 			state.getInstance().fireInvalidated();
 		}
+
 	}
 
 	public static class Logger extends InstanceLogger {
+
 		@Override
 		public String getLogName(InstanceState state, Object option) {
 			return state.getAttributeValue(StdAttr.LABEL);
@@ -207,5 +227,7 @@ public class Button extends InstanceFactory {
 			InstanceDataSingleton data = (InstanceDataSingleton) state.getData();
 			return data == null ? Value.FALSE : (Value) data.getValue();
 		}
+
 	}
+
 }

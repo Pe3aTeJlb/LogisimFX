@@ -37,16 +37,20 @@ public class Rom extends Mem {
 	private WeakHashMap<Instance,MemListener> memListeners;
 	
 	public Rom() {
+
 		super("ROM", LC.createStringBinding("romComponent"), 0);
 		setIcon("rom.gif");
 		memListeners = new WeakHashMap<Instance,MemListener>();
+
 	}
 
 	@Override
 	void configurePorts(Instance instance) {
+
 		Port[] ps = new Port[MEM_INPUTS];
 		configureStandardPorts(instance, ps);
 		instance.setPorts(ps);
+
 	}
 
 	@Override
@@ -56,6 +60,7 @@ public class Rom extends Mem {
 
 	@Override
 	MemState getState(Instance instance, CircuitState state) {
+
 		MemState ret = (MemState) instance.getData(state);
 		if (ret == null) {
 			MemContents contents = getMemContents(instance);
@@ -63,10 +68,12 @@ public class Rom extends Mem {
 			instance.setData(state, ret);
 		}
 		return ret;
+
 	}
 
 	@Override
 	MemState getState(InstanceState state) {
+
 		MemState ret = (MemState) state.getData();
 		if (ret == null) {
 			MemContents contents = getMemContents(state.getInstance());
@@ -74,11 +81,14 @@ public class Rom extends Mem {
 			state.setData(ret);
 		}
 		return ret;
+
 	}
 
 	@Override
 	HexFrame getHexFrame(Project proj, Instance instance, CircuitState state) {
+
 		return RomAttributes.getHexFrame(getMemContents(instance), proj);
+
 	}
 
 	// TODO - maybe delete this method?
@@ -88,6 +98,7 @@ public class Rom extends Mem {
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		MemState myState = getState(state);
 		BitWidth dataBits = state.getAttributeValue(DATA_ATTR);
 
@@ -110,18 +121,22 @@ public class Rom extends Mem {
 
 		int val = myState.getContents().get(addr);
 		state.setPort(DATA, Value.createKnown(dataBits, val), DELAY);
+
 	}
 
 	@Override
 	protected void configureNewInstance(Instance instance) {
+
 		super.configureNewInstance(instance);
 		MemContents contents = getMemContents(instance);
 		MemListener listener = new MemListener(instance);
 		memListeners.put(instance, listener);
 		contents.addHexModelListener(listener);
+
 	}
 
 	private static class ContentsAttribute extends Attribute<MemContents> {
+
 		public ContentsAttribute() {
 			super("contents", LC.createStringBinding("romContentsAttr"));
 		}
@@ -144,6 +159,7 @@ public class Rom extends Mem {
 
 		@Override
 		public String toStandardString(MemContents state) {
+
 			int addr = state.getLogLength();
 			int data = state.getWidth();
 			StringWriter ret = new StringWriter();
@@ -152,10 +168,12 @@ public class Rom extends Mem {
 				HexFile.save(ret, state);
 			} catch (IOException e) { }
 			return ret.toString();
+
 		}
 
 		@Override
 		public MemContents parse(String value) {
+
 			int lineBreak = value.indexOf('\n');
 			String first = lineBreak < 0 ? value : value.substring(0, lineBreak);
 			String rest = lineBreak < 0 ? "" : value.substring(lineBreak + 1);
@@ -176,26 +194,32 @@ public class Rom extends Mem {
 				return null;
 			}
 		}
+
 	}
 
 	private static class ContentsCell extends JLabel
 			implements MouseListener {
+
 		Window source;
 		MemContents contents;
 
 		ContentsCell(Window source, MemContents contents) {
+
 			super(Strings.get("romContentsValue"));
 			this.source = source;
 			this.contents = contents;
 			addMouseListener(this);
+
 		}
 
 		public void mouseClicked(MouseEvent e) {
+
 			if (contents == null) return;
 			Project proj = source instanceof Frame ? ((Frame) source).getProject() : null;
 			HexFrame frame = RomAttributes.getHexFrame(contents, proj);
 			frame.setVisible(true);
 			frame.toFront();
+
 		}
 
 		public void mousePressed(MouseEvent e) { }
@@ -205,5 +229,7 @@ public class Rom extends Mem {
 		public void mouseEntered(MouseEvent e) { }
 
 		public void mouseExited(MouseEvent e) { }
+
 	}
+
 }

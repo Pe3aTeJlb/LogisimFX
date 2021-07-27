@@ -3,33 +3,39 @@
 
 package com.cburch.LogisimFX.std.wiring;
 
-import java.awt.Color;
-import java.awt.Graphics;
-
 import com.cburch.LogisimFX.comp.TextField;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.circuit.RadixOption;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class Probe extends InstanceFactory {
+
 	public static final Probe FACTORY = new Probe();
 
 	private static class StateData implements InstanceData, Cloneable {
+
 		Value curValue = Value.NIL;
 		
 		@Override
 		public Object clone() {
+
 			try {
 				return super.clone();
 			} catch (CloneNotSupportedException e) {
 				return null;
 			}
+
 		}
+
 	}
 
 	public static class ProbeLogger extends InstanceLogger {
+
 		public ProbeLogger() { }
 		
 		@Override
@@ -42,13 +48,16 @@ public class Probe extends InstanceFactory {
 		public Value getLogValue(InstanceState state, Object option) {
 			return getValue(state);
 		}
+
 	}
 
 	public Probe() {
+
 		super("Probe", LC.createStringBinding("probeComponent"));
 		setIcon("probe.gif");
 		setFacingAttribute(StdAttr.FACING);
 		setInstanceLogger(ProbeLogger.class);
+
 	}
 
 	@Override
@@ -58,8 +67,10 @@ public class Probe extends InstanceFactory {
 
 	@Override
 	public Bounds getOffsetBounds(AttributeSet attrsBase) {
+
 		ProbeAttributes attrs = (ProbeAttributes) attrsBase;
 		return getOffsetBounds(attrs.facing, attrs.width, attrs.radix);
+
 	}
 
 	//
@@ -67,32 +78,36 @@ public class Probe extends InstanceFactory {
 	//
 	@Override
 	public void paintGhost(InstancePainter painter) {
+
 		Graphics g = painter.getGraphics();
 		Bounds bds = painter.getOffsetBounds();
-		g.drawOval(bds.getX() + 1, bds.getY() + 1,
+		g.c.strokeOval(bds.getX() + 1, bds.getY() + 1,
 			bds.getWidth() - 1, bds.getHeight() - 1);
+		g.toDefault();
+
 	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
+
 		Value value = getValue(painter);
 
 		Graphics g = painter.getGraphics();
 		Bounds bds = painter.getBounds(); // intentionally with no graphics object - we don't want label included
 		int x = bds.getX();
 		int y = bds.getY();
-		g.setColor(Color.WHITE);
-		g.fillRect(x + 5, y + 5, bds.getWidth() - 10, bds.getHeight() - 10);
-		g.setColor(Color.GRAY);
+        g.setColor(Color.WHITE);
+		g.c.fillRect(x + 5, y + 5, bds.getWidth() - 10, bds.getHeight() - 10);
+        g.setColor(Color.GRAY);
 		if (value.getWidth() <= 1) {
-			g.drawOval(x + 1, y + 1,
+			g.c.strokeOval(x + 1, y + 1,
 				bds.getWidth() - 2, bds.getHeight() - 2);
 		} else {
-			g.drawRoundRect(x + 1, y + 1,
+			g.c.strokeRoundRect(x + 1, y + 1,
 				bds.getWidth() - 2, bds.getHeight() - 2, 6, 6);
 		}
 
-		g.setColor(Color.BLACK);
+        g.setColor(Color.BLACK);
 		painter.drawLabel();
 
 		if (!painter.getShowState()) {
@@ -105,9 +120,12 @@ public class Probe extends InstanceFactory {
 		}
 
 		painter.drawPorts();
+		g.toDefault();
+
 	}
 
 	static void paintValue(InstancePainter painter, Value value) {
+
 		Graphics g = painter.getGraphics();
 		Bounds bds = painter.getBounds(); // intentionally with no graphics object - we don't want label included
 
@@ -119,8 +137,8 @@ public class Probe extends InstanceFactory {
 			if (wid == 0) {
 				x += bds.getWidth() / 2;
 				y += bds.getHeight() / 2;
-				GraphicsUtil.switchToWidth(g, 2);
-				g.drawLine(x - 4, y, x + 4, y);
+				g.setLineWidth(2);
+				g.c.strokeLine(x - 4, y, x + 4, y);
 				return;
 			}
 			int x0 = bds.getX() + bds.getWidth() - 5;
@@ -149,6 +167,7 @@ public class Probe extends InstanceFactory {
 					bds.getX() + bds.getWidth() / 2,
 					bds.getY() + bds.getHeight() / 2);
 		}
+
 	}
 
 	//
@@ -156,23 +175,28 @@ public class Probe extends InstanceFactory {
 	//
 	@Override
 	protected void configureNewInstance(Instance instance) {
+
 		instance.setPorts(new Port[] { new Port(0, 0, Port.INPUT, BitWidth.UNKNOWN) });
 		instance.addAttributeListener();
 		configureLabel(instance);
+
 	}
 
 	@Override
 	protected void instanceAttributeChanged(Instance instance, Attribute<?> attr) {
+
 		if (attr == Pin.ATTR_LABEL_LOC) {
 			configureLabel(instance);
 		} else if (attr == StdAttr.FACING || attr == RadixOption.ATTRIBUTE) {
 			instance.recomputeBounds();
 			configureLabel(instance);
 		}
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		StateData oldData = (StateData) state.getData();
 		Value oldValue = oldData == null ? Value.NIL : oldData.curValue;
 		Value newValue = state.getPort(0);
@@ -195,16 +219,21 @@ public class Probe extends InstanceFactory {
 			}
 			state.fireInvalidated();
 		}
+
 	}
 
 	private static Value getValue(InstanceState state) {
+
 		StateData data = (StateData) state.getData();
 		return data == null ? Value.NIL : data.curValue;
+
 	}
 
 	void configureLabel(Instance instance) {
+
 		ProbeAttributes attrs = (ProbeAttributes) instance.getAttributeSet();
 		Probe.configureLabel(instance, attrs.labelloc, attrs.facing);
+
 	}
 
 	//
@@ -212,6 +241,7 @@ public class Probe extends InstanceFactory {
 	//
 	static Bounds getOffsetBounds(Direction dir, BitWidth width,
                                   RadixOption radix) {
+
 		Bounds ret = null;
 		int len = radix == null || radix == RadixOption.RADIX_2 ? width.getWidth() : radix.getMaxLength(width);
 		if (dir == Direction.EAST) {
@@ -303,10 +333,12 @@ public class Probe extends InstanceFactory {
 			ret = Bounds.create(0, -10, 20, 20); // should never happen
 		}
 		return ret;
+
 	}
 
 	static void configureLabel(Instance instance, Direction labelLoc,
                                Direction facing) {
+
 		Bounds bds = instance.getBounds();
 		int x;
 		int y;
@@ -352,5 +384,7 @@ public class Probe extends InstanceFactory {
 
 		instance.setTextField(StdAttr.LABEL, StdAttr.LABEL_FONT,
 				x, y, halign, valign);
+
 	}
+
 }

@@ -3,174 +3,298 @@
 
 package com.cburch.LogisimFX.std.gates;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.Point2D;
 import java.util.HashMap;
 
 import com.cburch.LogisimFX.data.Direction;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.instance.InstancePainter;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+
 import com.cburch.LogisimFX.util.GraphicsUtil;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.shape.ArcType;
+import com.sun.javafx.geom.Path2D;
+import com.sun.javafx.geom.Point2D;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 
-public class PainterShaped {	
-	private static final GeneralPath PATH_NARROW;
-	private static final GeneralPath PATH_MEDIUM;
-	private static final GeneralPath PATH_WIDE;
+public class PainterShaped {
 
-	private static final GeneralPath SHIELD_NARROW;
-	private static final GeneralPath SHIELD_MEDIUM;
-	private static final GeneralPath SHIELD_WIDE;
-	
+	private PainterShaped() { }
+
+	private static HashMap<Integer,int[]> INPUT_LENGTHS = new HashMap<>();
+
+	private static final Path2D PATH_NARROW;
+	private static final Path2D PATH_MEDIUM;
+	private static final Path2D PATH_WIDE;
+
+	private static final Path2D SHIELD_NARROW;
+	private static final Path2D SHIELD_MEDIUM;
+	private static final Path2D SHIELD_WIDE;
+
 	static {
-		PATH_NARROW = new GeneralPath();
+
+		PATH_NARROW = new Path2D();
 		PATH_NARROW.moveTo(0, 0);
 		PATH_NARROW.quadTo(-10, -15, -30, -15);
 		PATH_NARROW.quadTo(-22,   0, -30,  15);
 		PATH_NARROW.quadTo(-10,  15,   0,   0);
 		PATH_NARROW.closePath();
-		
-		PATH_MEDIUM = new GeneralPath();
+
+		PATH_MEDIUM = new Path2D();
 		PATH_MEDIUM.moveTo(0, 0);
 		PATH_MEDIUM.quadTo(-20, -25, -50, -25);
 		PATH_MEDIUM.quadTo(-37,   0, -50,  25);
 		PATH_MEDIUM.quadTo(-20,  25,   0,   0);
 		PATH_MEDIUM.closePath();
-		
-		PATH_WIDE = new GeneralPath();
+
+		PATH_WIDE = new Path2D();
 		PATH_WIDE.moveTo(0, 0);
 		PATH_WIDE.quadTo(-25, -35, -70, -35);
 		PATH_WIDE.quadTo(-50,   0, -70,  35);
 		PATH_WIDE.quadTo(-25,  35,   0,   0);
 		PATH_WIDE.closePath();
-		
-		SHIELD_NARROW = new GeneralPath();
+
+		SHIELD_NARROW = new Path2D();
 		SHIELD_NARROW.moveTo(-30, -15);
 		SHIELD_NARROW.quadTo(-22,   0, -30,  15);
-		
-		SHIELD_MEDIUM = new GeneralPath();
+
+		SHIELD_MEDIUM = new Path2D();
 		SHIELD_MEDIUM.moveTo(-50, -25);
 		SHIELD_MEDIUM.quadTo(-37,   0, -50,  25);
-		
-		SHIELD_WIDE = new GeneralPath();
+
+		SHIELD_WIDE = new Path2D();
 		SHIELD_WIDE.moveTo(-70, -35);
 		SHIELD_WIDE.quadTo(-50,   0, -70,  35);
+
 	}
 
-	private PainterShaped() { }
-	
-	private static HashMap<Integer,int[]> INPUT_LENGTHS = new HashMap<Integer,int[]>();
-	
+	private static void narrowPath(Graphics g){
+
+		g.c.beginPath();
+		g.c.moveTo(0, 0);
+		g.c.quadraticCurveTo(-10, -15, -30, -15);
+		g.c.quadraticCurveTo(-22,   0, -30,  15);
+		g.c.quadraticCurveTo(-10,  15,   0,   0);
+		g.c.stroke();
+
+	}
+
+	private static void mediumPath(Graphics g){
+
+		g.c.beginPath();
+		g.c.moveTo(0, 0);
+		g.c.quadraticCurveTo(-20, -25, -50, -25);
+		g.c.quadraticCurveTo(-37,   0, -50,  25);
+		g.c.quadraticCurveTo(-20,  25,   0,   0);
+		g.c.stroke();
+
+	}
+
+	private static void widePath(Graphics g){
+
+		g.c.beginPath();
+		g.c.moveTo(0, 0);
+		g.c.quadraticCurveTo(-25, -35, -70, -35);
+		g.c.quadraticCurveTo(-50,   0, -70,  35);
+		g.c.quadraticCurveTo(-25,  35,   0,   0);
+		g.c.stroke();
+
+	}
+
+	private static void narrowShield(Graphics g){
+
+		g.c.beginPath();
+		g.c.moveTo(-30, -15);
+		g.c.quadraticCurveTo(-22,   0, -30,  15);
+		g.c.stroke();
+
+	}
+
+	private static void mediumShield(Graphics g){
+
+		g.c.beginPath();
+		g.c.moveTo(-50, -25);
+		g.c.quadraticCurveTo(-37,   0, -50,  25);
+		g.c.stroke();
+
+	}
+
+	private static void wideShield(Graphics g){
+
+		g.c.beginPath();
+		g.c.moveTo(-70, -35);
+		g.c.quadraticCurveTo(-50,   0, -70,  35);
+		g.c.stroke();
+
+	}
+
 	static void paintAnd(InstancePainter painter, int width, int height) {
-		GraphicsContext g = painter.getGraphics();
+
+		Graphics g = painter.getGraphics();
 		g.setLineWidth(2);
 		double[] xp = new double[] { -width / 2, -width + 1, -width + 1, -width / 2 };
 		double[] yp = new double[] { -width / 2, -width / 2, width / 2, width / 2 };
-		g.strokeArc(-width / 2, 0, width / 2,width / 2,-90, 180, ArcType.OPEN);
-		//GraphicsUtil.drawCenteredArc(g, -width / 2, 0, width / 2, -90, 180);
+		//g.c.strokeArc(-width / 2, 0, width / 2,width / 2,-90, 180, ArcType.OPEN);
+		GraphicsUtil.drawCenteredArc(g, -width / 2, 0, width / 2, -90, 180);
 
-		g.strokePolyline(xp, yp, 4);
+		g.c.strokePolyline(xp, yp, 4);
 		if (height > width) {
-			g.strokeLine(-width + 1, -height / 2, -width + 1, height / 2);
+			g.c.strokeLine(-width + 1, -height / 2, -width + 1, height / 2);
 		}
+
 	}
-	
+
 	static void paintOr(InstancePainter painter, int width, int height) {
+
 		Graphics g = painter.getGraphics();
-		GraphicsUtil.switchToWidth(g, 2);
-		/* The following, used previous to version 2.5.1, didn't use GeneralPath
-		g.setColor(Color.LIGHT_GRAY);
+		g.setLineWidth(2);
+
+		/*
 		if (width < 40) {
 			GraphicsUtil.drawCenteredArc(g, -30, -21, 36, -90, 53);
 			GraphicsUtil.drawCenteredArc(g, -30,  21, 36, 90, -53);
+			GraphicsUtil.drawCenteredArc(g,  -56, 0, 30, -30, 60);
 		} else if (width < 60) {
 			GraphicsUtil.drawCenteredArc(g, -50, -37, 62, -90, 53);
 			GraphicsUtil.drawCenteredArc(g, -50,  37, 62, 90, -53);
+			GraphicsUtil.drawCenteredArc(g,  -93, 0, 50, -30, 60);
 		} else {
-			GraphicsUtil.drawCenteredArc(g, -70, -50, 85, -90, 53);
-			GraphicsUtil.drawCenteredArc(g, -70,  50, 85, 90, -53);
+			GraphicsUtil.drawCenteredArc(g, -70, -50, 85, -90, 55);
+			GraphicsUtil.drawCenteredArc(g, -70,  50, 85, 90, -55);
+			GraphicsUtil.drawCenteredArc(g,  -130, 0, 70, -30, 60);
 		}
-		paintShield(g, -width, 0, width, height);
 		*/
-		
-		GeneralPath path;
 		if (width < 40) {
-			path = PATH_NARROW;
+			narrowPath(g);
 		} else if (width < 60) {
-			path = PATH_MEDIUM;
+			mediumPath(g);
 		} else {
-			path = PATH_WIDE;
+			widePath(g);
 		}
-		((Graphics2D) g).draw(path);
+
 		if (height > width) {
 			paintShield(g, 0, width, height);
 		}
+
+		g.toDefault();
+
 	}
-	
+
 	static void paintNot(InstancePainter painter) {
+
 		Graphics g = painter.getGraphics();
-		GraphicsUtil.switchToWidth(g, 2);
+		g.setLineWidth(2);
 		if (painter.getAttributeValue(NotGate.ATTR_SIZE) == NotGate.SIZE_NARROW) {
-			GraphicsUtil.switchToWidth(g, 2);
-			int[] xp = new int[4];
-			int[] yp = new int[4];
+			g.setLineWidth(2);
+			double[] xp = new double[4];
+			double[] yp = new double[4];
 			xp[0] =  -6; yp[0] =  0;
 			xp[1] = -19; yp[1] = -6;
 			xp[2] = -19; yp[2] =  6;
 			xp[3] =  -6; yp[3] =  0;
-			g.drawPolyline(xp, yp, 4);
-			g.drawOval(-6, -3, 6, 6);
+			g.c.strokePolyline(xp, yp, 4);
+			g.c.strokeOval(-6, -3, 6, 6);
 		} else {
-			int[] xp = new int[4];
-			int[] yp = new int[4];
+			double[] xp = new double[4];
+			double[] yp = new double[4];
 			xp[0] = -10; yp[0] = 0;
 			xp[1] = -29; yp[1] = -7;
 			xp[2] = -29; yp[2] = 7;
 			xp[3] = -10; yp[3] = 0;
-			g.drawPolyline(xp, yp, 4);
-			g.drawOval(-9, -4, 9, 9);
+			g.c.strokePolyline(xp, yp, 4);
+			g.c.strokeOval(-9, -4, 9, 9);
 		}
+
+		g.toDefault();
+
 	}
 
 	static void paintXor(InstancePainter painter, int width, int height) {
+
 		Graphics g = painter.getGraphics();
 		paintOr(painter, width - 10, width - 10);
 		paintShield(g, -10, width - 10, height);
+
+		g.toDefault();
+
 	}
 
 	private static void paintShield(Graphics g, int xlate,
-			int width, int height) {
-		GraphicsUtil.switchToWidth(g, 2);
-		g.translate(xlate, 0);
-		((Graphics2D) g).draw(computeShield(width, height));
-		g.translate(-xlate, 0);
+									int width, int height) {
 
-		/* The following, used previous to version 2.5.1, didn't use GeneralPath
-		if (width < 40) {
-			GraphicsUtil.drawCenteredArc(g, x - 26, y, 30, -30, 60);
-		} else if (width < 60) {
-			GraphicsUtil.drawCenteredArc(g, x - 43, y, 50, -30, 60);
+		g.setLineWidth(2);
+
+		g.c.translate(xlate,0);
+
+		if (height <= width) {
+
+			// no wings
+			if (width < 40) {
+				narrowShield(g);
+			} else if (width < 60) {
+				mediumShield(g);
+			} else {
+				wideShield(g);
+			}
+
 		} else {
-			GraphicsUtil.drawCenteredArc(g, x - 60, y, 70, -30, 60);
+
+			// we need to add wings
+			int wingHeight = (height - width) / 2;
+			int dx = Math.min(20, wingHeight / 4);
+
+			g.c.beginPath();
+			g.c.moveTo(-width, -height / 2);
+			g.c.quadraticCurveTo(-width + dx, -(width + height) / 4, -width, -width / 2);
+			g.c.stroke();
+
+			/*
+			g.setColor(Color.GREEN);
+			g.c.fillOval(-width, -height / 2,3,3);
+			g.setColor(Color.RED);
+			g.c.fillOval(-width + dx, -(width + height) / 4,3,3);
+			g.setColor(Color.CYAN);
+			g.c.fillOval(-width, -width / 2,3,3);
+
+			 */
+
+			g.toDefaultColor();
+
+			if (width < 40) {
+				narrowShield(g);
+			} else if (width < 60) {
+				mediumShield(g);
+			} else {
+				wideShield(g);
+			}
+
+			g.c.beginPath();
+			g.c.moveTo(-width, width / 2);
+			g.c.quadraticCurveTo( -width + dx, (width + height) / 4, -width, height / 2);
+			g.c.stroke();
+
+			/*
+			g.setColor(Color.GREEN);
+			g.c.fillOval(-width, height / 2,3,3);
+			g.setColor(Color.RED);
+			g.c.fillOval(-width + dx, (width + height) / 4,3,3);
+			g.setColor(Color.CYAN);
+			g.c.fillOval(-width, width / 2,3,3);
+
+			 */
+
 		}
-		if (height > width) { // we need to draw the shield
-			GraphicsUtil.drawCenteredArc(g,
-				x - dx, y - (width + extra) / 2,
-				extra, -30, 60);
-			GraphicsUtil.drawCenteredArc(g,
-				x - dx, y + (width + extra) / 2,
-				extra, -30, 60);
-		}
-		*/
+
+		g.c.translate(-xlate,0);
+
 	}
 
-	private static GeneralPath computeShield(int width, int height) {
-		GeneralPath base;
+	private static Path2D computeShield(Graphics g, int width, int height) {
+
+		g.setLineWidth(2);
+
+		Path2D base;
+
 		if (width < 40) {
 			base = SHIELD_NARROW;
 		} else if (width < 60) {
@@ -181,20 +305,32 @@ public class PainterShaped {
 
 		if (height <= width) { // no wings
 			return base;
-		} else { // we need to add wings
+		} else {
+
+			// we need to add wings
 			int wingHeight = (height - width) / 2;
 			int dx = Math.min(20, wingHeight / 4);
 
-			GeneralPath path = new GeneralPath();
+			Path2D path = new Path2D();
+
 			path.moveTo(-width, -height / 2);
+
 			path.quadTo(-width + dx, -(width + height) / 4, -width, -width / 2);
+
 			path.append(base, true);
+
+			g.c.moveTo(-width, width / 2);
+
 			path.quadTo(-width + dx, (width + height) / 4, -width, height / 2);
+
 			return path;
+
 		}
+
 	}
 
 	static void paintInputLines(InstancePainter painter, AbstractGate factory) {
+
 		Location loc = painter.getLocation();
 		boolean printView = painter.isPrintView();
 		GateAttributes attrs = (GateAttributes) painter.getAttributeSet();
@@ -202,7 +338,7 @@ public class PainterShaped {
 		int inputs = attrs.inputs;
 		int negated = attrs.negated;
 
-		int[] lengths = getInputLineLengths(attrs, factory);
+		int[] lengths = getInputLineLengths(painter.getGraphics(),attrs, factory);
 		if (painter.getInstance() == null) { // drawing ghost - negation bubbles only
 			for (int i = 0; i < inputs; i++) {
 				boolean iNegated = ((negated >> i) & 1) == 1;
@@ -215,8 +351,8 @@ public class PainterShaped {
 			}
 		} else {
 			Graphics g = painter.getGraphics();
-			Color baseColor = g.getColor();
-			GraphicsUtil.switchToWidth(g, 3);
+			Paint baseColor = g.getPaint();
+			g.setLineWidth(3);
 			for (int i = 0; i < inputs; i++) {
 				Location offs = factory.getInputOffset(attrs, i);
 				Location src = loc.translate(offs.getX(), offs.getY());
@@ -229,19 +365,22 @@ public class PainterShaped {
 						g.setColor(baseColor);
 					}
 					Location dst = src.translate(facing, len);
-					g.drawLine(src.getX(), src.getY(), dst.getX(), dst.getY());
+					g.c.strokeLine(src.getX(), src.getY(), dst.getX(), dst.getY());
 				}
 				if (((negated >> i) & 1) == 1) {
 					Location cent = src.translate(facing, lengths[i] + 5);
 					g.setColor(baseColor);
 					painter.drawDongle(cent.getX(), cent.getY());
-					GraphicsUtil.switchToWidth(g, 3);
+					g.setLineWidth(3);
 				}
 			}
 		}
+
 	}
 
-	private static int[] getInputLineLengths(GateAttributes attrs, AbstractGate factory) {
+	private static int[] getInputLineLengths(Graphics g, GateAttributes attrs, AbstractGate factory) {
+
+
 		int inputs = attrs.inputs;
 		int mainHeight = ((Integer) attrs.size.getValue()).intValue();
 		Integer key = Integer.valueOf(inputs * 31 + mainHeight);
@@ -264,24 +403,27 @@ public class PainterShaped {
 		int totalHeight = 10 + loc0.manhattanDistanceTo(locn);
 		if (totalHeight < width) totalHeight = width;
 
-		GeneralPath path = computeShield(width, totalHeight);
+		Path2D path = computeShield(g,width, totalHeight);
+
 		for (int i = 0; i < inputs; i++) {
 			Location loci = OrGate.FACTORY.getInputOffset(attrs, i);
-			Point2D p = new Point2D.Float(loci.getX() + 1, loci.getY());
+
+			Point2D p = new Point2D(loci.getX() + 1, loci.getY());
 			int iters = 0;
 			while (path.contains(p) && iters < 15) {
 				iters++;
-				p.setLocation(p.getX() + 1, p.getY());
+				p.setLocation(p.x+1, p.y);
 			}
 			if (iters >= 15) iters = 0;
 			lengths[i] = iters;
 		}
-		
-		/* used prior to 2.5.1, when moved to GeneralPath
+
+		/* used prior to 2.5.1, when moved to GeneralPath */
+		/*
 		int wingHeight = (totalHeight - mainHeight) / 2;
 		double wingCenterX = wingHeight * Math.sqrt(3) / 2;
 		double mainCenterX = mainHeight * Math.sqrt(3) / 2;
-		
+
 		for (int i = 0; i < inputs; i++) {
 			Location loci = factory.getInputOffset(attrs, i);
 			int disti = 5 + loc0.manhattanDistanceTo(loci);
@@ -298,7 +440,11 @@ public class PainterShaped {
 			}
 			lengths[i] = (int) (dx - 0.5);
 		}
-		*/
+
+		 */
+
 		return lengths;
+
 	}
+
 }

@@ -5,6 +5,7 @@ package com.cburch.LogisimFX.std.arith;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
@@ -146,7 +147,7 @@ public class BitFinder extends InstanceFactory {
 	@Override
 	public void paintInstance(InstancePainter painter) {
 
-		GraphicsContext g = painter.getGraphics();
+		Graphics g = painter.getGraphics();
 		painter.drawBounds();
 		painter.drawPorts();
 		
@@ -174,6 +175,8 @@ public class BitFinder extends InstanceFactory {
 		GraphicsUtil.drawCenteredText(g, top, x, y0 + 8);
 		GraphicsUtil.drawCenteredText(g, mid, x, y0 + 20);
 		GraphicsUtil.drawCenteredText(g, bot, x, y0 + 32);
+
+		g.toDefault();
 
 	}
 

@@ -6,33 +6,41 @@ package com.cburch.LogisimFX.std.gates;
 import com.cburch.LogisimFX.data.Value;
 
 class GateFunctions {
+
 	private GateFunctions() { }
 	
 	static Value computeOr(Value[] inputs, int numInputs) {
+
 		Value ret = inputs[0];
 		for (int i = 1; i < numInputs; i++) {
 			ret = ret.or(inputs[i]);
 		}
 		return ret;
+
 	}
 	
 	static Value computeAnd(Value[] inputs, int numInputs) {
+
 		Value ret = inputs[0];
 		for (int i = 1; i < numInputs; i++) {
 			ret = ret.and(inputs[i]);
 		}
 		return ret;
+
 	}
 	
 	static Value computeOddParity(Value[] inputs, int numInputs) {
+
 		Value ret = inputs[0];
 		for (int i = 1; i < numInputs; i++) {
 			ret = ret.xor(inputs[i]);
 		}
 		return ret;
+
 	}
 	
 	static Value computeExactlyOne(Value[] inputs, int numInputs) {
+
 		int width = inputs[0].getWidth();
 		Value[] ret = new Value[width];
 		for (int i = 0; i < width; i++) {
@@ -56,6 +64,9 @@ class GateFunctions {
 				ret[i] = Value.FALSE;
 			}
 		}
+
 		return Value.create(ret);
+
 	}
+
 }

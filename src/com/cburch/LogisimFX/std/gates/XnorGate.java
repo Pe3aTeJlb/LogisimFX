@@ -3,8 +3,6 @@
 
 package com.cburch.LogisimFX.std.gates;
 
-import java.awt.Graphics;
-
 import com.cburch.LogisimFX.analyze.model.Expression;
 import com.cburch.LogisimFX.analyze.model.Expressions;
 import com.cburch.LogisimFX.data.AttributeSet;
@@ -12,19 +10,25 @@ import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.instance.Instance;
 import com.cburch.LogisimFX.instance.InstancePainter;
 import com.cburch.LogisimFX.instance.InstanceState;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.WireRepairData;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
+import javafx.scene.canvas.GraphicsContext;
+
 class XnorGate extends AbstractGate {
+
 	public static XnorGate FACTORY = new XnorGate();
 
 	private XnorGate() {
+
 		super("XNOR Gate", LC.createStringBinding("xnorGateComponent"), true);
 		setNegateOutput(true);
 		setAdditionalWidth(10);
 		setIconNames("xnorGate.gif", "xnorGateRect.gif", "dinXnorGate.gif");
 		setPaintInputLines(true);
+
 	}
 
 	@Override
@@ -34,43 +38,57 @@ class XnorGate extends AbstractGate {
 
 	@Override
 	public void paintIconShaped(InstancePainter painter) {
+
 		Graphics g = painter.getGraphics();
 		GraphicsUtil.drawCenteredArc(g,   0, - 5, 22, -90,  53);
 		GraphicsUtil.drawCenteredArc(g,   0, 23, 22,  90, -53);
 		GraphicsUtil.drawCenteredArc(g,  -8,  9, 16, -30, 60);
 		GraphicsUtil.drawCenteredArc(g, -10,  9, 16, -30, 60);
-		g.drawOval(16, 8, 4, 4);
+		g.c.strokeOval(16, 8, 4, 4);
+
+		g.toDefault();
+
 	}
 
 	@Override
 	protected void paintShape(InstancePainter painter, int width, int height) {
+
 		PainterShaped.paintXor(painter, width, height);
+
 	}
 
 	@Override
 	protected void paintDinShape(InstancePainter painter, int width, int height,
                                  int inputs) {
+
 		PainterDin.paintXnor(painter, width, height, false);
+
 	}
 
 	@Override
 	protected Value computeOutput(Value[] inputs, int numInputs, InstanceState state) {
+
 		Object behavior = state.getAttributeValue(GateAttributes.ATTR_XOR);
 		if (behavior == GateAttributes.XOR_ODD) {
 			return GateFunctions.computeOddParity(inputs, numInputs).not();
 		} else {
 			return GateFunctions.computeExactlyOne(inputs, numInputs).not();
 		}
+
 	}
 
 	@Override
 	protected boolean shouldRepairWire(Instance instance, WireRepairData data) {
+
 		return !data.getPoint().equals(instance.getLocation());
+
 	}
 
 	@Override
 	protected Expression computeExpression(Expression[] inputs, int numInputs) {
+
 		return Expressions.not(XorGate.xorExpression(inputs, numInputs));
+
 	}
 
 	@Override

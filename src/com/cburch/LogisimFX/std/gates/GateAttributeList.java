@@ -10,6 +10,7 @@ import com.cburch.LogisimFX.data.Direction;
 import com.cburch.LogisimFX.instance.StdAttr;
 
 class GateAttributeList extends AbstractList<Attribute<?>> {
+
 	private static final Attribute<?>[] BASE_ATTRIBUTES = {
 			StdAttr.FACING, StdAttr.WIDTH,
 			GateAttributes.ATTR_SIZE, GateAttributes.ATTR_INPUTS,
@@ -24,6 +25,7 @@ class GateAttributeList extends AbstractList<Attribute<?>> {
 
 	@Override
 	public Attribute<?> get(int index) {
+
 		int len = BASE_ATTRIBUTES.length;
 		if (index < len) {
 			return BASE_ATTRIBUTES[index];
@@ -51,13 +53,17 @@ class GateAttributeList extends AbstractList<Attribute<?>> {
 			return new NegateAttribute(index, null);
 		}
 		return null;
+
 	}
 
 	@Override
 	public int size() {
+
 		int ret = BASE_ATTRIBUTES.length;
 		if (attrs.xorBehave != null) ret++;
 		ret += attrs.inputs;
 		return ret;
+
 	}
+
 }

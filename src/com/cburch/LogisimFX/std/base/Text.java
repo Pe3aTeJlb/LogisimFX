@@ -9,6 +9,7 @@ import com.cburch.LogisimFX.instance.Instance;
 import com.cburch.LogisimFX.instance.InstanceFactory;
 import com.cburch.LogisimFX.instance.InstancePainter;
 import com.cburch.LogisimFX.instance.InstanceState;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
@@ -121,8 +122,7 @@ public class Text extends InstanceFactory {
 		
 		int halign = attrs.getHorizontalAlign();
 		int valign = attrs.getVerticalAlign();
-		GraphicsContext g = painter.getGraphics();
-		Font old = g.getFont();
+		Graphics g = painter.getGraphics();
 		g.setFont(attrs.getFont());
 		GraphicsUtil.drawText(g, text, 0, 0, halign, valign);
 		
@@ -139,8 +139,8 @@ public class Text extends InstanceFactory {
 			Instance instance = painter.getInstance();
 			if (instance != null) instance.recomputeBounds();
 		}
-				
-		g.setFont(old);
+
+		g.toDefault();
 
 	}
 
@@ -150,12 +150,13 @@ public class Text extends InstanceFactory {
 		Location loc = painter.getLocation();
 		int x = loc.getX();
 		int y = loc.getY();
-		GraphicsContext g = painter.getGraphics();
-		g.translate(x, y);
-		g.setFill(Color.BLACK);
-		g.setStroke(Color.BLACK);
+		Graphics g = painter.getGraphics();
+		g.c.translate(x, y);
+		g.setColor(Color.BLACK);
 		paintGhost(painter);
-		g.translate(-x, -y);
+		g.c.translate(-x, -y);
+
+		g.toDefault();
 
 	}
 

@@ -9,18 +9,20 @@ import com.cburch.LogisimFX.instance.InstancePainter;
 import com.cburch.LogisimFX.instance.InstancePoker;
 import com.cburch.LogisimFX.instance.InstanceState;
 import com.cburch.LogisimFX.instance.StdAttr;
-import javafx.scene.canvas.GraphicsContext;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import javafx.scene.paint.Color;
 
-import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 public class RegisterPoker extends InstancePoker {
+
 	private int initValue;
 	private int curValue;
 
 	@Override
 	public boolean init(InstanceState state, MouseEvent e) {
+
 		RegisterData data = (RegisterData) state.getData();
 		if (data == null) {
 			data = new RegisterData();
@@ -29,28 +31,34 @@ public class RegisterPoker extends InstancePoker {
 		initValue = data.value;
 		curValue = initValue;
 		return true;
+
 	}
 
 	@Override
 	public void paint(InstancePainter painter) {
+
 		Bounds bds = painter.getBounds();
 		BitWidth dataWidth = painter.getAttributeValue(StdAttr.WIDTH);
 		int width = dataWidth == null ? 8 : dataWidth.getWidth();
 		int len = (width + 3) / 4;
 
-		GraphicsContext g = painter.getGraphics();
+		Graphics g = painter.getGraphics();
 		g.setColor(Color.RED);
 		if (len > 4) {
-			g.drawRect(bds.getX(), bds.getY() + 3, bds.getWidth(), 25);
+			g.c.strokeRect(bds.getX(), bds.getY() + 3, bds.getWidth(), 25);
 		} else {
 			int wid = 7 * len + 2;
-			g.drawRect(bds.getX() + (bds.getWidth() - wid) / 2, bds.getY() + 4, wid, 15);
+			g.c.strokeRect(bds.getX() + (bds.getWidth() - wid) / 2, bds.getY() + 4, wid, 15);
 		}
 		g.setColor(Color.BLACK);
+
+		g.toDefault();
+
 	}
 
 	@Override
 	public void keyTyped(InstanceState state, KeyEvent e) {
+
 		int val = Character.digit(e.getKeyChar(), 16);
 		if (val < 0) return;
 
@@ -61,5 +69,7 @@ public class RegisterPoker extends InstancePoker {
 		data.value = curValue;
 
 		state.fireInvalidated();
+
 	}
+
 }

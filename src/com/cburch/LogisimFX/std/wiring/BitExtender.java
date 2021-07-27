@@ -3,17 +3,18 @@
 
 package com.cburch.LogisimFX.std.wiring;
 
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.JoinedConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
+import com.sun.javafx.tk.FontMetrics;
+import javafx.scene.canvas.GraphicsContext;
 
 public class BitExtender extends InstanceFactory {
+
 	private static final Attribute<BitWidth> ATTR_IN_WIDTH
 		= Attributes.forBitWidth("in_width", LC.createStringBinding("extenderInAttr"));
 	private static final Attribute<BitWidth> ATTR_OUT_WIDTH
@@ -30,6 +31,7 @@ public class BitExtender extends InstanceFactory {
 	public static final BitExtender FACTORY = new BitExtender();
 
 	public BitExtender() {
+
 		super("Bit Extender", LC.createStringBinding("extenderComponent"));
 		setIcon("extender.gif");
 		setAttributes(new Attribute[] {
@@ -42,6 +44,7 @@ public class BitExtender extends InstanceFactory {
 				new BitWidthConfigurator(ATTR_OUT_WIDTH),
 				new BitWidthConfigurator(ATTR_IN_WIDTH, 1, Value.MAX_WIDTH, 0)));
 		setOffsetBounds(Bounds.create(-40, -20, 40, 40));
+
 	}
 	
 	//
@@ -49,20 +52,21 @@ public class BitExtender extends InstanceFactory {
 	//
 	@Override
 	public void paintInstance(InstancePainter painter) {
+
 		Graphics g = painter.getGraphics();
-		FontMetrics fm = g.getFontMetrics();
-		int asc = fm.getAscent();
+		FontMetrics fm = painter.getFontMetrics();
+		int asc = (int)fm.getAscent();
 
 		painter.drawBounds();
 		
 		String s0;
 		String type = getType(painter.getAttributeSet());
-		if (type.equals("zero")) s0 = Strings.get("extenderZeroLabel");
-		else if (type.equals("one")) s0 = Strings.get("extenderOneLabel");
-		else if (type.equals("sign")) s0 = Strings.get("extenderSignLabel");
-		else if (type.equals("input")) s0 = Strings.get("extenderInputLabel");
+		if (type.equals("zero")) s0 = LC.get("extenderZeroLabel");
+		else if (type.equals("one")) s0 = LC.get("extenderOneLabel");
+		else if (type.equals("sign")) s0 = LC.get("extenderSignLabel");
+		else if (type.equals("input")) s0 = LC.get("extenderInputLabel");
 		else s0 = "???"; // should never happen
-		String s1 = Strings.get("extenderMainLabel");
+		String s1 = LC.get("extenderMainLabel");
 		Bounds bds = painter.getBounds();
 		int x = bds.getX() + bds.getWidth() / 2;
 		int y0 = bds.getY() + (bds.getHeight() / 2 + asc) / 2;
@@ -77,6 +81,9 @@ public class BitExtender extends InstanceFactory {
 		painter.drawPort(0, "" + w0.getWidth(), Direction.WEST);
 		painter.drawPort(1, "" + w1.getWidth(), Direction.EAST);
 		if (type.equals("input")) painter.drawPort(2);
+
+		g.toDefault();
+
 	}
 	
 	//
@@ -84,21 +91,26 @@ public class BitExtender extends InstanceFactory {
 	//
 	@Override
 	protected void configureNewInstance(Instance instance) {
+
 		configurePorts(instance);
 		instance.addAttributeListener();
+
 	}
 
 	@Override
 	protected void instanceAttributeChanged(Instance instance, Attribute<?> attr) {
+
 		if (attr == ATTR_TYPE) {
 			configurePorts(instance);
 			instance.fireInvalidated();
 		} else {
 			instance.fireInvalidated();
 		}
+
 	}
 	
 	private void configurePorts(Instance instance) {
+
 		Port p0 = new Port(0, 0, Port.OUTPUT, ATTR_OUT_WIDTH);
 		Port p1 = new Port(-40, 0, Port.INPUT, ATTR_IN_WIDTH);
 		String type = getType(instance.getAttributeSet());
@@ -107,10 +119,12 @@ public class BitExtender extends InstanceFactory {
 		} else {
 			instance.setPorts(new Port[] { p0, p1 });
 		}
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		Value in = state.getPort(1);
 		BitWidth wout = state.getAttributeValue(ATTR_OUT_WIDTH);
 		String type = getType(state.getAttributeSet());
@@ -129,11 +143,15 @@ public class BitExtender extends InstanceFactory {
 		
 		Value out = in.extendWidth(wout.getWidth(), extend);
 		state.setPort(0, out, 1);
+
 	}
 
 	
 	private String getType(AttributeSet attrs) {
+
 		AttributeOption topt = attrs.getValue(ATTR_TYPE);
 		return (String) topt.getValue();
+
 	}
+
 }

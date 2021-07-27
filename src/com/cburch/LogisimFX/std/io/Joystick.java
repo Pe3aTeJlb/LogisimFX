@@ -3,21 +3,24 @@
 
 package com.cburch.LogisimFX.std.io;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
-import com.cburch.LogisimFX.util.GraphicsUtil;
+
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class Joystick extends InstanceFactory {
+
 	static final Attribute<BitWidth> ATTR_WIDTH = Attributes.forBitWidth("bits",
 			LC.createStringBinding("ioBitWidthAttr"), 2, 5);
 
 	public Joystick() {
+
 		super("Joystick", LC.createStringBinding("joystickComponent"));
 		setAttributes(new Attribute[] { ATTR_WIDTH, Io.ATTR_COLOR },
 				new Object[] { BitWidth.create(4), Color.RED });
@@ -29,10 +32,12 @@ public class Joystick extends InstanceFactory {
 				new Port(0, 10, Port.OUTPUT, ATTR_WIDTH),
 			});
 		setInstancePoker(Poker.class);
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		BitWidth bits = state.getAttributeValue(ATTR_WIDTH);
 		int dx;
 		int dy;
@@ -49,45 +54,56 @@ public class Joystick extends InstanceFactory {
 		}
 		state.setPort(0, Value.createKnown(bits, dx), 1);
 		state.setPort(1, Value.createKnown(bits, dy), 1);
+
 	}
 
 	@Override
 	public void paintGhost(InstancePainter painter) {
+
 		Graphics g = painter.getGraphics();
-		GraphicsUtil.switchToWidth(g, 2);
-		g.drawRoundRect(-30, -10, 30, 30, 8, 8);
+		g.setLineWidth(2);
+		g.c.strokeRoundRect(-30, -10, 30, 30, 8, 8);
+		g.toDefault();
+
 	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
+
 		Location loc = painter.getLocation();
 		int x = loc.getX();
 		int y = loc.getY();
 
 		Graphics g = painter.getGraphics();
-		g.drawRoundRect(x - 30, y - 10, 30, 30, 8, 8);
-		g.drawRoundRect(x - 28, y - 8, 26, 26, 4, 4);
+		g.c.strokeRoundRect(x - 30, y - 10, 30, 30, 8, 8);
+		g.c.strokeRoundRect(x - 28, y - 8, 26, 26, 4, 4);
 		drawBall(g, x - 15, y + 5, painter.getAttributeValue(Io.ATTR_COLOR),
 				painter.shouldDrawColor());
 		painter.drawPorts();
+
+		g.toDefault();
+
 	}
 
 	private static void drawBall(Graphics g, int x, int y, Color c,
 			boolean inColor) {
+
 		if (inColor) {
 			g.setColor(c == null ? Color.RED : c);
 		} else {
-			int hue = c == null ? 128
-					: (c.getRed() + c.getGreen() + c.getBlue()) / 3;
-			g.setColor(new Color(hue, hue, hue));
+			double hue = c == null ? 128
+					: (c.getRed()/ + c.getGreen() + c.getBlue()) / 3;
+			g.setColor(Color.color(hue, hue, hue));
 		}
-		GraphicsUtil.switchToWidth(g, 1);
-		g.fillOval(x - 4, y - 4, 8, 8);
+		g.setLineWidth(1);
+		g.c.fillOval(x - 4, y - 4, 8, 8);
 		g.setColor(Color.BLACK);
-		g.drawOval(x - 4, y - 4, 8, 8);
+		g.c.strokeOval(x - 4, y - 4, 8, 8);
+
 	}
 
 	private static class State implements InstanceData, Cloneable {
+
 		private int xPos;
 		private int yPos;
 		
@@ -98,9 +114,11 @@ public class Joystick extends InstanceFactory {
 			try { return super.clone(); }
 			catch (CloneNotSupportedException e) { return null; }
 		}
+
 	}
 	
 	public static class Poker extends InstancePoker {
+
 		@Override
 		public void mousePressed(InstanceState state, MouseEvent e) {
 			mouseDragged(state, e);
@@ -113,13 +131,16 @@ public class Joystick extends InstanceFactory {
 		
 		@Override
 		public void mouseDragged(InstanceState state, MouseEvent e) {
+
 			Location loc = state.getInstance().getLocation();
 			int cx = loc.getX() - 15;
 			int cy = loc.getY() + 5;
 			updateState(state, e.getX() - cx, e.getY() - cy);
+
 		}
 		
 		private void updateState(InstanceState state, int dx, int dy) {
+
 			State s = (State) state.getData();
 			if (dx < -14) dx = -14;
 			if (dy < -14) dy = -14;
@@ -133,10 +154,12 @@ public class Joystick extends InstanceFactory {
 				s.yPos = dy;
 			}
 			state.getInstance().fireInvalidated();
+
 		}
 		
 		@Override
 		public void paint(InstancePainter painter) {
+
 			State state = (State) painter.getData();
 			if (state == null) {
 				state = new State(0, 0);
@@ -147,8 +170,8 @@ public class Joystick extends InstanceFactory {
 			int y = loc.getY();
 			Graphics g = painter.getGraphics();
 			g.setColor(Color.WHITE);
-			g.fillRect(x - 20, y, 10, 10);
-			GraphicsUtil.switchToWidth(g, 3);
+			g.c.fillRect(x - 20, y, 10, 10);
+			g.setLineWidth(3);
 			g.setColor(Color.BLACK);
 			int dx = state.xPos;
 			int dy = state.yPos;
@@ -156,9 +179,12 @@ public class Joystick extends InstanceFactory {
 			int y0 = y + 5 + (dy > 5 ? 1 : dy < 0 ? -1 : 0);
 			int x1 = x - 15 + dx;
 			int y1 = y + 5 + dy;
-			g.drawLine(x0, y0, x1, y1);
+			g.c.strokeLine(x0, y0, x1, y1);
 			Color ballColor = painter.getAttributeValue(Io.ATTR_COLOR);
 			Joystick.drawBall(g, x1, y1, ballColor, true);
+
 		}
+
 	}
+
 }

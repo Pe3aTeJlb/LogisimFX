@@ -5,11 +5,12 @@ package com.cburch.LogisimFX.std.memory;
 
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.instance.InstanceData;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.StringUtil;
 import com.cburch.hex.HexModel;
 import com.cburch.hex.HexModelListener;
-import javafx.scene.canvas.GraphicsContext;
+
 import javafx.scene.paint.Color;
 
 class MemState implements InstanceData, Cloneable, HexModelListener {
@@ -203,7 +204,7 @@ class MemState implements InstanceData, Cloneable, HexModelListener {
 
 	}
 
-	public void paint(GraphicsContext g, int leftX, int topY) {
+	public void paint(Graphics g, int leftX, int topY) {
 
 		int addrBits = getAddrBits();
 		int dataBits = contents.getWidth();
@@ -213,7 +214,7 @@ class MemState implements InstanceData, Cloneable, HexModelListener {
 		int boxH = ROWS * ENTRY_HEIGHT;
 
 		g.setLineWidth(1);
-		g.strokeRect(boxX, boxY, boxW, boxH);
+		g.c.strokeRect(boxX, boxY, boxW, boxH);
 		int entryWidth = boxW / columns;
 		for (int row = 0; row < ROWS; row++) {
 			long addr = (curScroll / columns * columns) + columns * row;
@@ -221,25 +222,21 @@ class MemState implements InstanceData, Cloneable, HexModelListener {
 			int y = boxY + ENTRY_HEIGHT * row;
 			int yoffs = ENTRY_HEIGHT - 3;
 			if (isValidAddr(addr)) {
-				g.setFill(Color.GRAY);
-				g.setStroke(Color.GRAY);
+				g.setColor(Color.GRAY);
 				GraphicsUtil.drawText(g, StringUtil.toHexString(getAddrBits(), (int) addr),
 						x - 2, y + yoffs,
 						GraphicsUtil.H_RIGHT, GraphicsUtil.V_BASELINE);
 			}
-			g.setFill(Color.BLACK);
-			g.setStroke(Color.BLACK);
+			g.setColor(Color.BLACK);
 			for (int col = 0; col < columns && isValidAddr(addr); col++) {
 				int val = contents.get(addr);
 				if (addr == curAddr) {
-					g.fillRect(x, y, entryWidth, ENTRY_HEIGHT);
-					g.setFill(Color.WHITE);
-					g.setStroke(Color.WHITE);
+					g.c.fillRect(x, y, entryWidth, ENTRY_HEIGHT);
+					g.setColor(Color.WHITE);
 					GraphicsUtil.drawText(g, StringUtil.toHexString(dataBits, val),
 							x + entryWidth / 2, y + yoffs,
 							GraphicsUtil.H_CENTER, GraphicsUtil.V_BASELINE);
-					g.setFill(Color.BLACK);
-					g.setStroke(Color.BLACK);
+					g.setColor(Color.BLACK);
 				} else {
 					GraphicsUtil.drawText(g, StringUtil.toHexString(dataBits, val),
 							x + entryWidth / 2, y + yoffs,
@@ -249,6 +246,8 @@ class MemState implements InstanceData, Cloneable, HexModelListener {
 				x += entryWidth;
 			}
 		}
+
+		g.toDefault();
 
 	}
 

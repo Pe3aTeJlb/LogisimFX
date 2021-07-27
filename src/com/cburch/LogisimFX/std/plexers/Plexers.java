@@ -6,13 +6,13 @@ package com.cburch.LogisimFX.std.plexers;
 import java.util.List;
 
 import com.cburch.LogisimFX.data.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.FactoryDescription;
 import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.tools.Tool;
 
 import javafx.beans.binding.StringBinding;
-import javafx.scene.canvas.GraphicsContext;
 
 public class Plexers extends Library {
 
@@ -78,8 +78,9 @@ public class Plexers extends Library {
 
 	}
 
-	static void drawTrapezoid(GraphicsContext g, Bounds bds, Direction facing,
+	static void drawTrapezoid(Graphics g, Bounds bds, Direction facing,
 							  int facingLean) {
+
 		int wid = bds.getWidth();
 		int ht = bds.getHeight();
 		int x0 = bds.getX(); int x1 = x0 + wid;
@@ -96,7 +97,10 @@ public class Plexers extends Library {
 			yp[1] += facingLean; yp[2] -= facingLean;
 		}
 		g.setLineWidth(2);
-		g.strokePolygon(xp, yp, 4);
+		g.c.strokePolygon(xp, yp, 4);
+
+		g.toDefault();
+
 	}
 	
 	static boolean contains(Location loc, Bounds bds, Direction facing) {

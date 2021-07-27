@@ -43,16 +43,7 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
 
                     textProperty().unbind();
 
-                    setStyle(".tree-cell .tree-disclosure-node .arrow {\n" +
-                            "    -fx-shape: null;\n" +
-                            "    -fx-background-color: null;\n" +
-                            "    -fx-background-image: url(\"plus-arrow.png\");\n" +
-                            "}\n" +
-                            ".tree-cell:expanded .tree-disclosure-node .arrow {\n" +
-                            "    -fx-shape: null;\n" +
-                            "    -fx-background-color: null;\n" +
-                            "    -fx-background-image: url(\"minus-arrow.png\");\n" +
-                            "}");
+                    //getStylesheets().add("com/cburch/LogisimFX/resources/css/treeview.css");
 
                     if(empty || item == null) {
 
@@ -100,7 +91,7 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
                                     setContextMenu(ContextMenuManager.CircuitContextMenu(proj, circ));
 
                                     if (proj.getCurrentCircuit().equals(circ)) {
-                                        setStyle(highlight);
+                                        //setStyle(highlight);
                                     }
 
                                 }

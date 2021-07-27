@@ -3,24 +3,27 @@
 
 package com.cburch.LogisimFX.std.io;
 
-import java.awt.Color;
-import java.awt.Graphics;
-
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+
 public class SevenSegment extends InstanceFactory {
+
 	static Bounds[] SEGMENTS = null;
-	static Color DEFAULT_OFF = new Color(220, 220, 220);
+	static Color DEFAULT_OFF = Color.color(0.863, 0.863, 0.863);
 	
 	public SevenSegment() {
+
 		super("7-Segment Display", LC.createStringBinding("sevenSegmentComponent"));
 		setAttributes(new Attribute[] { Io.ATTR_ON_COLOR, Io.ATTR_OFF_COLOR,
 					Io.ATTR_BACKGROUND, Io.ATTR_ACTIVE },
-				new Object[] { new Color(240, 0, 0), DEFAULT_OFF,
+				new Object[] { Color.color(0.941, 0, 0), DEFAULT_OFF,
 					Io.DEFAULT_BACKGROUND, Boolean.TRUE });
 		setOffsetBounds(Bounds.create(-5, 0, 40, 60));
 		setIcon("7seg.gif");
@@ -34,10 +37,12 @@ public class SevenSegment extends InstanceFactory {
 				new Port( 0,  0, Port.INPUT, 1),
 				new Port(30, 60, Port.INPUT, 1),
 			});
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		int summary = 0;
 		for (int i = 0; i < 8; i++) {
 			Value val = state.getPort(i);
@@ -50,6 +55,7 @@ public class SevenSegment extends InstanceFactory {
 		} else {
 			data.setValue(value);
 		}
+
 	}
 
 	@Override
@@ -58,6 +64,7 @@ public class SevenSegment extends InstanceFactory {
 	}
 
 	static void drawBase(InstancePainter painter) {
+
 		ensureSegments();
 		InstanceDataSingleton data = (InstanceDataSingleton) painter.getData();
 		int summ = (data == null ? 0 : ((Integer) data.getValue()).intValue());
@@ -72,28 +79,31 @@ public class SevenSegment extends InstanceFactory {
 		Color onColor = painter.getAttributeValue(Io.ATTR_ON_COLOR);
 		Color offColor = painter.getAttributeValue(Io.ATTR_OFF_COLOR);
 		Color bgColor = painter.getAttributeValue(Io.ATTR_BACKGROUND);
-		if (painter.shouldDrawColor() && bgColor.getAlpha() != 0) {
+		if (painter.shouldDrawColor() && bgColor.getOpacity() != 0) {
 			g.setColor(bgColor);
-			g.fillRect(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight());
+			g.c.fillRect(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight());
 			g.setColor(Color.BLACK);
 		}
 		painter.drawBounds();
-		g.setColor(Color.DARK_GRAY);
+		g.setColor(Color.DARKGRAY);
 		for (int i = 0; i <= 7; i++) {
 			if (painter.getShowState()) {
-				g.setColor(((summ >> i) & 1) == desired ? onColor : offColor);
+				Color p = ((summ >> i) & 1) == desired ? onColor : offColor;
+				g.setColor(p);
 			}
 			if (i < 7) {
 				Bounds seg = SEGMENTS[i];
-				g.fillRect(x + seg.getX(), y + seg.getY(), seg.getWidth(), seg.getHeight());
+				g.c.fillRect(x + seg.getX(), y + seg.getY(), seg.getWidth(), seg.getHeight());
 			} else {
-				g.fillOval(x + 28, y + 48, 5, 5); // draw decimal point
+				g.c.fillOval(x + 28, y + 48, 5, 5); // draw decimal point
 			}
 		}
 		painter.drawPorts();
+
 	}
 	
 	static void ensureSegments() {
+
 		if (SEGMENTS == null) {
 			SEGMENTS = new Bounds[] {
 					Bounds.create( 3,  8, 19,  4),
@@ -105,5 +115,7 @@ public class SevenSegment extends InstanceFactory {
 					Bounds.create( 3, 28, 19,  4)
 			};
 		}
+
 	}
+
 }

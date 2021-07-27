@@ -5,12 +5,12 @@ package com.cburch.LogisimFX.std.plexers;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.JoinedConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.LogisimVersion;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Multiplexer extends InstanceFactory {
@@ -212,7 +212,7 @@ public class Multiplexer extends InstanceFactory {
 	@Override
 	public void paintInstance(InstancePainter painter) {
 
-		GraphicsContext g = painter.getGraphics();
+		Graphics g = painter.getGraphics();
 		Bounds bds = painter.getBounds();
 		Direction facing = painter.getAttributeValue(StdAttr.FACING);
 		BitWidth select = painter.getAttributeValue(Plexers.ATTR_SELECT);
@@ -229,20 +229,18 @@ public class Multiplexer extends InstanceFactory {
 		if (inputs == 2) { // draw select wire
 			Location pt = painter.getInstance().getPortLocation(inputs);
 			if (painter.getShowState()) {
-				g.setFill(painter.getPort(inputs).getColor());
-				g.setStroke(painter.getPort(inputs).getColor());
+				g.setColor(painter.getPort(inputs).getColor());
 			}
-			g.strokeLine(pt.getX() - 2 * dx, pt.getY() - 2 * dy,
+			g.c.strokeLine(pt.getX() - 2 * dx, pt.getY() - 2 * dy,
 					pt.getX(), pt.getY());
 		}
 		if (enable) {
 			Location en = painter.getInstance().getPortLocation(inputs + 1);
 			if (painter.getShowState()) {
-				g.setFill(painter.getPort(inputs + 1).getColor());
-				g.setStroke(painter.getPort(inputs + 1).getColor());
+				g.setColor(painter.getPort(inputs + 1).getColor());
 			}
 			int len = inputs == 2 ? 6 : 4;
-			g.strokeLine(en.getX() - len * dx, en.getY() - len * dy,
+			g.c.strokeLine(en.getX() - len * dx, en.getY() - len * dy,
 					en.getX(), en.getY());
 		}
 		g.setLineWidth(1);
@@ -271,22 +269,22 @@ public class Multiplexer extends InstanceFactory {
 			y0 = bds.getY() + 15;
 			halign = GraphicsUtil.H_LEFT;
 		}
-		g.setFill(Color.GRAY);
-		g.setStroke(Color.GRAY);
+		g.setColor(Color.GRAY);
 		GraphicsUtil.drawText(g, "0", x0, y0, halign, GraphicsUtil.V_BASELINE);
 		
 		// draw the trapezoid, "MUX" string, the individual ports
-		g.setFill(Color.BLACK);
-		g.setStroke(Color.BLACK);
+		g.setColor(Color.BLACK);
 		Plexers.drawTrapezoid(g, bds, facing, select.getWidth() == 1 ? 10 : 20);
 		GraphicsUtil.drawCenteredText(g, "MUX",
 				bds.getX() + bds.getWidth() / 2,
 				bds.getY() + bds.getHeight() / 2);
 		painter.drawPorts();
 
+		g.toDefault();
+
 	}
 	
-	static void drawSelectCircle(GraphicsContext g, Bounds bds, Location loc) {
+	static void drawSelectCircle(Graphics g, Bounds bds, Location loc) {
 
 		int locDelta = Math.max(bds.getHeight(), bds.getWidth()) <= 50 ? 8 : 6;
 		Location circLoc;
@@ -303,9 +301,10 @@ public class Multiplexer extends InstanceFactory {
 				circLoc = loc.translate(-locDelta, 0);
 			}
 		}
-		g.setFill(Color.LIGHTGRAY);
-		g.setStroke(Color.LIGHTGRAY);
-		g.fillOval(circLoc.getX() - 3, circLoc.getY() - 3, 6, 6);
+		g.setColor(Color.LIGHTGRAY);
+		g.c.fillOval(circLoc.getX() - 3, circLoc.getY() - 3, 6, 6);
+
+		g.toDefault();
 
 	}
 

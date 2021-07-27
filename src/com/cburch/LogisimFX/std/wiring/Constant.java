@@ -7,13 +7,15 @@ import com.cburch.LogisimFX.analyze.model.Expression;
 import com.cburch.LogisimFX.analyze.model.Expressions;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.JoinedConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.circuit.ExpressionComputer;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
-import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -25,26 +27,27 @@ public class Constant extends InstanceFactory {
 
 	public static InstanceFactory FACTORY = new Constant();
 
-	private static final Color BACKGROUND_COLOR = new Color(230, 230, 230);
+	private static final Color BACKGROUND_COLOR = Color.color(0.902, 0.902, 0.902);
 
-
-	
 	private static final List<Attribute<?>> ATTRIBUTES
 		= Arrays.asList(new Attribute<?>[] {
 				StdAttr.FACING, StdAttr.WIDTH, ATTR_VALUE
 		});
 	
 	private static class ConstantAttributes extends AbstractAttributeSet {
+
 		private Direction facing = Direction.EAST;;
 		private BitWidth width = BitWidth.ONE;
 		private Value value = Value.TRUE;
 
 		@Override
 		protected void copyInto(AbstractAttributeSet destObj) {
+
 			ConstantAttributes dest = (ConstantAttributes) destObj;
 			dest.facing = this.facing;
 			dest.width = this.width;
 			dest.value = this.value;
+
 		}
 
 		@Override
@@ -55,14 +58,17 @@ public class Constant extends InstanceFactory {
 		@Override
 		@SuppressWarnings("unchecked")
 		public <V> V getValue(Attribute<V> attr) {
+
 			if (attr == StdAttr.FACING) return (V) facing;
 			if (attr == StdAttr.WIDTH) return (V) width;
 			if (attr == ATTR_VALUE) return (V) Integer.valueOf(value.toIntValue());
 			return null;
+
 		}
 
 		@Override
 		public <V> void setValue(Attribute<V> attr, V value) {
+
 			if (attr == StdAttr.FACING) {
 				facing = (Direction) value;
 			} else if (attr == StdAttr.WIDTH) {
@@ -76,10 +82,13 @@ public class Constant extends InstanceFactory {
 				throw new IllegalArgumentException("unknown attribute " + attr);
 			}
 			fireAttributeValueChanged(attr, value);
-		}       
+
+		}
+
 	}
-	
+
 	private static class ConstantExpression implements ExpressionComputer {
+
 		private Instance instance;
 		
 		public ConstantExpression(Instance instance) {
@@ -93,15 +102,18 @@ public class Constant extends InstanceFactory {
 			expressionMap.put(instance.getLocation(),
 					Expressions.constant(intValue));
 		}
+
 	}
 	
 	public Constant() {
+
 		super("Constant", LC.createStringBinding("constantComponent"));
 		setFacingAttribute(StdAttr.FACING);
 		setKeyConfigurator(JoinedConfigurator.create(
 				new ConstantConfigurator(),
 				new BitWidthConfigurator(StdAttr.WIDTH)));
 		setIcon("constant.gif");
+
 	}
 
 	@Override
@@ -111,17 +123,22 @@ public class Constant extends InstanceFactory {
 
 	@Override
 	protected void configureNewInstance(Instance instance) {
+
 		instance.addAttributeListener();
 		updatePorts(instance);
+
 	}
 	
 	private void updatePorts(Instance instance) {
+
 		Port[] ps = { new Port(0, 0, Port.OUTPUT, StdAttr.WIDTH) };
 		instance.setPorts(ps);
+
 	}
 
 	@Override
 	protected void instanceAttributeChanged(Instance instance, Attribute<?> attr) {
+
 		if (attr == StdAttr.WIDTH) {
 			instance.recomputeBounds();
 			updatePorts(instance);
@@ -130,23 +147,29 @@ public class Constant extends InstanceFactory {
 		} else if (attr == ATTR_VALUE) {
 			instance.fireInvalidated();
 		}
+
 	}
 	
 	@Override
 	protected Object getInstanceFeature(Instance instance, Object key) {
+
 		if (key == ExpressionComputer.class) return new ConstantExpression(instance);
 		return super.getInstanceFeature(instance, key);
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		BitWidth width = state.getAttributeValue(StdAttr.WIDTH);
 		int value = state.getAttributeValue(ATTR_VALUE).intValue();
 		state.setPort(0, Value.createKnown(width, value), 1);
+
 	}
 
 	@Override
 	public Bounds getOffsetBounds(AttributeSet attrs) {
+
 		Direction facing = attrs.getValue(StdAttr.FACING);
 		BitWidth width = attrs.getValue(StdAttr.WIDTH);
 		int chars = (width.getWidth() + 3) / 4;
@@ -201,49 +224,31 @@ public class Constant extends InstanceFactory {
 			throw new IllegalArgumentException("unrecognized arguments " + facing + " " + width);
 		}
 		return ret;
+
 	}
 
 	//
 	// painting methods
 	//
-	@Override
-	public void paintIcon(InstancePainter painter) {
-		int w = painter.getAttributeValue(StdAttr.WIDTH).getWidth();
-		int pinx = 16; int piny = 9;
-		Direction dir = painter.getAttributeValue(StdAttr.FACING);
-		if (dir == Direction.EAST) { } // keep defaults
-		else if (dir == Direction.WEST) { pinx = 4; }
-		else if (dir == Direction.NORTH) { pinx = 9; piny = 4; }
-		else if (dir == Direction.SOUTH) { pinx = 9; piny = 16; }
-
-		Graphics g = painter.getGraphics();
-		if (w == 1) {
-			int v = painter.getAttributeValue(ATTR_VALUE).intValue();
-			Value val = v == 1 ? Value.TRUE : Value.FALSE;
-			g.setColor(val.getColor());
-			GraphicsUtil.drawCenteredText(g, "" + v, 10, 9);
-		} else {
-			g.setFont(g.getFont().deriveFont(9.0f));
-			GraphicsUtil.drawCenteredText(g, "x" + w, 10, 9);
-		}
-		g.fillOval(pinx, piny, 3, 3);
-	}
 
 	@Override
 	public void paintGhost(InstancePainter painter) {
+
 		int v = painter.getAttributeValue(ATTR_VALUE).intValue();
 		String vStr = Integer.toHexString(v);
 		Bounds bds = getOffsetBounds(painter.getAttributeSet());
 
-		Graphics g = painter.getGraphics();
-		GraphicsUtil.switchToWidth(g, 2);
+		GraphicsContext g = painter.getGraphics();
+		g.setLineWidth(2);
 		g.fillOval(-2, -2, 5, 5);
 		GraphicsUtil.drawCenteredText(g, vStr, bds.getX() + bds.getWidth() / 2,
 				bds.getY() + bds.getHeight() / 2);
+
 	}
 	
 	@Override
 	public void paintInstance(InstancePainter painter) {
+
 		Bounds bds = painter.getOffsetBounds();
 		BitWidth width = painter.getAttributeValue(StdAttr.WIDTH);
 		int intValue = painter.getAttributeValue(ATTR_VALUE).intValue();
@@ -255,10 +260,12 @@ public class Constant extends InstanceFactory {
 		Graphics g = painter.getGraphics();
 		if (painter.shouldDrawColor()) {
 			g.setColor(BACKGROUND_COLOR);
-			g.fillRect(x + bds.getX(), y + bds.getY(), bds.getWidth(), bds.getHeight());
+			g.c.fillRect(x + bds.getX(), y + bds.getY(), bds.getWidth(), bds.getHeight());
 		}
 		if (v.getWidth() == 1) {
-			if (painter.shouldDrawColor()) g.setColor(v.getColor());
+			if (painter.shouldDrawColor()){
+				g.setColor(v.getColor());
+			}
 			GraphicsUtil.drawCenteredText(g, v.toString(),
 				x + bds.getX() + bds.getWidth() / 2,
 				y + bds.getY() + bds.getHeight() / 2 - 2);
@@ -269,6 +276,9 @@ public class Constant extends InstanceFactory {
 				y + bds.getY() + bds.getHeight() / 2 - 2);
 		}
 		painter.drawPorts();
+
+		g.toDefault();
+
 	}
 
 	//TODO: Allow editing of value via text tool/attribute table

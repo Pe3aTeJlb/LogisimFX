@@ -9,6 +9,7 @@ import java.util.WeakHashMap;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.MenuExtender;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
@@ -92,7 +93,7 @@ abstract class Mem extends InstanceFactory {
 	@Override
 	public void paintInstance(InstancePainter painter) {
 
-		GraphicsContext g = painter.getGraphics();
+		Graphics g = painter.getGraphics();
 		Bounds bds = painter.getBounds();
 
 		// draw boundary
@@ -143,8 +144,7 @@ abstract class Mem extends InstanceFactory {
 		// draw input and output ports
 		painter.drawPort(DATA, Strings.get("ramDataLabel"), Direction.WEST);
 		painter.drawPort(ADDR, Strings.get("ramAddrLabel"), Direction.EAST);
-		g.setFill(Color.GRAY);
-		g.setStroke(Color.GRAY);
+		g.setColor(Color.GRAY);
 		painter.drawPort(CS, Strings.get("ramCSLabel"), Direction.SOUTH);
 
 	}

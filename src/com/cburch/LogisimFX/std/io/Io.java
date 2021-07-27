@@ -11,12 +11,14 @@ import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.FactoryDescription;
 import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.tools.Tool;
-import javafx.beans.binding.StringBinding;
 
-import java.awt.*;
+import javafx.beans.binding.StringBinding;
+import javafx.scene.paint.Color;
+
 import java.util.List;
 
 public class Io extends Library {
+
 	static final AttributeOption LABEL_CENTER = new AttributeOption("center", "center", LC.createStringBinding("ioLabelCenter"));
 	
 	static final Attribute<Color> ATTR_COLOR = Attributes.forColor("color",
@@ -36,7 +38,7 @@ public class Io extends Library {
 	static final Attribute<Boolean> ATTR_ACTIVE = Attributes.forBoolean("active",
 			LC.createStringBinding("ioActiveAttr"));
 
-	static final Color DEFAULT_BACKGROUND = new Color(255, 255, 255, 0);
+	static final Color DEFAULT_BACKGROUND = new Color(1, 1, 1, 0);
 	
 	private static FactoryDescription[] DESCRIPTIONS = {
 		new FactoryDescription("Button", LC.createStringBinding("buttonComponent"),
@@ -69,9 +71,13 @@ public class Io extends Library {
 
 	@Override
 	public List<Tool> getTools() {
+
 		if (tools == null) {
 			tools = FactoryDescription.getTools(Io.class, DESCRIPTIONS);
 		}
+
 		return tools;
+
 	}
+
 }

@@ -3,10 +3,9 @@
 
 package com.cburch.LogisimFX.std.memory;
 
-import java.awt.Graphics;
-
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
@@ -14,6 +13,7 @@ import com.cburch.LogisimFX.util.StringUtil;
 import javafx.scene.canvas.GraphicsContext;
 
 public class Random extends InstanceFactory {
+
 	private static final Attribute<Integer> ATTR_SEED
 		= Attributes.forInteger("seed", LC.createStringBinding("randomSeedAttr"));
 
@@ -23,6 +23,7 @@ public class Random extends InstanceFactory {
 	private static final int RST = 3;
 
 	public Random() {
+
 		super("Random", LC.createStringBinding("randomComponent"));
 		setAttributes(new Attribute[] {
 				StdAttr.WIDTH, ATTR_SEED, StdAttr.EDGE_TRIGGER,
@@ -47,18 +48,22 @@ public class Random extends InstanceFactory {
 		ps[NXT].setToolTip(LC.createStringBinding("randomNextTip"));
 		ps[RST].setToolTip(LC.createStringBinding("randomResetTip"));
 		setPorts(ps);
+
 	}
 
 	@Override
 	protected void configureNewInstance(Instance instance) {
+
 		Bounds bds = instance.getBounds();
 		instance.setTextField(StdAttr.LABEL, StdAttr.LABEL_FONT,
 				bds.getX() + bds.getWidth() / 2, bds.getY() - 3,
 				GraphicsUtil.H_CENTER, GraphicsUtil.V_BASELINE);
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		StateData data = (StateData) state.getData();
 		if (data == null) {
 			data = new StateData(state.getAttributeValue(ATTR_SEED));
@@ -76,11 +81,13 @@ public class Random extends InstanceFactory {
 		}
 
 		state.setPort(OUT, Value.createKnown(dataWidth, data.value), 4);
+
 	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
-		GraphicsContext g = painter.getGraphics();
+
+		Graphics g = painter.getGraphics();
 		Bounds bds = painter.getBounds();
 		StateData state = (StateData) painter.getData();
 		BitWidth widthVal = painter.getAttributeValue(StdAttr.WIDTH);
@@ -114,9 +121,13 @@ public class Random extends InstanceFactory {
 						GraphicsUtil.H_CENTER, GraphicsUtil.V_TOP);
 			}
 		}
+
+		g.toDefault();
+
 	}
 
 	private static class StateData extends ClockState implements InstanceData {
+
 		private final static long multiplier = 0x5DEECE66DL;
 		private final static long addend = 0xBL;
 		private final static long mask = (1L << 48) - 1;
@@ -130,6 +141,7 @@ public class Random extends InstanceFactory {
 		}
 		
 		void reset(Object seed) {
+
 			long start = seed instanceof Integer ? ((Integer) seed).intValue() : 0;
 			if (start == 0) {
 				// Prior to 2.7.0, this would reset to the seed at the time of
@@ -143,30 +155,41 @@ public class Random extends InstanceFactory {
 			this.initSeed = start;
 			this.curSeed = start;
 			this.value = (int) start;
+
 		}
 		
 		void step() {
+
 			long v = curSeed;
 			v = (v * multiplier + addend) & mask;
 			curSeed = v;
 			value = (int) (v >> 12);
+
 		}
+
 	}
 	
 	public static class Logger extends InstanceLogger {
+
 		@Override
 		public String getLogName(InstanceState state, Object option) {
+
 			String ret = state.getAttributeValue(StdAttr.LABEL);
 			return ret != null && !ret.equals("") ? ret : null;
+
 		}
 	
 		@Override
 		public Value getLogValue(InstanceState state, Object option) {
+
 			BitWidth dataWidth = state.getAttributeValue(StdAttr.WIDTH);
 			if (dataWidth == null) dataWidth = BitWidth.create(0);
 			StateData data = (StateData) state.getData();
 			if (data == null) return Value.createKnown(dataWidth, 0);
 			return Value.createKnown(dataWidth, data.value);
+
 		}
+
 	}
+
 }

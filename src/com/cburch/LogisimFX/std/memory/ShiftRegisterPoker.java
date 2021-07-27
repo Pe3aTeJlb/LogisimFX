@@ -13,6 +13,7 @@ import com.cburch.LogisimFX.instance.InstancePainter;
 import com.cburch.LogisimFX.instance.InstancePoker;
 import com.cburch.LogisimFX.instance.InstanceState;
 import com.cburch.LogisimFX.instance.StdAttr;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -60,10 +61,9 @@ public class ShiftRegisterPoker extends InstancePoker {
 		String label = painter.getAttributeValue(StdAttr.LABEL);
 		if (label == null || label.equals("")) y += bds.getHeight() / 2;
 		else y += 3 * bds.getHeight() / 4;
-		GraphicsContext g = painter.getGraphics();
-		g.setFill(Color.RED);
-		g.setStroke(Color.RED);
-		g.strokeRect(x, y - 6, 10, 13);
+		Graphics g = painter.getGraphics();
+		g.setColor(Color.RED);
+		g.c.strokeRect(x, y - 6, 10, 13);
 
 	}
 	
@@ -74,6 +74,7 @@ public class ShiftRegisterPoker extends InstancePoker {
 	
 	@Override
 	public void mouseReleased(InstanceState state, MouseEvent e) {
+
 		int oldLoc = loc;
 		if (oldLoc < 0) return;
 		BitWidth widObj = state.getAttributeValue(StdAttr.WIDTH);
@@ -89,10 +90,12 @@ public class ShiftRegisterPoker extends InstancePoker {
 				state.fireInvalidated();
 			}
 		}
+
 	}
 
 	@Override
 	public void keyTyped(InstanceState state, KeyEvent e) {
+
 		int loc = this.loc;
 		if (loc < 0) return;
 		char c = e.getKeyChar();
@@ -123,5 +126,7 @@ public class ShiftRegisterPoker extends InstancePoker {
 				return;
 			}
 		}
+
 	}
+
 }

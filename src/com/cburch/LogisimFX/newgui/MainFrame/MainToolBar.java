@@ -186,15 +186,14 @@ public class MainToolBar extends ToolBar {
 
         public void setActions(Tool tool){
 
-            this.setOnAction(event -> {
-                System.out.println("tool setted");
-            });
+            this.setOnAction(event -> proj.setTool(tool));
 
         }
 
         public void setActions(AbstractTool tool){
 
             this.setOnAction(event -> {
+               // proj.setTool(tool);
             });
 
         }

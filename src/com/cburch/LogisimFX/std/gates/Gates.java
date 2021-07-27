@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Gates extends Library {
+
 	private List<Tool> tools = null;
 
 	public Gates() {
@@ -42,4 +43,5 @@ public class Gates extends Library {
 	public List<Tool> getTools() {
 		return tools;
 	}
+
 }

@@ -7,18 +7,22 @@
 
 package com.cburch.LogisimFX.std.wiring;
 
+import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.Icons;
 import com.cburch.LogisimFX.circuit.Wire;
-
-import javax.swing.*;
-import java.awt.*;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 
 public class Transistor extends InstanceFactory {
+
 	static final AttributeOption TYPE_P
 		= new AttributeOption("p", LC.createStringBinding("transistorTypeP"));
 	static final AttributeOption TYPE_N
@@ -31,10 +35,11 @@ public class Transistor extends InstanceFactory {
 	static final int INPUT = 1;
 	static final int GATE = 2;
 	
-	private static final Icon ICON_N = Icons.getIcon("trans1.gif");
-	private static final Icon ICON_P = Icons.getIcon("trans0.gif");
+	private static final ImageView ICON_N = IconsManager.getIcon("trans1.gif");
+	private static final ImageView ICON_P = IconsManager.getIcon("trans0.gif");
 
 	public Transistor() {
+
 		super("Transistor", LC.createStringBinding("transistorComponent"));
 		setAttributes(
 				new Attribute[] { ATTR_TYPE, StdAttr.FACING,
@@ -43,16 +48,20 @@ public class Transistor extends InstanceFactory {
 						Wiring.GATE_TOP_LEFT, BitWidth.ONE });
 		setFacingAttribute(StdAttr.FACING);
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
+
 	}
 
 	@Override
 	protected void configureNewInstance(Instance instance) {
+
 		instance.addAttributeListener();
 		updatePorts(instance);
+
 	}
 
 	@Override
 	protected void instanceAttributeChanged(Instance instance, Attribute<?> attr) {
+
 		if (attr == StdAttr.FACING || attr == Wiring.ATTR_GATE) {
 			instance.recomputeBounds();
 			updatePorts(instance);
@@ -61,9 +70,11 @@ public class Transistor extends InstanceFactory {
 		} else if (attr == ATTR_TYPE) {
 			instance.fireInvalidated();
 		}
+
 	}
 
 	private void updatePorts(Instance instance) {
+
 		Direction facing = instance.getAttributeValue(StdAttr.FACING);
 		int dx = 0;
 		int dy = 0;
@@ -90,10 +101,12 @@ public class Transistor extends InstanceFactory {
 			ports[GATE] = new Port(20 * (dx - dy), 20 * (dx + dy), Port.INPUT, 1);
 		}
 		instance.setPorts(ports);
+
 	}
 
 	@Override
 	public Bounds getOffsetBounds(AttributeSet attrs) {
+
 		Direction facing = attrs.getValue(StdAttr.FACING);
 		Object gateLoc = attrs.getValue(Wiring.ATTR_GATE);
 		int delta = gateLoc == Wiring.GATE_TOP_LEFT ? -20 : 0;
@@ -106,10 +119,12 @@ public class Transistor extends InstanceFactory {
 		} else { // facing == Direction.EAST
 			return Bounds.create(-40, delta, 40, 20);
 		}
+
 	}
 
 	@Override
 	public boolean contains(Location loc, AttributeSet attrs) {
+
 		if (super.contains(loc, attrs)) {
 			Direction facing = attrs.getValue(StdAttr.FACING);
 			Location center = Location.create(0, 0).translate(facing, -20);
@@ -117,6 +132,7 @@ public class Transistor extends InstanceFactory {
 		} else {
 			return false;
 		}
+
 	}
 
 	@Override
@@ -125,6 +141,7 @@ public class Transistor extends InstanceFactory {
 	}
 
 	private Value computeOutput(InstanceState state) {
+
 		BitWidth width = state.getAttributeValue(StdAttr.WIDTH);
 		Value gate = state.getPort(GATE);
 		Value input = state.getPort(INPUT);
@@ -148,19 +165,25 @@ public class Transistor extends InstanceFactory {
 		} else {
 			return input;
 		}
+
 	}
 
 	@Override
 	public void paintIcon(InstancePainter painter) {
+
 		Object type = painter.getAttributeValue(ATTR_TYPE);
 		Icon icon = type == TYPE_N ? ICON_N : ICON_P;
 		icon.paintIcon(painter.getDestination(), painter.getGraphics(), 2, 2);
+
 	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
+
 		drawInstance(painter, false);
 		painter.drawPorts();
+		painter.getGraphics().toDefault();
+
 	}
 
 	@Override
@@ -169,6 +192,7 @@ public class Transistor extends InstanceFactory {
 	}
 
 	private void drawInstance(InstancePainter painter, boolean isGhost) {
+
 		Object type = painter.getAttributeValue(ATTR_TYPE);
 		Object powerLoc = painter.getAttributeValue(Wiring.ATTR_GATE);
 		Direction from = painter.getAttributeValue(StdAttr.FACING);
@@ -180,15 +204,15 @@ public class Transistor extends InstanceFactory {
 		double radians = Math.toRadians((degrees + 360) % 360);
 		int m = flip ? 1 : -1;
 
-		Graphics2D g = (Graphics2D) painter.getGraphics();
+		Graphics g = painter.getGraphics();
 		Location loc = painter.getLocation();
-		g.translate(loc.getX(), loc.getY());
-		g.rotate(radians);
+		g.c.moveTo(loc.getX(), loc.getY());
+		g.rotate(degrees);
 
-		Color gate;
-		Color input;
-		Color output;
-		Color platform;
+		Paint gate;
+		Paint input;
+		Paint output;
+		Paint platform;
 		if (!isGhost && painter.getShowState()) {
 			gate = painter.getPort(GATE).getColor();
 			input = painter.getPort(INPUT).getColor();
@@ -196,7 +220,7 @@ public class Transistor extends InstanceFactory {
 			Value out = computeOutput(painter);
 			platform = out.isUnknown() ? Value.UNKNOWN.getColor() : out.getColor();
 		} else {
-			Color base = g.getColor();
+			Paint base = g.getPaint();
 			gate = base;
 			input = base;
 			output = base;
@@ -204,36 +228,42 @@ public class Transistor extends InstanceFactory {
 		}
 		
 		// input and output lines
-		GraphicsUtil.switchToWidth(g, Wire.WIDTH);
+		g.setLineWidth(Wire.WIDTH);
 		g.setColor(output);
-		g.drawLine(0, 0, -11, 0);
-		g.drawLine(-11, m * 7, -11, 0);
+		g.c.strokeLine(0, 0, -11, 0);
+		g.c.strokeLine(-11, m * 7, -11, 0);
 
 		g.setColor(input);
-		g.drawLine(-40, 0, -29, 0);
-		g.drawLine(-29, m * 7, -29, 0);
+		g.c.strokeLine(-40, 0, -29, 0);
+		g.c.strokeLine(-29, m * 7, -29, 0);
 
 		// gate line
 		g.setColor(gate);
 		if (type == TYPE_P) {
-			g.drawLine(-20, m * 20, -20, m * 15);
-			GraphicsUtil.switchToWidth(g, 1);
-			g.drawOval(-22, m * 12 - 2, 4, 4);
+			g.c.strokeLine(-20, m * 20, -20, m * 15);
+			g.setLineWidth(1);
+			g.c.strokeOval(-22, m * 12 - 2, 4, 4);
 		} else {
-			g.drawLine(-20, m * 20, -20, m * 11);
-			GraphicsUtil.switchToWidth(g, 1);
+			g.c.strokeLine(-20, m * 20, -20, m * 11);
+			g.setLineWidth(1);
 		}
 		
 		// draw platforms
-		g.drawLine(-10, m * 10, -30, m * 10); // gate platform
+		g.c.strokeLine(-10, m * 10, -30, m * 10); // gate platform
 		g.setColor(platform);
-		g.drawLine(-9, m * 8, -31, m * 8); // input/output platform
+		g.c.strokeLine(-9, m * 8, -31, m * 8); // input/output platform
 
 		// arrow (same color as platform)
-		g.drawLine(-21, m * 6, -18, m * 3);
-		g.drawLine(-21, 0, -18, m * 3);
+		g.c.strokeLine(-21, m * 6, -18, m * 3);
+		g.c.strokeLine(-21, 0, -18, m * 3);
 
-		g.rotate(-radians);
-		g.translate(-loc.getX(), -loc.getY());
+		g.toDefaultRotation();
+
+		g.rotate(-degrees);
+		g.c.moveTo(-loc.getX(), -loc.getY());
+
+		g.toDefaultRotation();
+
 	}
+
 }

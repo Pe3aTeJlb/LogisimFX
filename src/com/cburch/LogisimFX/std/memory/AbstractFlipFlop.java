@@ -5,6 +5,7 @@ package com.cburch.LogisimFX.std.memory;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
@@ -125,7 +126,7 @@ abstract class AbstractFlipFlop extends InstanceFactory {
 	@Override
 	public void paintInstance(InstancePainter painter) {
 
-		GraphicsContext g = painter.getGraphics();
+		Graphics g = painter.getGraphics();
 		painter.drawBounds();
 		painter.drawLabel();
 		if (painter.getShowState()) {
@@ -134,33 +135,30 @@ abstract class AbstractFlipFlop extends InstanceFactory {
 			if (myState != null) {
 				int x = loc.getX();
 				int y = loc.getY();
-				g.setFill(myState.curValue.getColor());
-				g.setStroke(myState.curValue.getColor());
-				g.fillOval(x - 26, y + 4, 13, 13);
-				g.setFill(Color.WHITE);
-				g.setStroke(Color.WHITE);
+				g.setColor(myState.curValue.getColor());
+				g.c.fillOval(x - 26, y + 4, 13, 13);
+				g.setColor(Color.WHITE);
 				GraphicsUtil.drawCenteredText(g,
 					myState.curValue.toDisplayString(), x - 19, y + 9);
-				g.setFill(Color.BLACK);
-				g.setStroke(Color.BLACK);
+				g.setColor(Color.BLACK);
 			}
 		}
 		
 		int n = getPorts().size() - STD_PORTS;
-		g.setFill(Color.GRAY);
-		g.setStroke(Color.GRAY);
+		g.setColor(Color.GRAY);
 		painter.drawPort(n + 3, "0", Direction.SOUTH);
 		painter.drawPort(n + 4, "1", Direction.SOUTH);
 		painter.drawPort(n + 5, Strings.get("memEnableLabel"), Direction.SOUTH);
 
-		g.setFill(Color.BLACK);
-		g.setStroke(Color.BLACK);
+		g.setColor(Color.BLACK);
 		for (int i = 0; i < n; i++) {
 			painter.drawPort(i, getInputName(i), Direction.EAST);
 		}
 		painter.drawClock(n, Direction.EAST);
 		painter.drawPort(n + 1, "Q", Direction.WEST);
 		painter.drawPort(n + 2);
+
+		g.toDefault();
 
 	}
 

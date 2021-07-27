@@ -6,18 +6,24 @@ import com.cburch.LogisimFX.circuit.WidthIncompatibilityData;
 import com.cburch.LogisimFX.circuit.WireSet;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.comp.ComponentDrawContext;
+import com.cburch.LogisimFX.data.BitWidth;
+import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.prefs.AppPreferences;
 import com.cburch.LogisimFX.proj.Project;
 
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
+import com.sun.javafx.tk.FontMetrics;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 
 import java.awt.event.MouseEvent;
 import java.util.Collections;
@@ -28,7 +34,7 @@ public class CustomCanvas extends Canvas {
     private AnchorPane root;
 
     public Canvas cv;
-    private GraphicsContext cvcontext;
+    private Graphics g;
     private double width, height;
 
     private static final double MIN_ZOOM = 5;
@@ -52,6 +58,7 @@ public class CustomCanvas extends Canvas {
 
     private WireSet highlightedWires = WireSet.EMPTY;
     private static final Set<Component> NO_COMPONENTS = Collections.emptySet();
+    private ComponentDrawContext context, ptContext;
 
     public CustomCanvas(AnchorPane rt, Project project){
 
@@ -60,7 +67,8 @@ public class CustomCanvas extends Canvas {
         proj = project;
 
         cv = new Canvas(root.getWidth(),root.getHeight());
-        cvcontext = cv.getGraphicsContext2D();
+        g = new Graphics(cv.getGraphicsContext2D());
+        g.toDefault();
 
         root.getChildren().add(cv);
 
@@ -88,35 +96,33 @@ public class CustomCanvas extends Canvas {
 
         clearRect40K(transform[4], transform[5]);
 
-        cvcontext.setTransform(transform[0], transform[1], transform[2],
+        g.c.setTransform(transform[0], transform[1], transform[2],
                 transform[3], transform[4], transform[5]
         );
 
-        drawBackground();
+        drawGrid();
+
+        g.setColor(Color.RED);
+        g.c.fillOval(0,0,10,10);
+
 
         drawWithUserState();
-        /*
+
         drawWidthIncompatibilityData();
 
         Circuit circ = proj.getCurrentCircuit();
         CircuitState circState = proj.getCircuitState();
 
-        ComponentDrawContext ptContext = new ComponentDrawContext(canvas,
-                circ, circState, g, gScaled);
+        ComponentDrawContext ptContext = new ComponentDrawContext(circ, circState, g);
         ptContext.setHighlightedWires(highlightedWires);
 
-        cvcontext.setFill(Color.RED);
-        cvcontext.setStroke(Color.RED);
-
+        g.setColor(Color.RED);
 
         circState.drawOscillatingPoints(ptContext);
 
-        cvcontext.setFill(Color.BLUE);
-        cvcontext.setStroke(Color.BLUE);
+        g.setColor(Color.BLUE);
 
         proj.getSimulator().drawStepPoints(ptContext);
-
- */
 
     }
 
@@ -130,16 +136,6 @@ public class CustomCanvas extends Canvas {
 
     }
 
-    private void drawBackground(){
-
-        cvcontext.setFill(Color.RED);
-        cvcontext.setStroke(Color.RED);
-        cvcontext.fillOval(0,0,10,10);
-
-        drawGrid();
-
-    }
-
     private void drawGrid(){
 
             for (int x = snapXToGrid(inverseTransformX(0)); x < snapXToGrid(inverseTransformX(cv.getWidth())); x += SPACING_X) {
@@ -147,11 +143,11 @@ public class CustomCanvas extends Canvas {
                 for (int y = snapYToGrid(inverseTransformY(0)); y < snapYToGrid(inverseTransformY(cv.getHeight())); y += SPACING_Y) {
 
                     if(zoom < 0.8f && (float)x % 50 == 0 && (float)y % 50 == 0){
-                        cvcontext.setFill(GRID_DOT_QUARTER);
-                        cvcontext.fillRect(x,y,2,2);
+                        g.c.setFill(GRID_DOT_QUARTER);
+                        g.c.fillRect(x,y,2,2);
                     }else{
-                        cvcontext.setFill(GRID_DOT);
-                        cvcontext.fillRect(x,y,1,1);
+                        g.c.setFill(GRID_DOT);
+                        g.c.fillRect(x,y,1,1);
                     }
 
                 }
@@ -166,6 +162,7 @@ public class CustomCanvas extends Canvas {
         Circuit circ = proj.getCurrentCircuit();
         //Selection sel = proj.getSelection();
         Set<Component> hidden = NO_COMPONENTS;
+
         /*
         Tool dragTool = canvas.getDragTool();
         if (dragTool == null) {
@@ -200,7 +197,7 @@ public class CustomCanvas extends Canvas {
         // draw circuit and selection
         CircuitState circState = proj.getCircuitState();
         boolean printerView = AppPreferences.PRINTER_VIEW.getBoolean();
-        ComponentDrawContext context = new ComponentDrawContext(circ, circState, cvcontext, printerView);
+        context = new ComponentDrawContext(circ, circState, g, printerView);
         context.setHighlightedWires(highlightedWires);
         circ.draw(context, hidden);
         //sel.draw(context, hidden);
@@ -213,9 +210,8 @@ public class CustomCanvas extends Canvas {
             tool.draw(canvas, context);
             gCopy.dispose();
         }
-
-
  */
+
     }
 
     private void drawWidthIncompatibilityData() {
@@ -224,11 +220,11 @@ public class CustomCanvas extends Canvas {
         exceptions = proj.getCurrentCircuit().getWidthIncompatibilityData();
         if (exceptions == null || exceptions.size() == 0) return;
 
-        cvcontext.setFill(Value.WIDTH_ERROR_COLOR);
-        cvcontext.setStroke(Value.WIDTH_ERROR_COLOR);
+        g.setColor(Value.WIDTH_ERROR_COLOR);
 
-        GraphicsUtil.switchToWidth(g, 2);
-        FontMetrics fm = base.getFontMetrics(g.getFont());
+        g.setLineWidth(2);
+
+        FontMetrics fm = g.getFontMetrics();
         for (WidthIncompatibilityData ex : exceptions) {
             for (int i = 0; i < ex.size(); i++) {
                 Location p = ex.getPoint(i);
@@ -246,12 +242,13 @@ public class CustomCanvas extends Canvas {
                 for (int j = i + 1; j < ex.size(); j++) {
                     if (ex.getPoint(j).equals(p)) { caption += "/" + ex.getBitWidth(j); break; }
                 }
-                g.drawOval(p.getX() - 4, p.getY() - 4, 8, 8);
-                g.drawString(caption, p.getX() + 5, p.getY() + 2 + fm.getAscent());
+                g.c.strokeOval(p.getX() - 4, p.getY() - 4, 8, 8);
+                g.c.strokeText(caption, p.getX() + 5, p.getY() + 2 + fm.getAscent());
             }
         }
-        g.setColor(java.awt.Color.BLACK);
-        GraphicsUtil.switchToWidth(g, 1);
+
+        g.toDefault();
+
     }
 
 
@@ -354,13 +351,16 @@ public class CustomCanvas extends Canvas {
 
     private void clearRect40K() {
 
-        cvcontext.setFill(BACKGROUND);
-        cvcontext.fillRect(0,0,(cv.getWidth()/transform[0])*2,(cv.getHeight()/transform[0])*2);
+        g.c.setFill(BACKGROUND);
+        g.c.fillRect(0,0,(cv.getWidth()/transform[0])*2,(cv.getHeight()/transform[0])*2);
+
     }
 
     private void clearRect40K(double prevX, double prevY) {
-        cvcontext.setFill(BACKGROUND);
-        cvcontext.fillRect(-prevX/transform[0],-prevY/transform[0],cv.getWidth()/transform[0],cv.getHeight()/transform[0]);
+
+        g.c.setFill(BACKGROUND);
+        g.c.fillRect(-prevX/transform[0],-prevY/transform[0],cv.getWidth()/transform[0],cv.getHeight()/transform[0]);
+
     }
 
     public Canvas getCanvas(){return cv;}

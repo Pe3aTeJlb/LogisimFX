@@ -5,6 +5,7 @@ package com.cburch.LogisimFX.std.arith;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.IntegerConfigurator;
@@ -141,7 +142,7 @@ public class BitAdder extends InstanceFactory {
 	@Override
 	public void paintInstance(InstancePainter painter) {
 
-		GraphicsContext g = painter.getGraphics();
+		Graphics g = painter.getGraphics();
 		painter.drawBounds();
 		painter.drawPorts();
 
@@ -149,10 +150,12 @@ public class BitAdder extends InstanceFactory {
 		Location loc = painter.getLocation();
 		int x = loc.getX() - 10;
 		int y = loc.getY();
-		g.strokeLine(x - 2, y - 5, x - 2, y + 5);
-		g.strokeLine(x + 2, y - 5, x + 2, y + 5);
-		g.strokeLine(x - 5, y - 2, x + 5, y - 2);
-		g.strokeLine(x - 5, y + 2, x + 5, y + 2);
+		g.c.strokeLine(x - 2, y - 5, x - 2, y + 5);
+		g.c.strokeLine(x + 2, y - 5, x + 2, y + 5);
+		g.c.strokeLine(x - 5, y - 2, x + 5, y - 2);
+		g.c.strokeLine(x - 5, y + 2, x + 5, y + 2);
+
+		g.toDefault();
 
 	}
 

@@ -3,8 +3,6 @@
 
 package com.cburch.LogisimFX.std.wiring;
 
-import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
@@ -15,6 +13,7 @@ import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.EndData;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.DirectionConfigurator;
@@ -28,6 +27,9 @@ import com.cburch.logisim.gui.main.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 
 public class Pin extends InstanceFactory {
 
@@ -52,10 +54,11 @@ public class Pin extends InstanceFactory {
 
 	private static final ImageView ICON_IN = IconsManager.getIcon("pinInput.gif");
 	private static final ImageView ICON_OUT = IconsManager.getIcon("pinOutput.gif");
-	private static final Font ICON_WIDTH_FONT = new Font("SansSerif", Font.BOLD, 9);
+	private static final Font ICON_WIDTH_FONT = Font.font("SansSerif", FontWeight.BOLD, FontPosture.REGULAR, 9);
 	private static final Color ICON_WIDTH_COLOR = Value.WIDTH_ERROR_COLOR.darker();
 
 	public Pin() {
+
 		super("Pin", LC.createStringBinding("pinComponent"));
 		setFacingAttribute(StdAttr.FACING);
 		setKeyConfigurator(JoinedConfigurator.create(
@@ -63,6 +66,7 @@ public class Pin extends InstanceFactory {
 			new DirectionConfigurator(ATTR_LABEL_LOC, KeyEvent.ALT_DOWN_MASK)));
 		setInstanceLogger(PinLogger.class);
 		setInstancePoker(PinPoker.class);
+
 	}
 
 	@Override
@@ -72,9 +76,11 @@ public class Pin extends InstanceFactory {
 
 	@Override
 	public Bounds getOffsetBounds(AttributeSet attrs) {
+
 		Direction facing = attrs.getValue(StdAttr.FACING);
 		BitWidth width = attrs.getValue(StdAttr.WIDTH);
 		return Probe.getOffsetBounds(facing, width, RadixOption.RADIX_2);
+
 	}
 
 	//
@@ -88,6 +94,7 @@ public class Pin extends InstanceFactory {
 
 	@Override
 	public void paintIcon(InstancePainter painter) {
+
 		paintIconBase(painter);
 		BitWidth w = painter.getAttributeValue(StdAttr.WIDTH);
 		if (!w.equals(BitWidth.ONE)) {
@@ -97,9 +104,11 @@ public class Pin extends InstanceFactory {
 			GraphicsUtil.drawCenteredText(g, "" + w.getWidth(), 10, 9);
 			g.setColor(Color.BLACK);
 		}
+
 	}
 
 	private void paintIconBase(InstancePainter painter) {
+
 		PinAttributes attrs = (PinAttributes) painter.getAttributeSet();
 		Direction dir = attrs.facing;
 		boolean output = attrs.isOutput();
@@ -125,6 +134,8 @@ public class Pin extends InstanceFactory {
 		}
 
 		g.setColor(Color.black);
+		g.setFill();
+		g.setStroke();
 		if (output) {
 			g.drawOval(4, 4, 13, 13);
 		} else {
@@ -133,52 +144,56 @@ public class Pin extends InstanceFactory {
 		g.setColor(Value.TRUE.getColor());
 		g.fillOval(7, 7,  8,  8);
 		g.fillOval(pinx, piny, 3, 3);
+
 	}
 
 	@Override
 	public void paintGhost(InstancePainter painter) {
+
 		PinAttributes attrs = (PinAttributes) painter.getAttributeSet();
 		Location loc = painter.getLocation();
 		Bounds bds = painter.getOffsetBounds();
 		int x = loc.getX();
 		int y = loc.getY();
 		Graphics g = painter.getGraphics();
-		GraphicsUtil.switchToWidth(g, 2);
+		g.setLineWidth(2);
 		boolean output = attrs.isOutput();
 		if (output) {
 			BitWidth width = attrs.getValue(StdAttr.WIDTH);
 			if (width == BitWidth.ONE) {
-				g.drawOval(x + bds.getX() + 1, y + bds.getY() + 1,
+				g.c.strokeOval(x + bds.getX() + 1, y + bds.getY() + 1,
 					bds.getWidth() - 1, bds.getHeight() - 1);
 			} else {
-				g.drawRoundRect(x + bds.getX() + 1, y + bds.getY() + 1,
+				g.c.strokeRoundRect(x + bds.getX() + 1, y + bds.getY() + 1,
 					bds.getWidth() - 1, bds.getHeight() - 1, 6, 6);
 			}
 		} else {
-			g.drawRect(x + bds.getX() + 1, y + bds.getY() + 1,
+			g.c.strokeRect(x + bds.getX() + 1, y + bds.getY() + 1,
 				bds.getWidth() - 1, bds.getHeight() - 1);
 		}
+
 	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
+
 		PinAttributes attrs = (PinAttributes) painter.getAttributeSet();
 		Graphics g = painter.getGraphics();
 		Bounds bds = painter.getInstance().getBounds(); // intentionally with no graphics object - we don't want label included
 		int x = bds.getX();
 		int y = bds.getY();
-		GraphicsUtil.switchToWidth(g, 2);
-		g.setColor(Color.black);
+		g.setLineWidth(2);
+		g.setColor(Color.BLACK);
 		if (attrs.type == EndData.OUTPUT_ONLY) {
 			if (attrs.width.getWidth() == 1) {
-				g.drawOval(x + 1, y + 1,
+				g.c.strokeOval(x + 1, y + 1,
 					bds.getWidth() - 1, bds.getHeight() - 1);
 			} else {
-				g.drawRoundRect(x + 1, y + 1,
+				g.c.strokeRoundRect(x + 1, y + 1,
 					bds.getWidth() - 1, bds.getHeight() - 1, 6, 6);
 			}
 		} else {
-			g.drawRect(x + 1, y + 1,
+			g.c.strokeRect(x + 1, y + 1,
 				bds.getWidth() - 1, bds.getHeight() - 1);
 		}
 
@@ -193,7 +208,7 @@ public class Pin extends InstanceFactory {
 			if (attrs.width.getWidth() <= 1) {
 				Value receiving = state.receiving;
 				g.setColor(receiving.getColor());
-				g.fillOval(x + 4, y + 4, 13, 13);
+				g.c.fillOval(x + 4, y + 4, 13, 13);
 
 				if (attrs.width.getWidth() == 1) {
 					g.setColor(Color.WHITE);
@@ -206,6 +221,8 @@ public class Pin extends InstanceFactory {
 		}
 
 		painter.drawPorts();
+		g.toDefault();
+
 	}
 
 	//
@@ -213,14 +230,17 @@ public class Pin extends InstanceFactory {
 	//
 	@Override
 	protected void configureNewInstance(Instance instance) {
+
 		PinAttributes attrs = (PinAttributes) instance.getAttributeSet();
 		instance.addAttributeListener();
 		configurePorts(instance);
 		Probe.configureLabel(instance, attrs.labelloc, attrs.facing);
+
 	}
 
 	@Override
 	protected void instanceAttributeChanged(Instance instance, Attribute<?> attr) {
+
 		if (attr == ATTR_TYPE) {
 			configurePorts(instance);
 		} else if (attr == StdAttr.WIDTH || attr == StdAttr.FACING
@@ -229,22 +249,26 @@ public class Pin extends InstanceFactory {
 			PinAttributes attrs = (PinAttributes) instance.getAttributeSet();
 			Probe.configureLabel(instance, attrs.labelloc, attrs.facing);
 		}
+
 	}
 
 	private void configurePorts(Instance instance) {
+
 		PinAttributes attrs = (PinAttributes) instance.getAttributeSet();
 		String endType = attrs.isOutput() ? Port.INPUT : Port.OUTPUT;
 		Port port = new Port(0, 0, endType, StdAttr.WIDTH);
 		if (attrs.isOutput()) {
-			port.setToolTip(Strings.getter("pinOutputToolTip"));
+			port.setToolTip(LC.createStringBinding("pinOutputToolTip"));
 		} else {
-			port.setToolTip(Strings.getter("pinInputToolTip"));
+			port.setToolTip(LC.createStringBinding("pinInputToolTip"));
 		}
 		instance.setPorts(new Port[] { port });
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		PinAttributes attrs = (PinAttributes) state.getAttributeSet();
 		Value val = state.getPort(0);
 
@@ -266,9 +290,11 @@ public class Pin extends InstanceFactory {
 				}
 			}
 		}
+
 	}
 
 	private static Value pull2(Value mod, BitWidth expectedWidth) {
+
 		if (mod.getWidth() == expectedWidth.getWidth()) {
 			Value[] vs = mod.getAll();
 			for (int i = 0; i < vs.length; i++) {
@@ -278,24 +304,31 @@ public class Pin extends InstanceFactory {
 		} else {
 			return Value.createKnown(expectedWidth, 0);
 		}
+
 	}
 
 	//
 	// basic information methods
 	//
 	public BitWidth getWidth(Instance instance) {
+
 		PinAttributes attrs = (PinAttributes) instance.getAttributeSet();
 		return attrs.width;
+
 	}
 
 	public int getType(Instance instance) {
+
 		PinAttributes attrs = (PinAttributes) instance.getAttributeSet();
 		return attrs.type;
+
 	}
 
 	public boolean isInputPin(Instance instance) {
+
 		PinAttributes attrs = (PinAttributes) instance.getAttributeSet();
 		return attrs.type != EndData.OUTPUT_ONLY;
+
 	}
 
 	//
@@ -306,6 +339,7 @@ public class Pin extends InstanceFactory {
 	}
 
 	public void setValue(InstanceState state, Value value) {
+
 		PinAttributes attrs = (PinAttributes) state.getAttributeSet();
 		Object pull = attrs.pull;
 		if (pull != PULL_NONE && pull != null && !value.isFullyDefined()) {
@@ -328,9 +362,11 @@ public class Pin extends InstanceFactory {
 		} else {
 			myState.sending = value;
 		}
+
 	}
 
 	private static PinState getState(InstanceState state) {
+
 		PinAttributes attrs = (PinAttributes) state.getAttributeSet();
 		BitWidth width = attrs.width;
 		PinState ret = (PinState) state.getData();
@@ -352,9 +388,11 @@ public class Pin extends InstanceFactory {
 			ret.receiving = ret.receiving.extendWidth(width.getWidth(), Value.UNKNOWN);
 		}
 		return ret;
+
 	}
 
 	private static class PinState implements InstanceData, Cloneable {
+
 		Value sending;
 		Value receiving;
 
@@ -368,9 +406,11 @@ public class Pin extends InstanceFactory {
 			try { return super.clone(); }
 			catch (CloneNotSupportedException e) { return null; }
 		}
+
 	}
 
 	public static class PinPoker extends InstancePoker {
+
 		int bitPressed = -1;
 
 		@Override
@@ -380,14 +420,17 @@ public class Pin extends InstanceFactory {
 
 		@Override
 		public void mouseReleased(InstanceState state, MouseEvent e) {
+
 			int bit = getBit(state, e);
 			if (bit == bitPressed && bit >= 0) {
 				handleBitPress(state, bit, e);
 			}
 			bitPressed = -1;
+
 		}
 
 		private void handleBitPress(InstanceState state, int bit, MouseEvent e) {
+
 			PinAttributes attrs = (PinAttributes) state.getAttributeSet();
 			if (!attrs.isInput()) return;
 
@@ -421,9 +464,11 @@ public class Pin extends InstanceFactory {
 			}
 			pinState.sending = pinState.sending.set(bit, val);
 			state.fireInvalidated();
+
 		}
 
 		private int getBit(InstanceState state, MouseEvent e) {
+
 			BitWidth width = state.getAttributeValue(StdAttr.WIDTH);
 			if (width.getWidth() == 1) {
 				return 0;
@@ -438,12 +483,16 @@ public class Pin extends InstanceFactory {
 					return bit;
 				}
 			}
+
 		}
+
 	}
 
 	public static class PinLogger extends InstanceLogger {
+
 		@Override
 		public String getLogName(InstanceState state, Object option) {
+
 			PinAttributes attrs = (PinAttributes) state.getAttributeSet();
 			String ret = attrs.label;
 			if (ret == null || ret.equals("")) {
@@ -453,12 +502,17 @@ public class Pin extends InstanceFactory {
 			} else {
 				return ret;
 			}
+
 		}
 		
 		@Override
 		public Value getLogValue(InstanceState state, Object option) {
+
 			PinState s = getState(state);
 			return s.sending;
+
 		}
+
 	}
+
 }

@@ -17,12 +17,15 @@ import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
 class OddParityGate extends AbstractGate {
+
 	public static OddParityGate FACTORY = new OddParityGate();
 
 	private OddParityGate() {
+
 		super("Odd Parity", LC.createStringBinding("oddParityComponent"));
 		setRectangularLabel("2k+1");
 		setIconNames("parityOddGate.gif");
+
 	}
 
 	@Override
@@ -32,6 +35,7 @@ class OddParityGate extends AbstractGate {
 
 	@Override
 	public void paintIconRectangular(InstancePainter painter) {
+
 		Graphics g = painter.getGraphics();
 		g.setColor(Color.black);
 		g.drawRect(1, 2, 16, 16);
@@ -40,6 +44,8 @@ class OddParityGate extends AbstractGate {
 		GraphicsUtil.drawCenteredText(g, "2k", 9,  6);
 		GraphicsUtil.drawCenteredText(g, "+1", 9, 13);
 		g.setFont(old);
+		g.setFont(Vars.DEFAULT_FONT);
+
 	}
 
 	@Override
@@ -50,22 +56,29 @@ class OddParityGate extends AbstractGate {
 	@Override
 	protected void paintDinShape(InstancePainter painter, int width, int height,
                                  int inputs) {
+
 		paintRectangular(painter, width, height);
+
 	}
 
 	@Override
 	protected Value computeOutput(Value[] inputs, int numInputs,
                                   InstanceState state) {
+
 		return GateFunctions.computeOddParity(inputs, numInputs);
+
 	}
 
 	@Override
 	protected Expression computeExpression(Expression[] inputs, int numInputs) {
+
 		Expression ret = inputs[0];
 		for (int i = 1; i < numInputs; i++) {
 			ret = Expressions.xor(ret, inputs[i]);
 		}
+
 		return ret;
+
 	}
 
 	@Override
