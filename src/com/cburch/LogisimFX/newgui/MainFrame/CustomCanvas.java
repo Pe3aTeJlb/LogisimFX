@@ -9,21 +9,17 @@ import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.data.BitWidth;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.data.Value;
+import com.cburch.LogisimFX.draw.canvas.Selection;
 import com.cburch.LogisimFX.prefs.AppPreferences;
 import com.cburch.LogisimFX.proj.Project;
 
-import com.cburch.LogisimFX.util.GraphicsUtil;
 
 import com.sun.javafx.tk.FontMetrics;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
 
 import java.awt.event.MouseEvent;
 import java.util.Collections;
@@ -59,6 +55,9 @@ public class CustomCanvas extends Canvas {
     private WireSet highlightedWires = WireSet.EMPTY;
     private static final Set<Component> NO_COMPONENTS = Collections.emptySet();
     private ComponentDrawContext context, ptContext;
+
+    private Selection selection;
+
 
     public CustomCanvas(AnchorPane rt, Project project){
 

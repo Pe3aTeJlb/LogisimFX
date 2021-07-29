@@ -7,6 +7,10 @@ import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.tools.Tool;
 
+import com.cburch.logisim.gui.generic.ZoomModel;
+import com.cburch.logisim.prefs.AppPreferences;
+import com.cburch.logisim.proj.Projects;
+import com.cburch.logisim.util.JFileChoosers;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
@@ -17,6 +21,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class MainFrameController extends AbstractController {
 
@@ -189,6 +196,36 @@ public class MainFrameController extends AbstractController {
         treeExplorerAggregation.updateTree();
     }
 
+    /*
+    public void savePreferences() {
+        AppPreferences.TICK_FREQUENCY.set(Double.valueOf(proj.getSimulator().getTickFrequency()));
+        AppPreferences.LAYOUT_SHOW_GRID.setBoolean(layoutZoomModel.getShowGrid());
+        AppPreferences.LAYOUT_ZOOM.set(Double.valueOf(layoutZoomModel.getZoomFactor()));
+        if (appearance != null) {
+            ZoomModel aZoom = appearance.getZoomModel();
+            AppPreferences.APPEARANCE_SHOW_GRID.setBoolean(aZoom.getShowGrid());
+            AppPreferences.APPEARANCE_ZOOM.set(Double.valueOf(aZoom.getZoomFactor()));
+        }
+        int state = getExtendedState() & ~JFrame.ICONIFIED;
+        AppPreferences.WINDOW_STATE.set(Integer.valueOf(state));
+        Dimension dim = getSize();
+        AppPreferences.WINDOW_WIDTH.set(Integer.valueOf(dim.width));
+        AppPreferences.WINDOW_HEIGHT.set(Integer.valueOf(dim.height));
+        Point loc;
+        try {
+            loc = getLocationOnScreen();
+        } catch (IllegalComponentStateException e) {
+            loc = Projects.getLocation(this);
+        }
+        if (loc != null) {
+            AppPreferences.WINDOW_LOCATION.set(loc.x + "," + loc.y);
+        }
+        AppPreferences.WINDOW_LEFT_SPLIT.set(Double.valueOf(leftRegion.getFraction()));
+        AppPreferences.WINDOW_MAIN_SPLIT.set(Double.valueOf(mainRegion.getFraction()));
+        AppPreferences.DIALOG_DIRECTORY.set(JFileChoosers.getCurrentDirectory());
+    }
+
+     */
 
     @Override
     public void onClose() {

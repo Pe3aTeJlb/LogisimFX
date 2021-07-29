@@ -1,5 +1,8 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
+import com.cburch.LogisimFX.circuit.Circuit;
+import com.cburch.LogisimFX.circuit.CircuitState;
+import com.cburch.LogisimFX.circuit.Simulator;
 import com.cburch.LogisimFX.localization.LC_menu;
 import com.cburch.LogisimFX.newgui.FrameManager;
 import com.cburch.LogisimFX.file.LogisimFile;
@@ -8,6 +11,7 @@ import com.cburch.LogisimFX.proj.ProjectActions;
 import com.cburch.LogisimFX.localization.Localizer;
 
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
@@ -25,7 +29,6 @@ public class CustomMenuBar extends MenuBar {
 
     private ExplorerToolBar explorerToolBar;
     private TreeExplorerAggregation treeExplorerAggregation;
-
 
     public CustomMenuBar(ExplorerToolBar etb, Project project, TreeExplorerAggregation tea){
 
@@ -52,8 +55,10 @@ public class CustomMenuBar extends MenuBar {
         initFileMenu();
         initEditMenu();
         initProjectMenu();
-        initSimulateMenu();
-        initWindowMenu();
+        this.getMenus().add(new SimulateMenu());
+        //initSimulateMenu();
+        this.getMenus().add(new WindowMenu());
+       // initWindowMenu();
         initHelpMenu();
 
     }
@@ -415,207 +420,290 @@ public class CustomMenuBar extends MenuBar {
 
     }
 
-    private void initSimulateMenu(){
+    private class SimulateMenu extends Menu{
 
-        Menu Simulate = new Menu();
-        Simulate.textProperty().bind(localizer.createStringBinding("simulateMenu"));
+        private ObservableList<TickFrequencyItem> freqItems;
+        private ObservableList<CircuitStateMenuItem> downStateItems;
+        private ObservableList<CircuitStateMenuItem> upStateItems;
 
-        MenuItem EnableSimulation = new MenuItem();
-        EnableSimulation.setAccelerator(KeyCombination.keyCombination("Ctrl+E"));
-        EnableSimulation.textProperty().bind(localizer.createStringBinding("simulateRunItem"));
-        EnableSimulation.setOnAction(event -> {});
+        private Menu upStateMenu = new Menu();
+        private Menu downStateMenu = new Menu();
 
-        MenuItem ResetSimulation = new MenuItem();
-        ResetSimulation.setAccelerator(KeyCombination.keyCombination("Ctrl+R"));
-        ResetSimulation.textProperty().bind(localizer.createStringBinding("simulateResetItem"));
-        ResetSimulation.setOnAction(event -> {});
+        private SimpleBooleanProperty present = new SimpleBooleanProperty(false);
+        private SimpleBooleanProperty running = new SimpleBooleanProperty(false);
 
-        MenuItem SimStep = new MenuItem();
-        SimStep.setAccelerator(KeyCombination.keyCombination("Ctrl+I"));
-        SimStep.textProperty().bind(localizer.createStringBinding("simulateStepItem"));
-        SimStep.setOnAction(event -> {});
+        private CircuitState currentState;
+        private CircuitState bottomState;
+        private Simulator sim;
 
+        public SimulateMenu(){
 
-        SeparatorMenuItem sp1 = new SeparatorMenuItem();
+            super();
+            this.textProperty().bind(localizer.createStringBinding("simulateMenu"));
 
+            freqItems = FXCollections.observableArrayList();
+            downStateItems = FXCollections.observableArrayList();
+            upStateItems = FXCollections.observableArrayList();
 
+            sim = proj.getSimulator();
 
-        Menu UpState = new Menu();
-        UpState.textProperty().bind(localizer.createStringBinding("simulateUpStateMenu"));
+            setCurrentState(proj.getSimulator(),proj.getCircuitState());
 
+            running.set(sim.isRunning());
 
+            init();
 
-        Menu DownState = new Menu();
-        DownState.textProperty().bind(localizer.createStringBinding("simulateDownStateMenu"));
+        }
 
+        private void init(){
 
+            RadioMenuItem EnableSimulation = new RadioMenuItem();
+            EnableSimulation.setAccelerator(KeyCombination.keyCombination("Ctrl+E"));
+            EnableSimulation.textProperty().bind(localizer.createStringBinding("simulateRunItem"));
+            EnableSimulation.disableProperty().bind(Bindings.not(present));
+            EnableSimulation.setSelected(present.get());
+            EnableSimulation.setOnAction(event -> {
 
-        SeparatorMenuItem sp2 = new SeparatorMenuItem();
+                if (sim != null) {
+                    sim.setIsRunning(!sim.isRunning());
+                    proj.repaintCanvas();
+                }
 
+                running.set(sim.isRunning());
 
-        MenuItem TickOnce = new MenuItem();
-        TickOnce.setAccelerator(KeyCombination.keyCombination("Ctrl+T"));
-        TickOnce.textProperty().bind(localizer.createStringBinding("simulateTickOnceItem"));
-        TickOnce.setOnAction(event -> {});
+            });
 
-        MenuItem TicksEnable = new MenuItem();
-        TicksEnable.setAccelerator(KeyCombination.keyCombination("Ctrl+K"));
-        TicksEnable.textProperty().bind(localizer.createStringBinding("simulateTickItem"));
-        TicksEnable.setOnAction(event -> {});
+            MenuItem ResetSimulation = new MenuItem();
+            ResetSimulation.setAccelerator(KeyCombination.keyCombination("Ctrl+R"));
+            ResetSimulation.textProperty().bind(localizer.createStringBinding("simulateResetItem"));
+            ResetSimulation.setOnAction(event -> {if (sim != null) sim.requestReset();});
+            ResetSimulation.disableProperty().bind(Bindings.not(present));
 
-
-
-        Menu Frequency = new Menu();
-        Frequency.textProperty().bind(localizer.createStringBinding("simulateTickFreqMenu"));
-
-        MenuItem KHZ41 = new MenuItem();
-        KHZ41.textProperty().bind(localizer.createStringBinding("KHZ41"));
-        KHZ41.setOnAction(event -> {});
-
-        MenuItem KHZ2 = new MenuItem();
-        KHZ2.textProperty().bind(localizer.createStringBinding("KHZ2"));
-        KHZ2.setOnAction(event -> {});
-
-        MenuItem KHZ1 = new MenuItem();
-        KHZ1.textProperty().bind(localizer.createStringBinding("KHZ1"));
-        KHZ1.setOnAction(event -> {});
-
-        MenuItem HZ512 = new MenuItem();
-        HZ512.textProperty().bind(localizer.createStringBinding("HZ512"));
-        HZ512.setOnAction(event -> {});
-
-        MenuItem HZ256 = new MenuItem();
-        HZ256.textProperty().bind(localizer.createStringBinding("HZ256"));
-        HZ256.setOnAction(event -> {});
-
-        MenuItem HZ128 = new MenuItem();
-        HZ128.textProperty().bind(localizer.createStringBinding("HZ128"));
-        HZ128.setOnAction(event -> {});
-
-        MenuItem HZ64 = new MenuItem();
-        HZ64.textProperty().bind(localizer.createStringBinding("HZ64"));
-        HZ64.setOnAction(event -> {});
-
-        MenuItem HZ32 = new MenuItem();
-        HZ32.textProperty().bind(localizer.createStringBinding("HZ32"));
-        HZ32.setOnAction(event -> {});
-
-        MenuItem HZ16 = new MenuItem();
-        HZ16.textProperty().bind(localizer.createStringBinding("HZ16"));
-        HZ16.setOnAction(event -> {});
-
-        MenuItem HZ8 = new MenuItem();
-        HZ8.textProperty().bind(localizer.createStringBinding("HZ8"));
-        HZ8.setOnAction(event -> {});
-
-        MenuItem HZ4 = new MenuItem();
-        HZ4.textProperty().bind(localizer.createStringBinding("HZ4"));
-        HZ4.setOnAction(event -> {});
-
-        MenuItem HZ2 = new MenuItem();
-        HZ2.textProperty().bind(localizer.createStringBinding("HZ2"));
-        HZ2.setOnAction(event -> {});
-
-        MenuItem HZ1 = new MenuItem();
-        HZ1.textProperty().bind(localizer.createStringBinding("HZ1"));
-        HZ1.setOnAction(event -> {});
-
-        MenuItem HZ05 = new MenuItem();
-        HZ05.textProperty().bind(localizer.createStringBinding("HZ05"));
-        HZ05.setOnAction(event -> {});
-
-        MenuItem HZ025 = new MenuItem();
-        HZ025.textProperty().bind(localizer.createStringBinding("HZ025"));
-        HZ025.setOnAction(event -> {});
-
-        Frequency.getItems().addAll(
-                KHZ41,
-                KHZ2,
-                KHZ1,
-                HZ512,
-                HZ256,
-                HZ128,
-                HZ64,
-                HZ32,
-                HZ16,
-                HZ8,
-                HZ4,
-                HZ2,
-                HZ1,
-                HZ05,
-                HZ025
-        );
+            MenuItem SimStep = new MenuItem();
+            SimStep.setAccelerator(KeyCombination.keyCombination("Ctrl+I"));
+            SimStep.textProperty().bind(localizer.createStringBinding("simulateStepItem"));
+            SimStep.setOnAction(event -> {if (sim != null) sim.step();});
+            SimStep.disableProperty().bind(Bindings.or(Bindings.not(present),running));
 
 
-        SeparatorMenuItem sp3 = new SeparatorMenuItem();
+            SeparatorMenuItem sp1 = new SeparatorMenuItem();
 
 
-        MenuItem SimLog = new MenuItem();
-        SimLog.textProperty().bind(localizer.createStringBinding("simulateLogItem"));
-        SimLog.setOnAction(event -> FrameManager.CreateCircLogFrame(proj));
 
-        Simulate.getItems().addAll(
-                EnableSimulation,
-                ResetSimulation,
-                SimStep,
-                sp1,
-                UpState,
-                DownState,
-                sp2,
-                TickOnce,
-                TicksEnable,
-                Frequency,
-                sp3,
-                SimLog
-        );
-        this.getMenus().add(Simulate);
+            upStateMenu.textProperty().bind(localizer.createStringBinding("simulateUpStateMenu"));
+            upStateMenu.disableProperty().bind(Bindings.not(present));
+
+
+
+            downStateMenu.textProperty().bind(localizer.createStringBinding("simulateDownStateMenu"));
+            downStateMenu.disableProperty().bind(Bindings.not(present));
+
+
+
+            SeparatorMenuItem sp2 = new SeparatorMenuItem();
+
+
+            MenuItem TickOnce = new MenuItem();
+            TickOnce.setAccelerator(KeyCombination.keyCombination("Ctrl+T"));
+            TickOnce.textProperty().bind(localizer.createStringBinding("simulateTickOnceItem"));
+            TickOnce.setOnAction(event -> {if (sim != null) sim.tick();});
+            TickOnce.disableProperty().bind(Bindings.not(present));
+
+            RadioMenuItem TicksEnable = new RadioMenuItem();
+            TicksEnable.setAccelerator(KeyCombination.keyCombination("Ctrl+K"));
+            TicksEnable.textProperty().bind(localizer.createStringBinding("simulateTickItem"));
+            TicksEnable.setOnAction(event -> {if (sim != null) sim.setIsTicking(!sim.isTicking());});
+            TicksEnable.disableProperty().bind(Bindings.or(Bindings.not(present),Bindings.not(running)));
+
+
+
+            Menu Frequency = new Menu();
+            Frequency.textProperty().bind(localizer.createStringBinding("simulateTickFreqMenu"));
+            Frequency.disableProperty().bind(Bindings.not(present));
+
+            freqItems.addAll(
+                    new TickFrequencyItem(4096),
+                    new TickFrequencyItem(2048),
+                    new TickFrequencyItem(1024),
+                    new TickFrequencyItem(512),
+                    new TickFrequencyItem(256),
+                    new TickFrequencyItem(128),
+                    new TickFrequencyItem(64),
+                    new TickFrequencyItem(32),
+                    new TickFrequencyItem(16),
+                    new TickFrequencyItem(8),
+                    new TickFrequencyItem(4),
+                    new TickFrequencyItem(2),
+                    new TickFrequencyItem(1),
+                    new TickFrequencyItem(0.5),
+                    new TickFrequencyItem(0.25)
+            );
+
+
+            Frequency.getItems().addAll(freqItems);
+
+
+            SeparatorMenuItem sp3 = new SeparatorMenuItem();
+
+
+            MenuItem SimLog = new MenuItem();
+            SimLog.textProperty().bind(localizer.createStringBinding("simulateLogItem"));
+            SimLog.setOnAction(event -> FrameManager.CreateCircLogFrame(proj));
+
+            this.getItems().addAll(
+                    EnableSimulation,
+                    ResetSimulation,
+                    SimStep,
+                    sp1,
+                    upStateMenu,
+                    downStateMenu,
+                    sp2,
+                    TickOnce,
+                    TicksEnable,
+                    Frequency,
+                    sp3,
+                    SimLog
+            );
+
+        }
+
+        public void setCurrentState(Simulator newSim, CircuitState value) {
+
+            if (currentState == value) return;
+
+            Simulator oldSim = sim;
+            CircuitState oldState = currentState;
+            sim = newSim;
+            currentState = value;
+
+            if (bottomState == null) {
+                bottomState = currentState;
+            } else if (currentState == null) {
+                bottomState = null;
+            } else {
+                CircuitState cur = bottomState;
+                while (cur != null && cur != currentState) {
+                    cur = cur.getParentState();
+                }
+                if (cur == null) bottomState = currentState;
+            }
+
+            boolean oldPresent = oldState != null;
+            boolean pres = currentState != null;
+            if (oldPresent != pres) {
+                present.set(pres);
+            }
+
+            if (sim != oldSim) {
+                double freq = sim == null ? 1.0 : sim.getTickFrequency();
+                for (TickFrequencyItem r: freqItems) {
+                    r.setSelected(Math.abs(r.getFreq() - freq) < 0.001);
+                }
+
+            }
+
+            downStateItems.clear();
+
+            CircuitState cur = bottomState;
+            while (cur != null && cur != currentState) {
+                downStateItems.add(new SimulateMenu.CircuitStateMenuItem(cur));
+                cur = cur.getParentState();
+            }
+            if (cur != null) cur = cur.getParentState();
+
+            upStateItems.clear();
+
+            while (cur != null) {
+                upStateItems.add(0, new SimulateMenu.CircuitStateMenuItem(cur));
+                cur = cur.getParentState();
+            }
+
+            recreateStateMenus();
+
+        }
+
+        private void recreateStateMenus() {
+            recreateStateMenu(downStateMenu, downStateItems);
+            recreateStateMenu(upStateMenu, upStateItems);
+        }
+
+        private void recreateStateMenu(Menu menu, ObservableList<CircuitStateMenuItem> items) {
+
+            menu.getItems().clear();
+            menu.setDisable(items.size() == 0);
+
+            for (CircuitStateMenuItem c: items) {
+                menu.getItems().add(c);
+            }
+
+        }
+
+        private class TickFrequencyItem extends RadioMenuItem{
+
+            private double freq;
+
+            TickFrequencyItem(double value){
+
+                super();
+                freq = value;
+
+                init();
+
+                if(value == sim.getTickFrequency()){
+                    this.setSelected(true);
+                }
+
+            }
+
+            private void init() {
+
+                if (freq < 1000) {
+                    String hzStr;
+                    if (Math.abs(freq - Math.round(freq)) < 0.0001) {
+                        hzStr = "" + (int) Math.round(freq);
+                    } else {
+                        hzStr = "" + freq;
+                    }
+                    this.textProperty().bind(localizer.createComplexStringBinding("simulateTickFreqItem", hzStr));
+                } else {
+                    String kHzStr;
+                    double kf = Math.round(freq / 100) / 10.0;
+                    if (kf == Math.round(kf)) {
+                        kHzStr = "" + (int) kf;
+                    } else {
+                        kHzStr = "" + kf;
+                    }
+
+                    this.textProperty().bind(localizer.createComplexStringBinding("simulateTickKFreqItem", kHzStr));
+                }
+
+                this.setOnAction(event -> {
+                    if (sim != null) sim.setTickFrequency(freq);
+                });
+
+            }
+
+            public Double getFreq(){
+                return freq;
+            }
+
+        }
+
+        private class CircuitStateMenuItem extends MenuItem {
+
+            private CircuitState circuitState;
+
+            public CircuitStateMenuItem(CircuitState circuitState) {
+
+                this.circuitState = circuitState;
+                Circuit circuit = circuitState.getCircuit();
+                this.textProperty().setValue(circuit.getName());
+                this.setOnAction(event -> setCurrentState(sim,circuitState));
+            }
+
+        }
+
     }
-
-    private void initWindowMenu(){
-
-        Menu Window = new WindowMenu();
-        Window.textProperty().bind(localizer.createStringBinding("windowMenu"));
-
-        this.getMenus().add(Window);
-
-    }
-
-    private void initHelpMenu(){
-
-        Menu Help = new Menu();
-        Help.textProperty().bind(localizer.createStringBinding("helpMenu"));
-
-        MenuItem Tutorial = new MenuItem();
-        Tutorial.textProperty().bind(localizer.createStringBinding("helpTutorialItem"));
-        Tutorial.setOnAction(event -> FrameManager.CreateHelpFrame("tutorial"));
-
-        MenuItem UserGuide = new MenuItem();
-        UserGuide.textProperty().bind(localizer.createStringBinding("helpGuideItem"));
-        UserGuide.setOnAction(event -> FrameManager.CreateHelpFrame("guide"));
-
-        MenuItem LibraryReference = new MenuItem();
-        LibraryReference.textProperty().bind(localizer.createStringBinding("helpLibraryItem"));
-        LibraryReference.setOnAction(event -> FrameManager.CreateHelpFrame("libs"));
-
-
-        SeparatorMenuItem sp1 = new SeparatorMenuItem();
-
-
-        MenuItem About = new MenuItem();
-        About.textProperty().bind(localizer.createStringBinding("helpAboutItem"));
-        About.setOnAction(event -> FrameManager.CreateAboutFrame());
-
-        Help.getItems().addAll(
-                Tutorial,
-                UserGuide,
-                LibraryReference,
-                sp1,
-                About
-        );
-        this.getMenus().add(Help);
-
-    }
-
 
     private class WindowMenu extends Menu{
 
@@ -624,6 +712,7 @@ public class CustomMenuBar extends MenuBar {
         public WindowMenu(){
 
             super();
+            this.textProperty().bind(localizer.createStringBinding("windowMenu"));
 
             init();
 
@@ -698,6 +787,45 @@ public class CustomMenuBar extends MenuBar {
         }
 
     }
+
+    private void initHelpMenu(){
+
+        Menu Help = new Menu();
+        Help.textProperty().bind(localizer.createStringBinding("helpMenu"));
+
+        MenuItem Tutorial = new MenuItem();
+        Tutorial.textProperty().bind(localizer.createStringBinding("helpTutorialItem"));
+        Tutorial.setOnAction(event -> FrameManager.CreateHelpFrame("tutorial"));
+
+        MenuItem UserGuide = new MenuItem();
+        UserGuide.textProperty().bind(localizer.createStringBinding("helpGuideItem"));
+        UserGuide.setOnAction(event -> FrameManager.CreateHelpFrame("guide"));
+
+        MenuItem LibraryReference = new MenuItem();
+        LibraryReference.textProperty().bind(localizer.createStringBinding("helpLibraryItem"));
+        LibraryReference.setOnAction(event -> FrameManager.CreateHelpFrame("libs"));
+
+
+        SeparatorMenuItem sp1 = new SeparatorMenuItem();
+
+
+        MenuItem About = new MenuItem();
+        About.textProperty().bind(localizer.createStringBinding("helpAboutItem"));
+        About.setOnAction(event -> FrameManager.CreateAboutFrame());
+
+        Help.getItems().addAll(
+                Tutorial,
+                UserGuide,
+                LibraryReference,
+                sp1,
+                About
+        );
+        this.getMenus().add(Help);
+
+    }
+
+    //Technical methods
+
 
 }
 
