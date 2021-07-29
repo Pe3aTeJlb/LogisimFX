@@ -3,7 +3,6 @@
 
 package com.cburch.LogisimFX.std.gates;
 
-
 import java.util.HashMap;
 
 import com.cburch.LogisimFX.data.Location;

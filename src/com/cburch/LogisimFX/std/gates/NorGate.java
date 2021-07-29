@@ -29,19 +29,6 @@ class NorGate extends AbstractGate {
 	}
 
 	@Override
-	public void paintIconShaped(InstancePainter painter) {
-
-		Graphics g = painter.getGraphics();
-		GraphicsUtil.drawCenteredArc(g,   0, -5, 22, -90,  53);
-		GraphicsUtil.drawCenteredArc(g,   0, 23, 22,  90, -53);
-		GraphicsUtil.drawCenteredArc(g, -12,  9, 16, -30, 60);
-		g.c.strokeOval(16, 8, 4, 4);
-
-		g.toDefault();
-
-	}
-
-	@Override
 	protected void paintShape(InstancePainter painter, int width, int height) {
 
 		PainterShaped.paintOr(painter, width, height);

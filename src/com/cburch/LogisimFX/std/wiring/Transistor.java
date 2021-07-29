@@ -45,6 +45,7 @@ public class Transistor extends InstanceFactory {
 						Wiring.GATE_TOP_LEFT, BitWidth.ONE });
 		setFacingAttribute(StdAttr.FACING);
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
+		setIcon("trans0.gif");
 
 	}
 
@@ -162,15 +163,6 @@ public class Transistor extends InstanceFactory {
 		} else {
 			return input;
 		}
-
-	}
-
-	@Override
-	public void paintIcon(InstancePainter painter) {
-
-		Object type = painter.getAttributeValue(ATTR_TYPE);
-		Icon icon = type == TYPE_N ? ICON_N : ICON_P;
-		icon.paintIcon(painter.getDestination(), painter.getGraphics(), 2, 2);
 
 	}
 

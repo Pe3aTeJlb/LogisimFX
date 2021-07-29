@@ -29,26 +29,6 @@ class OddParityGate extends AbstractGate {
 	}
 
 	@Override
-	public void paintIconShaped(InstancePainter painter) {
-		paintIconRectangular(painter);
-	}
-
-	@Override
-	public void paintIconRectangular(InstancePainter painter) {
-
-		Graphics g = painter.getGraphics();
-		g.setColor(Color.black);
-		g.drawRect(1, 2, 16, 16);
-		Font old = g.getFont();
-		g.setFont(old.deriveFont(9.0f));
-		GraphicsUtil.drawCenteredText(g, "2k", 9,  6);
-		GraphicsUtil.drawCenteredText(g, "+1", 9, 13);
-		g.setFont(old);
-		g.setFont(Vars.DEFAULT_FONT);
-
-	}
-
-	@Override
 	protected void paintShape(InstancePainter painter, int width, int height) {
 		paintRectangular(painter, width, height);
 	}

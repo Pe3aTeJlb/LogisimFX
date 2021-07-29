@@ -28,20 +28,6 @@ class NandGate extends AbstractGate {
 	}
 
 	@Override
-	public void paintIconShaped(InstancePainter painter) {
-
-		Graphics g = painter.getGraphics();
-		double[] xp = new double[] { 8, 0, 0, 8 };
-		double[] yp = new double[] { 2, 2, 18, 18 };
-		g.c.strokePolyline(xp, yp, 4);
-		GraphicsUtil.drawCenteredArc(g, 8, 10, 8, -90, 180);
-		g.c.strokeOval(16, 8, 4, 4);
-
-		g.toDefault();
-
-	}
-
-	@Override
 	protected void paintShape(InstancePainter painter, int width, int height) {
 
 		PainterShaped.paintAnd(painter, width, height);

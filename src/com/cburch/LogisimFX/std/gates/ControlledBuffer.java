@@ -94,26 +94,6 @@ class ControlledBuffer extends InstanceFactory {
 	}
 
 	@Override
-	public void paintIcon(InstancePainter painter) {
-
-		Graphics g = painter.getGraphics();
-		Icon icon = isInverter ? ICON_INVERTER : ICON_BUFFER;
-		if (icon != null) {
-			icon.paintIcon(painter.getDestination(), g, 2, 2);
-		} else {
-			int x = isInverter ? 0 : 2;
-			g.setColor(Color.BLACK);
-			double[] xp = new double[] { x + 15, x + 1, x + 1, x + 15 };
-			double[] yp = new double[] { 10,     3,     17,    10 };
-			g.c.strokePolyline(xp, yp, 4);
-			if (isInverter) g.c.strokeOval(x + 13, 8, 4, 4);
-			g.setColor(Value.FALSE_COLOR);
-			g.c.strokeLine(x + 8, 14, x + 8, 18);
-		}
-
-	}
-
-	@Override
 	public void paintInstance(InstancePainter painter) {
 
 		Direction face = painter.getAttributeValue(StdAttr.FACING);

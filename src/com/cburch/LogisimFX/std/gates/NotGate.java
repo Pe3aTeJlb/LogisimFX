@@ -150,43 +150,25 @@ class NotGate extends InstanceFactory {
 
 	@Override
 	public ImageView getIcon() {
-		return toolIcon;
-	}
 
-	@Override
-	public void paintIcon(InstancePainter painter) {
-		Graphics g = painter.getGraphics();
-		g.setColor(Color.black);
-		if (painter.getGateShape() == AppPreferences.SHAPE_RECTANGULAR) {
+		ImageView ret = null;
+
+		if (AppPreferences.GATE_SHAPE.get().equals(AppPreferences.SHAPE_RECTANGULAR)) {
 			if (toolIconRect != null) {
-				toolIconRect.paintIcon(painter.getDestination(), g, 2, 2);
-			} else {
-				g.drawRect(0, 2, 16, 16);
-				GraphicsUtil.drawCenteredText(g, RECT_LABEL, 8, 8);
-				g.drawOval(16, 8, 4, 4);
+				ret = toolIconRect;
 			}
-		} else if (painter.getGateShape() == AppPreferences.SHAPE_DIN40700) {
+		} else if (AppPreferences.GATE_SHAPE.get().equals(AppPreferences.SHAPE_DIN40700)) {
 			if (toolIconDin != null) {
-				toolIconDin.paintIcon(painter.getDestination(), g, 2, 2);
-			} else {
-				g.drawRect(0, 2, 16, 16);
-				GraphicsUtil.drawCenteredText(g, RECT_LABEL, 8, 8);
-				g.drawOval(16, 8, 4, 4);
+				ret = toolIconDin;
 			}
 		} else {
-			if (toolIcon != null) {
-				toolIcon.paintIcon(painter.getDestination(), g, 2, 2);
-			} else {
-				int[] xp = new int[4];
-				int[] yp = new int[4];
-				xp[0] = 15; yp[0] = 10;
-				xp[1] =  1; yp[1] =  3;
-				xp[2] =  1; yp[2] = 17;
-				xp[3] = 15; yp[3] = 10;
-				g.drawPolyline(xp, yp, 4);
-				g.drawOval(15, 8, 4, 4);
+			if (toolIconRect != null) {
+				ret = toolIcon;
 			}
 		}
+
+		return ret;
+
 	}
 
 	@Override

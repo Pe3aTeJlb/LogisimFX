@@ -89,26 +89,7 @@ public class Pin extends InstanceFactory {
 
 	@Override
 	public ImageView getIcon(){
-		return ICON_OUT;
-	}
-
-	@Override
-	public void paintIcon(InstancePainter painter) {
-
-		paintIconBase(painter);
-		BitWidth w = painter.getAttributeValue(StdAttr.WIDTH);
-		if (!w.equals(BitWidth.ONE)) {
-			GraphicsContext g = painter.getGraphics();
-			g.setColor(ICON_WIDTH_COLOR);
-			g.setFont(ICON_WIDTH_FONT);
-			GraphicsUtil.drawCenteredText(g, "" + w.getWidth(), 10, 9);
-			g.setColor(Color.BLACK);
-		}
-
-	}
-
-	private void paintIconBase(InstancePainter painter) {
-
+		/*
 		PinAttributes attrs = (PinAttributes) painter.getAttributeSet();
 		Direction dir = attrs.facing;
 		boolean output = attrs.isOutput();
@@ -126,25 +107,9 @@ public class Pin extends InstanceFactory {
 				return;
 			}
 		}
-		int pinx = 16; int piny = 9;
-		if (dir == Direction.EAST) { // keep defaults
-		} else if (dir == Direction.WEST) { pinx = 4;
-		} else if (dir == Direction.NORTH) { pinx = 9; piny = 4;
-		} else if (dir == Direction.SOUTH) { pinx = 9; piny = 16;
-		}
+		 */
 
-		g.setColor(Color.black);
-		g.setFill();
-		g.setStroke();
-		if (output) {
-			g.drawOval(4, 4, 13, 13);
-		} else {
-			g.drawRect(4, 4, 13, 13);
-		}
-		g.setColor(Value.TRUE.getColor());
-		g.fillOval(7, 7,  8,  8);
-		g.fillOval(pinx, piny, 3, 3);
-
+		return ICON_OUT;
 	}
 
 	@Override

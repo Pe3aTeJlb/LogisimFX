@@ -26,17 +26,6 @@ class AndGate extends AbstractGate {
 	}
 
 	@Override
-	protected void paintIconShaped(InstancePainter painter) {
-
-		Graphics g = painter.getGraphics();
-		int[] xp = new int[] { 10, 2, 2, 10 };
-		int[] yp = new int[] { 2, 2, 18, 18 };
-		g.drawPolyline(xp, yp, 4);
-		GraphicsUtil.drawCenteredArc(g, 10, 10, 8, -90, 180);
-
-	}
-
-	@Override
 	protected void paintShape(InstancePainter painter, int width, int height) {
 
 		PainterShaped.paintAnd(painter, width, height);

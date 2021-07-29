@@ -60,16 +60,11 @@ public class PullResistor extends InstanceFactory {
 	@Override
 	public ImageView getIcon(){
 
-		return ICON_SHAPED;
-		/*
-		if (painter.getGateShape() == AppPreferences.SHAPE_SHAPED) {
+		if (AppPreferences.GATE_SHAPE.get().equals(AppPreferences.SHAPE_SHAPED)) {
 			return ICON_SHAPED;
 		} else {
 			return ICON_RECTANGULAR;
 		}
-
-		 */
-
 
 	}
 	

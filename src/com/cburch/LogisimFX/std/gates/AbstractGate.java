@@ -3,10 +3,7 @@
 
 package com.cburch.LogisimFX.std.gates;
 
-import java.awt.Color;
 import java.util.Map;
-
-import javax.swing.Icon;
 
 import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.analyze.model.Expression;
@@ -20,15 +17,12 @@ import com.cburch.LogisimFX.tools.WireRepairData;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.IntegerConfigurator;
 import com.cburch.LogisimFX.tools.key.JoinedConfigurator;
-import com.cburch.LogisimFX.util.GraphicsUtil;
-import com.cburch.LogisimFX.util.Icons;
 import com.cburch.LogisimFX.LogisimVersion;
 import com.cburch.LogisimFX.circuit.ExpressionComputer;
 import com.cburch.LogisimFX.file.Options;
 import com.cburch.LogisimFX.prefs.AppPreferences;
 
 import javafx.beans.binding.StringBinding;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Paint;
 
@@ -249,38 +243,31 @@ abstract class AbstractGate extends InstanceFactory {
 	@Override
 	public ImageView getIcon() {
 
-		/*
-		if (painter.getGateShape() == AppPreferences.SHAPE_RECTANGULAR) {
-			Icon iconRect = getIconRectangular();
+		System.out.println(AppPreferences.GATE_SHAPE.get());
+
+		if (AppPreferences.GATE_SHAPE.get().equals(AppPreferences.SHAPE_RECTANGULAR)) {
+			ImageView iconRect = getIconRectangular();
 			if (iconRect != null) {
-				iconRect.paintIcon(painter.getDestination(), g, 2, 2);
-			} else {
-				paintIconRectangular(painter);
+				return iconRect;
 			}
-		} else if (painter.getGateShape() == AppPreferences.SHAPE_DIN40700) {
-			Icon iconDin = getIconDin40700();
+		} else if (AppPreferences.GATE_SHAPE.get().equals(AppPreferences.SHAPE_DIN40700)) {
+			ImageView iconDin = getIconDin40700();
 			if (iconDin != null) {
-				iconDin.paintIcon(painter.getDestination(), g, 2, 2);
-			} else {
-				paintIconRectangular(painter);
+				return iconDin;
 			}
 		} else {
-			Icon iconShaped = getIconShaped();
+			ImageView iconShaped = getIconShaped();
 			if (iconShaped != null) {
-				iconShaped.paintIcon(painter.getDestination(), g, 2, 2);
-			} else {
-				paintIconShaped(painter);
+				return iconShaped;
 			}
-
-		 */
-
+		}
 		return IconsManager.getIcon(iconNames[0]);
 
 	}
 
-	private Icon getIcon(int type) {
+	private ImageView getIcon(int type) {
 
-		Icon ret = icons[type];
+		ImageView ret = icons[type];
 		if (ret != null) {
 			return ret;
 		} else {
@@ -288,7 +275,7 @@ abstract class AbstractGate extends InstanceFactory {
 			if (iconName == null) {
 				return null;
 			} else {
-				ret = Icons.getIcon(iconName);
+				ret = IconsManager.getIcon(iconName);
 				if (ret == null) {
 					iconNames[type] = null;
 				} else {
@@ -300,62 +287,20 @@ abstract class AbstractGate extends InstanceFactory {
 
 	}
 
-	private Icon getIconShaped() {
+	private ImageView getIconShaped() {
 		return getIcon(0);
 	}
 
-	private Icon getIconRectangular() {
+	private ImageView getIconRectangular() {
 		return getIcon(1);
 	}
 
-	private Icon getIconDin40700() {
+	private ImageView getIconDin40700() {
 		return getIcon(2);
 	}
 
 	protected void setPaintInputLines(boolean value) {
 		paintInputLines = value;
-	}
-
-	protected abstract void paintIconShaped(InstancePainter painter);
-
-	protected void paintIconRectangular(InstancePainter painter) {
-
-		GraphicsContext g = painter.getGraphics();
-		g.strokeRect(1, 2, 16, 16);
-		if (negateOutput) g.strokeOval(16, 8, 4, 4);
-		String label = getRectangularLabel(painter.getAttributeSet());
-		GraphicsUtil.drawCenteredText(g, label, 9, 8);
-
-	}
-
-	@Override
-	public final void paintIcon(InstancePainter painter) {
-
-		GraphicsContext g = painter.getGraphics();
-		g.setColor(Color.black);
-		if (painter.getGateShape() == AppPreferences.SHAPE_RECTANGULAR) {
-			Icon iconRect = getIconRectangular();
-			if (iconRect != null) {
-				iconRect.paintIcon(painter.getDestination(), g, 2, 2);
-			} else {
-				paintIconRectangular(painter);
-			}
-		} else if (painter.getGateShape() == AppPreferences.SHAPE_DIN40700) {
-			Icon iconDin = getIconDin40700();
-			if (iconDin != null) {
-				iconDin.paintIcon(painter.getDestination(), g, 2, 2);
-			} else {
-				paintIconRectangular(painter);
-			}
-		} else {
-			Icon iconShaped = getIconShaped();
-			if (iconShaped != null) {
-				iconShaped.paintIcon(painter.getDestination(), g, 2, 2);
-			} else {
-				paintIconShaped(painter);
-			}
-		}
-
 	}
 
 	protected void setAdditionalWidth(int value) {

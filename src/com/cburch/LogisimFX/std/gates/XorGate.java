@@ -47,19 +47,6 @@ class XorGate extends AbstractGate {
 	}
 
 	@Override
-	public void paintIconShaped(InstancePainter painter) {
-
-		Graphics g = painter.getGraphics();
-		GraphicsUtil.drawCenteredArc(g,   2, -5, 22, -90,  53);
-		GraphicsUtil.drawCenteredArc(g,   2, 23, 22,  90, -53);
-		GraphicsUtil.drawCenteredArc(g, -10,  9, 16, -30, 60);
-		GraphicsUtil.drawCenteredArc(g, -12,  9, 16, -30, 60);
-
-		g.toDefault();
-
-	}
-
-	@Override
 	protected void paintShape(InstancePainter painter, int width, int height) {
 
 		PainterShaped.paintXor(painter, width, height);
