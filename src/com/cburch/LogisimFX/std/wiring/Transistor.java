@@ -13,12 +13,9 @@ import com.cburch.LogisimFX.instance.*;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
-import com.cburch.LogisimFX.util.GraphicsUtil;
-import com.cburch.LogisimFX.util.Icons;
 import com.cburch.LogisimFX.circuit.Wire;
-import javafx.scene.canvas.GraphicsContext;
+
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 public class Transistor extends InstanceFactory {
@@ -206,7 +203,7 @@ public class Transistor extends InstanceFactory {
 
 		Graphics g = painter.getGraphics();
 		Location loc = painter.getLocation();
-		g.c.moveTo(loc.getX(), loc.getY());
+		g.translate(loc.getX(), loc.getY());
 		g.rotate(degrees);
 
 		Paint gate;
@@ -257,12 +254,7 @@ public class Transistor extends InstanceFactory {
 		g.c.strokeLine(-21, m * 6, -18, m * 3);
 		g.c.strokeLine(-21, 0, -18, m * 3);
 
-		g.toDefaultRotation();
-
-		g.rotate(-degrees);
-		g.c.moveTo(-loc.getX(), -loc.getY());
-
-		g.toDefaultRotation();
+		g.toDefault();
 
 	}
 

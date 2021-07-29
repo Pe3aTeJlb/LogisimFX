@@ -4,7 +4,6 @@
 package com.cburch.LogisimFX.std.gates;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.util.Map;
 
 import javax.swing.Icon;
@@ -23,7 +22,6 @@ import com.cburch.LogisimFX.tools.key.IntegerConfigurator;
 import com.cburch.LogisimFX.tools.key.JoinedConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.Icons;
-import com.cburch.LogisimFX.util.StringGetter;
 import com.cburch.LogisimFX.LogisimVersion;
 import com.cburch.LogisimFX.circuit.ExpressionComputer;
 import com.cburch.LogisimFX.file.Options;
@@ -250,6 +248,31 @@ abstract class AbstractGate extends InstanceFactory {
 
 	@Override
 	public ImageView getIcon() {
+
+		/*
+		if (painter.getGateShape() == AppPreferences.SHAPE_RECTANGULAR) {
+			Icon iconRect = getIconRectangular();
+			if (iconRect != null) {
+				iconRect.paintIcon(painter.getDestination(), g, 2, 2);
+			} else {
+				paintIconRectangular(painter);
+			}
+		} else if (painter.getGateShape() == AppPreferences.SHAPE_DIN40700) {
+			Icon iconDin = getIconDin40700();
+			if (iconDin != null) {
+				iconDin.paintIcon(painter.getDestination(), g, 2, 2);
+			} else {
+				paintIconRectangular(painter);
+			}
+		} else {
+			Icon iconShaped = getIconShaped();
+			if (iconShaped != null) {
+				iconShaped.paintIcon(painter.getDestination(), g, 2, 2);
+			} else {
+				paintIconShaped(painter);
+			}
+
+		 */
 
 		return IconsManager.getIcon(iconNames[0]);
 

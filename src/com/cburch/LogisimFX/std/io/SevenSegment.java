@@ -10,7 +10,6 @@ import com.cburch.LogisimFX.instance.*;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class SevenSegment extends InstanceFactory {
@@ -99,6 +98,8 @@ public class SevenSegment extends InstanceFactory {
 			}
 		}
 		painter.drawPorts();
+
+		g.toDefault();
 
 	}
 	

@@ -8,7 +8,7 @@ import com.cburch.LogisimFX.instance.*;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.util.GraphicsUtil;
-import javafx.scene.canvas.GraphicsContext;
+
 import javafx.scene.paint.Color;
 
 public class Led extends InstanceFactory {
@@ -149,7 +149,7 @@ public class Led extends InstanceFactory {
 		painter.drawLabel();
 		painter.drawPorts();
 
-		g.toDefaultFont();
+		g.toDefault();
 
 	}
 

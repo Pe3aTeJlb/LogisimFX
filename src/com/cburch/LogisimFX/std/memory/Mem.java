@@ -24,7 +24,6 @@ import com.cburch.logisim.gui.hex.HexFrame;
 import com.cburch.LogisimFX.proj.Project;
 
 import javafx.beans.binding.StringBinding;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 abstract class Mem extends InstanceFactory {
@@ -146,6 +145,8 @@ abstract class Mem extends InstanceFactory {
 		painter.drawPort(ADDR, Strings.get("ramAddrLabel"), Direction.EAST);
 		g.setColor(Color.GRAY);
 		painter.drawPort(CS, Strings.get("ramCSLabel"), Direction.SOUTH);
+
+		g.toDefault();
 
 	}
 	

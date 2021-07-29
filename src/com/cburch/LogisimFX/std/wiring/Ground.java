@@ -12,10 +12,7 @@ import com.cburch.LogisimFX.instance.*;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
-import com.cburch.LogisimFX.util.GraphicsUtil;
-
 import com.cburch.LogisimFX.circuit.Wire;
-import javafx.scene.canvas.GraphicsContext;
 
 public class Ground extends InstanceFactory {
 
@@ -66,6 +63,7 @@ public class Ground extends InstanceFactory {
 
 		drawInstance(painter, false);
 		painter.drawPorts();
+
 		painter.getGraphics().toDefault();
 
 	}
@@ -79,7 +77,7 @@ public class Ground extends InstanceFactory {
 
 		Graphics g = painter.getGraphics();
 		Location loc = painter.getLocation();
-		g.c.moveTo(loc.getX(), loc.getY());
+		g.translate(loc.getX(), loc.getY());
 
 		Direction from = painter.getAttributeValue(StdAttr.FACING);
 		int degrees = Direction.EAST.toDegrees() - from.toDegrees();
@@ -101,7 +99,7 @@ public class Ground extends InstanceFactory {
 		g.c.strokeLine(9, -5, 9, 5);
 		g.c.strokeLine(12, -2, 12, 2);
 
-		g.toDefaultRotation();
+		g.toDefault();
 
 	}
 

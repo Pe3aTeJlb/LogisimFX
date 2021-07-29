@@ -11,7 +11,6 @@ import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.IntegerConfigurator;
 import com.cburch.LogisimFX.tools.key.JoinedConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
-import javafx.scene.canvas.GraphicsContext;
 
 public class ShiftRegister extends InstanceFactory {
 
@@ -220,6 +219,7 @@ public class ShiftRegister extends InstanceFactory {
 			if (i != CK) painter.drawPort(i);
 		}
 		painter.drawClock(CK, Direction.EAST);
+		painter.getGraphics().toDefault();
 
 	}
 

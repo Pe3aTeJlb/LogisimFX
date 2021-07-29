@@ -3,10 +3,6 @@
 
 package com.cburch.LogisimFX.std.wiring;
 
-import java.awt.Graphics2D;
-
-import javax.swing.Icon;
-
 import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
@@ -14,7 +10,7 @@ import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.prefs.AppPreferences;
-import javafx.scene.canvas.GraphicsContext;
+
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -98,6 +94,7 @@ public class PullResistor extends InstanceFactory {
 		paintBase(painter, pull, pull.getColor(), actual.getColor());
 		g.c.translate(-x, -y);
 		painter.drawPorts();
+
 		g.toDefault();
 
 	}

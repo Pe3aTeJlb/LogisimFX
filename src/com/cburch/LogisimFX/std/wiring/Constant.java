@@ -13,7 +13,7 @@ import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.JoinedConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.circuit.ExpressionComputer;
-import javafx.scene.canvas.GraphicsContext;
+
 import javafx.scene.paint.Color;
 
 import java.util.Arrays;
@@ -238,9 +238,9 @@ public class Constant extends InstanceFactory {
 		String vStr = Integer.toHexString(v);
 		Bounds bds = getOffsetBounds(painter.getAttributeSet());
 
-		GraphicsContext g = painter.getGraphics();
+		Graphics g = painter.getGraphics();
 		g.setLineWidth(2);
-		g.fillOval(-2, -2, 5, 5);
+		g.c.fillOval(-2, -2, 5, 5);
 		GraphicsUtil.drawCenteredText(g, vStr, bds.getX() + bds.getWidth() / 2,
 				bds.getY() + bds.getHeight() / 2);
 

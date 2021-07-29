@@ -9,7 +9,6 @@ import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 
 import com.sun.javafx.tk.FontMetrics;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
@@ -182,7 +181,7 @@ public class Tty extends InstanceFactory {
 			g.c.strokeText(str, x, y);
 		}
 
-		g.toDefaultFont();
+		g.toDefault();
 
 	}
 

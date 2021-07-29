@@ -64,6 +64,8 @@ public class Power extends InstanceFactory {
 		drawInstance(painter, false);
 		painter.drawPorts();
 
+		painter.getGraphics().toDefault();
+
 	}
 
 	@Override
@@ -75,7 +77,7 @@ public class Power extends InstanceFactory {
 
 		Graphics g = painter.getGraphics();
 		Location loc = painter.getLocation();
-		g.c.translate(loc.getX(), loc.getY());
+		g.translate(loc.getX(), loc.getY());
 
 		Direction from = painter.getAttributeValue(StdAttr.FACING);
 		int degrees = Direction.EAST.toDegrees() - from.toDegrees();
@@ -95,8 +97,6 @@ public class Power extends InstanceFactory {
 		}
 		g.c.strokePolygon(new double[] { 6, 14, 6 }, new double[] { -8, 0, 8 }, 3);
 
-		g.c.translate(0, 0);
-		g.rotate(-degrees);
 		g.toDefault();
 
 	}

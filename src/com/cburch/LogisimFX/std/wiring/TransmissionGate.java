@@ -14,6 +14,7 @@ import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.circuit.Wire;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
 
@@ -170,9 +171,13 @@ public class TransmissionGate extends InstanceFactory {
 		double radians = Math.toRadians((degrees + 360) % 360);
 
 		Graphics g = painter.getGraphics();
-		//g.rotate(radians, bds.getX() + 20, bds.getY() + 20);
-		g.rotate(degrees);
-		g.c.moveTo(bds.getX(), bds.getY());
+
+		g.c.translate(bds.getX() + 20, bds.getY() + 20);
+		g.c.rotate(degrees);
+		g.c.translate(-(bds.getX() + 20), -(bds.getY() + 20));
+
+		g.c.translate(bds.getX(), bds.getY());
+
 		g.setLineWidth(Wire.WIDTH);
 		
 		Paint gate0 = g.getPaint();
@@ -219,7 +224,13 @@ public class TransmissionGate extends InstanceFactory {
 			g.c.strokeLine(22, 23, 19, 20);
 		}
 
-		g.toDefaultRotation();
+
+		g.c.translate(-bds.getX(), -bds.getY());
+		g.c.translate(bds.getX() + 20, bds.getY() + 20);
+		g.c.rotate(-degrees);
+		g.c.translate(-(bds.getX() + 20), -(bds.getY() + 20));
+
+		g.toDefault();
 
 	}
 
