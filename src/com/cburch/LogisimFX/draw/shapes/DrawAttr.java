@@ -10,12 +10,16 @@ import com.cburch.LogisimFX.data.AttributeOption;
 import com.cburch.LogisimFX.data.Attributes;
 import com.cburch.LogisimFX.util.UnmodifiableList;
 
-import java.awt.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
+
 import java.util.List;
 
 public class DrawAttr {
 	public static final Font DEFAULT_FONT
-		= new Font("SansSerif", Font.PLAIN, 12);
+		= Font.font("SansSerif", FontWeight.NORMAL, FontPosture.REGULAR, 12);
 
 	public static final AttributeOption ALIGN_LEFT
 		= new AttributeOption(Integer.valueOf(EditableLabel.LEFT), LC.createStringBinding("alignStart"));

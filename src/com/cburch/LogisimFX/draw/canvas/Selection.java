@@ -13,6 +13,7 @@ import java.awt.*;
 import java.util.*;
 
 public class Selection {
+
 	private static final String MOVING_HANDLE = "movingHandle";
 	private static final String TRANSLATING = "translating";
 	private static final String HIDDEN = "hidden";
@@ -233,4 +234,5 @@ public class Selection {
 			}
 		}
 	}
+
 }
