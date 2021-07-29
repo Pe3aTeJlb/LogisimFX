@@ -7,23 +7,14 @@ import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.tools.Tool;
 
-import com.cburch.logisim.gui.generic.ZoomModel;
-import com.cburch.logisim.prefs.AppPreferences;
-import com.cburch.logisim.proj.Projects;
-import com.cburch.logisim.util.JFileChoosers;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-
-import javax.swing.*;
-import java.awt.*;
 
 public class MainFrameController extends AbstractController {
 

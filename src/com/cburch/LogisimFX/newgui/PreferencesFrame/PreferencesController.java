@@ -7,13 +7,10 @@ import com.cburch.LogisimFX.file.LoaderException;
 import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.util.StringUtil;
-import com.cburch.logisim.prefs.AppPreferences;
+import com.cburch.LogisimFX.prefs.AppPreferences;
 import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.prefs.Template;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -38,8 +35,6 @@ public class PreferencesController extends AbstractController {
     @FXML
     private AnchorPane Root;
 
-    @FXML
-    private TabPane TabPane;
 
 
     //Template tab
@@ -164,10 +159,12 @@ public class PreferencesController extends AbstractController {
 
     @Override
     public void postInitialization(Stage s) {
+
         stage = s;
         stage.titleProperty().bind(LC.createStringBinding("preferencesFrameTitle"));
 
         stage.setResizable(false);
+
     }
 
     private void initTemplateTab(){
@@ -203,6 +200,7 @@ public class PreferencesController extends AbstractController {
 
         });
 
+        /*
         if(AppPreferences.getTemplateFile().toString().equals("")){
             CustomTemplRB.setDisable(true);
             FilePathTextField.setText("");
@@ -210,6 +208,8 @@ public class PreferencesController extends AbstractController {
         else{
             FilePathTextField.setText(AppPreferences.getTemplateFile().toString());
         }
+
+         */
 
         FilePathSelectBtn.textProperty().bind(LC.createStringBinding("templateSelectButton"));
         FilePathSelectBtn.setOnAction(event -> {
@@ -295,7 +295,10 @@ public class PreferencesController extends AbstractController {
 
         }
 
-        GateShapeCmbx.setOnAction(event -> AppPreferences.GATE_SHAPE.set(GateShapeCmbx.getValue().getValue().toString()));
+        GateShapeCmbx.setOnAction(event -> {
+            System.out.println(GateShapeCmbx.getValue().getValue().toString());
+            AppPreferences.GATE_SHAPE.set(GateShapeCmbx.getValue().getValue().toString());
+        });
 
 
         //set locales list
