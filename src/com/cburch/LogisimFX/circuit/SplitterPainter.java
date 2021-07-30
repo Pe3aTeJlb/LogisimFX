@@ -7,16 +7,21 @@ import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.data.Direction;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.data.Value;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.util.GraphicsUtil;
-
-import java.awt.*;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
 
 class SplitterPainter {
+
 	private static final int SPINE_WIDTH = Wire.WIDTH + 2;
 	private static final int SPINE_DOT = Wire.WIDTH + 4;
 	
 	static void drawLines(ComponentDrawContext context,
 			SplitterAttributes attrs, Location origin) {
+
 		boolean showState = context.getShowState();
 		CircuitState state = showState ? context.getCircuitState() : null;
 		if (state == null) showState = false;
@@ -32,18 +37,19 @@ class SplitterPainter {
 		int dyEndSpine = parms.getEndToSpineDeltaY();
 		
 		Graphics g = context.getGraphics();
-		Color oldColor = g.getColor();
-		GraphicsUtil.switchToWidth(g, Wire.WIDTH);
+		Paint oldColor = g.getPaint();
+		g.setLineWidth(Wire.WIDTH);
+
 		for (int i = 0, n = attrs.fanout; i < n; i++) {
 			if (showState) {
 				Value val = state.getValue(Location.create(x, y));
 				g.setColor(val.getColor());
 			}
-			g.drawLine(x, y, x + dxEndSpine, y + dyEndSpine);
+			g.c.strokeLine(x, y, x + dxEndSpine, y + dyEndSpine);
 			x += dx;
 			y += dy;
 		}
-		GraphicsUtil.switchToWidth(g, SPINE_WIDTH);
+		g.setLineWidth(SPINE_WIDTH);
 		g.setColor(oldColor);
 		int spine0x = x0 + parms.getSpine0X();
 		int spine0y = y0 + parms.getSpine0Y();
@@ -63,7 +69,7 @@ class SplitterPainter {
 					spine0y--;
 					spine1y++;
 				}
-				g.drawLine(x0 + parms.getSpine1X() / 4, y0, spine0x, y0);
+				g.c.strokeLine(x0 + parms.getSpine1X() / 4, y0, spine0x, y0);
 			} else {
 				if (spine0x < spine1x) {
 					spine0x++;
@@ -72,23 +78,27 @@ class SplitterPainter {
 					spine0x--;
 					spine1x++;
 				}
-				g.drawLine(x0, y0 + parms.getSpine1Y() / 4, x0, spine0y);
+				g.c.strokeLine(x0, y0 + parms.getSpine1Y() / 4, x0, spine0y);
 			}
 			if (fanout <= 1) { // spine is empty
 				int diam = SPINE_DOT;
-				g.fillOval(spine0x - diam / 2, spine0y - diam / 2, diam, diam);
+				g.c.fillOval(spine0x - diam / 2, spine0y - diam / 2, diam, diam);
 			} else {
-				g.drawLine(spine0x, spine0y, spine1x, spine1y);
+				g.c.strokeLine(spine0x, spine0y, spine1x, spine1y);
 			}
 		} else {
-			int[] xSpine = { spine0x, spine1x, x0 + parms.getSpine1X() / 4 };
-			int[] ySpine = { spine0y, spine1y, y0 + parms.getSpine1Y() / 4 };
-			g.drawPolyline(xSpine, ySpine, 3);
+			double[] xSpine = { spine0x, spine1x, x0 + parms.getSpine1X() / 4 };
+			double[] ySpine = { spine0y, spine1y, y0 + parms.getSpine1Y() / 4 };
+			g.c.strokePolyline(xSpine, ySpine, 3);
 		}
+
+		g.toDefault();
+
 	}
 
 	static void drawLabels(ComponentDrawContext context,
 			SplitterAttributes attrs, Location origin) {
+
 		// compute labels
 		String[] ends = new String[attrs.fanout + 1];
 		int curEnd = -1;
@@ -118,9 +128,9 @@ class SplitterPainter {
 			}
 		}
 
-		Graphics g = context.getGraphics().create();
+		Graphics g = context.getGraphics();
 		Font font = g.getFont();
-		g.setFont(font.deriveFont(7.0f));
+		//g.setFont(font.deriveFont(7.0f));
 		
 		SplitterParameters parms = attrs.getParameters();
 		int x = origin.getX() + parms.getEnd0X() + parms.getEndToSpineDeltaX();
@@ -128,7 +138,7 @@ class SplitterPainter {
 		int dx = parms.getEndToEndDeltaX();
 		int dy = parms.getEndToEndDeltaY();
 		if (parms.getTextAngle() != 0) {
-			((Graphics2D) g).rotate(Math.PI / 2.0);
+			g.c.rotate(Math.PI / 2.0);
 			int t;
 			t = -x; x = y; y = t;
 			t = -dx; dx = dy; dy = t;
@@ -146,17 +156,17 @@ class SplitterPainter {
 			y += dy;
 		}
 
-		g.dispose();
 	}
 	
 	static void drawLegacy(ComponentDrawContext context, SplitterAttributes attrs,
 			Location origin) {
+
 		Graphics g = context.getGraphics();
 		CircuitState state = context.getCircuitState();
 		Direction facing = attrs.facing;
 		int fanout = attrs.fanout;
 		SplitterParameters parms = attrs.getParameters();
-		
+
 		g.setColor(Color.BLACK);
 		int x0 = origin.getX();
 		int y0 = origin.getY();
@@ -166,8 +176,8 @@ class SplitterPainter {
 		int dy = parms.getEndToEndDeltaY();
 		if (facing == Direction.NORTH || facing == Direction.SOUTH) {
 			int ySpine = (y0 + y1) / 2;
-			GraphicsUtil.switchToWidth(g, Wire.WIDTH);
-			g.drawLine(x0, y0, x0, ySpine);
+			g.setLineWidth(Wire.WIDTH);
+			g.c.strokeLine(x0, y0, x0, ySpine);
 			int xi = x1;
 			int yi = y1;
 			for (int i = 1; i <= fanout; i++) {
@@ -175,23 +185,23 @@ class SplitterPainter {
 					g.setColor(state.getValue(Location.create(xi, yi)).getColor());
 				}
 				int xSpine = xi + (xi == x0 ? 0 : (xi < x0 ? 10 : -10));
-				g.drawLine(xi, yi, xSpine, ySpine);
+				g.c.strokeLine(xi, yi, xSpine, ySpine);
 				xi += dx;
 				yi += dy;
 			}
 			if (fanout > 3) {
-				GraphicsUtil.switchToWidth(g, SPINE_WIDTH);
+				g.setLineWidth(SPINE_WIDTH);
 				g.setColor(Color.BLACK);
-				g.drawLine(x1 + dx, ySpine, x1 + (fanout - 2) * dx, ySpine);
+				g.c.strokeLine(x1 + dx, ySpine, x1 + (fanout - 2) * dx, ySpine);
 			} else {
 				g.setColor(Color.BLACK);
-				g.fillOval(x0 - SPINE_DOT / 2, ySpine - SPINE_DOT / 2,
+				g.c.fillOval(x0 - SPINE_DOT / 2, ySpine - SPINE_DOT / 2,
 						SPINE_DOT, SPINE_DOT);
 			}
 		} else {
 			int xSpine = (x0 + x1) / 2;
-			GraphicsUtil.switchToWidth(g, Wire.WIDTH);
-			g.drawLine(x0, y0, xSpine, y0);
+			g.setLineWidth(Wire.WIDTH);
+			g.c.strokeLine(x0, y0, xSpine, y0);
 			int xi = x1;
 			int yi = y1;
 			for (int i = 1; i <= fanout; i++) {
@@ -199,20 +209,23 @@ class SplitterPainter {
 					g.setColor(state.getValue(Location.create(xi, yi)).getColor());
 				}
 				int ySpine = yi + (yi == y0 ? 0 : (yi < y0 ? 10 : -10));
-				g.drawLine(xi, yi, xSpine, ySpine);
+				g.c.strokeLine(xi, yi, xSpine, ySpine);
 				xi += dx;
 				yi += dy;
 			}
 			if (fanout >= 3) {
-				GraphicsUtil.switchToWidth(g, SPINE_WIDTH);
+				g.setLineWidth(SPINE_WIDTH);
 				g.setColor(Color.BLACK);
-				g.drawLine(xSpine, y1 + dy, xSpine, y1 + (fanout - 2) * dy);
+				g.c.strokeLine(xSpine, y1 + dy, xSpine, y1 + (fanout - 2) * dy);
 			} else {
 				g.setColor(Color.BLACK);
-				g.fillOval(xSpine - SPINE_DOT / 2, y0 - SPINE_DOT / 2,
+				g.c.fillOval(xSpine - SPINE_DOT / 2, y0 - SPINE_DOT / 2,
 						SPINE_DOT, SPINE_DOT);
 			}
 		}
-		GraphicsUtil.switchToWidth(g, 1);
+
+		g.toDefault();
+
 	}
+
 }

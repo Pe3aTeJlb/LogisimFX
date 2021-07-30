@@ -14,13 +14,10 @@ import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.instance.StdAttr;
 import com.cburch.LogisimFX.tools.key.*;
-import com.cburch.LogisimFX.util.Icons;
-import com.cburch.LogisimFX.util.StringGetter;
 import javafx.beans.binding.StringBinding;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 
-import javax.swing.*;
-import java.awt.*;
 import java.awt.event.InputEvent;
 
 public class SplitterFactory extends AbstractComponentFactory {
@@ -90,7 +87,8 @@ public class SplitterFactory extends AbstractComponentFactory {
 	//
 	@Override
 	public void drawGhost(ComponentDrawContext context,
-			Color color, int x, int y, AttributeSet attrsBase) {
+						  Color color, int x, int y, AttributeSet attrsBase) {
+
 		SplitterAttributes attrs = (SplitterAttributes) attrsBase;
 		context.getGraphics().setColor(color);
 		Location loc = Location.create(x, y);
@@ -99,6 +97,9 @@ public class SplitterFactory extends AbstractComponentFactory {
 		} else {
 			SplitterPainter.drawLines(context, attrs, loc);
 		}
+
+		context.getGraphics().toDefault();
+
 	}
 
 	@Override

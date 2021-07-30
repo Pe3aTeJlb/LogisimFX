@@ -175,7 +175,9 @@ public class Loader implements LibraryLoader {
 	public boolean save(LogisimFile file, File dest) {
 		Library reference = LibraryManager.instance.findReference(file, dest);
 		if (reference != null) {
-			DialogManager.CreateErrorDialog(StringUtil.format(lc.get("fileCircularError"), reference.getDisplayName()), lc.get("fileSaveErrorTitle"));
+			DialogManager.CreateErrorDialog(
+					StringUtil.format(lc.get("fileCircularError"), reference.getDisplayName().getValue()),
+							lc.get("fileSaveErrorTitle"));
 			return false;
 		}
 

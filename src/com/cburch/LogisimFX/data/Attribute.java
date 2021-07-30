@@ -3,15 +3,9 @@
 
 package com.cburch.LogisimFX.data;
 
-import com.cburch.LogisimFX.util.StringGetter;
 import javafx.beans.binding.StringBinding;
 import javafx.scene.Node;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.TextFieldTableCell;
-
-import javax.swing.*;
-import java.awt.*;
 
 public abstract class Attribute<V> {
 
@@ -38,14 +32,6 @@ public abstract class Attribute<V> {
 
 	public Node getCell(V value){
 		return new TextField(toDisplayString(value));
-	}
-
-	public java.awt.Component getCellEditor(Window source, V value) {
-		return getCellEditor(value);
-	}
-
-	public java.awt.Component getCellEditor(V value) {
-		return new JTextField(toDisplayString(value));
 	}
 
 	public String toDisplayString(V value) {

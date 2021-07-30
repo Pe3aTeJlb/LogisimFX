@@ -3,8 +3,6 @@
 
 package com.cburch.LogisimFX.instance;
 
-import java.awt.Font;
-import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,6 +16,7 @@ import com.cburch.LogisimFX.util.EventSourceWeakSupport;
 import com.cburch.LogisimFX.util.StringGetter;
 import com.cburch.LogisimFX.util.UnmodifiableList;
 import com.cburch.LogisimFX.circuit.CircuitState;
+import javafx.scene.text.Font;
 
 class InstanceComponent implements Component, AttributeListener, ToolTipMaker {
 	private EventSourceWeakSupport<ComponentListener> listeners;

@@ -16,10 +16,12 @@ import com.cburch.LogisimFX.tools.AddTool;
 import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.tools.Tool;
 import com.cburch.LogisimFX.util.EventSourceWeakSupport;
+import javafx.beans.binding.StringBinding;
 
 import java.util.*;
 
 public class LoadedLibrary extends Library implements LibraryEventSource {
+
 	private class MyListener implements LibraryListener {
 		public void libraryChanged(LibraryEvent event) {
 			fireLibraryEvent(event);
@@ -57,7 +59,7 @@ public class LoadedLibrary extends Library implements LibraryEventSource {
 	}
 	
 	@Override
-	public String getDisplayName() {
+	public StringBinding getDisplayName() {
 		return base.getDisplayName();
 	}
 	

@@ -247,8 +247,8 @@ class LibraryManager {
 			if (desc != null) {
 				return desc.toDescriptor(loader);
 			} else {
-				throw new LoaderException(StringUtil.format(
-						Strings.get("fileDescriptorUnknownError"), lib.getDisplayName()));
+				throw new LoaderException(LC.createComplexString("fileDescriptorUnknownError",
+						lib.getDisplayName().getValue()));
 			}
 		}
 	}

@@ -8,10 +8,14 @@ import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.circuit.WireSet;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.proj.Project;
+import com.sun.javafx.tk.FontMetrics;
+import com.sun.javafx.tk.Toolkit;
 import javafx.scene.canvas.GraphicsContext;
 
 public class InstancePainter implements InstanceState {
+
 	private ComponentDrawContext context;
 	private InstanceComponent comp;
 	private InstanceFactory factory;
@@ -60,8 +64,16 @@ public class InstancePainter implements InstanceState {
 		return context.getDestination();
 	}
 
-	public GraphicsContext getGraphics() {
+	public Graphics getGraphics() {
 		return context.getGraphics();
+	}
+
+	public GraphicsContext getGraphicsContext() {
+		return context.getGraphicsContext();
+	}
+
+	public FontMetrics getFontMetrics() {
+		return Toolkit.getToolkit().getFontLoader().getFontMetrics(context.getGraphics().getFont());
 	}
 
 	public Circuit getCircuit() {
@@ -222,4 +234,5 @@ public class InstancePainter implements InstanceState {
 			comp.drawLabel(context);
 		}
 	}
+
 }

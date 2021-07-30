@@ -3,16 +3,16 @@
 
 package com.cburch.LogisimFX.comp;
 
-import java.awt.Color;
-import java.awt.Graphics;
-
 import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.data.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
-import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.LogisimVersion;
+
 import javafx.beans.binding.StringBinding;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 
 public abstract class AbstractComponentFactory implements ComponentFactory {
 
@@ -57,33 +57,16 @@ public abstract class AbstractComponentFactory implements ComponentFactory {
 	public void drawGhost(ComponentDrawContext context, Color color,
                           int x, int y, AttributeSet attrs) {
 		Graphics g = context.getGraphics();
-		Bounds bds = getOffsetBounds(attrs);
+		Bounds bds = getOffsetBounds(attrs);;
 		g.setColor(color);
-		GraphicsUtil.switchToWidth(g, 2);
-		g.drawRect(x + bds.getX(), y + bds.getY(),
+		g.setLineWidth(2);
+		g.c.strokeRect(x + bds.getX(), y + bds.getY(),
 			bds.getWidth(), bds.getHeight());
-	}
-/*
-	public void paintIcon(ComponentDrawContext context,
-                          int x, int y, AttributeSet attrs) {
-		Graphics g = context.getGraphics();
-		if (toolIcon != null) {
-			toolIcon.paintIcon(context.getDestination(), g, x + 2, y + 2);
-		} else {
-			g.setColor(Color.black);
-			g.drawRect(x + 5, y + 2, 11, 17);
-			Value[] v = { Value.TRUE, Value.FALSE };
-			for (int i = 0; i < 3; i++) {
-				g.setColor(v[i % 2].getColor());
-				g.fillOval(x + 5 - 1, y + 5 + 5 * i - 1, 3, 3);
-				g.setColor(v[(i + 1) % 2].getColor());
-				g.fillOval(x + 16 - 1, y + 5 + 5 * i - 1, 3, 3);
-			}
-		}
+
+		g.toDefault();
+
 	}
 
- */
-	
 	public Object getFeature(Object key, AttributeSet attrs) {
 		return null;
 	}

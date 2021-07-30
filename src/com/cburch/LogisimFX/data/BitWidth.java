@@ -56,7 +56,7 @@ public class BitWidth implements Comparable<BitWidth> {
 			return cell;
 
 		}
-
+/*
 		@Override
 		public java.awt.Component getCellEditor(BitWidth value) {
 			JComboBox combo = new JComboBox(choices);
@@ -69,6 +69,7 @@ public class BitWidth implements Comparable<BitWidth> {
 			}
 			return combo;
 		}
+		*/
 	}
 
 	final int width;

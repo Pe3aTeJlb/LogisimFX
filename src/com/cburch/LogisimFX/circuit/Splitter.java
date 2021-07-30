@@ -17,6 +17,7 @@ import javax.swing.*;
 
 public class Splitter extends ManagedComponent
 		implements WireRepair, ToolTipMaker, MenuExtender, AttributeListener {
+
 	// basic data
 	byte[] bit_thread; // how each bit maps to thread within end
 
@@ -24,9 +25,11 @@ public class Splitter extends ManagedComponent
 	CircuitWires.SplitterData wire_data;
 
 	public Splitter(Location loc, AttributeSet attrs) {
+
 		super(loc, attrs, 3);
 		configureComponent();
 		attrs.addAttributeListener(this);
+
 	}
 
 	//
@@ -44,6 +47,7 @@ public class Splitter extends ManagedComponent
 	
 	@Override
 	public boolean contains(Location loc) {
+
 		if (super.contains(loc)) {
 			Location myLoc = getLocation();
 			Direction facing = getAttributeSet().getValue(StdAttr.FACING);
@@ -57,9 +61,11 @@ public class Splitter extends ManagedComponent
 		} else {
 			return false;
 		}
+
 	}
 
 	private synchronized void configureComponent() {
+
 		SplitterAttributes attrs = (SplitterAttributes) getAttributeSet();
 		SplitterParameters parms = attrs.getParameters();
 		int fanout = attrs.fanout;
@@ -98,12 +104,14 @@ public class Splitter extends ManagedComponent
 		setEnds(ends);
 		recomputeBounds();
 		fireComponentInvalidated(new ComponentEvent(this));
+
 	}
 
 	//
 	// user interface methods
 	//
 	public void draw(ComponentDrawContext context) {
+
 		SplitterAttributes attrs = (SplitterAttributes) getAttributeSet();
 		if (attrs.appear == SplitterAttributes.APPEAR_LEGACY) {
 			SplitterPainter.drawLegacy(context, attrs, getLocation());
@@ -113,6 +121,7 @@ public class Splitter extends ManagedComponent
 			SplitterPainter.drawLabels(context, attrs, loc);
 			context.drawPins(this);
 		}
+
 	}
 
 	@Override
@@ -194,4 +203,5 @@ public class Splitter extends ManagedComponent
 	public void attributeValueChanged(AttributeEvent e) {
 		configureComponent();
 	}
+
 }

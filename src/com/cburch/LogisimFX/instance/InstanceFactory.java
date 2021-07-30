@@ -3,30 +3,27 @@
 
 package com.cburch.LogisimFX.instance;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.util.Collections;
 import java.util.List;
-
-import javax.swing.Icon;
 
 import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.AbstractComponentFactory;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.data.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.Pokable;
 import com.cburch.LogisimFX.tools.key.KeyConfigurator;
-import com.cburch.LogisimFX.util.Icons;
-import com.cburch.LogisimFX.util.StringGetter;
-import com.cburch.LogisimFX.util.StringUtil;
 import com.cburch.LogisimFX.util.UnmodifiableList;
 import com.cburch.LogisimFX.LogisimVersion;
 import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.logisim.gui.log.Loggable;
+
 import javafx.beans.binding.StringBinding;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 
 /**
  * Represents a category of components that appear in a circuit. This class
@@ -90,33 +87,6 @@ public abstract class InstanceFactory extends AbstractComponentFactory {
 	@Override
 	public ImageView getIcon(){
 		return icon;
-	}
-
-	@Override
-	public final void paintIcon(ComponentDrawContext context,
-                                int x, int y, AttributeSet attrs) {
-		InstancePainter painter = context.getInstancePainter();
-		painter.setFactory(this, attrs);
-		Graphics g = painter.getGraphics();
-		g.translate(x, y);
-		paintIcon(painter);
-		g.translate(-x, -y);
-
-		if (painter.getFactory() == null) {
-			Icon i = icon;
-			if (i == null) {
-				String n = iconName;
-				if (n != null) {
-					i = Icons.getIcon(n);
-					if (i == null) n = null;
-				}
-			}
-			if (i != null) {
-				i.paintIcon(context.getDestination(), g, x + 2, y + 2);
-			} else {
-				super.paintIcon(context, x, y, attrs);
-			}
-		}
 	}
 
 	@Override
@@ -263,17 +233,15 @@ public abstract class InstanceFactory extends AbstractComponentFactory {
 		InstancePainter painter = context.getInstancePainter();
 		Graphics g = painter.getGraphics();
 		g.setColor(color);
-		g.translate(x, y);
+		g.c.translate(x, y);
 		painter.setFactory(this, attrs);
 		paintGhost(painter);
-		g.translate(-x, -y);
+		g.c.translate(-x, -y);
 		if (painter.getFactory() == null) {
 			super.drawGhost(context, color, x, y, attrs);
 		}
-	}
+		g.toDefault();
 
-	public void paintIcon(InstancePainter painter) {
-		painter.setFactory(null, null);
 	}
 
 	public void paintGhost(InstancePainter painter) {

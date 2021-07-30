@@ -6,6 +6,7 @@ package com.cburch.LogisimFX.data;
 import java.util.List;
 
 public interface AttributeSet {
+
 	public Object clone();
 	public void addAttributeListener(AttributeListener l);
 	public void removeAttributeListener(AttributeListener l);
@@ -21,4 +22,5 @@ public interface AttributeSet {
 
 	public <V> V getValue(Attribute<V> attr);
 	public <V> void setValue(Attribute<V> attr, V value);
+
 }

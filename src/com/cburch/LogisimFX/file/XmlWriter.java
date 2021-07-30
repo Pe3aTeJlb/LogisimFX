@@ -163,7 +163,7 @@ class XmlWriter {
 		String lib_name;
 		if (lib == null) {
 			loader.showError(StringUtil.format("tool `%s' not found",
-				tool.getDisplayName()));
+				tool.getDisplayName().getValue()));
 			return null;
 		} else if (lib == file) {
 			lib_name = null;

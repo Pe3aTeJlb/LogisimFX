@@ -3,24 +3,24 @@
 
 package com.cburch.LogisimFX.data;
 
-import com.bric.swing.ColorPicker;
 import com.cburch.LogisimFX.newgui.MainFrame.AttributeTable;
-import com.cburch.LogisimFX.util.FontUtil;
 import com.cburch.LogisimFX.util.JInputComponent;
 import com.cburch.LogisimFX.util.StringGetter;
 import com.connectina.swing.fontchooser.JFontChooser;
 import javafx.beans.binding.StringBinding;
+import javafx.embed.swing.SwingNode;
 import javafx.scene.Node;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.cell.ComboBoxTableCell;
-import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.util.Callback;
+import javafx.scene.control.ComboBoxBase;
+import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
-import java.awt.*;
 
 public class Attributes {
 
@@ -177,7 +177,7 @@ public class Attributes {
 		OptionComboRenderer(Attribute<V> attr) {
 			this.attr = attr;
 		}
-
+/*
 		@Override
 		public Component getListCellRendererComponent(JList list,
 				Object value, int index, boolean isSelected,
@@ -191,6 +191,8 @@ public class Attributes {
 			}
 			return ret;
 		}
+
+ */
 
 	}
 
@@ -233,7 +235,7 @@ public class Attributes {
 			return cell;
 
 		}
-
+/*
 		@Override
 		public Component getCellEditor(Object value) {
 			JComboBox combo = new JComboBox(vals);
@@ -242,6 +244,9 @@ public class Attributes {
 			else combo.setSelectedItem(value);
 			return combo;
 		}
+
+
+ */
 
 	}
 
@@ -349,6 +354,13 @@ public class Attributes {
 			return Integer.valueOf(v);
 		}
 
+		//Todo
+		@Override
+		public Node getCell(Integer value) {
+			return super.getCell(value);
+		}
+
+		/*
 		@Override
 		public Component getCellEditor(Integer value) {
 			if (end - start + 1 > 32) {
@@ -366,6 +378,8 @@ public class Attributes {
 				return combo;
 			}
 		}
+
+ */
 
 	}
 
@@ -404,42 +418,51 @@ public class Attributes {
 		public String toDisplayString(Font f) {
 			if (f == null) return "???";
 			return f.getFamily()
-				+ " " + FontUtil.toStyleDisplayString(f.getStyle())
+				+ " " + f.getStyle()
 				+ " " + f.getSize();
 		}
 
 		@Override
 		public String toStandardString(Font f) {
 			return f.getFamily()
-				+ " " + FontUtil.toStyleStandardString(f.getStyle())
+				+ " " + f.getStyle()
 				+ " " + f.getSize();
 		}
 
 		@Override
 		public Font parse(String value) {
-			return Font.decode(value);
+			//Todo
+			//return Font.
+			//return Font.decode(value);
+			return Font.font("Monospaced", FontWeight.BOLD, FontPosture.ITALIC,72);
 		}
 
+		public Node getCell(Font value){
+			return new TextField();
+		}
+/*
 		@Override
 		public Component getCellEditor(Font value) {
 			return new FontChooser(value);
 		}
 
+ */
+
 	}
 
-	private static class FontChooser extends JFontChooser implements JInputComponent {
+	private static class FontChooser {
 
-		FontChooser(Font initial) {
-			super(initial);
-		}
+		//FontChooser(Font initial) {
+		//	super(initial);
+		//}
 
-		public Object getValue() {
-			return getSelectedFont();
-		}
+		//public Object getValue() {
+		//	return getSelectedFont();
+		//}
 
-		public void setValue(Object value) {
-			setSelectedFont((Font) value);
-		}
+		//public void setValue(Object value) {
+		//	setSelectedFont((Font) value);
+		//}
 
 	}
 
@@ -470,12 +493,12 @@ public class Attributes {
 		@Override
 		public String toStandardString(Color c) {
 			String ret = "#" + hex(c.getRed()) + hex(c.getGreen()) + hex(c.getBlue());
-			return c.getAlpha() == 255 ? ret : ret + hex(c.getAlpha());
+			return c.getOpacity() == 255 ? ret : ret + hex(c.getOpacity());
 		}
 
-		private String hex(int value) {
-			if (value >= 16) return Integer.toHexString(value);
-			else return "0" + Integer.toHexString(value);
+		private String hex(double value) {
+			if (value >= 16) return Double.toHexString(value);
+			else return "0" + Double.toHexString(value);
 		}
 
 		@Override
@@ -487,32 +510,34 @@ public class Attributes {
 				int a = Integer.parseInt(value.substring(7, 9), 16);
 				return new Color(r, g, b, a);
 			} else {
-				return Color.decode(value);
+				return Color.valueOf(value);
+				//return Color.decode(value);
 			}
 		}
 
 		@Override
-		public Component getCellEditor(Color value) {
+		public ComboBoxBase<Color> getCell(Color value) {
 			Color init = value == null ? Color.BLACK : value;
-			return new ColorChooser(init);
+			return new ColorPicker(init);
 		}
 
 	}
 	
-	private static class ColorChooser extends ColorPicker implements JInputComponent {
+	private static class ColorChooser extends ColorPicker {
 
 		ColorChooser(Color initial) {
-			if (initial != null) setColor(initial);
-			setOpacityVisible(true);
+			if (initial != null) setValue(initial);
+			//setOpacityVisible(true);
 		}
 
-		public Object getValue() {
-			return getColor();
-		}
+		//public Color getValue() {
+		//	return this.getValue();
+		//}
 
-		public void setValue(Object value) {
-			setColor((Color) value);
-		}
+		//public void setValue(Object value) {
+		//	setColor((Color) value);
+		//}
 
 	}
+
 }

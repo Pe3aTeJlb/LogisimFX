@@ -6,6 +6,7 @@ package com.cburch.LogisimFX.circuit;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.std.wiring.Pin;
@@ -14,9 +15,12 @@ import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.StringGetter;
 import com.cburch.LogisimFX.util.StringUtil;
 import javafx.beans.binding.StringBinding;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map;
@@ -138,8 +142,14 @@ public class SubcircuitFactory extends InstanceFactory {
 			pins[i] = pin;
 
 			String label = pin.getAttributeValue(StdAttr.LABEL);
+			//Todo
 			if (label != null && label.length() > 0) {
-				ports[i].setToolTip(StringUtil.constantGetter(label));
+				ports[i].setToolTip(new StringBinding() {
+					@Override
+					protected String computeValue() {
+						return label;
+					}
+				});
 			}
 		}
 
@@ -223,8 +233,9 @@ public class SubcircuitFactory extends InstanceFactory {
 	//
 	@Override
 	public void paintGhost(InstancePainter painter) {
+
 		Graphics g = painter.getGraphics();
-		Color fg = g.getColor();
+		Color fg = (Color) g.getFill();
 		int v = fg.getRed() + fg.getGreen() + fg.getBlue();
 		Composite oldComposite = null;
 		if (g instanceof Graphics2D && v > 50) {
@@ -236,6 +247,7 @@ public class SubcircuitFactory extends InstanceFactory {
 		if (oldComposite != null) {
 			((Graphics2D) g).setComposite(oldComposite);
 		}
+
 	}
 
 	@Override
@@ -244,7 +256,7 @@ public class SubcircuitFactory extends InstanceFactory {
 		painter.drawPorts();
 	}
 
-	private void paintBase(InstancePainter painter, Graphics g) {
+	private void paintBase(InstancePainter painter, GraphicsContext g) {
 		CircuitAttributes attrs = (CircuitAttributes) painter.getAttributeSet();
 		Direction facing = attrs.getFacing();
 		Direction defaultFacing = source.getAppearance().getFacing();

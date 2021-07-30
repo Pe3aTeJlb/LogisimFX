@@ -7,6 +7,7 @@ import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
 import java.awt.*;
@@ -55,6 +56,7 @@ class PropagationPoints {
 	}
 
 	void draw(ComponentDrawContext context) {
+
 		if (data.isEmpty()) return;
 
 		CircuitState state = context.getCircuitState();
@@ -64,19 +66,21 @@ class PropagationPoints {
 		}
 
 		Graphics g = context.getGraphics();
-		GraphicsUtil.switchToWidth(g, 2);
+		g.setLineWidth(2);
 		for (Entry e : data) {
 			if (e.state == state) {
 				Location p = e.loc;
-				g.drawOval(p.getX() - 4, p.getY() - 4, 8, 8);
+				g.c.strokeOval(p.getX() - 4, p.getY() - 4, 8, 8);
 			} else if (stateMap.containsKey(e.state)) {
 				CircuitState substate = stateMap.get(e.state);
 				Component subcirc = substate.getSubcircuit();
 				Bounds b = subcirc.getBounds();
-				g.drawRect(b.getX(), b.getY(), b.getWidth(), b.getHeight());
+				g.c.strokeRect(b.getX(), b.getY(), b.getWidth(), b.getHeight());
 			}
 		}
-		GraphicsUtil.switchToWidth(g, 1);
+
+		g.toDefault();
+
 	}
 
 	private void addSubstates(HashMap<CircuitState, CircuitState> map,

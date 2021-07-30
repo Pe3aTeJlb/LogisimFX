@@ -9,6 +9,7 @@ import com.cburch.LogisimFX.data.AttributeSet;
 import com.cburch.LogisimFX.data.BitWidth;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.util.StringGetter;
+import javafx.beans.binding.StringBinding;
 
 public class Port {
 	public static final String INPUT = "input";
@@ -24,7 +25,7 @@ public class Port {
 	private BitWidth widthFixed;
 	private Attribute<BitWidth> widthAttr;
 	private boolean exclude;
-	private StringGetter toolTip;
+	private StringBinding toolTip;
 	
 	public Port(int dx, int dy, String type, BitWidth bits) {
 		this(dx, dy, type, bits, defaultExclusive(type));
@@ -63,13 +64,13 @@ public class Port {
 		this.toolTip = null;
 	}
 	
-	public void setToolTip(StringGetter value) {
+	public void setToolTip(StringBinding value) {
 		toolTip = value;
 	}
 	
-	public String getToolTip() {
-		StringGetter getter = toolTip;
-		return getter == null ? null : getter.get();
+	public StringBinding getToolTip() {
+		StringBinding getter = toolTip;
+		return getter;
 	}
 	
 	public Attribute<BitWidth> getWidthAttribute() {

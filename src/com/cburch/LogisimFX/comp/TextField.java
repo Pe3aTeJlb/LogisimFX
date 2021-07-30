@@ -4,13 +4,18 @@
 package com.cburch.LogisimFX.comp;
 
 import com.cburch.LogisimFX.data.Bounds;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.util.GraphicsUtil;
+import com.sun.javafx.tk.FontMetrics;
+import com.sun.javafx.tk.Toolkit;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.text.Font;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class TextField {
+
 	public static final int H_LEFT    = GraphicsUtil.H_LEFT;
 	public static final int H_CENTER    = GraphicsUtil.H_CENTER;
 	public static final int H_RIGHT  = GraphicsUtil.H_RIGHT;
@@ -124,10 +129,10 @@ public class TextField {
 		int y = this.y;
 		FontMetrics fm;
 		if (font == null)   fm = g.getFontMetrics();
-		else                fm = g.getFontMetrics(font);
-		int width = fm.stringWidth(text);
-		int ascent = fm.getAscent();
-		int descent = fm.getDescent();
+		else                fm = g.getFontmetricsForFont(font);
+		int width = (int)fm.computeStringWidth(text);
+		int ascent = (int)fm.getAscent();
+		int descent = (int)fm.getDescent();
 		switch (halign) {
 		case TextField.H_CENTER:    x -= width / 2; break;
 		case TextField.H_RIGHT:  x -= width; break;
@@ -144,15 +149,16 @@ public class TextField {
 	}
 
 	public void draw(Graphics g) {
+
 		Font old = g.getFont();
 		if (font != null) g.setFont(font);
 
 		int x = this.x;
 		int y = this.y;
 		FontMetrics fm = g.getFontMetrics();
-		int width = fm.stringWidth(text);
-		int ascent = fm.getAscent();
-		int descent = fm.getDescent();
+		int width = (int)fm.computeStringWidth(text);
+		int ascent = (int)fm.getAscent();
+		int descent = (int)fm.getDescent();
 		switch (halign) {
 		case TextField.H_CENTER:    x -= width / 2; break;
 		case TextField.H_RIGHT:  x -= width; break;
@@ -165,8 +171,9 @@ public class TextField {
 		case TextField.V_BOTTOM:    y -= descent; break;
 		default:                    break;
 		}
-		g.drawString(text, x, y);
+		g.c.strokeText(text, x, y);
 		g.setFont(old);
+
 	}
 
 }

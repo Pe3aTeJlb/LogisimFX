@@ -6,9 +6,12 @@ package com.cburch.LogisimFX.instance;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.std.LC;
 
-import java.awt.*;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 
 public interface StdAttr {
+
 	public static final Attribute<Direction> FACING
 		= Attributes.forDirection("facing", LC.createStringBinding("stdFacingAttr"));
 
@@ -38,5 +41,6 @@ public interface StdAttr {
 	public static final Attribute<Font> LABEL_FONT
 		= Attributes.forFont("labelfont", LC.createStringBinding("stdLabelFontAttr"));
 	public static final Font DEFAULT_LABEL_FONT
-		= new Font("SansSerif", Font.PLAIN, 12);
+		= Font.font("SansSerif", FontWeight.BOLD, FontPosture.REGULAR, 12);
+
 }

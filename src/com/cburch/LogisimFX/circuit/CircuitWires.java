@@ -9,6 +9,7 @@ import com.cburch.LogisimFX.comp.EndData;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.Instance;
 import com.cburch.LogisimFX.instance.StdAttr;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.wiring.PullResistor;
 import com.cburch.LogisimFX.std.wiring.Tunnel;
 import com.cburch.LogisimFX.util.GraphicsUtil;
@@ -393,9 +394,8 @@ class CircuitWires {
 		boolean showState = context.getShowState();
 		CircuitState state = context.getCircuitState();
 
-		GraphicsContext g = context.getGraphics();
-		g.setFill(Color.BLACK);
-		g.setStroke(Color.BLACK);
+		Graphics g = context.getGraphics();
+		g.setColor(Color.BLACK);
 		g.setLineWidth(Wire.WIDTH);
 
 		WireSet highlighted = context.getHighlightedWires();
@@ -408,27 +408,24 @@ class CircuitWires {
 				Location t = w.e1;
 				WireBundle wb = bmap.getBundleAt(s);
 				if (!wb.isValid()) {
-					g.setFill(Value.WIDTH_ERROR_COLOR);
-					g.setStroke(Value.WIDTH_ERROR_COLOR);
+					g.setColor(Value.WIDTH_ERROR_COLOR);
 
 				} else if (showState) {
 					if (!isValid) {
-						g.setFill(Value.NIL_COLOR);
-						g.setStroke(Value.NIL_COLOR);
+						g.setColor(Value.NIL_COLOR);
+
 					} else{
-						g.setFill(state.getValue(s).getColor());
-						g.setStroke(state.getValue(s).getColor());
+						g.setColor(state.getValue(s).getColor());
 					}
 				} else {
-					g.setFill(Color.BLACK);
-					g.setStroke(Color.BLACK);
+					g.setColor(Color.BLACK);
 				}
 				if (highlighted.containsWire(w)) {
 					g.setLineWidth(Wire.WIDTH + 2);
-					g.strokeLine(s.getX(), s.getY(), t.getX(), t.getY());
+					g.c.strokeLine(s.getX(), s.getY(), t.getX(), t.getY());
 					g.setLineWidth(Wire.WIDTH);
 				} else {
-					g.strokeLine(s.getX(), s.getY(), t.getX(), t.getY());
+					g.c.strokeLine(s.getX(), s.getY(), t.getX(), t.getY());
 				}
 			}
 
@@ -437,24 +434,20 @@ class CircuitWires {
 					WireBundle wb = bmap.getBundleAt(loc);
 					if (wb != null) {
 						if (!wb.isValid()) {
-							g.setFill(Value.WIDTH_ERROR_COLOR);
-							g.setStroke(Value.WIDTH_ERROR_COLOR);
+							g.setColor(Value.WIDTH_ERROR_COLOR);
 						} else if (showState) {
 							if (!isValid) {
-								g.setFill(Value.NIL_COLOR);
-								g.setStroke(Value.NIL_COLOR);
+								g.setColor(Value.NIL_COLOR);
 							} else{
-								g.setFill(state.getValue(loc).getColor());
-								g.setStroke(state.getValue(loc).getColor());
+								g.setColor(state.getValue(loc).getColor());
 							}
 						} else {
-							g.setFill(Color.BLACK);
-							g.setStroke(Color.BLACK);
+							g.setColor(Color.BLACK);
 						}
 						if (highlighted.containsLocation(loc)) {
-							g.fillOval(loc.getX() - 5, loc.getY() - 5, 10, 10);
+							g.c.fillOval(loc.getX() - 5, loc.getY() - 5, 10, 10);
 						} else {
-							g.fillOval(loc.getX() - 4, loc.getY() - 4, 8, 8);
+							g.c.fillOval(loc.getX() - 4, loc.getY() - 4, 8, 8);
 						}
 					}
 				}
@@ -466,26 +459,22 @@ class CircuitWires {
 					Location t = w.e1;
 					WireBundle wb = bmap.getBundleAt(s);
 					if (!wb.isValid()) {
-						g.setFill(Value.WIDTH_ERROR_COLOR);
-						g.setStroke(Value.WIDTH_ERROR_COLOR);
+						g.setColor(Value.WIDTH_ERROR_COLOR);
 					} else if (showState) {
 						if (!isValid) {
-							g.setFill(Value.NIL_COLOR);
-							g.setStroke(Value.NIL_COLOR);
+							g.setColor(Value.NIL_COLOR);
 						} else{
-							g.setFill(state.getValue(s).getColor());
-							g.setStroke(state.getValue(s).getColor());
+							g.setColor(state.getValue(s).getColor());
 						}
 					} else {
-						g.setFill(Color.BLACK);
-						g.setStroke(Color.BLACK);
+						g.setColor(Color.BLACK);
 					}
 					if (highlighted.containsWire(w)) {
 						g.setLineWidth(Wire.WIDTH + 2);
-						g.strokeLine(s.getX(), s.getY(), t.getX(), t.getY());
+						g.c.strokeLine(s.getX(), s.getY(), t.getX(), t.getY());
 						g.setLineWidth(Wire.WIDTH);
 					} else {
-						g.strokeLine(s.getX(), s.getY(), t.getX(), t.getY());
+						g.c.strokeLine(s.getX(), s.getY(), t.getX(), t.getY());
 					}
 				}
 			}
@@ -503,30 +492,29 @@ class CircuitWires {
 						WireBundle wb = bmap.getBundleAt(loc);
 						if (wb != null) {
 							if (!wb.isValid()) {
-								g.setFill(Value.WIDTH_ERROR_COLOR);
-								g.setStroke(Value.WIDTH_ERROR_COLOR);
+								g.setColor(Value.WIDTH_ERROR_COLOR);
 							} else if (showState) {
 								if (!isValid){
-									g.setFill(Value.NIL_COLOR);
-									g.setStroke(Value.NIL_COLOR);
+									g.setColor(Value.NIL_COLOR);
 								}else{
-									g.setFill(state.getValue(loc).getColor());
-									g.setStroke(state.getValue(loc).getColor());
+									g.setColor(state.getValue(loc).getColor());
 								}
 							} else {
-								g.setFill(Color.BLACK);
-								g.setStroke(Color.BLACK);
+								g.setColor(Color.BLACK);
 							}
 							if (highlighted.containsLocation(loc)) {
-								g.fillOval(loc.getX() - 5, loc.getY() - 5, 10, 10);
+								g.c.fillOval(loc.getX() - 5, loc.getY() - 5, 10, 10);
 							} else {
-								g.fillOval(loc.getX() - 4, loc.getY() - 4, 8, 8);
+								g.c.fillOval(loc.getX() - 4, loc.getY() - 4, 8, 8);
 							}
 						}
 					}
 				}
 			}
 		}
+
+		g.toDefault();
+
 	}
 
 	//

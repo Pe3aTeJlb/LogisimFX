@@ -3,14 +3,13 @@
 
 package com.cburch.LogisimFX.comp;
 
-import java.awt.Color;
-
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.util.StringGetter;
 import com.cburch.LogisimFX.LogisimVersion;
 
 import javafx.beans.binding.StringBinding;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 
 /**
  * Represents a category of components that appear in a circuit. This class
@@ -34,8 +33,6 @@ public interface ComponentFactory extends AttributeDefaultProvider {
 	boolean isAllDefaultValues(AttributeSet attrs, LogisimVersion ver);
 	Object getDefaultAttributeValue(Attribute<?> attr, LogisimVersion ver);
 	void drawGhost(ComponentDrawContext context, Color color,
-                          int x, int y, AttributeSet attrs);
-	void paintIcon(ComponentDrawContext context,
                           int x, int y, AttributeSet attrs);
 	/**
 	 * Retrieves special-purpose features for this factory. This technique

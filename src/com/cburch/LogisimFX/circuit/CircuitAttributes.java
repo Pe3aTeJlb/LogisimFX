@@ -8,8 +8,8 @@ import com.cburch.LogisimFX.circuit.appear.CircuitAppearanceListener;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.Instance;
 import com.cburch.LogisimFX.instance.StdAttr;
+import javafx.scene.text.Font;
 
-import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
 

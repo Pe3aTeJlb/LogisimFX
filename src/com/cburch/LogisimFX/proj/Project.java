@@ -3,6 +3,7 @@
 
 package com.cburch.LogisimFX.proj;
 
+import com.cburch.LogisimFX.draw.canvas.Selection;
 import com.cburch.LogisimFX.file.*;
 import com.cburch.LogisimFX.circuit.*;
 import com.cburch.LogisimFX.newgui.MainFrame.MainFrameController;
@@ -14,11 +15,11 @@ import com.cburch.LogisimFX.tools.Tool;
 import com.cburch.LogisimFX.util.EventSourceWeakSupport;
 import com.cburch.LogisimFX.util.JFileChoosers;
 
-import javax.swing.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 
 public class Project {
+
 	private static final int MAX_UNDO_SIZE = 64;
 
 	private static class ActionData {
@@ -93,14 +94,6 @@ public class Project {
 		return frameController;
 	}
 
-	public void setFrame(Frame value) {
-		if (frame == value) return;
-		Frame oldValue = frame;
-		frame = value;
-		Projects.windowCreated(this, oldValue, value);
-		value.getCanvas().getSelection().addListener(myListener);
-	}
-
 	//
 	// access methods
 	//
@@ -120,21 +113,6 @@ public class Project {
 		return depends;
 	}
 
-	
-	public OptionsFrame getOptionsFrame(boolean create) {
-		if (optionsFrame == null || optionsFrame.getLogisimFile() != file) {
-			if (create) optionsFrame = new OptionsFrame(this);
-			else optionsFrame = null;
-		}
-		return optionsFrame;
-	}
-	
-	public LogFrame getLogFrame(boolean create) {
-		if (logFrame == null) {
-			if (create) logFrame = new LogFrame(this);
-		}
-		return logFrame;
-	}
 
 	public Circuit getCurrentCircuit() {
 		return circuitState == null ? null : circuitState.getCircuit();
@@ -178,12 +156,6 @@ public class Project {
 
 	public boolean isFileDirty() {
 		return undoMods != 0;
-	}
-
-	public JFileChooser createChooser() {
-		if (file == null) return JFileChoosers.create();
-		Loader loader = file.getLoader();
-		return loader == null ? JFileChoosers.create() : loader.createChooser();
 	}
 
 	//
@@ -326,7 +298,9 @@ public class Project {
 		if (tool == value) return;
 
 		Tool old = tool;
-		/*
+
+		System.out.println("setTool "+value.getDisplayName().getValue());
+/*
 		Canvas canvas = frame.getCanvas();
 		if (old != null) old.deselect(canvas);
 		Selection selection = canvas.getSelection();
@@ -347,9 +321,12 @@ public class Project {
 			if (!xn.isEmpty()) doAction(xn.toAction(null));
 		}
 
+
+
 		tool = value;
 		if (tool != null) tool.select(frame.getCanvas());
-		*/
+ */
+		tool = value;
 		fireEvent(ProjectEvent.ACTION_SET_TOOL, old, tool);
 
 	}
