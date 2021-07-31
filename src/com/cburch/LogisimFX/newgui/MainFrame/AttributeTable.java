@@ -85,7 +85,7 @@ public class AttributeTable extends GridPane {
 
     public void setTool(Tool tl){
 
-        if(tool != tl) {
+        if(tool != tl && tl.getAttributeSet() != null) {
             tool = tl;
             updateTable();
         }

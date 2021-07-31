@@ -6,10 +6,10 @@ package com.cburch.LogisimFX.util;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.sun.javafx.tk.FontMetrics;
 import com.sun.javafx.tk.Toolkit;
-import javafx.scene.shape.ArcType;
-import javafx.scene.text.Font;
 
-import java.awt.*;
+import javafx.scene.shape.ArcType;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 
 public class GraphicsUtil {
 
@@ -30,7 +30,7 @@ public class GraphicsUtil {
 	}
 
 	static public Rectangle getTextBounds(Graphics g, Font font,
-			String text, int x, int y, int halign, int valign) {
+										  String text, int x, int y, int halign, int valign) {
 
 		if (g == null) return new Rectangle(x, y, 0, 0);
 		Font oldfont = g.getFont();
@@ -52,17 +52,23 @@ public class GraphicsUtil {
 		
 		Rectangle ret = new Rectangle(x, y, width, height);
 		switch (halign) {
-			case H_CENTER: ret.translate(-(width / 2), 0); break;
-			case H_RIGHT:  ret.translate(-width, 0); break;
+			case H_CENTER: ret.setX(ret.getX()-(width / 2)); break;
+			case H_RIGHT:  ret.setX(ret.getX()-width); break;
+			//case H_CENTER: ret.translate(-(width / 2), 0); break;
+			//case H_RIGHT:  ret.translate(-width, 0); break;
 			default: ;
 		}
 
 		switch (valign) {
 			case V_TOP:      break;
-			case V_CENTER:   ret.translate(0, -(ascent / 2)); break;
-			case V_CENTER_OVERALL: ret.translate(0, -(height / 2)); break;
-			case V_BASELINE: ret.translate(0, -ascent); break;
-			case V_BOTTOM:   ret.translate(0, -height); break;
+			case V_CENTER:  ret.setY(ret.getY()-(ascent / 2)); break;
+			case V_CENTER_OVERALL:  ret.setY(ret.getY()-(height / 2)); break;
+			case V_BASELINE: ret.setY(ret.getY()-ascent); break;
+			case V_BOTTOM:   ret.setY(ret.getY()-height); break;
+			//case V_CENTER:   ret.translate(0, -(ascent / 2)); break;
+			//case V_CENTER_OVERALL: ret.translate(0, -(height / 2)); break;
+			//case V_BASELINE: ret.translate(0, -ascent); break;
+			//case V_BOTTOM:   ret.translate(0, -height); break;
 			default: ;
 		}
 
@@ -86,8 +92,8 @@ public class GraphicsUtil {
 		Rectangle bd = getTextBounds(g, text, x, y, halign, valign);
 		double buf = g.getLineWidth();
 		g.setLineWidth(1);
-		g.c.fillText(text, bd.x,
-				bd.y + g.getFontMetrics().getAscent());
+		g.c.fillText(text, bd.getX(),
+				bd.getY() + g.getFontMetrics().getAscent());
 		g.setLineWidth(buf);
 	}
 	static public void drawCenteredText(Graphics g, String text,

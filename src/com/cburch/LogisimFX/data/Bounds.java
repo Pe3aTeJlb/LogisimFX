@@ -3,9 +3,9 @@
 
 package com.cburch.LogisimFX.data;
 
-import java.awt.Rectangle;
 
 import com.cburch.LogisimFX.util.Cache;
+import javafx.scene.shape.Rectangle;
 
 /**
  * Represents an immutable rectangular bounding box. This is analogous to
@@ -13,6 +13,7 @@ import com.cburch.LogisimFX.util.Cache;
  * are immutable.
  */
 public class Bounds {
+
 	public static Bounds EMPTY_BOUNDS = new Bounds(0, 0, 0, 0);
 	private static final Cache cache = new Cache();
 
@@ -29,7 +30,7 @@ public class Bounds {
 	}
 
 	public static Bounds create(Rectangle rect) {
-		return create(rect.x, rect.y, rect.width, rect.height);
+		return create((int)rect.getX(), (int)rect.getY(), (int)rect.getWidth(), (int)rect.getHeight());
 	}
 
 	public static Bounds create(Location pt) {
@@ -213,7 +214,7 @@ public class Bounds {
 		int degrees = to.toDegrees() - from.toDegrees();
 		while (degrees >= 360) degrees -= 360;
 		while (degrees < 0) degrees += 360;
-		
+
 		int dx = x - xc;
 		int dy = y - yc;
 		if (degrees == 90) {
@@ -246,4 +247,5 @@ public class Bounds {
 			return create(x0, y0, x1 - x0, y1 - y0);
 		}
 	}
+
 }

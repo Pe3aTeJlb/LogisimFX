@@ -3,17 +3,15 @@
 
 package com.cburch.LogisimFX.proj;
 
-import com.cburch.LogisimFX.draw.canvas.Selection;
 import com.cburch.LogisimFX.file.*;
 import com.cburch.LogisimFX.circuit.*;
+import com.cburch.LogisimFX.newgui.MainFrame.CustomCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.MainFrameController;
-import com.cburch.logisim.gui.log.LogFrame;
-import com.cburch.logisim.gui.opts.OptionsFrame;
+import com.cburch.LogisimFX.newgui.MainFrame.Selection;
 import com.cburch.LogisimFX.tools.AddTool;
 import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.tools.Tool;
 import com.cburch.LogisimFX.util.EventSourceWeakSupport;
-import com.cburch.LogisimFX.util.JFileChoosers;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -64,8 +62,6 @@ public class Project {
 	private CircuitState circuitState;
 	private HashMap<Circuit,CircuitState> stateMap = new HashMap<>();
 	private MainFrameController frameController;
-	private OptionsFrame optionsFrame = null;
-	private LogFrame logFrame = null;
 	private Tool tool = null;
 	private LinkedList<ActionData> undoLog = new LinkedList<ActionData>();
 	private int undoMods = 0;
@@ -148,10 +144,13 @@ public class Project {
 	}
 
 	public Selection getSelection() {
+
+		//CustomCanvas canvas
 		if (frame == null) return null;
 		Canvas canvas = frame.getCanvas();
 		if (canvas == null) return null;
 		return canvas.getSelection();
+
 	}
 
 	public boolean isFileDirty() {

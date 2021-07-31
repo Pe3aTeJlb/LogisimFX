@@ -8,6 +8,7 @@ package com.cburch.LogisimFX.util;
  * the creation of duplicate objects.
  */
 public class Cache {
+
 	private int mask;
 	private Object[] data;
 	
@@ -42,4 +43,5 @@ public class Cache {
 			return value;
 		}
 	}
+
 }

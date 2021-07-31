@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractAttributeSet implements Cloneable, AttributeSet {
+
 	private ArrayList<AttributeListener> listeners = null;
 	
 	public AbstractAttributeSet() { }

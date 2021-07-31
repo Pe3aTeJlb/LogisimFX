@@ -7,27 +7,33 @@ import com.cburch.LogisimFX.circuit.WireSet;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.data.BitWidth;
+import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.data.Value;
-import com.cburch.LogisimFX.draw.canvas.Selection;
+import com.cburch.LogisimFX.file.MouseMappings;
 import com.cburch.LogisimFX.prefs.AppPreferences;
 import com.cburch.LogisimFX.proj.Project;
 
 
+import com.cburch.LogisimFX.tools.Tool;
 import com.sun.javafx.tk.FontMetrics;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 
-import java.awt.event.MouseEvent;
 import java.util.Collections;
 import java.util.Set;
 
 public class CustomCanvas extends Canvas {
 
     private AnchorPane root;
+
+    private Project proj;
 
     public Canvas cv;
     private Graphics g;
@@ -39,6 +45,7 @@ public class CustomCanvas extends Canvas {
     private double dragScreenX, dragScreenY;
     private double[] transform;
 
+    private AnimationTimer update;
 
     //Grid
     private static final Color BACKGROUND = Color.WHITE;
@@ -48,15 +55,33 @@ public class CustomCanvas extends Canvas {
     private static final double SPACING_X = 10;
     private static final double SPACING_Y = 10;
 
-    private AnimationTimer update;
+    //Hertz rate
+    static final Color HALO_COLOR = Color.color(0.753, 1, 1);
 
-    private Project proj;
+    private static final int BOUNDS_BUFFER = 70;
+    // pixels shown in canvas beyond outermost boundaries
+    private static final int THRESH_SIZE_UPDATE = 10;
+    // don't bother to update the size if it hasn't changed more than this
+    static final double SQRT_2 = Math.sqrt(2.0);
+    //private static final int BUTTONS_MASK = InputEvent.BUTTON1_DOWN_MASK
+    //       | InputEvent.BUTTON2_DOWN_MASK | InputEvent.BUTTON3_DOWN_MASK;
+    private static final Color DEFAULT_ERROR_COLOR = Color.color(0.753, 0, 0);
 
+    private static final Color TICK_RATE_COLOR = Color.color(0, 0, 0.361, 0.361);
+    private static final Font TICK_RATE_FONT = Font.font("serif", FontWeight.BOLD, FontPosture.REGULAR, 12);
+
+
+
+    private Component haloedComponent = null;
+    private Circuit haloedCircuit = null;
     private WireSet highlightedWires = WireSet.EMPTY;
+
     private static final Set<Component> NO_COMPONENTS = Collections.emptySet();
     private ComponentDrawContext context, ptContext;
 
+    private Tool dragTool;
     private Selection selection;
+    private MouseMappings mappings;
 
 
     public CustomCanvas(AnchorPane rt, Project project){
@@ -76,6 +101,8 @@ public class CustomCanvas extends Canvas {
         transform = new double[6];
         transform[0] = transform[3] = 1;
         transform[1] = transform[2] = transform[4] = transform[5] = 0;
+
+        this.selection = new Selection(proj, this);
 
         update = new AnimationTimer() {
             @Override
@@ -104,7 +131,6 @@ public class CustomCanvas extends Canvas {
         g.setColor(Color.RED);
         g.c.fillOval(0,0,10,10);
 
-
         drawWithUserState();
 
         drawWidthIncompatibilityData();
@@ -112,7 +138,7 @@ public class CustomCanvas extends Canvas {
         Circuit circ = proj.getCurrentCircuit();
         CircuitState circState = proj.getCircuitState();
 
-        ComponentDrawContext ptContext = new ComponentDrawContext(circ, circState, g);
+        ptContext = new ComponentDrawContext(circ, circState, g);
         ptContext.setHighlightedWires(highlightedWires);
 
         g.setColor(Color.RED);
@@ -137,9 +163,11 @@ public class CustomCanvas extends Canvas {
 
     private void drawGrid(){
 
-            for (int x = snapXToGrid(inverseTransformX(0)); x < snapXToGrid(inverseTransformX(cv.getWidth())); x += SPACING_X) {
+            for (int x = snapXToGrid(inverseTransformX(0));
+                 x < snapXToGrid(inverseTransformX(cv.getWidth())); x += SPACING_X) {
 
-                for (int y = snapYToGrid(inverseTransformY(0)); y < snapYToGrid(inverseTransformY(cv.getHeight())); y += SPACING_Y) {
+                for (int y = snapYToGrid(inverseTransformY(0));
+                     y < snapYToGrid(inverseTransformY(cv.getHeight())); y += SPACING_Y) {
 
                     if(zoom < 0.8f && (float)x % 50 == 0 && (float)y % 50 == 0){
                         g.c.setFill(GRID_DOT_QUARTER);
@@ -159,57 +187,54 @@ public class CustomCanvas extends Canvas {
     private void drawWithUserState() {
 
         Circuit circ = proj.getCurrentCircuit();
-        //Selection sel = proj.getSelection();
         Set<Component> hidden = NO_COMPONENTS;
 
-        /*
-        Tool dragTool = canvas.getDragTool();
         if (dragTool == null) {
             hidden = NO_COMPONENTS;
         } else {
-            hidden = dragTool.getHiddenComponents(canvas);
+            hidden = dragTool.getHiddenComponents(this);
             if (hidden == null) hidden = NO_COMPONENTS;
         }
 
-         */
-/*
         // draw halo around component whose attributes we are viewing
         boolean showHalo = AppPreferences.ATTRIBUTE_HALO.getBoolean();
         if (showHalo && haloedComponent != null && haloedCircuit == circ
                 && !hidden.contains(haloedComponent)) {
-            GraphicsUtil.switchToWidth(g, 3);
-            g.setColor(com.cburch.logisim.gui.main.Canvas.HALO_COLOR);
+
+            g.setLineWidth(3);
+            g.setColor(HALO_COLOR);
             Bounds bds = haloedComponent.getBounds(g).expand(5);
             int w = bds.getWidth();
             int h = bds.getHeight();
-            double a = com.cburch.logisim.gui.main.Canvas.SQRT_2 * w;
-            double b = com.cburch.logisim.gui.main.Canvas.SQRT_2 * h;
-            cvcontext.fillOval().drawOval((int) Math.round(bds.getX() + w/2.0 - a/2.0),
+            double a = SQRT_2 * w;
+            double b = SQRT_2 * h;
+            g.c.strokeOval((int) Math.round(bds.getX() + w/2.0 - a/2.0),
                     (int) Math.round(bds.getY() + h/2.0 - b/2.0),
                     (int) Math.round(a), (int) Math.round(b));
-            GraphicsUtil.switchToWidth(g, 1);
-            g.setColor(java.awt.Color.BLACK);
+
+            g.toDefault();
+
         }
 
 
- */
+
         // draw circuit and selection
         CircuitState circState = proj.getCircuitState();
         boolean printerView = AppPreferences.PRINTER_VIEW.getBoolean();
         context = new ComponentDrawContext(circ, circState, g, printerView);
         context.setHighlightedWires(highlightedWires);
         circ.draw(context, hidden);
-        //sel.draw(context, hidden);
-/*
+        selection.draw(context, hidden);
+
         // draw tool
-        Tool tool = dragTool != null ? dragTool : proj.getTool();
-        if (tool != null && !canvas.isPopupMenuUp()) {
-            Graphics gCopy = g.create();
-            context.setGraphics(gCopy);
-            tool.draw(canvas, context);
-            gCopy.dispose();
+       Tool tool = dragTool != null ? dragTool : proj.getTool();
+        //if (tool != null && !canvas.isPopupMenuUp()) {
+        if (tool != null) {
+            tool.draw(this, context);
+            g.toDefault();
         }
- */
+
+
 
     }
 
@@ -270,19 +295,13 @@ public class CustomCanvas extends Canvas {
             return ((x + 5) / 10) * 10;
         }
     }
+
     public static int snapYToGrid(int y) {
         if (y < 0) {
             return -((-y + 5) / 10) * 10;
         } else {
             return ((y + 5) / 10) * 10;
         }
-    }
-    public static void snapToGrid(MouseEvent e) {
-        int old_x = e.getX();
-        int old_y = e.getY();
-        int new_x = snapXToGrid(old_x);
-        int new_y = snapYToGrid(old_y);
-        e.translatePoint(new_x - old_x, new_y - old_y);
     }
 
     private void setCanvasEvents(){
@@ -291,6 +310,12 @@ public class CustomCanvas extends Canvas {
 
             dragScreenX = event.getX();
             dragScreenY = event.getY();
+
+            dragTool = proj.getTool();
+            if (dragTool != null) {
+                dragTool.mousePressed(this, getGraphics(), event);
+                proj.getSimulator().requestPropagate();
+            }
 
             System.out.println("Point " + inverseTransformX(event.getX()) + " " + inverseTransformY(event.getY()));
             System.out.println("0 Point " + inverseTransformX(0) + " " + inverseTransformY(0));
@@ -314,7 +339,6 @@ public class CustomCanvas extends Canvas {
         });
 
         cv.setOnScroll(event -> {
-
 
             clearRect40K(transform[4], transform[5]);
 
@@ -342,7 +366,128 @@ public class CustomCanvas extends Canvas {
 
         });
 
+        cv.setOnMouseMoved(event -> {
+
+            //Tool tool = getToolFor(e);
+            //if (tool != null) {
+            //    tool.mouseMoved(this, g, event);
+            //}
+
+        });
+
+        cv.setOnMouseEntered(event -> {
+
+            if (dragTool != null) {
+                dragTool.mouseEntered(this, getGraphics(), event);
+            } else {
+                Tool tool = proj.getTool();
+                if (tool != null) {
+                    tool.mouseEntered(this, getGraphics(), event);
+                }
+            }
+
+        });
+
+        cv.setOnMouseExited(event -> {
+
+            if (dragTool != null) {
+                dragTool.mouseExited(this, getGraphics(), event);
+            } else {
+                Tool tool = proj.getTool();
+                if (tool != null) {
+                    tool.mouseExited(this, getGraphics(), event);
+                }
+            }
+
+        });
+
+        /*
+        		//
+		// MouseListener methods
+		//
+		public void mouseClicked(MouseEvent e) { }
+
+		public void mouseMoved(MouseEvent e) {
+			if ((e.getModifiersEx() & BUTTONS_MASK) != 0) {
+				// If the control key is down while the mouse is being
+				// dragged, mouseMoved is called instead. This may well be
+				// an issue specific to the MacOS Java implementation,
+				// but it exists there in the 1.4 and 5.0 versions.
+				mouseDragged(e);
+				return;
+			}
+
+			Tool tool = getToolFor(e);
+			if (tool != null) {
+				tool.mouseMoved(Canvas.this, getGraphics(), e);
+			}
+		}
+
+		public void mouseDragged(MouseEvent e) {
+			if (drag_tool != null) {
+				drag_tool.mouseDragged(Canvas.this, getGraphics(), e);
+			}
+		}
+
+		public void mouseEntered(MouseEvent e) {
+			if (drag_tool != null) {
+				drag_tool.mouseEntered(Canvas.this, getGraphics(), e);
+			} else {
+				Tool tool = getToolFor(e);
+				if (tool != null) {
+					tool.mouseEntered(Canvas.this, getGraphics(), e);
+				}
+			}
+		}
+
+		public void mouseExited(MouseEvent e) {
+			if (drag_tool != null) {
+				drag_tool.mouseExited(Canvas.this, getGraphics(), e);
+			} else {
+				Tool tool = getToolFor(e);
+				if (tool != null) {
+					tool.mouseExited(Canvas.this, getGraphics(), e);
+				}
+			}
+		}
+
+		public void mousePressed(MouseEvent e) {
+			viewport.setErrorMessage(null, null);
+			proj.setStartupScreen(false);
+			Canvas.this.requestFocus();
+			drag_tool = getToolFor(e);
+			if (drag_tool != null) {
+				drag_tool.mousePressed(Canvas.this, getGraphics(), e);
+			}
+
+			completeAction();
+		}
+
+		public void mouseReleased(MouseEvent e) {
+			if (drag_tool != null) {
+				drag_tool.mouseReleased(Canvas.this, getGraphics(), e);
+				drag_tool = null;
+			}
+
+			Tool tool = proj.getTool();
+			if (tool != null) {
+				tool.mouseMoved(Canvas.this, getGraphics(), e);
+			}
+
+			completeAction();
+		}
+
+		private Tool getToolFor(MouseEvent e) {
+			if (menu_on) return null;
+
+			Tool ret = mappings.getToolFor(e);
+			if (ret == null) return proj.getTool();
+			else return ret;
+		}
+         */
+
     }
+
 
 
 
@@ -360,6 +505,53 @@ public class CustomCanvas extends Canvas {
         g.c.setFill(BACKGROUND);
         g.c.fillRect(-prevX/transform[0],-prevY/transform[0],cv.getWidth()/transform[0],cv.getHeight()/transform[0]);
 
+    }
+
+
+    public void setHighlightedWires(WireSet value) {
+        highlightedWires = value == null ? WireSet.EMPTY : value;
+    }
+
+    public void setHaloedComponent(Circuit circ, Component comp) {
+        if (comp == haloedComponent) return;
+        exposeHaloedComponent();
+        haloedCircuit = circ;
+        haloedComponent = comp;
+        exposeHaloedComponent();
+    }
+
+    private void exposeHaloedComponent() {
+        Component c = haloedComponent;
+        if (c == null) return;
+        Bounds bds = c.getBounds(g).expand(7);
+        int w = bds.getWidth();
+        int h = bds.getHeight();
+        double a = SQRT_2 * w;
+        double b = SQRT_2 * h;
+      //  canvas.repaint((int) Math.round(bds.getX() + w/2.0 - a/2.0),
+       //         (int) Math.round(bds.getY() + h/2.0 - b/2.0),
+         //       (int) Math.round(a), (int) Math.round(b));
+    }
+
+
+    public Selection getSelection() {
+        return selection;
+    }
+
+    public Circuit getCircuit(){
+        return proj.getCurrentCircuit();
+    }
+
+    public CircuitState getCircuitState(){
+        return proj.getCircuitState();
+    }
+
+    public Project getProject(){
+        return proj;
+    }
+
+    public Graphics getGraphics(){
+        return g;
     }
 
     public Canvas getCanvas(){return cv;}

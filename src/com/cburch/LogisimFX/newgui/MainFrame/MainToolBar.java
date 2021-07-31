@@ -165,7 +165,9 @@ public class MainToolBar extends ToolBar {
             tip.textProperty().bind(tool.getDescription().concat(bindbuff));
             setTooltip(tip);
 
-            setActions(tool);
+            this.setOnAction(event -> {
+                proj.setTool(tool);
+            });
 
         }
 
