@@ -12,9 +12,9 @@ import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Direction;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.instance.Instance;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.util.EventSourceWeakSupport;
 
-import java.awt.*;
 import java.util.List;
 import java.util.*;
 

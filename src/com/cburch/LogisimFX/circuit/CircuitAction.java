@@ -5,21 +5,23 @@ package com.cburch.LogisimFX.circuit;
 
 import com.cburch.LogisimFX.proj.Action;
 import com.cburch.LogisimFX.proj.Project;
-import com.cburch.LogisimFX.util.StringGetter;
+
+import javafx.beans.binding.StringBinding;
 
 public class CircuitAction extends Action {
-	private StringGetter name;
+
+	private StringBinding name;
 	private CircuitTransaction forward;
 	private CircuitTransaction reverse;
 	
-	CircuitAction(StringGetter name, CircuitMutation forward) {
+	CircuitAction(StringBinding name, CircuitMutation forward) {
 		this.name = name;
 		this.forward = forward;
 	}
 
 	@Override
 	public String getName() {
-		return name.get();
+		return name.getValue();
 	}
 
 	@Override
@@ -36,4 +38,5 @@ public class CircuitAction extends Action {
 			reverse.execute();
 		}
 	}
+
 }

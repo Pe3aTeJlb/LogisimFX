@@ -6,7 +6,7 @@ package com.cburch.LogisimFX.circuit;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.proj.Action;
-import com.cburch.LogisimFX.util.StringGetter;
+import javafx.beans.binding.StringBinding;
 
 import java.util.*;
 
@@ -71,8 +71,8 @@ public final class CircuitMutation extends CircuitTransaction {
 		changes.add(change);
 	}
 
-	public Action toAction(StringGetter name) {
-		if (name == null) name = Strings.getter("unknownChangeAction");
+	public Action toAction(StringBinding name) {
+		if (name == null) name = LC.createStringBinding("unknownChangeAction");
 		return new CircuitAction(name, this);
 	}
 

@@ -6,11 +6,11 @@ package com.cburch.LogisimFX.circuit;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.comp.*;
 import com.cburch.LogisimFX.data.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.tools.CustomHandles;
 import com.cburch.LogisimFX.util.Cache;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
-import java.awt.*;
 import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -179,13 +179,15 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 	}
 
 	public void draw(ComponentDrawContext context) {
+
 		CircuitState state = context.getCircuitState();
 		Graphics g = context.getGraphics();
 
-		GraphicsUtil.switchToWidth(g, WIDTH);
+		g.setLineWidth(WIDTH);
 		g.setColor(state.getValue(e0).getColor());
-		g.drawLine(e0.getX(), e0.getY(),
+		g.c.strokeLine(e0.getX(), e0.getY(),
 			e1.getX(), e1.getY());
+
 	}
 
 	public Object getFeature(Object key) {
