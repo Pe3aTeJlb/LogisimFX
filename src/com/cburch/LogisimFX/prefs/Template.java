@@ -11,7 +11,7 @@ import java.io.UnsupportedEncodingException;
 
 public class Template {
 	public static Template createEmpty() {
-		String circName = Strings.get("newCircuitName");
+		String circName = LC.get("newCircuitName");
 		StringBuilder buf = new StringBuilder();
 		buf.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		buf.append("<project version=\"1.0\">");

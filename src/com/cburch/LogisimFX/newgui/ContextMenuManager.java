@@ -1,12 +1,19 @@
 package com.cburch.LogisimFX.newgui;
 
+import com.cburch.LogisimFX.circuit.CircuitMutation;
+import com.cburch.LogisimFX.circuit.CircuitState;
+import com.cburch.LogisimFX.comp.Component;
+import com.cburch.LogisimFX.instance.Instance;
 import com.cburch.LogisimFX.localization.LC_null;
+import com.cburch.LogisimFX.localization.LC_std;
+import com.cburch.LogisimFX.localization.LC_tools;
 import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.file.LogisimFileActions;
-import com.cburch.LogisimFX.newgui.MainFrame.ProjectCircuitActions;
-import com.cburch.LogisimFX.newgui.MainFrame.ProjectLibraryActions;
+import com.cburch.LogisimFX.newgui.MainFrame.*;
 import com.cburch.LogisimFX.proj.Project;
+import com.cburch.LogisimFX.std.memory.Mem;
+import com.cburch.LogisimFX.std.memory.RomAttributes;
 import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.file.LoadedLibrary;
 import com.cburch.LogisimFX.file.Loader;
@@ -143,13 +150,62 @@ public class ContextMenuManager {
 
     }
 
+    public static ContextMenu ComponentDefaultContextMenu(Project project, Circuit circuit, Component component){
 
-    public static ContextMenu ComponentDefaultContextMenu(){
+        Project proj = project;
+        Circuit circ = circuit;
+        Component comp = component;
+        boolean canChange = proj.getLogisimFile().contains(circ);
 
         ContextMenu contextMenu = new ContextMenu();
-        MenuItem menuItem = new MenuItem("Menu Item");
 
-        contextMenu.getItems().addAll(menuItem);
+        MenuItem del = new MenuItem("Menu Item");
+        del.textProperty().bind(LC_tools.getInstance().createStringBinding("compDeleteItem"));
+        del.setDisable(!canChange);
+        del.setOnAction(event -> {
+
+            Circuit c = proj.getCurrentCircuit();
+            CircuitMutation xn = new CircuitMutation(c);
+            xn.remove(comp);
+            proj.doAction(xn.toAction(LC_tools.getInstance().createStringBinding("removeComponentAction",
+                    comp.getFactory().getDisplayGetter())));
+
+        });
+
+        MenuItem attrs = new MenuItem("Menu Item");
+        attrs.textProperty().bind(LC_tools.getInstance().createStringBinding("compShowAttrItem"));
+        attrs.setOnAction(event -> {
+            proj.getFrameController().setAttributeTable(circ, comp);
+        });
+
+        contextMenu.getItems().addAll(del,attrs);
+
+        return contextMenu;
+
+    }
+
+    public static ContextMenu SelectionContextMenu(CustomCanvas c){
+
+        Project proj = c.getProject();
+        Selection sel = c.getSelection();
+
+        ContextMenu contextMenu = new ContextMenu();
+
+        MenuItem del = new MenuItem();
+        del.textProperty().bind(LC_tools.getInstance().createStringBinding("selDeleteItem"));
+        del.setDisable(!proj.getLogisimFile().contains(proj.getCurrentCircuit()));
+        del.setOnAction(event -> proj.doAction(SelectionActions.clear(sel)));
+
+        MenuItem cut = new MenuItem();
+        cut.textProperty().bind(LC_tools.getInstance().createStringBinding("selCutItem"));
+        cut.setDisable(!proj.getLogisimFile().contains(proj.getCurrentCircuit()));
+        cut.setOnAction(event -> proj.doAction(SelectionActions.cut(sel)));
+
+        MenuItem copy = new MenuItem();
+        copy.textProperty().bind(LC_tools.getInstance().createStringBinding("selCopyItem"));
+        copy.setOnAction(event -> proj.doAction(SelectionActions.copy(sel)));
+
+        contextMenu.getItems().addAll(del,cut,copy);
 
         return contextMenu;
 
@@ -166,12 +222,128 @@ public class ContextMenuManager {
 
     }
 
-    public static ContextMenu MemoryComponentContextMenu(){
+    public static ContextMenu MemoryComponentContextMenu(Mem fact, Instance inst){
+
+        Mem factory = fact;
+        Instance instance = inst;
+        Project proj = ;
+        CircuitState circState = proj.getCircuitState();
+        boolean enabled = circState != null;
+        boolean canChange = proj.getLogisimFile().contains(proj.getCurrentCircuit());
+
+        Object attrs = instance.getAttributeSet();
+        if (attrs instanceof RomAttributes) {
+            ((RomAttributes) attrs).setProject(proj);
+        }
 
         ContextMenu contextMenu = new ContextMenu();
-        MenuItem menuItem = new MenuItem("Menu Item");
 
-        contextMenu.getItems().addAll(menuItem);
+        MenuItem del = new MenuItem();
+        del.textProperty().bind(LC_tools.getInstance().createStringBinding("compDeleteItem"));
+        del.setDisable(!canChange);
+        del.setOnAction(event -> {
+
+            Circuit c = proj.getCurrentCircuit();
+            CircuitMutation xn = new CircuitMutation(c);
+            xn.remove(comp);
+            proj.doAction(xn.toAction(LC_tools.getInstance().createStringBinding("removeComponentAction",
+                    comp.getFactory().getDisplayGetter())));
+
+        });
+
+        MenuItem attrs = new MenuItem();
+        attrs.textProperty().bind(LC_tools.getInstance().createStringBinding("compShowAttrItem"));
+        attrs.setOnAction(event -> {
+            proj.getFrameController().setAttributeTable(circ, comp);
+        });
+
+        MenuItem edit = new MenuItem();
+        edit.setDisable(!enabled);
+        edit.textProperty().bind(LC_std.getInstance().createStringBinding("ramEditMenuItem"));
+        edit.setOnAction(event -> {
+
+            MemState s = factory.getState(instance, circState);
+            if (s == null) return;
+            HexFrame frame = factory.getHexFrame(proj, instance, circState);
+            frame.setVisible(true);
+            frame.toFront();
+
+        });
+
+        MenuItem clear = new MenuItem();
+        clear.setDisable(!enabled);
+        clear.textProperty().bind(LC_std.getInstance().createStringBinding("ramClearMenuItem"));
+        clear.setOnAction(event -> {
+
+            MemState s = factory.getState(instance, circState);
+            boolean isAllZero = s.getContents().isClear();
+            if (isAllZero) return;
+
+            int choice = JOptionPane.showConfirmDialog(frame,
+                    Strings.get("ramConfirmClearMsg"),
+                    Strings.get("ramConfirmClearTitle"),
+                    JOptionPane.YES_NO_OPTION);
+            if (choice == JOptionPane.YES_OPTION) {
+                s.getContents().clear();
+            }
+
+        });
+
+        MenuItem load = new MenuItem();
+        load.setDisable(!enabled);
+        load.textProperty().bind(LC_std.getInstance().createStringBinding("ramLoadMenuItem"));
+        load.setOnAction(event -> {
+
+            JFileChooser chooser = proj.createChooser();
+            File oldSelected = factory.getCurrentImage(instance);
+            if (oldSelected != null) chooser.setSelectedFile(oldSelected);
+            chooser.setDialogTitle(Strings.get("ramLoadDialogTitle"));
+            int choice = chooser.showOpenDialog(frame);
+            if (choice == JFileChooser.APPROVE_OPTION) {
+                File f = chooser.getSelectedFile();
+                try {
+                    factory.loadImage(circState.getInstanceState(instance), f);
+                } catch (IOException e) {
+                    JOptionPane.showMessageDialog(frame, e.getMessage(),
+                            Strings.get("ramLoadErrorTitle"), JOptionPane.ERROR_MESSAGE);
+                }
+            }
+
+        });
+
+        MenuItem save = new MenuItem();
+        save.setDisable(!enabled);
+        save.textProperty().bind(LC_std.getInstance().createStringBinding("ramSaveMenuItem"));
+        save.setOnAction(event -> {
+
+            MemState s = factory.getState(instance, circState);
+
+            JFileChooser chooser = proj.createChooser();
+            File oldSelected = factory.getCurrentImage(instance);
+            if (oldSelected != null) chooser.setSelectedFile(oldSelected);
+            chooser.setDialogTitle(Strings.get("ramSaveDialogTitle"));
+            int choice = chooser.showSaveDialog(frame);
+            if (choice == JFileChooser.APPROVE_OPTION) {
+                File f = chooser.getSelectedFile();
+                try {
+                    HexFile.save(f, s.getContents());
+                    factory.setCurrentImage(instance, f);
+                } catch (IOException e) {
+                    JOptionPane.showMessageDialog(frame, e.getMessage(),
+                            Strings.get("ramSaveErrorTitle"), JOptionPane.ERROR_MESSAGE);
+                }
+            }
+
+        });
+
+        contextMenu.getItems().addAll(
+                del,
+                attrs,
+                edit,
+                clear,
+                load,
+                save
+        );
 
         return contextMenu;
 

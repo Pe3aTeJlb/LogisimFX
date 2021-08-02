@@ -15,9 +15,9 @@ import com.cburch.LogisimFX.util.GraphicsUtil;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
-import java.awt.*;
 
 
 public class Text extends InstanceFactory {

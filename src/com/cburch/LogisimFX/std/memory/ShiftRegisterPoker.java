@@ -13,6 +13,7 @@ import com.cburch.LogisimFX.instance.InstancePainter;
 import com.cburch.LogisimFX.instance.InstancePoker;
 import com.cburch.LogisimFX.instance.InstanceState;
 import com.cburch.LogisimFX.instance.StdAttr;
+import com.cburch.LogisimFX.newgui.MainFrame.CustomCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -22,14 +23,14 @@ public class ShiftRegisterPoker extends InstancePoker {
 	private int loc;
 	
 	@Override
-	public boolean init(InstanceState state, MouseEvent e) {
+	public boolean init(InstanceState state, CustomCanvas.CME e) {
 
 		loc = computeStage(state, e);
 		return loc >= 0;
 
 	}
 	
-	private int computeStage(InstanceState state, MouseEvent e) {
+	private int computeStage(InstanceState state, CustomCanvas.CME e) {
 
 		Integer lenObj = state.getAttributeValue(ShiftRegister.ATTR_LENGTH);
 		BitWidth widObj = state.getAttributeValue(StdAttr.WIDTH);
@@ -40,10 +41,10 @@ public class ShiftRegisterPoker extends InstancePoker {
 		String label = state.getAttributeValue(StdAttr.LABEL);
 		if (label == null || label.equals("")) y += bds.getHeight() / 2;
 		else y += 3 * bds.getHeight() / 4;
-		y = e.getY() - y;
+		y = e.localY - y;
 		if (y <= -6 || y >= 8) return -1;
 		
-		int x = e.getX() - (bds.getX() + 15);
+		int x = e.localX - (bds.getX() + 15);
 		if (!loadObj.booleanValue() || widObj.getWidth() > 4) return -1;
 		if (x < 0 || x >= lenObj.intValue() * 10) return -1;
 		return x / 10;
@@ -68,12 +69,12 @@ public class ShiftRegisterPoker extends InstancePoker {
 	}
 	
 	@Override
-	public void mousePressed(InstanceState state, MouseEvent e) {
+	public void mousePressed(InstanceState state, CustomCanvas.CME e) {
 		loc = computeStage(state, e);
 	}
 	
 	@Override
-	public void mouseReleased(InstanceState state, MouseEvent e) {
+	public void mouseReleased(InstanceState state, CustomCanvas.CME e) {
 
 		int oldLoc = loc;
 		if (oldLoc < 0) return;

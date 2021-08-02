@@ -144,6 +144,10 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
                             proj.setTool((Tool)treeItem.getValue());
                         }
 
+                        if(treeItem.getValue() instanceof Tool){
+                            proj.setTool((Tool)treeItem.getValue());
+                        }
+
                     }
 
                 }

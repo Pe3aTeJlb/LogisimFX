@@ -9,6 +9,7 @@ import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.CustomCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.util.GraphicsUtil;
@@ -66,12 +67,12 @@ public class Clock extends InstanceFactory {
 		boolean isPressed = true;
 
 		@Override
-		public void mousePressed(InstanceState state, MouseEvent e) {
+		public void mousePressed(InstanceState state, CustomCanvas.CME e) {
 			isPressed = isInside(state, e);
 		}
 
 		@Override
-		public void mouseReleased(InstanceState state, MouseEvent e) {
+		public void mouseReleased(InstanceState state, CustomCanvas.CME e) {
 
 			if (isPressed && isInside(state, e)) {
 				ClockState myState = (ClockState) state.getData();
@@ -83,10 +84,10 @@ public class Clock extends InstanceFactory {
 
 		}
 
-		private boolean isInside(InstanceState state, MouseEvent e) {
+		private boolean isInside(InstanceState state, CustomCanvas.CME e) {
 
 			Bounds bds = state.getInstance().getBounds();
-			return bds.contains(e.getX(), e.getY());
+			return bds.contains(e.localX, e.localY);
 
 		}
 

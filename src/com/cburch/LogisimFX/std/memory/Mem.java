@@ -9,6 +9,7 @@ import java.util.WeakHashMap;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.ContextMenuManager;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.MenuExtender;
@@ -26,7 +27,7 @@ import com.cburch.LogisimFX.proj.Project;
 import javafx.beans.binding.StringBinding;
 import javafx.scene.paint.Color;
 
-abstract class Mem extends InstanceFactory {
+public abstract class Mem extends InstanceFactory {
 
 	// Note: The code is meant to be able to handle up to 32-bit addresses, but it
 	// hasn't been debugged thoroughly. There are two definite changes I would
@@ -169,8 +170,8 @@ abstract class Mem extends InstanceFactory {
 
 	@Override
 	protected Object getInstanceFeature(Instance instance, Object key) {
-
-		if (key == MenuExtender.class) return new MemMenu(this, instance);
+		if (key == MenuExtender.class)
+			return ContextMenuManager.MemoryComponentContextMenu(this, instance);
 		return super.getInstanceFeature(instance, key);
 
 	}

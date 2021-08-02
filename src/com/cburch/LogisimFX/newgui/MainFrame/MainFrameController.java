@@ -1,5 +1,6 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
+import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.localization.LC_gui;
 import com.cburch.LogisimFX.newgui.AbstractController;
 import com.cburch.LogisimFX.localization.Localizer;
@@ -141,6 +142,11 @@ public class MainFrameController extends AbstractController {
 
     }
 
+    public void setAttributeTable(Circuit circ, Component comp){
+
+       // attributeTable.setTool(tool);
+
+    }
 
     public Project getProj(){
         return proj;
@@ -150,7 +156,7 @@ public class MainFrameController extends AbstractController {
         return stage;
     }
 
-    public Canvas getCanvas(){return cv.getCanvas();}
+    public CustomCanvas getCanvas(){return cv;}
 
     public Node getPrintImage(Circuit circ){
 

@@ -376,7 +376,6 @@ public class OptionsController extends AbstractController {
         selectionModel.selectedIndexProperty().addListener(
                 (observable, oldValue, newValue) -> {
                     currSelectedIndex = selectionModel.getSelectedIndex();
-                    System.out.println(currSelectedIndex);
                     MoveUpBtn.setDisable(selectionModel.selectedIndexProperty().getValue()==0);
                     MoveDownBtn.setDisable(selectionModel.selectedIndexProperty().getValue()==toolbarItems.size()-1);
 
@@ -427,7 +426,6 @@ public class OptionsController extends AbstractController {
 
         currSelectedIndex = buff;
 
-        System.out.println(currSelectedIndex);
         selectionModel.select(currSelectedIndex);
 
     }

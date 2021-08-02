@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.cburch.LogisimFX.comp.*;
 import com.cburch.LogisimFX.data.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.tools.TextEditable;
 import com.cburch.LogisimFX.tools.ToolTipMaker;
 import com.cburch.LogisimFX.util.EventSourceWeakSupport;

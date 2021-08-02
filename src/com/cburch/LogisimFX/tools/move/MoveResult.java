@@ -13,6 +13,7 @@ import com.cburch.LogisimFX.circuit.ReplacementMap;
 import com.cburch.LogisimFX.circuit.Wire;
 
 public class MoveResult {
+
 	private ReplacementMap replacements;
 	private Collection<ConnectionData> unsatisfiedConnections;
 	private Collection<Location> unconnectedLocations;
@@ -89,4 +90,5 @@ public class MoveResult {
 			out.println("no replacements");
 		}
 	}
+
 }

@@ -35,6 +35,29 @@ public class DialogManager {
 
     }
 
+    public static int CreateConfirmWarningDialog(String header, String content){
+
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("LogisimFX");
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+
+        ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().add(IconsManager.LogisimFX);
+
+        ButtonType buttonTypeOk = new ButtonType("Ok");
+        ButtonType buttonTypeLeave = new ButtonType("Leave");
+
+        alert.getButtonTypes().setAll(buttonTypeOk, buttonTypeLeave);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == buttonTypeOk){
+            return 1;
+        } else {
+            return 0;
+        }
+
+    }
+
     public static void CreateInfoDialog(String header, String content){
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

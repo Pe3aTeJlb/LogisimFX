@@ -4,6 +4,7 @@
 package com.cburch.LogisimFX.tools.move;
 
 class MoveRequest {
+
 	private MoveGesture gesture;
 	private int dx;
 	private int dy;
@@ -40,4 +41,5 @@ class MoveRequest {
 	public int hashCode() {
 		return (gesture.hashCode() * 31 + dx) * 31 + dy;
 	}
+
 }

@@ -296,7 +296,6 @@ public class PreferencesController extends AbstractController {
         }
 
         GateShapeCmbx.setOnAction(event -> {
-            System.out.println(GateShapeCmbx.getValue().getValue().toString());
             AppPreferences.GATE_SHAPE.set(GateShapeCmbx.getValue().getValue().toString());
         });
 

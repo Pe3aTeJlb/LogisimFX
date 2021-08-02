@@ -5,12 +5,12 @@ package com.cburch.LogisimFX.std.io;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.CustomCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.circuit.Wire;
 
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Button extends InstanceFactory {
@@ -194,12 +194,12 @@ public class Button extends InstanceFactory {
 	public static class Poker extends InstancePoker {
 
 		@Override
-		public void mousePressed(InstanceState state, MouseEvent e) {
+		public void mousePressed(InstanceState state, CustomCanvas.CME e) {
 			setValue(state, Value.TRUE);
 		}
 		
 		@Override
-		public void mouseReleased(InstanceState state, MouseEvent e) {
+		public void mouseReleased(InstanceState state, CustomCanvas.CME e) {
 			setValue(state, Value.FALSE);
 		}
 		

@@ -3,22 +3,24 @@
 
 package com.cburch.LogisimFX.instance;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-
 import com.cburch.LogisimFX.data.Bounds;
+import com.cburch.LogisimFX.newgui.MainFrame.CustomCanvas;
+
+import javafx.scene.input.KeyEvent;
 
 public abstract class InstancePoker {
-	public boolean init(InstanceState state, MouseEvent e) { return true; }
+
+	public boolean init(InstanceState state, CustomCanvas.CME e) { return true; }
 	public Bounds getBounds(InstancePainter painter) {
 		return painter.getInstance().getBounds();
 	}
 	public void paint(InstancePainter painter) { }
-	public void mousePressed(InstanceState state, MouseEvent e) { }
-	public void mouseReleased(InstanceState state, MouseEvent e) { }
-	public void mouseDragged(InstanceState state, MouseEvent e) { }
+	public void mousePressed(InstanceState state, CustomCanvas.CME e) { }
+	public void mouseReleased(InstanceState state, CustomCanvas.CME e) { }
+	public void mouseDragged(InstanceState state, CustomCanvas.CME e) { }
 	public void keyPressed(InstanceState state, KeyEvent e) { }
 	public void keyReleased(InstanceState state, KeyEvent e) { }
 	public void keyTyped(InstanceState state, KeyEvent e) { }
 	public void stopEditing(InstanceState state) { }
+
 }

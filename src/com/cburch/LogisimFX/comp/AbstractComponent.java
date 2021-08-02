@@ -3,14 +3,15 @@
 
 package com.cburch.LogisimFX.comp;
 
-import java.awt.Graphics;
 import java.util.List;
 
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.circuit.CircuitState;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 
 public abstract class AbstractComponent implements Component {
+
 	protected AbstractComponent() { }
 
 	//
@@ -56,4 +57,5 @@ public abstract class AbstractComponent implements Component {
 	}
 
 	public abstract void propagate(CircuitState state);
+
 }

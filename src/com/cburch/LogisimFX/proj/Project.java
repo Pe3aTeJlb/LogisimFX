@@ -8,6 +8,7 @@ import com.cburch.LogisimFX.circuit.*;
 import com.cburch.LogisimFX.newgui.MainFrame.CustomCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.MainFrameController;
 import com.cburch.LogisimFX.newgui.MainFrame.Selection;
+import com.cburch.LogisimFX.newgui.MainFrame.SelectionActions;
 import com.cburch.LogisimFX.tools.AddTool;
 import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.tools.Tool;
@@ -143,16 +144,6 @@ public class Project {
 		return tool;
 	}
 
-	public Selection getSelection() {
-
-		//CustomCanvas canvas
-		if (frame == null) return null;
-		Canvas canvas = frame.getCanvas();
-		if (canvas == null) return null;
-		return canvas.getSelection();
-
-	}
-
 	public boolean isFileDirty() {
 		return undoMods != 0;
 	}
@@ -242,10 +233,10 @@ public class Project {
 		boolean circuitChanged = old == null || oldCircuit != newCircuit;
 
 		if (circuitChanged) {
-			/*
-			Canvas canvas = frame == null ? null : frame.getCanvas();
+
+			CustomCanvas canvas = getFrameController() == null ? null : getFrameController().getCanvas();
 			if (canvas != null) {
-				//if (tool != null) tool.deselect(canvas);
+				if (tool != null) tool.deselect(canvas);
 				Selection selection = canvas.getSelection();
 				if (selection != null) {
 					Action act = SelectionActions.dropAll(selection);
@@ -253,9 +244,9 @@ public class Project {
 						doAction(act);
 					}
 				}
-				//if (tool != null) tool.select(canvas);
+				if (tool != null) tool.select(canvas);
 			}
-			 */
+
 			if (oldCircuit != null) {
 				for (CircuitListener l : circuitListeners) {
 					oldCircuit.removeCircuitListener(l);
@@ -296,11 +287,11 @@ public class Project {
 
 		if (tool == value) return;
 
+		System.out.println(value.getDisplayName().getValue());
+
 		Tool old = tool;
 
-		System.out.println("setTool "+value.getDisplayName().getValue());
-/*
-		Canvas canvas = frame.getCanvas();
+		CustomCanvas canvas = getFrameController().getCanvas();
 		if (old != null) old.deselect(canvas);
 		Selection selection = canvas.getSelection();
 		if (selection != null && !selection.isEmpty()) {
@@ -320,11 +311,9 @@ public class Project {
 			if (!xn.isEmpty()) doAction(xn.toAction(null));
 		}
 
-
-
 		tool = value;
-		if (tool != null) tool.select(frame.getCanvas());
- */
+		if (tool != null) tool.select(getFrameController().getCanvas());
+
 		tool = value;
 		fireEvent(ProjectEvent.ACTION_SET_TOOL, old, tool);
 
@@ -381,15 +370,6 @@ public class Project {
 	public void setFileAsClean() {
 		undoMods = 0;
 		file.setDirty(isFileDirty());
-	}
-
-	public void repaintCanvas() {
-
-		// for actions that ought not be logged (i.e., those that
-		// change nothing, except perhaps the current values within
-		// the circuit)
-		fireEvent(new ProjectEvent(ProjectEvent.REPAINT_REQUEST, this, null));
-
 	}
 
 }

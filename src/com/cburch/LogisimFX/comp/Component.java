@@ -3,16 +3,16 @@
 
 package com.cburch.LogisimFX.comp;
 
-
-import java.awt.Graphics;
 import java.util.List;
 
 import com.cburch.LogisimFX.data.AttributeSet;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.circuit.CircuitState;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 
 public interface Component {
+
 	// listener methods
 	public void addComponentListener(ComponentListener l);
 	public void removeComponentListener(ComponentListener l);
@@ -59,4 +59,5 @@ public interface Component {
 	public EndData getEnd(int index);
 	public boolean endsAt(Location pt);
 	public void propagate(CircuitState state);
+
 }

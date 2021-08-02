@@ -5,6 +5,7 @@ package com.cburch.LogisimFX.std.memory;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.CustomCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.util.GraphicsUtil;
@@ -193,12 +194,12 @@ abstract class AbstractFlipFlop extends InstanceFactory {
 		boolean isPressed = true;
 
 		@Override
-		public void mousePressed(InstanceState state, MouseEvent e) {
+		public void mousePressed(InstanceState state, CustomCanvas.CME e) {
 			isPressed = isInside(state, e);
 		}
 		
 		@Override
-		public void mouseReleased(InstanceState state, MouseEvent e) {
+		public void mouseReleased(InstanceState state, CustomCanvas.CME e) {
 
 			if (isPressed && isInside(state, e)) {
 				StateData myState = (StateData) state.getData();
@@ -211,11 +212,11 @@ abstract class AbstractFlipFlop extends InstanceFactory {
 
 		}
 
-		private boolean isInside(InstanceState state, MouseEvent e) {
+		private boolean isInside(InstanceState state, CustomCanvas.CME e) {
 
 			Location loc = state.getInstance().getLocation();
-			int dx = e.getX() - (loc.getX() - 20);
-			int dy = e.getY() - (loc.getY() + 10);
+			int dx = e.localX - (loc.getX() - 20);
+			int dy = e.localY - (loc.getY() + 10);
 			int d2 = dx * dx + dy * dy;
 			return d2 < 8 * 8;
 

@@ -4,27 +4,22 @@
 package com.cburch.LogisimFX.std.wiring;
 
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.EndData;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.DialogManager;
+import com.cburch.LogisimFX.newgui.MainFrame.CustomCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.DirectionConfigurator;
 import com.cburch.LogisimFX.tools.key.JoinedConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
-import com.cburch.LogisimFX.util.Icons;
 import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.circuit.RadixOption;
 
-import com.cburch.logisim.gui.main.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -89,26 +84,6 @@ public class Pin extends InstanceFactory {
 
 	@Override
 	public ImageView getIcon(){
-		/*
-		PinAttributes attrs = (PinAttributes) painter.getAttributeSet();
-		Direction dir = attrs.facing;
-		boolean output = attrs.isOutput();
-		Graphics g = painter.getGraphics();
-		if (output) {
-			if (ICON_OUT != null) {
-				Icons.paintRotated(g, 2, 2, dir, ICON_OUT,
-						painter.getDestination());
-				return;
-			}
-		} else {
-			if (ICON_IN != null) {
-				Icons.paintRotated(g, 2, 2, dir, ICON_IN,
-						painter.getDestination());
-				return;
-			}
-		}
-		 */
-
 		return ICON_OUT;
 	}
 
@@ -379,12 +354,12 @@ public class Pin extends InstanceFactory {
 		int bitPressed = -1;
 
 		@Override
-		public void mousePressed(InstanceState state, MouseEvent e) {
+		public void mousePressed(InstanceState state, CustomCanvas.CME e) {
 			bitPressed = getBit(state, e);
 		}
 
 		@Override
-		public void mouseReleased(InstanceState state, MouseEvent e) {
+		public void mouseReleased(InstanceState state, CustomCanvas.CME e) {
 
 			int bit = getBit(state, e);
 			if (bit == bitPressed && bit >= 0) {
@@ -394,22 +369,22 @@ public class Pin extends InstanceFactory {
 
 		}
 
-		private void handleBitPress(InstanceState state, int bit, MouseEvent e) {
+		private void handleBitPress(InstanceState state, int bit, CustomCanvas.CME e) {
 
 			PinAttributes attrs = (PinAttributes) state.getAttributeSet();
 			if (!attrs.isInput()) return;
 
-			java.awt.Component sourceComp = e.getComponent();
-			if (sourceComp instanceof Canvas && !state.isCircuitRoot()) {
-				Canvas canvas = (Canvas) e.getComponent();
+			Object sourceComp = e.event.getSource();
+			if (sourceComp instanceof CustomCanvas && !state.isCircuitRoot()) {
+				CustomCanvas canvas = (CustomCanvas) e.event.getSource();
 				CircuitState circState = canvas.getCircuitState();
-				java.awt.Component frame = SwingUtilities.getRoot(canvas);
-				int choice = JOptionPane.showConfirmDialog(frame,
-						Strings.get("pinFrozenQuestion"),
-						Strings.get("pinFrozenTitle"),
-						JOptionPane.OK_CANCEL_OPTION,
-						JOptionPane.WARNING_MESSAGE);
-				if (choice == JOptionPane.OK_OPTION) {
+
+				int choice = DialogManager.CreateConfirmWarningDialog(
+						LC.get("pinFrozenTitle"),
+						LC.get("pinFrozenQuestion")
+				);
+
+				if (choice == 1) {
 					circState = circState.cloneState();
 					canvas.getProject().setCircuitState(circState);
 					state = circState.getInstanceState(state.getInstance());
@@ -432,15 +407,15 @@ public class Pin extends InstanceFactory {
 
 		}
 
-		private int getBit(InstanceState state, MouseEvent e) {
+		private int getBit(InstanceState state, CustomCanvas.CME e) {
 
 			BitWidth width = state.getAttributeValue(StdAttr.WIDTH);
 			if (width.getWidth() == 1) {
 				return 0;
 			} else {
 				Bounds bds = state.getInstance().getBounds(); // intentionally with no graphics object - we don't want label included
-				int i = (bds.getX() + bds.getWidth() - e.getX()) / 10;
-				int j = (bds.getY() + bds.getHeight() - e.getY()) / 20;
+				int i = (bds.getX() + bds.getWidth() - e.localX) / 10;
+				int j = (bds.getY() + bds.getHeight() - e.localX) / 20;
 				int bit = 8 * j + i;
 				if (bit < 0 || bit >= width.getWidth()) {
 					return -1;

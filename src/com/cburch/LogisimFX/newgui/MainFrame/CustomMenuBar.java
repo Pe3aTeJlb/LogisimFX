@@ -466,7 +466,6 @@ public class CustomMenuBar extends MenuBar {
 
                 if (sim != null) {
                     sim.setIsRunning(!sim.isRunning());
-                    proj.repaintCanvas();
                 }
 
                 running.set(sim.isRunning());

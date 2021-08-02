@@ -3,15 +3,13 @@
 
 package com.cburch.LogisimFX.std.io;
 
-import java.awt.event.MouseEvent;
-
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.MainFrame.CustomCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Joystick extends InstanceFactory {
@@ -120,22 +118,22 @@ public class Joystick extends InstanceFactory {
 	public static class Poker extends InstancePoker {
 
 		@Override
-		public void mousePressed(InstanceState state, MouseEvent e) {
+		public void mousePressed(InstanceState state, CustomCanvas.CME e) {
 			mouseDragged(state, e);
 		}
 		
 		@Override
-		public void mouseReleased(InstanceState state, MouseEvent e) {
+		public void mouseReleased(InstanceState state, CustomCanvas.CME e) {
 			updateState(state, 0, 0);
 		}
 		
 		@Override
-		public void mouseDragged(InstanceState state, MouseEvent e) {
+		public void mouseDragged(InstanceState state, CustomCanvas.CME e) {
 
 			Location loc = state.getInstance().getLocation();
 			int cx = loc.getX() - 15;
 			int cy = loc.getY() + 5;
-			updateState(state, e.getX() - cx, e.getY() - cy);
+			updateState(state, e.localX - cx, e.localY - cy);
 
 		}
 		

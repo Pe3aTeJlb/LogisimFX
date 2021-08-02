@@ -10,6 +10,7 @@ import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.instance.InstancePainter;
 import com.cburch.LogisimFX.instance.InstancePoker;
 import com.cburch.LogisimFX.instance.InstanceState;
+import com.cburch.LogisimFX.newgui.MainFrame.CustomCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.proj.Project;
 
@@ -20,12 +21,12 @@ public class MemPoker extends InstancePoker {
 	private MemPoker sub;
 
 	@Override
-	public boolean init(InstanceState state, MouseEvent event) {
+	public boolean init(InstanceState state, CustomCanvas.CME event) {
 
 		Bounds bds = state.getInstance().getBounds();
 		MemState data = (MemState) state.getData();
-		long addr = data.getAddressAt(event.getX() - bds.getX(),
-				event.getY() - bds.getY());
+		long addr = data.getAddressAt(event.localX - bds.getX(),
+				event.localY - bds.getY());
 
 		// See if outside box
 		if (addr < 0) {

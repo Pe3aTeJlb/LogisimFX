@@ -9,6 +9,7 @@ import com.cburch.LogisimFX.instance.InstancePainter;
 import com.cburch.LogisimFX.instance.InstancePoker;
 import com.cburch.LogisimFX.instance.InstanceState;
 import com.cburch.LogisimFX.instance.StdAttr;
+import com.cburch.LogisimFX.newgui.MainFrame.CustomCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import javafx.scene.paint.Color;
 
@@ -21,7 +22,7 @@ public class RegisterPoker extends InstancePoker {
 	private int curValue;
 
 	@Override
-	public boolean init(InstanceState state, MouseEvent e) {
+	public boolean init(InstanceState state, CustomCanvas.CME e) {
 
 		RegisterData data = (RegisterData) state.getData();
 		if (data == null) {

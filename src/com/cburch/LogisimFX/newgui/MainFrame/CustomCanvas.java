@@ -13,19 +13,24 @@ import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.file.MouseMappings;
 import com.cburch.LogisimFX.prefs.AppPreferences;
 import com.cburch.LogisimFX.proj.Project;
-
-
+import com.cburch.LogisimFX.tools.MenuTool;
 import com.cburch.LogisimFX.tools.Tool;
+
 import com.sun.javafx.tk.FontMetrics;
 import javafx.animation.AnimationTimer;
+import javafx.beans.binding.StringBinding;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
+import java.awt.event.KeyEvent;
 import java.util.Collections;
 import java.util.Set;
 
@@ -35,7 +40,7 @@ public class CustomCanvas extends Canvas {
 
     private Project proj;
 
-    public Canvas cv;
+    //public Canvas cv;
     private Graphics g;
     private double width, height;
 
@@ -43,7 +48,7 @@ public class CustomCanvas extends Canvas {
     private static final double MAX_ZOOM = 0.5;
     private double zoom;
     private double dragScreenX, dragScreenY;
-    private double[] transform;
+    private static double[] transform;
 
     private AnimationTimer update;
 
@@ -83,18 +88,27 @@ public class CustomCanvas extends Canvas {
     private Selection selection;
     private MouseMappings mappings;
 
+    private Color errorColor;
+    private static StringBinding errorMessage;
+
+    private ContextMenu contextMenu;
 
     public CustomCanvas(AnchorPane rt, Project project){
+
+        super(rt.getWidth(),rt.getHeight());
 
         root = rt;
 
         proj = project;
 
-        cv = new Canvas(root.getWidth(),root.getHeight());
-        g = new Graphics(cv.getGraphicsContext2D());
+        //cv = new Canvas(root.getWidth(),root.getHeight());
+       // cv.setFocusTraversable(true);
+        this.setFocusTraversable(true);
+
+        g = new Graphics(this.getGraphicsContext2D());
         g.toDefault();
 
-        root.getChildren().add(cv);
+        root.getChildren().add(this);
 
         setCanvasEvents();
 
@@ -149,6 +163,8 @@ public class CustomCanvas extends Canvas {
 
         proj.getSimulator().drawStepPoints(ptContext);
 
+        drawErrorMessage();
+
     }
 
     public void updateCanvasSize(){
@@ -156,18 +172,18 @@ public class CustomCanvas extends Canvas {
         width = root.getWidth();
         height = root.getHeight();
 
-        cv.setWidth(width);
-        cv.setHeight(height);
+        this.setWidth(width);
+        this.setHeight(height);
 
     }
 
     private void drawGrid(){
 
-            for (int x = snapXToGrid(inverseTransformX(0));
-                 x < snapXToGrid(inverseTransformX(cv.getWidth())); x += SPACING_X) {
+            for (int x = inverseSnapXToGrid(0);
+                 x < inverseSnapXToGrid((int)this.getWidth()); x += SPACING_X) {
 
-                for (int y = snapYToGrid(inverseTransformY(0));
-                     y < snapYToGrid(inverseTransformY(cv.getHeight())); y += SPACING_Y) {
+                for (int y = inverseSnapYToGrid(0);
+                     y < inverseSnapYToGrid((int)this.getHeight()); y += SPACING_Y) {
 
                     if(zoom < 0.8f && (float)x % 50 == 0 && (float)y % 50 == 0){
                         g.c.setFill(GRID_DOT_QUARTER);
@@ -216,8 +232,6 @@ public class CustomCanvas extends Canvas {
 
         }
 
-
-
         // draw circuit and selection
         CircuitState circState = proj.getCircuitState();
         boolean printerView = AppPreferences.PRINTER_VIEW.getBoolean();
@@ -226,6 +240,7 @@ public class CustomCanvas extends Canvas {
         circ.draw(context, hidden);
         selection.draw(context, hidden);
 
+
         // draw tool
        Tool tool = dragTool != null ? dragTool : proj.getTool();
         //if (tool != null && !canvas.isPopupMenuUp()) {
@@ -233,8 +248,6 @@ public class CustomCanvas extends Canvas {
             tool.draw(this, context);
             g.toDefault();
         }
-
-
 
     }
 
@@ -275,70 +288,122 @@ public class CustomCanvas extends Canvas {
 
     }
 
+    private void drawErrorMessage(){
 
+        if(errorMessage != null) {
+            g.setColor(errorColor);
+            g.c.strokeText(errorMessage.getValue(), inverseTransformX(this.getWidth() / 2),
+                    inverseTransformY(3 * this.getHeight() / 4));
+
+            g.toDefault();
+        }
+
+    }
 
     //Tools
 
     // convert screen coordinates to grid coordinates by inverting circuit transform
-    private int inverseTransformX(double x) {
+    public static int inverseTransformX(double x) {
         return (int) ((x-transform[4])/transform[0]);
     }
 
-    private int inverseTransformY(double y) {
+    public static int inverseTransformY(double y) {
         return (int) ((y-transform[5])/transform[3]);
     }
 
-    public static int snapXToGrid(int x) {
+    public static int inverseSnapXToGrid(int x) {
+
+        x = (int) ((x-transform[4])/transform[0]);;
+
         if (x < 0) {
             return -((-x + 5) / 10) * 10;
         } else {
             return ((x + 5) / 10) * 10;
         }
+
     }
 
-    public static int snapYToGrid(int y) {
+    public static int inverseSnapYToGrid(int y) {
+
+        y = (int) ((y-transform[5])/transform[3]);
+
         if (y < 0) {
             return -((-y + 5) / 10) * 10;
         } else {
             return ((y + 5) / 10) * 10;
         }
+
+    }
+
+    public static int snapXToGrid(int x) {
+
+        if (x < 0) {
+            return -((-x + 5) / 10) * 10;
+        } else {
+            return ((x + 5) / 10) * 10;
+        }
+
+    }
+
+    public static int snapYToGrid(int y) {
+
+        if (y < 0) {
+            return -((-y + 5) / 10) * 10;
+        } else {
+            return ((y + 5) / 10) * 10;
+        }
+
     }
 
     private void setCanvasEvents(){
 
-        cv.setOnMousePressed(event -> {
+        this.addEventFilter(MouseEvent.ANY, (e) -> this.requestFocus());
+
+        this.setOnMousePressed(event -> {
 
             dragScreenX = event.getX();
             dragScreenY = event.getY();
 
             dragTool = proj.getTool();
             if (dragTool != null) {
-                dragTool.mousePressed(this, getGraphics(), event);
+                dragTool.mousePressed(this, getGraphics(), new CME(event));
                 proj.getSimulator().requestPropagate();
             }
 
-            System.out.println("Point " + inverseTransformX(event.getX()) + " " + inverseTransformY(event.getY()));
-            System.out.println("0 Point " + inverseTransformX(0) + " " + inverseTransformY(0));
+            if(event.getButton() == MouseButton.SECONDARY){
+                dragTool = new MenuTool();
+                if (dragTool != null) {
+                    dragTool.mousePressed(this, getGraphics(), new CME(event));
+                }
+            }
 
         });
 
-        cv.setOnMouseDragged(event -> {
+        this.setOnMouseDragged(event -> {
 
-            double dx = event.getX()-dragScreenX;
-            double dy = event.getY()-dragScreenY;
-            if (dx == 0 && dy == 0) {return;}
+            if(event.getButton() == MouseButton.MIDDLE) {
+                double dx = event.getX() - dragScreenX;
+                double dy = event.getY() - dragScreenY;
+                if (dx == 0 && dy == 0) {
+                    return;
+                }
 
-            clearRect40K(transform[4],transform[5]);
+                clearRect40K(transform[4], transform[5]);
 
-            transform[4] += dx;
-            transform[5] += dy;
+                transform[4] += dx;
+                transform[5] += dy;
 
-            dragScreenX = event.getX();
-            dragScreenY = event.getY();
+                dragScreenX = event.getX();
+                dragScreenY = event.getY();
+            }
+
+            if (dragTool != null) {
+                dragTool.mouseDragged(this, getGraphics(), new CME(event));
+            }
 
         });
 
-        cv.setOnScroll(event -> {
+        this.setOnScroll(event -> {
 
             clearRect40K(transform[4], transform[5]);
 
@@ -366,128 +431,86 @@ public class CustomCanvas extends Canvas {
 
         });
 
-        cv.setOnMouseMoved(event -> {
+        this.setOnMouseMoved(event -> {
 
-            //Tool tool = getToolFor(e);
-            //if (tool != null) {
-            //    tool.mouseMoved(this, g, event);
-            //}
+            Tool tool = proj.getTool();
+            if (tool != null) {
+                tool.mouseMoved(this, g, new CME(event));
+            }
 
         });
 
-        cv.setOnMouseEntered(event -> {
+        this.setOnMouseReleased(event -> {
 
             if (dragTool != null) {
-                dragTool.mouseEntered(this, getGraphics(), event);
+                dragTool.mouseReleased(this, getGraphics(), new CME(event));
+                dragTool = null;
+            }
+
+            Tool tool = proj.getTool();
+            if (tool != null) {
+                tool.mouseMoved(this, getGraphics(), new CME(event));
+            }
+
+        });
+
+        this.setOnMouseEntered(event -> {
+
+            if (dragTool != null) {
+                dragTool.mouseEntered(this, getGraphics(), new CME(event));
             } else {
                 Tool tool = proj.getTool();
                 if (tool != null) {
-                    tool.mouseEntered(this, getGraphics(), event);
+                    tool.mouseEntered(this, getGraphics(), new CME(event));
                 }
             }
 
         });
 
-        cv.setOnMouseExited(event -> {
+        this.setOnMouseExited(event -> {
 
             if (dragTool != null) {
-                dragTool.mouseExited(this, getGraphics(), event);
+                dragTool.mouseExited(this, getGraphics(), new CME(event));
             } else {
                 Tool tool = proj.getTool();
                 if (tool != null) {
-                    tool.mouseExited(this, getGraphics(), event);
+                    tool.mouseExited(this, getGraphics(), new CME(event));
                 }
             }
 
         });
 
-        /*
-        		//
-		// MouseListener methods
-		//
-		public void mouseClicked(MouseEvent e) { }
+        this.setOnKeyPressed(event -> {
+            System.out.println("lol");
+            Tool tool = proj.getTool();
+            if (tool != null) tool.keyPressed(this, event);
 
-		public void mouseMoved(MouseEvent e) {
-			if ((e.getModifiersEx() & BUTTONS_MASK) != 0) {
-				// If the control key is down while the mouse is being
-				// dragged, mouseMoved is called instead. This may well be
-				// an issue specific to the MacOS Java implementation,
-				// but it exists there in the 1.4 and 5.0 versions.
-				mouseDragged(e);
-				return;
-			}
+        });
 
-			Tool tool = getToolFor(e);
-			if (tool != null) {
-				tool.mouseMoved(Canvas.this, getGraphics(), e);
-			}
-		}
+        this.setOnKeyReleased(event -> {
+            System.out.println("lol2");
+            Tool tool = proj.getTool();
+            if (tool != null) tool.keyReleased(this, event);
 
-		public void mouseDragged(MouseEvent e) {
-			if (drag_tool != null) {
-				drag_tool.mouseDragged(Canvas.this, getGraphics(), e);
-			}
-		}
+        });
 
-		public void mouseEntered(MouseEvent e) {
-			if (drag_tool != null) {
-				drag_tool.mouseEntered(Canvas.this, getGraphics(), e);
-			} else {
-				Tool tool = getToolFor(e);
-				if (tool != null) {
-					tool.mouseEntered(Canvas.this, getGraphics(), e);
-				}
-			}
-		}
+        this.setOnKeyTyped(event -> {
+            System.out.println("lol3");
+            Tool tool = proj.getTool();
+            if (tool != null) tool.keyTyped(this, event);
 
-		public void mouseExited(MouseEvent e) {
-			if (drag_tool != null) {
-				drag_tool.mouseExited(Canvas.this, getGraphics(), e);
-			} else {
-				Tool tool = getToolFor(e);
-				if (tool != null) {
-					tool.mouseExited(Canvas.this, getGraphics(), e);
-				}
-			}
-		}
-
-		public void mousePressed(MouseEvent e) {
-			viewport.setErrorMessage(null, null);
-			proj.setStartupScreen(false);
-			Canvas.this.requestFocus();
-			drag_tool = getToolFor(e);
-			if (drag_tool != null) {
-				drag_tool.mousePressed(Canvas.this, getGraphics(), e);
-			}
-
-			completeAction();
-		}
-
-		public void mouseReleased(MouseEvent e) {
-			if (drag_tool != null) {
-				drag_tool.mouseReleased(Canvas.this, getGraphics(), e);
-				drag_tool = null;
-			}
-
-			Tool tool = proj.getTool();
-			if (tool != null) {
-				tool.mouseMoved(Canvas.this, getGraphics(), e);
-			}
-
-			completeAction();
-		}
-
-		private Tool getToolFor(MouseEvent e) {
-			if (menu_on) return null;
-
-			Tool ret = mappings.getToolFor(e);
-			if (ret == null) return proj.getTool();
-			else return ret;
-		}
-         */
+        });
 
     }
 
+    public void showContextMenu(ContextMenu menu, int x, int y){
+
+        if(contextMenu != null)contextMenu.hide();
+
+        contextMenu = menu;
+        contextMenu.show(this,x,y);
+
+    }
 
 
 
@@ -496,15 +519,31 @@ public class CustomCanvas extends Canvas {
     private void clearRect40K() {
 
         g.c.setFill(BACKGROUND);
-        g.c.fillRect(0,0,(cv.getWidth()/transform[0])*2,(cv.getHeight()/transform[0])*2);
+        g.c.fillRect(0,0,(this.getWidth()/transform[0])*2,(this.getHeight()/transform[0])*2);
 
     }
 
     private void clearRect40K(double prevX, double prevY) {
 
         g.c.setFill(BACKGROUND);
-        g.c.fillRect(-prevX/transform[0],-prevY/transform[0],cv.getWidth()/transform[0],cv.getHeight()/transform[0]);
+        g.c.fillRect(-prevX/transform[0],-prevY/transform[0],this.getWidth()/transform[0],
+                this.getHeight()/transform[0]);
 
+    }
+
+
+
+    public void setErrorMessage(StringBinding msg, Color color) {
+
+        if (errorMessage != msg) {
+            errorMessage = msg;
+            errorColor = color == null ? DEFAULT_ERROR_COLOR : color;
+        }
+
+    }
+
+    public static void clearErrorMessage(){
+        errorMessage = null;
     }
 
 
@@ -514,25 +553,9 @@ public class CustomCanvas extends Canvas {
 
     public void setHaloedComponent(Circuit circ, Component comp) {
         if (comp == haloedComponent) return;
-        exposeHaloedComponent();
         haloedCircuit = circ;
         haloedComponent = comp;
-        exposeHaloedComponent();
     }
-
-    private void exposeHaloedComponent() {
-        Component c = haloedComponent;
-        if (c == null) return;
-        Bounds bds = c.getBounds(g).expand(7);
-        int w = bds.getWidth();
-        int h = bds.getHeight();
-        double a = SQRT_2 * w;
-        double b = SQRT_2 * h;
-      //  canvas.repaint((int) Math.round(bds.getX() + w/2.0 - a/2.0),
-       //         (int) Math.round(bds.getY() + h/2.0 - b/2.0),
-         //       (int) Math.round(a), (int) Math.round(b));
-    }
-
 
     public Selection getSelection() {
         return selection;
@@ -554,13 +577,43 @@ public class CustomCanvas extends Canvas {
         return g;
     }
 
-    public Canvas getCanvas(){return cv;}
+    public Canvas getCanvas(){return this;}
 
     public Image getPrintImage(){
 
         //return cv.snapshot(0,new WritableImage());
         return null;
         // return cv.snapshot();
+    }
+
+    //ReadLike CanvasMouseEvent
+    public static class CME{
+
+        public int globalX, globalY;
+        public int localX, localY;
+        public int snappedX, snappedY;
+
+        public MouseEvent event;
+
+        public CME(MouseEvent event){
+
+            this.event = event;
+
+            globalX = (int)event.getX();
+            globalY = (int)event.getY();
+
+            localX = inverseTransformX(event.getX());
+            localY = inverseTransformY(event.getY());
+
+            snappedX = inverseSnapXToGrid((int)event.getX());
+            snappedY = inverseSnapYToGrid((int)event.getY());
+
+            //System.out.println("Global " + globalX + " " + globalY);
+           // System.out.println("Local " + localX + " " + localY);
+           // System.out.println("Snapped " + snappedX + " " + snappedY);
+
+        }
+
     }
 
 }

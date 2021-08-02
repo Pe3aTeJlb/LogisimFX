@@ -99,7 +99,11 @@ public class ComponentDrawContext {
 		return circuitState;
 	}
 
-	public void setGraphics(GraphicsContext g) {
+	public void setGraphics(Graphics g) {
+		this.g = g;
+	}
+
+	public void setGraphicsContext(GraphicsContext g) {
 		this.g.c = g;
 	}
 

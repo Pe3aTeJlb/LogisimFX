@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.WeakHashMap;
 
-class RomAttributes extends AbstractAttributeSet {
+public class RomAttributes extends AbstractAttributeSet {
 
 	private static List<Attribute<?>> ATTRIBUTES = Arrays.asList(new Attribute<?>[] {
 			Mem.ADDR_ATTR, Mem.DATA_ATTR, Rom.CONTENTS_ATTR
@@ -54,7 +54,7 @@ class RomAttributes extends AbstractAttributeSet {
 		contents = MemContents.create(addrBits.getWidth(), dataBits.getWidth());
 	}
 	
-	void setProject(Project proj) {
+	public void setProject(Project proj) {
 		register(contents, proj);
 	}
 	

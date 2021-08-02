@@ -4,25 +4,25 @@
 package com.cburch.LogisimFX.comp;
 
 import com.cburch.LogisimFX.circuit.CircuitState;
-import com.cburch.logisim.gui.main.Canvas;
-
+import com.cburch.LogisimFX.newgui.MainFrame.CustomCanvas;
 
 public class ComponentUserEvent {
-	private Canvas canvas;
+
+	private CustomCanvas canvas;
 	private int x = 0;
 	private int y = 0;
 
-	ComponentUserEvent(Canvas canvas) {
+	ComponentUserEvent(CustomCanvas canvas) {
 		this.canvas = canvas;
 	}
 
-	public ComponentUserEvent(Canvas canvas, int x, int y) {
+	public ComponentUserEvent(CustomCanvas canvas, int x, int y) {
 		this.canvas = canvas;
 		this.x = x;
 		this.y = y;
 	}
 
-	public Canvas getCanvas() {
+	public CustomCanvas getCanvas() {
 		return canvas;
 	}
 
@@ -37,4 +37,5 @@ public class ComponentUserEvent {
 	public int getY() {
 		return y;
 	}
+
 }

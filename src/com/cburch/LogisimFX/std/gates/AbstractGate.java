@@ -243,8 +243,6 @@ abstract class AbstractGate extends InstanceFactory {
 	@Override
 	public ImageView getIcon() {
 
-		System.out.println(AppPreferences.GATE_SHAPE.get());
-
 		if (AppPreferences.GATE_SHAPE.get().equals(AppPreferences.SHAPE_RECTANGULAR)) {
 			ImageView iconRect = getIconRectangular();
 			if (iconRect != null) {
