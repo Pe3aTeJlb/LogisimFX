@@ -16,6 +16,7 @@ import java.awt.*;
 import java.util.List;
 
 public class RectangleTool extends RectangularTool {
+
 	private DrawingAttributeSet attrs;
 	
 	public RectangleTool(DrawingAttributeSet attrs) {
@@ -46,4 +47,5 @@ public class RectangleTool extends RectangularTool {
 	public void fillShape(Graphics g, int x, int y, int w, int h) {
 		g.fillRect(x, y, w, h);
 	}
+
 }

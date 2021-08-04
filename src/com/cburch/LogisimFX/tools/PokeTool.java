@@ -3,14 +3,6 @@
 
 package com.cburch.LogisimFX.tools;
 
-import java.awt.Cursor;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.FontMetrics;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-
-
 import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.comp.ComponentDrawContext;
@@ -24,25 +16,31 @@ import com.cburch.LogisimFX.circuit.CircuitListener;
 import com.cburch.LogisimFX.circuit.RadixOption;
 import com.cburch.LogisimFX.circuit.Wire;
 import com.cburch.LogisimFX.circuit.WireSet;
-import com.cburch.logisim.gui.main.Canvas;
+import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.prefs.AppPreferences;
 import com.cburch.LogisimFX.proj.Project;
+
+import com.sun.javafx.tk.FontMetrics;
 import javafx.beans.binding.StringBinding;
+import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.paint.Color;
 
 public class PokeTool extends Tool {
 
 	private static final ImageView icon = IconsManager.getIcon("poke.gif");
-	private static final Color caretColor = new Color(255, 255, 150);
+	private static final Color caretColor = Color.color(1, 1, 0.588);
 
 	private static class WireCaret extends AbstractCaret {
 		AttributeSet opts;
-		Canvas canvas;
+		LayoutCanvas canvas;
 		Wire wire;
 		int x;
 		int y;
 
-		WireCaret(Canvas c, Wire w, int x, int y, AttributeSet opts) {
+		WireCaret(LayoutCanvas c, Wire w, int x, int y, AttributeSet opts) {
 			canvas = c;
 			wire = w;
 			this.x = x;
@@ -63,13 +61,13 @@ public class PokeTool extends Tool {
 			
 			FontMetrics fm = g.getFontMetrics();
 			g.setColor(caretColor);
-			g.fillRect(x + 2, y + 2, fm.stringWidth(vStr) + 4, 
+			g.c.fillRect(x + 2, y + 2, fm.computeStringWidth(vStr) + 4,
 					fm.getAscent() + fm.getDescent() + 4);
 			g.setColor(Color.BLACK);
-			g.drawRect(x + 2, y + 2, fm.stringWidth(vStr) + 4, 
+			g.c.strokeRect(x + 2, y + 2, fm.computeStringWidth(vStr) + 4,
 					fm.getAscent() + fm.getDescent() + 4);
-			g.fillOval(x - 2, y - 2, 5, 5);
-			g.drawString(vStr, x + 4, y + 4 + fm.getAscent());
+			g.c.fillOval(x - 2, y - 2, 5, 5);
+			g.c.strokeText(vStr, x + 4, y + 4 + fm.getAscent());
 		}
 	}
 	
@@ -85,8 +83,7 @@ public class PokeTool extends Tool {
 		}
 	}
 
-	private static Cursor cursor
-		= Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
+	private static Cursor cursor = Cursor.HAND;
 
 	private Listener listener;
 	private Circuit pokedCircuit;
@@ -150,20 +147,20 @@ public class PokeTool extends Tool {
 	}
 
 	@Override
-	public void draw(Canvas canvas, ComponentDrawContext context) {
+	public void draw(LayoutCanvas canvas, ComponentDrawContext context) {
 		if (pokeCaret != null) pokeCaret.draw(context.getGraphics());
 	}
 
 	@Override
-	public void deselect(Canvas canvas) {
+	public void deselect(LayoutCanvas canvas) {
 		removeCaret(true);
 		canvas.setHighlightedWires(WireSet.EMPTY);
 	}
 
 	@Override
-	public void mousePressed(Canvas canvas, Graphics g, MouseEvent e) {
-		int x = e.getX();
-		int y = e.getY();
+	public void mousePressed(LayoutCanvas canvas, Graphics g, LayoutCanvas.CME e) {
+		int x = e.localX;
+		int y = e.localY;
 		Location loc = Location.create(x, y);
 		boolean dirty = false;
 		canvas.setHighlightedWires(WireSet.EMPTY);
@@ -190,7 +187,7 @@ public class PokeTool extends Tool {
 						AttributeSet attrs = c.getAttributeSet();
 						if (attrs != null && attrs.getAttributes().size() > 0) {
 							Project proj = canvas.getProject();
-							proj.getFrame().viewComponentAttributes(circ, c);
+							proj.getFrameController().setAttributeTable(circ,c);
 						}
 					}
 				}
@@ -200,67 +197,46 @@ public class PokeTool extends Tool {
 			dirty = true;
 			pokeCaret.mousePressed(e);
 		}
-		if (dirty) canvas.getProject().repaintCanvas();
+
 	}
 
 	@Override
-	public void mouseDragged(Canvas canvas, Graphics g, MouseEvent e) {
+	public void mouseDragged(LayoutCanvas canvas, Graphics g, LayoutCanvas.CME e) {
 		if (pokeCaret != null) {
 			pokeCaret.mouseDragged(e);
-			canvas.getProject().repaintCanvas();
 		}
 	}
 
 	@Override
-	public void mouseReleased(Canvas canvas, Graphics g, MouseEvent e) {
+	public void mouseReleased(LayoutCanvas canvas, Graphics g, LayoutCanvas.CME e) {
 		if (pokeCaret != null) {
 			pokeCaret.mouseReleased(e);
-			canvas.getProject().repaintCanvas();
 		}
 	}
 
 	@Override
-	public void keyTyped(Canvas canvas, KeyEvent e) {
+	public void keyTyped(LayoutCanvas canvas, KeyEvent e) {
 		if (pokeCaret != null) {
 			pokeCaret.keyTyped(e);
-			canvas.getProject().repaintCanvas();
 		}
 	}
 
 	@Override
-	public void keyPressed(Canvas canvas, KeyEvent e) {
+	public void keyPressed(LayoutCanvas canvas, KeyEvent e) {
 		if (pokeCaret != null) {
 			pokeCaret.keyPressed(e);
-			canvas.getProject().repaintCanvas();
 		}
 	}
 
 	@Override
-	public void keyReleased(Canvas canvas, KeyEvent e) {
+	public void keyReleased(LayoutCanvas canvas, KeyEvent e) {
 		if (pokeCaret != null) {
 			pokeCaret.keyReleased(e);
-			canvas.getProject().repaintCanvas();
-		}
-	}
-
-	@Override
-	public void paintIcon(ComponentDrawContext c, int x, int y) {
-		Graphics g = c.getGraphics();
-		if (toolIcon != null) {
-			toolIcon.paintIcon(c.getDestination(), g, x + 2, y + 2);
-		} else {
-			g.setColor(Color.black);
-			g.drawLine(x + 4, y +  2, x + 4, y + 17);
-			g.drawLine(x + 4, y + 17, x + 1, y + 11);
-			g.drawLine(x + 4, y + 17, x + 7, y + 11);
-
-			g.drawLine(x + 15, y +  2, x + 15, y + 17);
-			g.drawLine(x + 15, y +  2, x + 12, y + 8);
-			g.drawLine(x + 15, y +  2, x + 18, y + 8);
 		}
 	}
 
 	@Override
 	public Cursor getCursor() { return cursor; }
+
 }
 

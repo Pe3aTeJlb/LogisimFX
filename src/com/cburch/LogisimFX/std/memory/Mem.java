@@ -58,7 +58,7 @@ public abstract class Mem extends InstanceFactory {
 		currentInstanceFiles = new WeakHashMap<Instance,File>();
 		setInstancePoker(MemPoker.class);
 		setKeyConfigurator(JoinedConfigurator.create(
-				new BitWidthConfigurator(ADDR_ATTR, 2, 24, 0),
+				new BitWidthConfigurator(ADDR_ATTR, 2, 24, null),
 				new BitWidthConfigurator(DATA_ATTR)));
 
 		setOffsetBounds(Bounds.create(-140, -40, 140, 80));
@@ -68,8 +68,8 @@ public abstract class Mem extends InstanceFactory {
 	abstract void configurePorts(Instance instance);
 	@Override
 	public abstract AttributeSet createAttributeSet();
-	abstract MemState getState(InstanceState state);
-	abstract MemState getState(Instance instance, CircuitState state);
+	public abstract MemState getState(InstanceState state);
+	public abstract MemState getState(Instance instance, CircuitState state);
 	abstract HexFrame getHexFrame(Project proj, Instance instance, CircuitState state);
 	@Override
 	public abstract void propagate(InstanceState state);
@@ -151,11 +151,11 @@ public abstract class Mem extends InstanceFactory {
 
 	}
 	
-	File getCurrentImage(Instance instance) {
+	public File getCurrentImage(Instance instance) {
 		return currentInstanceFiles.get(instance);
 	}
 	
-	void setCurrentImage(Instance instance, File value) {
+	public void setCurrentImage(Instance instance, File value) {
 		currentInstanceFiles.put(instance, value);
 	}
 	
@@ -171,7 +171,7 @@ public abstract class Mem extends InstanceFactory {
 	@Override
 	protected Object getInstanceFeature(Instance instance, Object key) {
 		if (key == MenuExtender.class)
-			return ContextMenuManager.MemoryComponentContextMenu(this, instance);
+			return new ContextMenuManager.MemoryComponentContextMenu(this, instance);
 		return super.getInstanceFeature(instance, key);
 
 	}

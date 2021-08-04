@@ -15,6 +15,8 @@ public class ExplorerToolBar extends ToolBar {
 
     //Check ExplorerToolbarModel of com.cburch.logisim.gui.main
 
+    private MainFrameController FrameController;
+
     private AdditionalToolBar  AdditionalToolBar;
     private MainToolBar MainToolBar;
     private TreeExplorerAggregation TreeExplorerAggregation;
@@ -40,9 +42,12 @@ public class ExplorerToolBar extends ToolBar {
     }
 
 
-    public ExplorerToolBar(MainToolBar main, AdditionalToolBar additional, TreeExplorerAggregation explorer){
+    public ExplorerToolBar(MainToolBar main, AdditionalToolBar additional,
+                           TreeExplorerAggregation explorer, MainFrameController frameController){
 
         super();
+
+        this.FrameController = frameController;
 
         MainToolBar = main;
         AdditionalToolBar = additional;
@@ -119,7 +124,7 @@ public class ExplorerToolBar extends ToolBar {
         EditCircuitAppearance.set(false);
 
         MainToolBar.SetMainToolBarItems("RedactCircuit");
-        //TODO: add controll method for canvas
+        FrameController.setEditView();
 
     }
 
@@ -129,7 +134,7 @@ public class ExplorerToolBar extends ToolBar {
         EditCircuitAppearance.set(true);
 
         MainToolBar.SetMainToolBarItems("RedactAppearance");
-        //TODO: add controll method for canvas
+        FrameController.setAppearanceView();
 
     }
 

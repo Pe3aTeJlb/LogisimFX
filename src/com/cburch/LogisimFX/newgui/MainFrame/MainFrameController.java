@@ -10,7 +10,6 @@ import com.cburch.LogisimFX.tools.Tool;
 
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
@@ -38,7 +37,7 @@ public class MainFrameController extends AbstractController {
     private TreeExplorerAggregation treeExplorerAggregation;
     private AttributeTable attributeTable;
 
-    private CustomCanvas cv;
+    private LayoutCanvas cv;
 
 
 //monolith - strength in unity
@@ -63,10 +62,11 @@ public class MainFrameController extends AbstractController {
         //TreeExplorer
         treeExplorerAggregation = new TreeExplorerAggregation(proj);
         setAnchor(0,40,0,0, treeExplorerAggregation);
+        treeExplorerAggregation.setFocusTraversable(false);
 
         mainToolBar = new MainToolBar(proj);
         additionalToolBar = new AdditionalToolBar(proj, treeExplorerAggregation);
-        explorerToolBar = new ExplorerToolBar(mainToolBar,additionalToolBar, treeExplorerAggregation);
+        explorerToolBar = new ExplorerToolBar(mainToolBar,additionalToolBar, treeExplorerAggregation, this);
 
         treeRoot.getChildren().addAll(explorerToolBar,additionalToolBar, treeExplorerAggregation);
 
@@ -79,6 +79,7 @@ public class MainFrameController extends AbstractController {
         setAnchor(0,0,0,0, scrollPane);
 
         attributeTable = new AttributeTable();
+        attributeTable.setFocusTraversable(false);
 
         scrollPane.setContent(attributeTable);
         scrollPane.setFitToWidth(true);
@@ -95,7 +96,7 @@ public class MainFrameController extends AbstractController {
         AnchorPane canvasRoot = new AnchorPane();
         canvasRoot.setMinSize(0,0);
 
-        cv = new CustomCanvas(canvasRoot, proj);
+        cv = new LayoutCanvas(canvasRoot, proj);
 
 
         SplitPane mainSplitPane = new SplitPane(explorerSplitPane,canvasRoot);
@@ -128,13 +129,26 @@ public class MainFrameController extends AbstractController {
 
 
     //Section for static access from proj.getController. Duplicate functional
-    public void setAppearanceView(Circuit cir){
+
+    public void setAppearanceView(){
+        setAppearanceView(proj.getCurrentCircuit());
+    }
+
+    public void setAppearanceView(Circuit circ){
+        proj.setCurrentCircuit(circ);
         explorerToolBar.EditAppearance();
     }
 
+    public void setEditView(){
+        setEditView(proj.getCurrentCircuit());
+    }
+
     public void setEditView(Circuit circ){
+        proj.setCurrentCircuit(circ);
         explorerToolBar.EditCircuit();
     }
+
+
 
     public void setAttributeTable(Tool tool){
 
@@ -148,32 +162,6 @@ public class MainFrameController extends AbstractController {
 
     }
 
-    public Project getProj(){
-        return proj;
-    }
-
-    public Stage getStage(){
-        return stage;
-    }
-
-    public CustomCanvas getCanvas(){return cv;}
-
-    public Node getPrintImage(Circuit circ){
-
-        Circuit currCirc = proj.getCurrentCircuit();
-
-        proj.setCurrentCircuit(circ);
-
-        Node buff = getCanvas();
-        //Todo: get canvas  as new
-        //ImageView buff = new ImageView();
-        //buff.setImage(cv.getPrintImage());
-
-        proj.setCurrentCircuit(currCirc);
-
-        return buff;
-
-    }
 
 
     private void setAnchor(double left,double top, double right, double bottom, Node n){
@@ -185,6 +173,13 @@ public class MainFrameController extends AbstractController {
 
     //Manual UI Update
 
+    public void manual_UI_Update(){
+
+        manual_ToolBar_Update();
+        manual_Explorer_Update();
+
+    }
+
     public void manual_ToolBar_Update(){
         mainToolBar.ToolsRefresh();
     }
@@ -192,6 +187,19 @@ public class MainFrameController extends AbstractController {
     public void manual_Explorer_Update(){
         treeExplorerAggregation.updateTree();
     }
+
+
+    //Getter
+
+    public Project getProj(){
+        return proj;
+    }
+
+    public Stage getStage(){
+        return stage;
+    }
+
+    public LayoutCanvas getCanvas(){return cv;}
 
     /*
     public void savePreferences() {

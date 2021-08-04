@@ -3,16 +3,17 @@
 
 package com.cburch.LogisimFX.tools.key;
 
-import java.awt.event.KeyEvent;
-
+import com.cburch.LogisimFX.KeyEvents;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Direction;
+import javafx.scene.input.KeyEvent;
 
 public class DirectionConfigurator implements KeyConfigurator, Cloneable {
+
 	private Attribute<Direction> attr;
-	private int modsEx;
+	private KeyEvent modsEx;
 	
-	public DirectionConfigurator(Attribute<Direction> attr, int modifiersEx) {
+	public DirectionConfigurator(Attribute<Direction> attr, KeyEvent modifiersEx) {
 		this.attr = attr;
 		this.modsEx = modifiersEx;
 	}
@@ -30,13 +31,13 @@ public class DirectionConfigurator implements KeyConfigurator, Cloneable {
 	public KeyConfigurationResult keyEventReceived(KeyConfigurationEvent event) {
 		if (event.getType() == KeyConfigurationEvent.KEY_PRESSED) {
 			KeyEvent e = event.getKeyEvent();
-			if (e.getModifiersEx() == modsEx) {
+			if (e == modsEx) {
 				Direction value = null;
-				switch (e.getKeyCode()) {
-				case KeyEvent.VK_UP: value = Direction.NORTH; break;
-				case KeyEvent.VK_DOWN: value = Direction.SOUTH; break;
-				case KeyEvent.VK_LEFT: value = Direction.WEST; break;
-				case KeyEvent.VK_RIGHT: value = Direction.EAST; break;
+				switch (e.getCode()) {
+				case UP: value = Direction.NORTH; break;
+				case DOWN: value = Direction.SOUTH; break;
+				case LEFT: value = Direction.WEST; break;
+				case RIGHT: value = Direction.EAST; break;
 				}
 				if (value != null) {
 					event.consume();
@@ -46,4 +47,5 @@ public class DirectionConfigurator implements KeyConfigurator, Cloneable {
 		}
 		return null;
 	}
+
 }

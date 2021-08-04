@@ -5,7 +5,7 @@ package com.cburch.LogisimFX.draw.tools;
 
 import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.draw.actions.ModelAddAction;
-import com.cburch.LogisimFX.draw.canvas.Canvas;
+import com.cburch.LogisimFX.draw.canvas.AppearanceCanvas;
 import com.cburch.LogisimFX.draw.model.CanvasModel;
 import com.cburch.LogisimFX.draw.shapes.Curve;
 import com.cburch.LogisimFX.draw.shapes.CurveUtil;
@@ -13,14 +13,10 @@ import com.cburch.LogisimFX.draw.shapes.DrawAttr;
 import com.cburch.LogisimFX.draw.shapes.LineUtil;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Location;
-import com.cburch.LogisimFX.util.Icons;
+
+import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.util.List;
 
 public class CurveTool extends AbstractTool {
@@ -50,18 +46,18 @@ public class CurveTool extends AbstractTool {
 	}
 
 	@Override
-	public Cursor getCursor(Canvas canvas) {
-		return Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
+	public Cursor getCursor(AppearanceCanvas canvas) {
+		return Cursor.CROSSHAIR;
 	}
 	
 	@Override
-	public void toolDeselected(Canvas canvas) {
+	public void toolDeselected(AppearanceCanvas canvas) {
 		state = BEFORE_CREATION;
 		repaintArea(canvas);
 	}
 	
 	@Override
-	public void mousePressed(Canvas canvas, MouseEvent e) {
+	public void mousePressed(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
 		int mx = e.getX();
 		int my = e.getY();
 		lastMouseX = mx;
@@ -89,13 +85,13 @@ public class CurveTool extends AbstractTool {
 	}
 	
 	@Override
-	public void mouseDragged(Canvas canvas, MouseEvent e) {
+	public void mouseDragged(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
 		updateMouse(canvas, e.getX(), e.getY(), e.getModifiersEx());
 		repaintArea(canvas);
 	}
 	
 	@Override
-	public void mouseReleased(Canvas canvas, MouseEvent e) {
+	public void mouseReleased(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
 		Curve c = updateMouse(canvas, e.getX(), e.getY(), e.getModifiersEx());
 		mouseDown = false;
 		if (state == CONTROL_DRAG) {
@@ -111,7 +107,7 @@ public class CurveTool extends AbstractTool {
 	}
 	
 	@Override
-	public void keyPressed(Canvas canvas, KeyEvent e) {
+	public void keyPressed(AppearanceCanvas canvas, KeyEvent e) {
 		int code = e.getKeyCode();
 		if (mouseDown && (code == KeyEvent.VK_SHIFT
 				|| code == KeyEvent.VK_CONTROL || code == KeyEvent.VK_ALT)) {
@@ -121,12 +117,12 @@ public class CurveTool extends AbstractTool {
 	}
 	
 	@Override
-	public void keyReleased(Canvas canvas, KeyEvent e) {
+	public void keyReleased(AppearanceCanvas canvas, KeyEvent e) {
 		keyPressed(canvas, e);
 	}
 
 	@Override
-	public void keyTyped(Canvas canvas, KeyEvent e) {
+	public void keyTyped(AppearanceCanvas canvas, KeyEvent e) {
 		char ch = e.getKeyChar();
 		if (ch == '\u001b') { // escape key
 			state = BEFORE_CREATION;
@@ -135,7 +131,7 @@ public class CurveTool extends AbstractTool {
 		}
 	}
 	
-	private Curve updateMouse(Canvas canvas, int mx, int my, int mods) {
+	private Curve updateMouse(AppearanceCanvas canvas, int mx, int my, int mods) {
 		lastMouseX = mx;
 		lastMouseY = my;
 		
@@ -196,7 +192,7 @@ public class CurveTool extends AbstractTool {
 		return ret;
 	}
 
-	private void repaintArea(Canvas canvas) {
+	private void repaintArea(AppearanceCanvas canvas) {
 		canvas.repaint();
 	}
 	
@@ -206,7 +202,7 @@ public class CurveTool extends AbstractTool {
 	}
 
 	@Override
-	public void draw(Canvas canvas, Graphics g) {
+	public void draw(AppearanceCanvas canvas) {
 		g.setColor(Color.GRAY);
 		switch (state) {
 		case ENDPOINT_DRAG:
@@ -217,4 +213,5 @@ public class CurveTool extends AbstractTool {
 			break;
 		}
 	}
+
 }

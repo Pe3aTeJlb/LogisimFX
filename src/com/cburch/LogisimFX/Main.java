@@ -1,17 +1,9 @@
 package com.cburch.LogisimFX;
 
-import com.cburch.LogisimFX.newgui.AbstractController;
-import com.cburch.LogisimFX.newgui.DialogManager;
-import com.cburch.LogisimFX.proj.ProjectActions;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-
-public class Main extends Application {
+public class Main extends Application{
 
     public static final LogisimVersion VERSION = LogisimVersion.get(2, 7, 1);
     public static final String VERSION_NAME = VERSION.toString();
@@ -36,4 +28,5 @@ public class Main extends Application {
         }
 
     }
+
 }

@@ -4,10 +4,10 @@
 package com.cburch.LogisimFX.tools.key;
 
 import com.cburch.LogisimFX.data.AttributeSet;
-
-import java.awt.event.KeyEvent;
+import javafx.scene.input.KeyEvent;
 
 public class KeyConfigurationEvent {
+
 	public static final int KEY_PRESSED = 0;
 	public static final int KEY_RELEASED = 1;
 	public static final int KEY_TYPED = 2;
@@ -49,4 +49,5 @@ public class KeyConfigurationEvent {
 	public Object getData() {
 		return data;
 	}
+
 }

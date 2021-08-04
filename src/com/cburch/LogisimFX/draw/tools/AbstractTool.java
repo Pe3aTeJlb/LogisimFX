@@ -3,15 +3,14 @@
 
 package com.cburch.LogisimFX.draw.tools;
 
-import com.cburch.LogisimFX.draw.canvas.Canvas;
+import com.cburch.LogisimFX.draw.canvas.AppearanceCanvas;
 import com.cburch.LogisimFX.draw.canvas.CanvasTool;
 import com.cburch.LogisimFX.data.Attribute;
-import javafx.scene.image.ImageView;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
+import javafx.scene.Cursor;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
+
 import java.util.List;
 
 public abstract class AbstractTool extends CanvasTool {
@@ -39,37 +38,38 @@ public abstract class AbstractTool extends CanvasTool {
 	// CanvasTool methods
 	//
 	@Override
-	public abstract Cursor getCursor(Canvas canvas);
+	public abstract Cursor getCursor(AppearanceCanvas canvas);
 	
 	@Override
-	public void toolSelected(Canvas canvas) { }
+	public void toolSelected(AppearanceCanvas canvas) { }
 	@Override
-	public void toolDeselected(Canvas canvas) { }
+	public void toolDeselected(AppearanceCanvas canvas) { }
 	
 	@Override
-	public void mouseMoved(Canvas canvas, MouseEvent e) { }
+	public void mouseMoved(AppearanceCanvas canvas, AppearanceCanvas.CME e) { }
 	@Override
-	public void mousePressed(Canvas canvas, MouseEvent e) { }
+	public void mousePressed(AppearanceCanvas canvas, AppearanceCanvas.CME e) { }
 	@Override
-	public void mouseDragged(Canvas canvas, MouseEvent e) { }
+	public void mouseDragged(AppearanceCanvas canvas, AppearanceCanvas.CME e) { }
 	@Override
-	public void mouseReleased(Canvas canvas, MouseEvent e) { }
+	public void mouseReleased(AppearanceCanvas canvas, AppearanceCanvas.CME e) { }
 	@Override
-	public void mouseEntered(Canvas canvas, MouseEvent e) { }
+	public void mouseEntered(AppearanceCanvas canvas, AppearanceCanvas.CME e) { }
 	@Override
-	public void mouseExited(Canvas canvas, MouseEvent e) { }
+	public void mouseExited(AppearanceCanvas canvas, AppearanceCanvas.CME e) { }
 
 	/** This is because a popup menu may result from the subsequent mouse release */ 
 	@Override
-	public void cancelMousePress(Canvas canvas) { }
+	public void cancelMousePress(AppearanceCanvas canvas) { }
 
 	@Override
-	public void keyPressed(Canvas canvas, KeyEvent e) { }
+	public void keyPressed(AppearanceCanvas canvas, KeyEvent e) { }
 	@Override
-	public void keyReleased(Canvas canvas, KeyEvent e) { }
+	public void keyReleased(AppearanceCanvas canvas, KeyEvent e) { }
 	@Override
-	public void keyTyped(Canvas canvas, KeyEvent e) { }
+	public void keyTyped(AppearanceCanvas canvas, KeyEvent e) { }
 	
 	@Override
-	public void draw(Canvas canvas, Graphics g) { }
+	public void draw(AppearanceCanvas canvas) { }
+
 }

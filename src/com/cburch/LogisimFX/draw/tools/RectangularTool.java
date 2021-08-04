@@ -4,15 +4,14 @@
 package com.cburch.LogisimFX.draw.tools;
 
 import com.cburch.LogisimFX.draw.actions.ModelAddAction;
+import com.cburch.LogisimFX.draw.canvas.AppearanceCanvas;
 import com.cburch.LogisimFX.draw.canvas.Canvas;
 import com.cburch.LogisimFX.draw.model.CanvasModel;
 import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
-
-import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import javafx.scene.Cursor;
 
 abstract class RectangularTool extends AbstractTool {
 
@@ -32,19 +31,19 @@ abstract class RectangularTool extends AbstractTool {
 	public abstract void fillShape(Graphics g, int x, int y, int w, int h);
 	
 	@Override
-	public Cursor getCursor(Canvas canvas) {
-		return Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
+	public Cursor getCursor(AppearanceCanvas canvas) {
+		return Cursor.CROSSHAIR);
 	}
 	
 	@Override
-	public void toolDeselected(Canvas canvas) {
+	public void toolDeselected(AppearanceCanvas canvas) {
 		Bounds bds = currentBounds;
 		active = false;
 		repaintArea(canvas, bds);
 	}
 	
 	@Override
-	public void mousePressed(Canvas canvas, MouseEvent e) {
+	public void mousePressed(AppearanceCanvas canvas, MouseEvent e) {
 		Location loc = Location.create(e.getX(), e.getY());
 		Bounds bds = Bounds.create(loc);
 		dragStart = loc;
@@ -55,12 +54,12 @@ abstract class RectangularTool extends AbstractTool {
 	}
 	
 	@Override
-	public void mouseDragged(Canvas canvas, MouseEvent e) {
+	public void mouseDragged(AppearanceCanvas canvas, MouseEvent e) {
 		updateMouse(canvas, e.getX(), e.getY(), e.getModifiersEx());
 	}
 	
 	@Override
-	public void mouseReleased(Canvas canvas, MouseEvent e) {
+	public void mouseReleased(AppearanceCanvas canvas, MouseEvent e) {
 		if (active) {
 			Bounds oldBounds = currentBounds;
 			Bounds bds = computeBounds(canvas, e.getX(), e.getY(), e.getModifiersEx());
@@ -79,7 +78,7 @@ abstract class RectangularTool extends AbstractTool {
 	}
 	
 	@Override
-	public void keyPressed(Canvas canvas, KeyEvent e) {
+	public void keyPressed(AppearanceCanvas canvas, KeyEvent e) {
 		int code = e.getKeyCode();
 		if (active && (code == KeyEvent.VK_SHIFT || code == KeyEvent.VK_ALT
 				|| code == KeyEvent.VK_CONTROL)) {
@@ -88,11 +87,11 @@ abstract class RectangularTool extends AbstractTool {
 	}
 	
 	@Override
-	public void keyReleased(Canvas canvas, KeyEvent e) {
+	public void keyReleased(AppearanceCanvas canvas, KeyEvent e) {
 		keyPressed(canvas, e);
 	}
 	
-	private void updateMouse(Canvas canvas, int mx, int my, int mods) {
+	private void updateMouse(AppearanceCanvas canvas, int mx, int my, int mods) {
 		Bounds oldBounds = currentBounds;
 		Bounds bds = computeBounds(canvas, mx, my, mods);
 		if (!bds.equals(oldBounds)) {
@@ -101,7 +100,7 @@ abstract class RectangularTool extends AbstractTool {
 		}
 	}
 	
-	private Bounds computeBounds(Canvas canvas, int mx, int my, int mods) {
+	private Bounds computeBounds(AppearanceCanvas canvas, int mx, int my, int mods) {
 		lastMouseX = mx;
 		lastMouseY = my;
 		if (!active) {
@@ -161,7 +160,7 @@ abstract class RectangularTool extends AbstractTool {
 		}
 	}
 
-	private void repaintArea(Canvas canvas, Bounds bds) {
+	private void repaintArea(AppearanceCanvas canvas, Bounds bds) {
 		canvas.repaint();
 		/* The below doesn't work because Java doesn't deal correctly with stroke
 		 * widths that go outside the clip area
@@ -171,7 +170,7 @@ abstract class RectangularTool extends AbstractTool {
 	}
 	
 	@Override
-	public void draw(Canvas canvas, Graphics g) {
+	public void draw(AppearanceCanvas canvas, Graphics g) {
 		Bounds bds = currentBounds;
 		if (active && bds != null && bds != Bounds.EMPTY_BOUNDS) {
 			g.setColor(Color.GRAY);

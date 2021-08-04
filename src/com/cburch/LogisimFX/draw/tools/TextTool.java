@@ -16,7 +16,7 @@ import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.AttributeEvent;
 import com.cburch.LogisimFX.data.AttributeListener;
 import com.cburch.LogisimFX.data.Location;
-import com.cburch.LogisimFX.util.Icons;
+import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
 import javafx.scene.image.ImageView;
 
 import javax.swing.*;
@@ -150,7 +150,7 @@ public class TextTool extends AbstractTool {
 	}
 	
 	@Override
-	public void zoomFactorChanged(Canvas canvas) {
+	public void zoomFactorChanged(LayoutCanvas canvas) {
 		Text t = curText;
 		if (t != null) {
 			t.getLabel().configureTextField(field, canvas.getZoomFactor());

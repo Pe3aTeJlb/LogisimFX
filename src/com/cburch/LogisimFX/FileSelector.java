@@ -1,7 +1,9 @@
 package com.cburch.LogisimFX;
 
 import com.cburch.LogisimFX.localization.LC_file;
+import com.cburch.LogisimFX.localization.LC_gui;
 import com.cburch.LogisimFX.localization.Localizer;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
@@ -10,14 +12,19 @@ import java.io.File;
 
 public class FileSelector {
 
-    private static Localizer lc = LC_file.getInstance();
-
     private FileChooser fileChooser;
+
+    private DirectoryChooser directoryChooser;
 
     private File tempFile;
 
-    private FileChooser.ExtensionFilter circ = new FileChooser.ExtensionFilter(lc.get("logisimFilter"),"*.circ");
-    private FileChooser.ExtensionFilter jar =  new FileChooser.ExtensionFilter(lc.get("jarFilter"),"*.jar");
+    private FileChooser.ExtensionFilter circ = new FileChooser.ExtensionFilter(LC_file.getInstance().get("logisimFilter"),"*.circ");
+    private FileChooser.ExtensionFilter jar =  new FileChooser.ExtensionFilter(LC_file.getInstance().get("jarFilter"),"*.jar");
+
+    private FileChooser.ExtensionFilter png = new FileChooser.ExtensionFilter(LC_gui.getInstance().get("exportPngFilter"),"*.png");
+    private FileChooser.ExtensionFilter jpeg = new FileChooser.ExtensionFilter(LC_gui.getInstance().get("exportJpgFilter"),
+            "*.jpg", "*.jpeg", "*.jpe", "*.jfi", "*.jfif", "*.jfi");
+    private FileChooser.ExtensionFilter gif = new FileChooser.ExtensionFilter(LC_gui.getInstance().get("exportGifFilter"),"*.gif");
 
     private Window ownerWindow;
 
@@ -27,10 +34,22 @@ public class FileSelector {
 
         fileChooser = new FileChooser();
 
+        directoryChooser = new DirectoryChooser();
+
         fileChooser.getExtensionFilters().addAll(
                 circ,
                 jar
         );
+
+    }
+
+    public File chooseDirectory(String title){
+
+        directoryChooser.setTitle(title);
+
+        tempFile = directoryChooser.showDialog(ownerWindow);
+
+        return tempFile;
 
     }
 
@@ -43,12 +62,15 @@ public class FileSelector {
 
     }
 
-    public File showSaveDialog(){
+    public File showSaveDialog(String title){
 
         UpdateLocale();
 
-        fileChooser.setSelectedExtensionFilter(null);
-        return fileChooser.showSaveDialog(ownerWindow);
+        fileChooser.setTitle(title);
+
+        tempFile = fileChooser.showSaveDialog(ownerWindow);
+
+        return tempFile;
 
     }
 
@@ -108,6 +130,48 @@ public class FileSelector {
 
     }
 
+    public File SavePngFile(){
+
+        UpdateLocale();
+
+        // fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
+
+        setPngFilter();
+
+        tempFile = fileChooser.showOpenDialog(ownerWindow);
+
+        return tempFile;
+
+    }
+
+    public File SaveJpgFile(){
+
+        UpdateLocale();
+
+        // fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
+
+        setJpgFilter();
+
+        tempFile = fileChooser.showOpenDialog(ownerWindow);
+
+        return tempFile;
+
+    }
+
+    public File SaveGifFile(){
+
+        UpdateLocale();
+
+        // fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
+
+        setGifFilter();
+
+        tempFile = fileChooser.showOpenDialog(ownerWindow);
+
+        return tempFile;
+
+    }
+
 
     public void setCircFilter(){
 
@@ -125,6 +189,38 @@ public class FileSelector {
 
     }
 
+    public void setPngFilter(){
+
+        fileChooser.getExtensionFilters().clear();
+        fileChooser.getExtensionFilters().add(png);
+        fileChooser.setSelectedExtensionFilter(png);
+
+    }
+
+    public void setJpgFilter(){
+
+        fileChooser.getExtensionFilters().clear();
+        fileChooser.getExtensionFilters().add(jpeg);
+        fileChooser.setSelectedExtensionFilter(jpeg);
+
+    }
+
+    public void setGifFilter(){
+
+        fileChooser.getExtensionFilters().clear();
+        fileChooser.getExtensionFilters().add(gif);
+        fileChooser.setSelectedExtensionFilter(gif);
+
+    }
+
+    public void setFolderFilter(){
+
+
+
+    }
+
+
+
     public void setSelectedFile(File f){
         fileChooser.setInitialDirectory(f);
     }
@@ -136,8 +232,8 @@ public class FileSelector {
 
     private void UpdateLocale(){
 
-        circ = new FileChooser.ExtensionFilter(lc.get("logisimFilter"),"*.circ");
-        jar =  new FileChooser.ExtensionFilter(lc.get("jarFilter"),"*.jar");
+        circ = new FileChooser.ExtensionFilter(LC_file.getInstance().get("logisimFilter"),"*.circ");
+        jar =  new FileChooser.ExtensionFilter(LC_file.getInstance().get("jarFilter"),"*.jar");
 
     }
 

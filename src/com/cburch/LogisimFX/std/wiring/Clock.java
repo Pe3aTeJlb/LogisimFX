@@ -3,20 +3,16 @@
 
 package com.cburch.LogisimFX.std.wiring;
 
-import java.awt.event.MouseEvent;
-
 import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
-import com.cburch.LogisimFX.newgui.MainFrame.CustomCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
-import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.circuit.RadixOption;
 
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
@@ -67,12 +63,12 @@ public class Clock extends InstanceFactory {
 		boolean isPressed = true;
 
 		@Override
-		public void mousePressed(InstanceState state, CustomCanvas.CME e) {
+		public void mousePressed(InstanceState state, LayoutCanvas.CME e) {
 			isPressed = isInside(state, e);
 		}
 
 		@Override
-		public void mouseReleased(InstanceState state, CustomCanvas.CME e) {
+		public void mouseReleased(InstanceState state, LayoutCanvas.CME e) {
 
 			if (isPressed && isInside(state, e)) {
 				ClockState myState = (ClockState) state.getData();
@@ -84,7 +80,7 @@ public class Clock extends InstanceFactory {
 
 		}
 
-		private boolean isInside(InstanceState state, CustomCanvas.CME e) {
+		private boolean isInside(InstanceState state, LayoutCanvas.CME e) {
 
 			Bounds bds = state.getInstance().getBounds();
 			return bds.contains(e.localX, e.localY);

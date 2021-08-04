@@ -7,30 +7,32 @@ import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.AttributeSet;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 
-import java.awt.*;
 import java.util.List;
 
 public interface CanvasObject {
-	public abstract CanvasObject clone();
-	public abstract String getDisplayName();
-	public abstract AttributeSet getAttributeSet();
-	public abstract <V> V getValue(Attribute<V> attr);
-	public abstract Bounds getBounds();
-	public abstract boolean matches(CanvasObject other);
-	public abstract int matchesHashCode();
-	public abstract boolean contains(Location loc, boolean assumeFilled);
-	public abstract boolean overlaps(CanvasObject other);
-	public abstract List<Handle> getHandles(HandleGesture gesture);
-	public abstract boolean canRemove();
-	public abstract boolean canMoveHandle(Handle handle);
-	public abstract Handle canInsertHandle(Location desired);
-	public abstract Handle canDeleteHandle(Location desired);
-	public abstract void paint(Graphics g, HandleGesture gesture);
+
+	CanvasObject clone();
+	String getDisplayName();
+	AttributeSet getAttributeSet();
+	<V> V getValue(Attribute<V> attr);
+	Bounds getBounds();
+	boolean matches(CanvasObject other);
+	int matchesHashCode();
+	boolean contains(Location loc, boolean assumeFilled);
+	boolean overlaps(CanvasObject other);
+	List<Handle> getHandles(HandleGesture gesture);
+	boolean canRemove();
+	boolean canMoveHandle(Handle handle);
+	Handle canInsertHandle(Location desired);
+	Handle canDeleteHandle(Location desired);
+	void paint(Graphics g, HandleGesture gesture);
 	
-	public Handle moveHandle(HandleGesture gesture);
-	public void insertHandle(Handle desired, Handle previous);
-	public Handle deleteHandle(Handle handle);
-	public void translate(int dx, int dy);
-	public <V> void setValue(Attribute<V> attr, V value);
+	Handle moveHandle(HandleGesture gesture);
+	void insertHandle(Handle desired, Handle previous);
+	Handle deleteHandle(Handle handle);
+	void translate(int dx, int dy);
+	<V> void setValue(Attribute<V> attr, V value);
+
 }

@@ -4,7 +4,6 @@
 package com.cburch.LogisimFX.std.memory;
 
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 
 import com.cburch.LogisimFX.data.BitWidth;
 import com.cburch.LogisimFX.data.Bounds;
@@ -13,9 +12,8 @@ import com.cburch.LogisimFX.instance.InstancePainter;
 import com.cburch.LogisimFX.instance.InstancePoker;
 import com.cburch.LogisimFX.instance.InstanceState;
 import com.cburch.LogisimFX.instance.StdAttr;
-import com.cburch.LogisimFX.newgui.MainFrame.CustomCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class ShiftRegisterPoker extends InstancePoker {
@@ -23,14 +21,14 @@ public class ShiftRegisterPoker extends InstancePoker {
 	private int loc;
 	
 	@Override
-	public boolean init(InstanceState state, CustomCanvas.CME e) {
+	public boolean init(InstanceState state, LayoutCanvas.CME e) {
 
 		loc = computeStage(state, e);
 		return loc >= 0;
 
 	}
 	
-	private int computeStage(InstanceState state, CustomCanvas.CME e) {
+	private int computeStage(InstanceState state, LayoutCanvas.CME e) {
 
 		Integer lenObj = state.getAttributeValue(ShiftRegister.ATTR_LENGTH);
 		BitWidth widObj = state.getAttributeValue(StdAttr.WIDTH);
@@ -69,12 +67,12 @@ public class ShiftRegisterPoker extends InstancePoker {
 	}
 	
 	@Override
-	public void mousePressed(InstanceState state, CustomCanvas.CME e) {
+	public void mousePressed(InstanceState state, LayoutCanvas.CME e) {
 		loc = computeStage(state, e);
 	}
 	
 	@Override
-	public void mouseReleased(InstanceState state, CustomCanvas.CME e) {
+	public void mouseReleased(InstanceState state, LayoutCanvas.CME e) {
 
 		int oldLoc = loc;
 		if (oldLoc < 0) return;

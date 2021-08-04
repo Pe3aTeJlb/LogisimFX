@@ -3,27 +3,26 @@
 
 package com.cburch.LogisimFX.tools;
 
-import java.awt.Cursor;
-import java.awt.Graphics;
-import java.awt.event.MouseEvent;
-import java.awt.event.KeyEvent;
-
 import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.comp.ComponentUserEvent;
 import com.cburch.LogisimFX.data.AttributeSet;
 import com.cburch.LogisimFX.data.Location;
+import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.base.Text;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.circuit.CircuitEvent;
 import com.cburch.LogisimFX.circuit.CircuitListener;
 import com.cburch.LogisimFX.circuit.CircuitMutation;
-import com.cburch.logisim.gui.main.Canvas;
 import com.cburch.LogisimFX.proj.Action;
 import com.cburch.LogisimFX.proj.Project;
+
 import javafx.beans.binding.StringBinding;
+import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 
 public class TextTool extends Tool {
 
@@ -59,8 +58,8 @@ public class TextTool extends Tool {
 				if (!isEmpty) {
 					CircuitMutation xn = new CircuitMutation(caretCircuit);
 					xn.add(caretComponent);
-					a = xn.toAction(Strings.getter("addComponentAction",
-							Text.FACTORY.getDisplayGetter()));
+					a = xn.toAction(LC.createComplexStringBinding("addComponentAction",
+							Text.FACTORY.getDisplayGetter().getValue()));
 				} else {
 					a = null; // don't add the blank text field
 				}
@@ -68,8 +67,8 @@ public class TextTool extends Tool {
 				if (isEmpty && caretComponent.getFactory() instanceof Text) {
 					CircuitMutation xn = new CircuitMutation(caretCircuit);
 					xn.add(caretComponent);
-					a = xn.toAction(Strings.getter("removeComponentAction",
-							Text.FACTORY.getDisplayGetter()));
+					a = xn.toAction((LC.createComplexStringBinding("removeComponentAction",
+							Text.FACTORY.getDisplayGetter().getValue())));
 				} else {
 					Object obj = caretComponent.getFeature(TextEditable.class);
 					if (obj == null) { // should never happen
@@ -107,8 +106,7 @@ public class TextTool extends Tool {
 		}
 	}
 
-	private static Cursor cursor
-		= Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR);
+	private static Cursor cursor = Cursor.TEXT;
 
 	private static final ImageView icon = IconsManager.getIcon("text.gif");
 
@@ -116,7 +114,7 @@ public class TextTool extends Tool {
 	private AttributeSet attrs;
 	private Caret caret = null;
 	private boolean caretCreatingText = false;
-	private Canvas caretCanvas = null;
+	private LayoutCanvas caretCanvas = null;
 	private Circuit caretCircuit = null;
 	private Component caretComponent = null;
 
@@ -160,17 +158,12 @@ public class TextTool extends Tool {
 	}
 
 	@Override
-	public void paintIcon(ComponentDrawContext c, int x, int y) {
-		Text.FACTORY.paintIcon(c, x, y, null);
-	}
-
-	@Override
-	public void draw(Canvas canvas, ComponentDrawContext context) {
+	public void draw(LayoutCanvas canvas, ComponentDrawContext context) {
 		if (caret != null) caret.draw(context.getGraphics());
 	}
 
 	@Override
-	public void deselect(Canvas canvas) {
+	public void deselect(LayoutCanvas canvas) {
 		if (caret != null) {
 			caret.stopEditing();
 			caret = null;
@@ -178,21 +171,20 @@ public class TextTool extends Tool {
 	}
 
 	@Override
-	public void mousePressed(Canvas canvas, Graphics g, MouseEvent e) {
+	public void mousePressed(LayoutCanvas canvas, Graphics g, LayoutCanvas.CME e) {
 		Project proj = canvas.getProject();
 		Circuit circ = canvas.getCircuit();
 
 		if (!proj.getLogisimFile().contains(circ)) {
 			if (caret != null) caret.cancelEditing();
-			canvas.setErrorMessage(Strings.getter("cannotModifyError"));
+			canvas.setErrorMessage(LC.createStringBinding("cannotModifyError"),null);
 			return;
 		}
 
 		// Maybe user is clicking within the current caret.
 		if (caret != null) {
-			if (caret.getBounds(g).contains(e.getX(), e.getY())) { // Yes
+			if (caret.getBounds(g).contains(e.localX,e.localY)) { // Yes
 				caret.mousePressed(e);
-				proj.repaintCanvas();
 				return;
 			} else { // No. End the current caret.
 				caret.stopEditing();
@@ -201,18 +193,18 @@ public class TextTool extends Tool {
 		// caret will be null at this point
 
 		// Otherwise search for a new caret.
-		int x = e.getX();
-		int y = e.getY();
+		int x = e.localX;
+		int y = e.localY;
 		Location loc = Location.create(x, y);
 		ComponentUserEvent event = new ComponentUserEvent(canvas, x, y);
 
 		// First search in selection.
-		for (Component comp : proj.getSelection().getComponentsContaining(loc, g)) {
+		for (Component comp : canvas.getSelection().getComponentsContaining(loc, g)) {
 			TextEditable editable = (TextEditable) comp.getFeature(TextEditable.class);
 			if (editable != null) {
 				caret = editable.getTextCaret(event);
 				if (caret != null) {
-					proj.getFrame().viewComponentAttributes(circ, comp);
+					proj.getFrameController().setAttributeTable(circ, comp);
 					caretComponent = comp;
 					caretCreatingText = false;
 					break;
@@ -227,7 +219,7 @@ public class TextTool extends Tool {
 				if (editable != null) {
 					caret = editable.getTextCaret(event);
 					if (caret != null) {
-						proj.getFrame().viewComponentAttributes(circ, comp);
+						proj.getFrameController().setAttributeTable(circ, comp);
 						caretComponent = comp;
 						caretCreatingText = false;
 						break;
@@ -245,7 +237,7 @@ public class TextTool extends Tool {
 			TextEditable editable = (TextEditable) caretComponent.getFeature(TextEditable.class);
 			if (editable != null) {
 				caret = editable.getTextCaret(event);
-				proj.getFrame().viewComponentAttributes(circ, caretComponent);
+				proj.getFrameController().setAttributeTable(circ, caretComponent);
 			}
 		}
 
@@ -255,40 +247,37 @@ public class TextTool extends Tool {
 			caret.addCaretListener(listener);
 			caretCircuit.addCircuitListener(listener);
 		}
-		proj.repaintCanvas();
+
 	}
 
 	@Override
-	public void mouseDragged(Canvas canvas, Graphics g, MouseEvent e) {
+	public void mouseDragged(LayoutCanvas canvas, Graphics g, LayoutCanvas.CME e) {
 		//TODO: enhance label editing
 	}
 
 	@Override
-	public void mouseReleased(Canvas canvas, Graphics g, MouseEvent e) {
+	public void mouseReleased(LayoutCanvas canvas, Graphics g, LayoutCanvas.CME e) {
 		//TODO: enhance label editing
 	}
 
 	@Override
-	public void keyPressed(Canvas canvas, KeyEvent e) {
+	public void keyPressed(LayoutCanvas canvas, KeyEvent e) {
 		if (caret != null) {
 			caret.keyPressed(e);
-			canvas.getProject().repaintCanvas();
 		}
 	}
 
 	@Override
-	public void keyReleased(Canvas canvas, KeyEvent e) {
+	public void keyReleased(LayoutCanvas canvas, KeyEvent e) {
 		if (caret != null) {
 			caret.keyReleased(e);
-			canvas.getProject().repaintCanvas();
 		}
 	}
 
 	@Override
-	public void keyTyped(Canvas canvas, KeyEvent e) {
+	public void keyTyped(LayoutCanvas canvas, KeyEvent e) {
 		if (caret != null) {
 			caret.keyTyped(e);
-			canvas.getProject().repaintCanvas();
 		}
 	}
 
@@ -296,5 +285,6 @@ public class TextTool extends Tool {
 	public Cursor getCursor() {
 		return cursor;
 	}
+
 }
 

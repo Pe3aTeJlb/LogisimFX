@@ -10,7 +10,7 @@ import com.cburch.LogisimFX.data.BitWidth;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.data.Value;
-import com.cburch.LogisimFX.file.MouseMappings;
+import com.cburch.LogisimFX.localization.LC_gui;
 import com.cburch.LogisimFX.prefs.AppPreferences;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.tools.MenuTool;
@@ -30,17 +30,16 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
-import java.awt.event.KeyEvent;
 import java.util.Collections;
 import java.util.Set;
 
-public class CustomCanvas extends Canvas {
+public class LayoutCanvas extends Canvas {
 
     private AnchorPane root;
 
     private Project proj;
 
-    //public Canvas cv;
+    //public Canvas;
     private Graphics g;
     private double width, height;
 
@@ -60,23 +59,22 @@ public class CustomCanvas extends Canvas {
     private static final double SPACING_X = 10;
     private static final double SPACING_Y = 10;
 
-    //Hertz rate
-    static final Color HALO_COLOR = Color.color(0.753, 1, 1);
 
-    private static final int BOUNDS_BUFFER = 70;
-    // pixels shown in canvas beyond outermost boundaries
-    private static final int THRESH_SIZE_UPDATE = 10;
     // don't bother to update the size if it hasn't changed more than this
     static final double SQRT_2 = Math.sqrt(2.0);
-    //private static final int BUTTONS_MASK = InputEvent.BUTTON1_DOWN_MASK
-    //       | InputEvent.BUTTON2_DOWN_MASK | InputEvent.BUTTON3_DOWN_MASK;
-    private static final Color DEFAULT_ERROR_COLOR = Color.color(0.753, 0, 0);
 
+    //Error string
+    private static final Color DEFAULT_ERROR_COLOR = Color.color(0.753, 0, 0);
+    private static final Font DEFAULT_ERROR_FONT = Font.font("serif", FontWeight.BOLD, FontPosture.REGULAR, 28);
+    private Color errorColor;
+    private static StringBinding errorMessage;
+
+    //Tick rate
     private static final Color TICK_RATE_COLOR = Color.color(0, 0, 0.361, 0.361);
     private static final Font TICK_RATE_FONT = Font.font("serif", FontWeight.BOLD, FontPosture.REGULAR, 12);
+    private TickCounter tickCounter;
 
-
-
+    static final Color HALO_COLOR = Color.color(0.753, 1, 1);
     private Component haloedComponent = null;
     private Circuit haloedCircuit = null;
     private WireSet highlightedWires = WireSet.EMPTY;
@@ -86,14 +84,10 @@ public class CustomCanvas extends Canvas {
 
     private Tool dragTool;
     private Selection selection;
-    private MouseMappings mappings;
-
-    private Color errorColor;
-    private static StringBinding errorMessage;
 
     private ContextMenu contextMenu;
 
-    public CustomCanvas(AnchorPane rt, Project project){
+    public LayoutCanvas(AnchorPane rt, Project project){
 
         super(rt.getWidth(),rt.getHeight());
 
@@ -101,8 +95,6 @@ public class CustomCanvas extends Canvas {
 
         proj = project;
 
-        //cv = new Canvas(root.getWidth(),root.getHeight());
-       // cv.setFocusTraversable(true);
         this.setFocusTraversable(true);
 
         g = new Graphics(this.getGraphicsContext2D());
@@ -117,6 +109,7 @@ public class CustomCanvas extends Canvas {
         transform[1] = transform[2] = transform[4] = transform[5] = 0;
 
         this.selection = new Selection(proj, this);
+        this.tickCounter = new TickCounter();
 
         update = new AnimationTimer() {
             @Override
@@ -163,7 +156,28 @@ public class CustomCanvas extends Canvas {
 
         proj.getSimulator().drawStepPoints(ptContext);
 
+        StringBinding message = errorMessage;
+        if (message != null) {
+            g.setColor(errorColor);
+            drawString(g, message.get());
+            return;
+        }
+
+        if (proj.getSimulator().isOscillating()) {
+            g.setColor(DEFAULT_ERROR_COLOR);
+            drawString(g, LC_gui.getInstance().get("canvasOscillationError"));
+            return;
+        }
+
+        if (proj.getSimulator().isExceptionEncountered()) {
+            g.setColor(DEFAULT_ERROR_COLOR);
+            drawString(g, LC_gui.getInstance().get("canvasExceptionError"));
+            return;
+        }
+
         drawErrorMessage();
+
+        drawTickRate();
 
     }
 
@@ -300,6 +314,37 @@ public class CustomCanvas extends Canvas {
 
     }
 
+    private void drawString(Graphics g, String msg){
+
+        g.setFont(DEFAULT_ERROR_FONT);
+        FontMetrics fm = g.getFontMetrics();
+        int x = ((int)getWidth() - (int)fm.computeStringWidth(msg)) / 2;
+        if (x < 0) x = 0;
+        g.c.strokeText(msg, x, getHeight() - 23);
+
+    }
+
+    private void drawTickRate(){
+
+        if (AppPreferences.SHOW_TICK_RATE.getBoolean()) {
+
+            String hz = tickCounter.getTickRate();
+
+            if (hz != null && !hz.equals("")) {
+                g.setColor(TICK_RATE_COLOR);
+                g.setFont(TICK_RATE_FONT);
+                FontMetrics fm = g.getFontMetrics();
+                int x = (int)getWidth() - (int)fm.computeStringWidth(hz) - 5;
+                int y = (int)fm.getAscent() + 5;
+                g.c.strokeText(hz, x, y);
+            }
+
+            g.toDefault();
+
+        }
+
+    }
+
     //Tools
 
     // convert screen coordinates to grid coordinates by inverting circuit transform
@@ -358,6 +403,9 @@ public class CustomCanvas extends Canvas {
     private void setCanvasEvents(){
 
         this.addEventFilter(MouseEvent.ANY, (e) -> this.requestFocus());
+
+        this.setOnContextMenuRequested(event ->
+                contextMenu.show(this, event.getScreenX(), event.getScreenY()));
 
         this.setOnMousePressed(event -> {
 
@@ -481,21 +529,18 @@ public class CustomCanvas extends Canvas {
         });
 
         this.setOnKeyPressed(event -> {
-            System.out.println("lol");
             Tool tool = proj.getTool();
             if (tool != null) tool.keyPressed(this, event);
 
         });
 
         this.setOnKeyReleased(event -> {
-            System.out.println("lol2");
             Tool tool = proj.getTool();
             if (tool != null) tool.keyReleased(this, event);
 
         });
 
         this.setOnKeyTyped(event -> {
-            System.out.println("lol3");
             Tool tool = proj.getTool();
             if (tool != null) tool.keyTyped(this, event);
 
@@ -505,10 +550,10 @@ public class CustomCanvas extends Canvas {
 
     public void showContextMenu(ContextMenu menu, int x, int y){
 
-        if(contextMenu != null)contextMenu.hide();
+        //if(contextMenu != null)contextMenu.hide();
 
         contextMenu = menu;
-        contextMenu.show(this,x,y);
+        //contextMenu.show(this,x,y);
 
     }
 

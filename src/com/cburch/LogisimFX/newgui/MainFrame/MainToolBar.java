@@ -54,13 +54,13 @@ public class MainToolBar extends ToolBar {
         RedactCircuitBtnsList = FXCollections.observableArrayList();
         RedactAppearanceBtnsList = FXCollections.observableArrayList();
 
-        SetRedactCircuitItems();
-        SetRedactBlackBoxItems();
+        SetLayoutTools();
+        SetAppearanceTools();
 
         SetMainToolBarItems("RedactCircuit");
     }
 
-    private void SetRedactCircuitItems(){
+    private void SetLayoutTools(){
 
         toolsCounter= 1;
 
@@ -79,7 +79,7 @@ public class MainToolBar extends ToolBar {
 
     }
 
-    private void SetRedactBlackBoxItems(){
+    private void SetAppearanceTools(){
 
         RedactAppearanceBtnsList.clear();
 
@@ -121,8 +121,8 @@ public class MainToolBar extends ToolBar {
 
     public void ToolsRefresh(){
 
-        SetRedactCircuitItems();
-        SetRedactBlackBoxItems();
+        SetLayoutTools();
+        SetAppearanceTools();
         SetMainToolBarItems(currType);
 
     }

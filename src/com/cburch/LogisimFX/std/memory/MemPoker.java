@@ -4,13 +4,12 @@
 package com.cburch.LogisimFX.std.memory;
 
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.instance.InstancePainter;
 import com.cburch.LogisimFX.instance.InstancePoker;
 import com.cburch.LogisimFX.instance.InstanceState;
-import com.cburch.LogisimFX.newgui.MainFrame.CustomCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.proj.Project;
 
@@ -21,7 +20,7 @@ public class MemPoker extends InstancePoker {
 	private MemPoker sub;
 
 	@Override
-	public boolean init(InstanceState state, CustomCanvas.CME event) {
+	public boolean init(InstanceState state, LayoutCanvas.CME event) {
 
 		Bounds bds = state.getInstance().getBounds();
 		MemState data = (MemState) state.getData();

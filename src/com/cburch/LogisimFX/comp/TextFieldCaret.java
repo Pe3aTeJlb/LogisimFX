@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import com.cburch.LogisimFX.data.Bounds;
-import com.cburch.LogisimFX.newgui.MainFrame.CustomCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.tools.Caret;
 import com.cburch.LogisimFX.tools.CaretEvent;
@@ -139,16 +139,16 @@ class TextFieldCaret implements Caret, TextFieldListener {
 		field.removeTextFieldListener(this);
 	}
 
-	public void mousePressed(CustomCanvas.CME e) {
+	public void mousePressed(LayoutCanvas.CME e) {
 		//TODO: enhance label editing
 		moveCaret(e.localX, e.localY);
 	}
 
-	public void mouseDragged(CustomCanvas.CME e) {
+	public void mouseDragged(LayoutCanvas.CME e) {
 		//TODO: enhance label editing
 	}
 
-	public void mouseReleased(CustomCanvas.CME e) {
+	public void mouseReleased(LayoutCanvas.CME e) {
 		//TODO: enhance label editing
 		moveCaret(e.localX, e.localY);
 	}

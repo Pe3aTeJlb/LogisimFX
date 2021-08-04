@@ -3,27 +3,22 @@
 
 package com.cburch.LogisimFX.tools;
 
-import java.awt.Cursor;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-
 import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.data.Location;
-import com.cburch.LogisimFX.util.GraphicsUtil;
-import com.cburch.LogisimFX.util.Icons;
-import com.cburch.LogisimFX.util.StringGetter;
+import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.circuit.CircuitMutation;
 import com.cburch.LogisimFX.circuit.Wire;
-import com.cburch.logisim.gui.main.Canvas;
 import com.cburch.LogisimFX.prefs.AppPreferences;
 import com.cburch.LogisimFX.proj.Action;
+
 import javafx.beans.binding.StringBinding;
+import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,8 +26,8 @@ import java.util.Set;
 
 public class WiringTool extends Tool {
 
-	private static Cursor cursor
-		= Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
+	private static Cursor cursor = Cursor.CROSSHAIR;
+
 	private static final ImageView icon = IconsManager.getIcon("wiring.gif");
 	
 	private static final int HORIZONTAL = 1;
@@ -53,7 +48,7 @@ public class WiringTool extends Tool {
 	}
 	
 	@Override
-	public void select(Canvas canvas) {
+	public void select(LayoutCanvas canvas) {
 		super.select(canvas);
 		lastAction = null;
 		reset();
@@ -111,7 +106,7 @@ public class WiringTool extends Tool {
 	}
 	
 	@Override
-	public Set<Component> getHiddenComponents(Canvas canvas) {
+	public Set<Component> getHiddenComponents(LayoutCanvas canvas) {
 		Component shorten = willShorten(start, cur);
 		if (shorten != null) {
 			return Collections.singleton(shorten); 
@@ -121,7 +116,8 @@ public class WiringTool extends Tool {
 	}
 
 	@Override
-	public void draw(Canvas canvas, ComponentDrawContext context) {
+	public void draw(LayoutCanvas canvas, ComponentDrawContext context) {
+
 		Graphics g = context.getGraphics();
 		if (exists) {
 			Location e0 = start;
@@ -142,63 +138,62 @@ public class WiringTool extends Tool {
 			int y1 = e1.getY();
 
 			g.setColor(Color.BLACK);
-			GraphicsUtil.switchToWidth(g, 3);
+			g.setLineWidth(3);
 			if (direction == HORIZONTAL) {
-				if (x0 != x1) g.drawLine(x0, y0, x1, y0);
-				if (y0 != y1) g.drawLine(x1, y0, x1, y1);
+				if (x0 != x1) g.c.strokeLine(x0, y0, x1, y0);
+				if (y0 != y1) g.c.strokeLine(x1, y0, x1, y1);
 			} else if (direction == VERTICAL) {
-				if (y0 != y1) g.drawLine(x0, y0, x0, y1);
-				if (x0 != x1) g.drawLine(x0, y1, x1, y1);
+				if (y0 != y1) g.c.strokeLine(x0, y0, x0, y1);
+				if (x0 != x1) g.c.strokeLine(x0, y1, x1, y1);
 			}
 		} else if (AppPreferences.ADD_SHOW_GHOSTS.getBoolean() && inCanvas) {
 			g.setColor(Color.GRAY);
-			g.fillOval(cur.getX() - 2, cur.getY() - 2, 5, 5);
+			g.c.fillOval(cur.getX() - 2, cur.getY() - 2, 5, 5);
 		}
+		g.toDefault();
 	}
 
 	@Override
-	public void mouseEntered(Canvas canvas, Graphics g,
-			MouseEvent e) {
+	public void mouseEntered(LayoutCanvas canvas, Graphics g, LayoutCanvas.CME e) {
 		inCanvas = true;
-		canvas.getProject().repaintCanvas();
 	}
 
 	@Override
-	public void mouseExited(Canvas canvas, Graphics g,
-			MouseEvent e) {
+	public void mouseExited(LayoutCanvas canvas, Graphics g, LayoutCanvas.CME e) {
 		inCanvas = false;
-		canvas.getProject().repaintCanvas();
 	}
 
 	@Override
-	public void mouseMoved(Canvas canvas, Graphics g, MouseEvent e) {
+	public void mouseMoved(LayoutCanvas canvas, Graphics g, LayoutCanvas.CME e) {
 		if (exists) {
 			mouseDragged(canvas, g, e);
 		} else {
-			Canvas.snapToGrid(e);
 			inCanvas = true;
-			int curX = e.getX();
-			int curY = e.getY();
+			int curX = e.snappedX;
+			int curY = e.snappedY;
 			if (cur.getX() != curX || cur.getY() != curY) {
 				cur = Location.create(curX, curY);
 			}
-			canvas.getProject().repaintCanvas();
 		}
 	}
 
 	@Override
-	public void mousePressed(Canvas canvas, Graphics g, MouseEvent e) {
+	public void mousePressed(LayoutCanvas canvas, Graphics g, LayoutCanvas.CME e) {
+
 		if (!canvas.getProject().getLogisimFile().contains(canvas.getCircuit())) {
 			exists = false;
-			canvas.setErrorMessage(Strings.getter("cannotModifyError"));
+			canvas.setErrorMessage(LC.createStringBinding("cannotModifyError"),null);
 			return;
 		}
 
 		if (exists) {
 			mouseDragged(canvas, g, e);
 		} else {
-			Canvas.snapToGrid(e);
-			start = Location.create(e.getX(), e.getY());
+
+			int curX = e.snappedX;
+			int curY = e.snappedY;
+
+			start = Location.create(curX, curY);
 			cur = start;
 			exists = true;
 			hasDragged = false;
@@ -207,25 +202,31 @@ public class WiringTool extends Tool {
 			shortening = null;
 	
 			super.mousePressed(canvas, g, e);
-			canvas.getProject().repaintCanvas();
+
 		}
+
 	}
 
 	@Override
-	public void mouseDragged(Canvas canvas, Graphics g, MouseEvent e) {
+	public void mouseDragged(LayoutCanvas canvas, Graphics g, LayoutCanvas.CME e) {
+
 		if (exists) {
-			Canvas.snapToGrid(e);
-			int curX = e.getX();
-			int curY = e.getY();
+
+			int curX = e.snappedX;
+			int curY = e.snappedY;
 			if (!computeMove(curX, curY)) return;
 			hasDragged = true;
 	
+			/*
 			Rectangle rect = new Rectangle();
+			rect.
 			rect.add(start.getX(), start.getY());
 			rect.add(cur.getX(), cur.getY());
 			rect.add(curX, curY);
 			rect.grow(3, 3);
-	
+
+
+			 */
 			cur = Location.create(curX, curY);
 			super.mouseDragged(canvas, g, e);
 			
@@ -241,9 +242,9 @@ public class WiringTool extends Tool {
 				}
 			}
 			shortening = shorten;
-	
-			canvas.repaint(rect);
+
 		}
+
 	}
 	
 	void resetClick() {
@@ -251,12 +252,12 @@ public class WiringTool extends Tool {
 	}
 
 	@Override
-	public void mouseReleased(Canvas canvas, Graphics g, MouseEvent e) {
+	public void mouseReleased(LayoutCanvas canvas, Graphics g, LayoutCanvas.CME e) {
+
 		if (!exists) return;
 
-		Canvas.snapToGrid(e);
-		int curX = e.getX();
-		int curY = e.getY();
+		int curX = e.snappedX;
+		int curY = e.snappedY;
 		if (computeMove(curX, curY)) {
 			cur = Location.create(curX, curY);
 		}
@@ -290,9 +291,9 @@ public class WiringTool extends Tool {
 			if (ws.size() > 0) {
 				CircuitMutation mutation = new CircuitMutation(canvas.getCircuit());
 				mutation.addAll(ws);
-				StringGetter desc;
-				if (ws.size() == 1) desc = Strings.getter("addWireAction");
-				else desc = Strings.getter("addWiresAction");
+				StringBinding desc;
+				if (ws.size() == 1) desc = LC.createStringBinding("addWireAction");
+				else desc = LC.createStringBinding("addWiresAction");
 				Action act = mutation.toAction(desc);
 				canvas.getProject().doAction(act);
 				lastAction = act;
@@ -300,7 +301,7 @@ public class WiringTool extends Tool {
 		}
 	}
 	
-	private Wire checkForRepairs(Canvas canvas, Wire w, Location end) {
+	private Wire checkForRepairs(LayoutCanvas canvas, Wire w, Location end) {
 		if (w.getLength() <= 10) return w; // don't repair a short wire to nothing
 		if (!canvas.getCircuit().getNonWires(end).isEmpty()) return w;
 
@@ -317,7 +318,7 @@ public class WiringTool extends Tool {
 				WireRepair repair = (WireRepair) comp.getFeature(WireRepair.class);
 				if (repair != null && repair.shouldRepairWire(new WireRepairData(w, cand))) {
 					w = Wire.create(w.getOtherEnd(end), cand);
-					canvas.repaint(end.getX() - 13, end.getY() - 13, 26, 26);
+					//canvas.repaint(end.getX() - 13, end.getY() - 13, 26, 26);
 					return w;
 				}
 			}
@@ -355,36 +356,40 @@ public class WiringTool extends Tool {
 		}
 	}
 
-	private boolean performShortening(Canvas canvas, Location drag0, Location drag1) {
+	private boolean performShortening(LayoutCanvas canvas, Location drag0, Location drag1) {
+
 		Wire shorten = willShorten(drag0, drag1);
 		if (shorten == null) {
 			return false;
 		} else {
 			CircuitMutation xn = new CircuitMutation(canvas.getCircuit());
-			StringGetter actName;
+			StringBinding actName;
 			Wire result = getShortenResult(shorten, drag0, drag1);
 			if (result == null) {
 				xn.remove(shorten);
-				actName = Strings.getter("removeComponentAction",
-						shorten.getFactory().getDisplayGetter());
+				actName = LC.createComplexStringBinding("removeComponentAction",
+						shorten.getFactory().getDisplayGetter().getValue());
 			} else {
 				xn.replace(shorten, result);
-				actName = Strings.getter("shortenWireAction");
+				actName = LC.createComplexStringBinding("shortenWireAction");
 			}
 			canvas.getProject().doAction(xn.toAction(actName));
 			return true;
 		}
+
 	}
 
 	@Override
-	public void keyPressed(Canvas canvas, KeyEvent event) {
-		switch (event.getKeyCode()) {
-		case KeyEvent.VK_BACK_SPACE:
+	public void keyPressed(LayoutCanvas canvas, KeyEvent event) {
+
+		switch (event.getCode()) {
+		case BACK_SPACE:
 			if (lastAction != null && canvas.getProject().getLastAction() == lastAction) {
 				canvas.getProject().undoAction();
 				lastAction = null;
 			}
 		}
+
 	}
 
 	@Override
@@ -393,18 +398,6 @@ public class WiringTool extends Tool {
 	}
 
 	@Override
-	public void paintIcon(ComponentDrawContext c, int x, int y) {
-		Graphics g = c.getGraphics();
-		if (toolIcon != null) {
-			toolIcon.paintIcon(c.getDestination(), g, x + 2, y + 2);
-		} else {
-			g.setColor(Color.black);
-			g.drawLine(x + 3, y + 13, x + 17, y + 7);
-			g.fillOval(x + 1, y + 11, 5, 5);
-			g.fillOval(x + 15, y + 5, 5, 5);
-		}
-	}
-
-	@Override
 	public Cursor getCursor() { return cursor; }
+
 }

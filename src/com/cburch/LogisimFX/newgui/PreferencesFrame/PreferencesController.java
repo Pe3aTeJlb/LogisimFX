@@ -6,6 +6,7 @@ import com.cburch.LogisimFX.file.Loader;
 import com.cburch.LogisimFX.file.LoaderException;
 import com.cburch.LogisimFX.file.LogisimFile;
 import com.cburch.LogisimFX.newgui.DialogManager;
+import com.cburch.LogisimFX.newgui.FrameManager;
 import com.cburch.LogisimFX.util.StringUtil;
 import com.cburch.LogisimFX.prefs.AppPreferences;
 import com.cburch.LogisimFX.localization.Localizer;
@@ -297,6 +298,7 @@ public class PreferencesController extends AbstractController {
 
         GateShapeCmbx.setOnAction(event -> {
             AppPreferences.GATE_SHAPE.set(GateShapeCmbx.getValue().getValue().toString());
+            FrameManager.GlobalUIUpdate();
         });
 
 

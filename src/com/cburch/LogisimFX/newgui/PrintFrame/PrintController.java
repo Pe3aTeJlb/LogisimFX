@@ -8,10 +8,13 @@ import com.cburch.LogisimFX.proj.Project;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.NodeOrientation;
+import javafx.print.PrintQuality;
+import javafx.print.PrintResolution;
 import javafx.print.PrinterJob;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class PrintController extends AbstractController {
@@ -52,11 +55,15 @@ public class PrintController extends AbstractController {
     @FXML
     private Button CancleBtn;
 
+    @FXML
+    private ImageView I;
 
 
     private PrinterJob job;
 
     private ObservableList<Circuit> circuits;
+
+    private PrintCanvas canvas;
 
 
     @FXML
@@ -114,6 +121,13 @@ public class PrintController extends AbstractController {
 
         if (currentFound) CircuitLstVw.getSelectionModel().select(current);
 
+        RotateToFitChkbx.setSelected(true);
+
+        PrintViewChkbx.setSelected(true);
+
+        canvas = new PrintCanvas(Screen.getPrimary().getBounds().getWidth(),
+                Screen.getPrimary().getBounds().getHeight(), proj);
+
     }
 
     private void pageSetup(Stage owner) {
@@ -161,15 +175,18 @@ public class PrintController extends AbstractController {
 
         int pageIndex = 0;
 
+        job.getJobSettings().setPrintQuality(PrintQuality.HIGH);
+
         for (Circuit circ: langsSelectionModel.getSelectedItems()) {
 
-            String header = format(HeaderTxtFld.getText(), pageIndex,
+            if (pageIndex >= circuits.size()) return;
+
+            String header = format(HeaderTxtFld.getText(), pageIndex+1,
                     langsSelectionModel.getSelectedItems().size(), circ.getName());
 
-            System.out.println("header "+header);
-
             // Print the node
-            success &= job.printPage(proj.getFrameController().getPrintImage(circ));
+            success &= job.printPage(canvas.draw(job.getJobSettings().getPageLayout(), circ,header,
+                    PrintViewChkbx.isSelected(), RotateToFitChkbx.isSelected()));
 
             pageIndex++;
 

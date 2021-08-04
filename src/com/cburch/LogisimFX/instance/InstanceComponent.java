@@ -244,11 +244,6 @@ class InstanceComponent implements Component, AttributeListener, ToolTipMaker {
 		factory.paintInstance(painter);
 	}
 
-	public void expose(ComponentDrawContext context) {
-		Bounds b = bounds;
-		context.getDestination().repaint(b.getX(), b.getY(), b.getWidth(), b.getHeight());
-	}
-	
 	public String getToolTip(ComponentUserEvent e) {
 		int x = e.getX();
 		int y = e.getY();

@@ -2,6 +2,7 @@ package com.cburch.LogisimFX.newgui;
 
 import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.circuit.Circuit;
+import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.file.Loader;
 import com.cburch.LogisimFX.localization.LC_gui;
@@ -397,7 +398,7 @@ public class FrameManager {
 
     }
 
-    public static void CreateHexEditorFrame(Project proj, Instance inst){
+    public static void CreateHexEditorFrame(Project proj, Instance inst, CircuitState circuitState){
         CreateNewFrame("LogisimFX/newgui/CircuitStatisticFrame/CircuitStatistic.fxml", proj, inst, Modality.NONE);
         //((MemoryEditorController)curr).describeCircuit(inst);
     }
@@ -450,6 +451,15 @@ public class FrameManager {
 
     private static void FocusOnFrame(Stage s){
         s.toFront();
+    }
+
+
+    public static void GlobalUIUpdate(){
+
+        for (Project p: OpenedMainFrames.keySet()) {
+            p.getFrameController().manual_UI_Update();
+        }
+
     }
 
 

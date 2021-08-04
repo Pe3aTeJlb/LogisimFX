@@ -27,7 +27,7 @@ public class BitSelector extends InstanceFactory {
 				Direction.EAST, BitWidth.create(8), BitWidth.ONE
 			});
 		setKeyConfigurator(JoinedConfigurator.create(
-				new BitWidthConfigurator(GROUP_ATTR, 1, Value.MAX_WIDTH, 0),
+				new BitWidthConfigurator(GROUP_ATTR, 1, Value.MAX_WIDTH, null),
 				new BitWidthConfigurator(StdAttr.WIDTH)));
 
 		setIcon("bitSelector.gif");

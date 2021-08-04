@@ -5,6 +5,7 @@ package com.cburch.LogisimFX.draw.tools;
 
 import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.draw.actions.ModelAddAction;
+import com.cburch.LogisimFX.draw.canvas.AppearanceCanvas;
 import com.cburch.LogisimFX.draw.canvas.Canvas;
 import com.cburch.LogisimFX.draw.model.CanvasModel;
 import com.cburch.LogisimFX.draw.model.CanvasObject;
@@ -13,15 +14,11 @@ import com.cburch.LogisimFX.draw.shapes.LineUtil;
 import com.cburch.LogisimFX.draw.shapes.Poly;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Location;
-import com.cburch.LogisimFX.util.Icons;
 import com.cburch.LogisimFX.util.UnmodifiableList;
+import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.util.List;
 
 public class LineTool extends AbstractTool {
@@ -44,8 +41,7 @@ public class LineTool extends AbstractTool {
 	}
 
 	@Override
-	public Cursor getCursor(Canvas canvas) {
-		return Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
+	public Cursor getCursor(AppearanceCanvas canvas) { return Cursor.CROSSHAIR);
 	}
 	
 	@Override
@@ -54,13 +50,13 @@ public class LineTool extends AbstractTool {
 	}
 	
 	@Override
-	public void toolDeselected(Canvas canvas) {
+	public void toolDeselected(AppearanceCanvas canvas) {
 		active = false;
 		repaintArea(canvas);
 	}
 	
 	@Override
-	public void mousePressed(Canvas canvas, MouseEvent e) {
+	public void mousePressed(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
 		int x = e.getX();
 		int y = e.getY();
 		int mods = e.getModifiersEx();
@@ -78,12 +74,12 @@ public class LineTool extends AbstractTool {
 	}
 	
 	@Override
-	public void mouseDragged(Canvas canvas, MouseEvent e) {
+	public void mouseDragged(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
 		updateMouse(canvas, e.getX(), e.getY(), e.getModifiersEx());
 	}
 	
 	@Override
-	public void mouseReleased(Canvas canvas, MouseEvent e) {
+	public void mouseReleased(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
 		if (active) {
 			updateMouse(canvas, e.getX(), e.getY(), e.getModifiersEx());
 			Location start = mouseStart;
@@ -104,7 +100,7 @@ public class LineTool extends AbstractTool {
 	}
 	
 	@Override
-	public void keyPressed(Canvas canvas, KeyEvent e) {
+	public void keyPressed(AppearanceCanvas canvas, KeyEvent e) {
 		int code = e.getKeyCode();
 		if (active && (code == KeyEvent.VK_SHIFT || code == KeyEvent.VK_CONTROL)) {
 			updateMouse(canvas, lastMouseX, lastMouseY, e.getModifiersEx());
@@ -112,11 +108,11 @@ public class LineTool extends AbstractTool {
 	}
 	
 	@Override
-	public void keyReleased(Canvas canvas, KeyEvent e) {
+	public void keyReleased(AppearanceCanvas canvas, KeyEvent e) {
 		keyPressed(canvas, e);
 	}
 	
-	private void updateMouse(Canvas canvas, int mx, int my, int mods) {
+	private void updateMouse(AppearanceCanvas canvas, int mx, int my, int mods) {
 		if (active) {
 			boolean shift = (mods & MouseEvent.SHIFT_DOWN_MASK) != 0;
 			Location newEnd;
@@ -143,12 +139,12 @@ public class LineTool extends AbstractTool {
 		lastMouseY = my;
 	}
 
-	private void repaintArea(Canvas canvas) {
+	private void repaintArea(AppearanceCanvas canvas) {
 		canvas.repaint();
 	}
 	
 	@Override
-	public void draw(Canvas canvas, Graphics g) {
+	public void draw(AppearanceCanvas canvas) {
 		if (active) {
 			Location start = mouseStart;
 			Location end = mouseEnd;

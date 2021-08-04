@@ -3,31 +3,32 @@
 
 package com.cburch.LogisimFX.draw.canvas;
 
-import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
+import javafx.scene.Cursor;
+import javafx.scene.input.KeyEvent;
 
 public abstract class CanvasTool {
-	public abstract Cursor getCursor(Canvas canvas);
-	public void draw(Canvas canvas, Graphics g) { }
 
-	public void toolSelected(Canvas canvas) { }
-	public void toolDeselected(Canvas canvas) { }
+	public abstract Cursor getCursor(AppearanceCanvas canvas);
+	public void draw(AppearanceCanvas canvas) { }
 
-	public void mouseMoved(Canvas canvas, MouseEvent e) { }
-	public void mousePressed(Canvas canvas, MouseEvent e) { }
-	public void mouseDragged(Canvas canvas, MouseEvent e) { }
-	public void mouseReleased(Canvas canvas, MouseEvent e) { }
-	public void mouseEntered(Canvas canvas, MouseEvent e) { }
-	public void mouseExited(Canvas canvas, MouseEvent e) { }
+	public void toolSelected(AppearanceCanvas canvas) { }
+	public void toolDeselected(AppearanceCanvas canvas) { }
+
+	public void mouseMoved(AppearanceCanvas canvas, AppearanceCanvas.CME e) { }
+	public void mousePressed(AppearanceCanvas canvas, AppearanceCanvas.CME e) { }
+	public void mouseDragged(AppearanceCanvas canvas, AppearanceCanvas.CME e) { }
+	public void mouseReleased(AppearanceCanvas canvas, AppearanceCanvas.CME e) { }
+	public void mouseEntered(AppearanceCanvas canvas, AppearanceCanvas.CME e) { }
+	public void mouseExited(AppearanceCanvas canvas, AppearanceCanvas.CME e) { }
 
 	/** This is because a popup menu may result from the subsequent mouse release */
-	public void cancelMousePress(Canvas canvas) { }
+	public void cancelMousePress(AppearanceCanvas canvas) { }
 
 
-	public void keyPressed(Canvas canvas, KeyEvent e) { }
-	public void keyReleased(Canvas canvas, KeyEvent e) { }
-	public void keyTyped(Canvas canvas, KeyEvent e) { }
+	public void keyPressed(AppearanceCanvas canvas, KeyEvent e) { }
+	public void keyReleased(AppearanceCanvas canvas, KeyEvent e) { }
+	public void keyTyped(AppearanceCanvas canvas, KeyEvent e) { }
 	
-	public void zoomFactorChanged(Canvas canvas) { }
+	public void zoomFactorChanged(AppearanceCanvas canvas) { }
+
 }

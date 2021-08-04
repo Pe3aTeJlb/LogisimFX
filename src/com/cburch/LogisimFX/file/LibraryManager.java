@@ -3,6 +3,7 @@
 
 package com.cburch.LogisimFX.file;
 
+import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.util.StringUtil;
 
@@ -195,8 +196,8 @@ class LibraryManager {
 	public void reload(Loader loader, LoadedLibrary lib) {
 		LibraryDescriptor descriptor = invMap.get(lib);
 		if (descriptor == null) {
-			loader.showError(StringUtil.format(Strings.get("unknownLibraryFileError"),
-					lib.getDisplayName()));
+			DialogManager.CreateErrorDialog("Error",
+					LC.createComplexString("unknownLibraryFileError",lib.getDisplayName().getValue()));
 		} else {
 			try {
 				descriptor.setBase(loader, lib);

@@ -20,7 +20,6 @@
           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="-Infinity" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
@@ -29,16 +28,14 @@
             <RadioButton fx:id="PngRb" mnemonicParsing="false" text="PNG" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <RadioButton fx:id="GifRb" mnemonicParsing="false" text="GIF" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <RadioButton fx:id="JpegRb" mnemonicParsing="false" text="JPEG" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <Label fx:id="ScaleLbl" text="Label" GridPane.rowIndex="4" />
-            <Slider fx:id="ScaleSl" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <Label fx:id="PrintViewLbl" text="Label" GridPane.rowIndex="5" />
-            <CheckBox fx:id="PrintViewChkBx" mnemonicParsing="false" text="CheckBox" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <Button fx:id="OkBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Ok" GridPane.halignment="RIGHT" GridPane.rowIndex="6" GridPane.valignment="BOTTOM">
+            <Label fx:id="PrintViewLbl" text="Label" GridPane.rowIndex="4" />
+            <CheckBox fx:id="PrintViewChkBx" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Button fx:id="OkBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Ok" GridPane.halignment="RIGHT" GridPane.rowIndex="5" GridPane.valignment="BOTTOM">
                <GridPane.margin>
                   <Insets right="5.0" />
                </GridPane.margin>
             </Button>
-            <Button fx:id="CancelBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Cancel" GridPane.columnIndex="1" GridPane.rowIndex="6" GridPane.valignment="BOTTOM">
+            <Button fx:id="CancelBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Cancel" GridPane.columnIndex="1" GridPane.rowIndex="5" GridPane.valignment="BOTTOM">
                <GridPane.margin>
                   <Insets left="5.0" />
                </GridPane.margin>

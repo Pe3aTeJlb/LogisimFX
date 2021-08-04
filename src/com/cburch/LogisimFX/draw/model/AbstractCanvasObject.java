@@ -5,6 +5,7 @@ package com.cburch.LogisimFX.draw.model;
 
 import com.cburch.LogisimFX.draw.shapes.DrawAttr;
 import com.cburch.LogisimFX.data.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.util.EventSourceWeakSupport;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import org.w3c.dom.Document;

@@ -8,7 +8,7 @@ import java.util.List;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.StdAttr;
 
-class CounterAttributes extends AbstractAttributeSet {
+public class CounterAttributes extends AbstractAttributeSet {
 
 	private AttributeSet base;
 	

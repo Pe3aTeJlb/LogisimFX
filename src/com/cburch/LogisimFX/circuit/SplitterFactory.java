@@ -4,6 +4,7 @@
 package com.cburch.LogisimFX.circuit;
 
 import com.cburch.LogisimFX.IconsManager;
+import com.cburch.LogisimFX.KeyEvents;
 import com.cburch.LogisimFX.LogisimVersion;
 import com.cburch.LogisimFX.comp.AbstractComponentFactory;
 import com.cburch.LogisimFX.comp.Component;
@@ -119,9 +120,9 @@ public class SplitterFactory extends AbstractComponentFactory {
 			KeyConfigurator altConfig = ParallelConfigurator.create(
 					new BitWidthConfigurator(SplitterAttributes.ATTR_WIDTH),
 					new IntegerConfigurator(SplitterAttributes.ATTR_FANOUT,
-							1, 32, InputEvent.ALT_DOWN_MASK));
+							1, 32, KeyEvents.ALT_DOWN));
 			return JoinedConfigurator.create(
-				new IntegerConfigurator(SplitterAttributes.ATTR_FANOUT, 1, 32, 0),
+				new IntegerConfigurator(SplitterAttributes.ATTR_FANOUT, 1, 32, null),
 				altConfig);
 		}
 		return super.getFeature(key, attrs);

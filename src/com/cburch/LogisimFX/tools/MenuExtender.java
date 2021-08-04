@@ -3,10 +3,10 @@
 
 package com.cburch.LogisimFX.tools;
 
-import javax.swing.JPopupMenu;
-
 import com.cburch.LogisimFX.proj.Project;
 
+import javafx.scene.control.ContextMenu;
+
 public interface MenuExtender {
-	public void configureMenu(JPopupMenu menu, Project proj);
+	public void configureMenu(ContextMenu menu, Project proj);
 }

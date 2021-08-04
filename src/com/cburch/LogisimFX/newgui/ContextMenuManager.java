@@ -4,23 +4,24 @@ import com.cburch.LogisimFX.circuit.CircuitMutation;
 import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.instance.Instance;
-import com.cburch.LogisimFX.localization.LC_null;
-import com.cburch.LogisimFX.localization.LC_std;
-import com.cburch.LogisimFX.localization.LC_tools;
-import com.cburch.LogisimFX.localization.Localizer;
+import com.cburch.LogisimFX.localization.*;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.file.LogisimFileActions;
 import com.cburch.LogisimFX.newgui.MainFrame.*;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.std.memory.Mem;
+import com.cburch.LogisimFX.std.memory.MemState;
 import com.cburch.LogisimFX.std.memory.RomAttributes;
 import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.file.LoadedLibrary;
 import com.cburch.LogisimFX.file.Loader;
+import com.cburch.LogisimFX.tools.MenuExtender;
 
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+
+import java.io.File;
 
 public class ContextMenuManager {
 
@@ -184,7 +185,7 @@ public class ContextMenuManager {
 
     }
 
-    public static ContextMenu SelectionContextMenu(CustomCanvas c){
+    public static ContextMenu SelectionContextMenu(LayoutCanvas c){
 
         Project proj = c.getProject();
         Selection sel = c.getSelection();
@@ -211,141 +212,163 @@ public class ContextMenuManager {
 
     }
 
-    public static ContextMenu CircuitComponentContextMenu(){
+    public static class CircuitComponentContextMenu implements MenuExtender {
 
-        ContextMenu contextMenu = new ContextMenu();
-        MenuItem menuItem = new MenuItem("Menu Item");
+        private ContextMenu menu;
+        private Instance instance;
+        private Project proj;
 
-        contextMenu.getItems().addAll(menuItem);
+        public CircuitComponentContextMenu(Instance instance) {
 
-        return contextMenu;
+            this.instance = instance;
+
+        }
+
+        @Override
+        public void configureMenu(ContextMenu menu, Project proj) {
+
+            this.menu = menu;
+            this.proj = proj;
+
+            String name = instance.getFactory().getDisplayName().getValue();
+
+            MenuItem item = new MenuItem();
+            item.textProperty().bind(LC_circuit.getInstance().createComplexStringBinding("subcircuitViewItem", name));
+            item.setOnAction(event -> {
+
+                CircuitState superState = proj.getCircuitState();
+                if (superState == null) return;
+
+                //CircuitState subState = getSubstate(superState, instance);
+                CircuitState subState = proj.getCurrentCircuit().getSubcircuitFactory().getSubstate(superState, instance);
+                if (subState == null) return;
+                proj.setCircuitState(subState);
+
+            });
+
+            menu.getItems().add(item);
+
+        }
 
     }
 
-    public static ContextMenu MemoryComponentContextMenu(Mem fact, Instance inst){
+    public static class MemoryComponentContextMenu implements MenuExtender {
 
-        Mem factory = fact;
-        Instance instance = inst;
-        Project proj = ;
-        CircuitState circState = proj.getCircuitState();
-        boolean enabled = circState != null;
-        boolean canChange = proj.getLogisimFile().contains(proj.getCurrentCircuit());
+        private ContextMenu menu;
+        private Mem factory;
+        private Instance instance;
+        private Project proj;
+        private CircuitState circState;
+        private boolean enabled;
 
-        Object attrs = instance.getAttributeSet();
-        if (attrs instanceof RomAttributes) {
-            ((RomAttributes) attrs).setProject(proj);
+        public MemoryComponentContextMenu(Mem factory, Instance instance){
+            this.factory = factory;
+            this.instance = instance;
         }
 
-        ContextMenu contextMenu = new ContextMenu();
+        @Override
+        public void configureMenu(ContextMenu menu, Project proj) {
 
-        MenuItem del = new MenuItem();
-        del.textProperty().bind(LC_tools.getInstance().createStringBinding("compDeleteItem"));
-        del.setDisable(!canChange);
-        del.setOnAction(event -> {
+            this.menu = menu;
+            this.proj = proj;
+            circState = proj.getCircuitState();
+            enabled = circState != null;
 
-            Circuit c = proj.getCurrentCircuit();
-            CircuitMutation xn = new CircuitMutation(c);
-            xn.remove(comp);
-            proj.doAction(xn.toAction(LC_tools.getInstance().createStringBinding("removeComponentAction",
-                    comp.getFactory().getDisplayGetter())));
-
-        });
-
-        MenuItem attrs = new MenuItem();
-        attrs.textProperty().bind(LC_tools.getInstance().createStringBinding("compShowAttrItem"));
-        attrs.setOnAction(event -> {
-            proj.getFrameController().setAttributeTable(circ, comp);
-        });
-
-        MenuItem edit = new MenuItem();
-        edit.setDisable(!enabled);
-        edit.textProperty().bind(LC_std.getInstance().createStringBinding("ramEditMenuItem"));
-        edit.setOnAction(event -> {
-
-            MemState s = factory.getState(instance, circState);
-            if (s == null) return;
-            HexFrame frame = factory.getHexFrame(proj, instance, circState);
-            frame.setVisible(true);
-            frame.toFront();
-
-        });
-
-        MenuItem clear = new MenuItem();
-        clear.setDisable(!enabled);
-        clear.textProperty().bind(LC_std.getInstance().createStringBinding("ramClearMenuItem"));
-        clear.setOnAction(event -> {
-
-            MemState s = factory.getState(instance, circState);
-            boolean isAllZero = s.getContents().isClear();
-            if (isAllZero) return;
-
-            int choice = JOptionPane.showConfirmDialog(frame,
-                    Strings.get("ramConfirmClearMsg"),
-                    Strings.get("ramConfirmClearTitle"),
-                    JOptionPane.YES_NO_OPTION);
-            if (choice == JOptionPane.YES_OPTION) {
-                s.getContents().clear();
+            Object attrs = instance.getAttributeSet();
+            if (attrs instanceof RomAttributes) {
+                ((RomAttributes) attrs).setProject(proj);
             }
 
-        });
+            MenuItem edit = new MenuItem();
+            edit.setDisable(!enabled);
+            edit.textProperty().bind(LC_std.getInstance().createStringBinding("ramEditMenuItem"));
+            edit.setOnAction(event -> {
 
-        MenuItem load = new MenuItem();
-        load.setDisable(!enabled);
-        load.textProperty().bind(LC_std.getInstance().createStringBinding("ramLoadMenuItem"));
-        load.setOnAction(event -> {
+                MemState s = factory.getState(instance, circState);
+                if (s == null) return;
+                FrameManager.CreateHexEditorFrame(proj,instance, circState);
+              //  HexFrame frame = factory.getHexFrame(proj, instance, circState);
 
-            JFileChooser chooser = proj.createChooser();
-            File oldSelected = factory.getCurrentImage(instance);
-            if (oldSelected != null) chooser.setSelectedFile(oldSelected);
-            chooser.setDialogTitle(Strings.get("ramLoadDialogTitle"));
-            int choice = chooser.showOpenDialog(frame);
-            if (choice == JFileChooser.APPROVE_OPTION) {
-                File f = chooser.getSelectedFile();
-                try {
-                    factory.loadImage(circState.getInstanceState(instance), f);
-                } catch (IOException e) {
-                    JOptionPane.showMessageDialog(frame, e.getMessage(),
-                            Strings.get("ramLoadErrorTitle"), JOptionPane.ERROR_MESSAGE);
+            });
+
+            MenuItem clear = new MenuItem();
+            clear.setDisable(!enabled);
+            clear.textProperty().bind(LC_std.getInstance().createStringBinding("ramClearMenuItem"));
+            clear.setOnAction(event -> {
+
+
+                MemState s = factory.getState(instance, circState);
+                boolean isAllZero = s.getContents().isClear();
+                if (isAllZero) return;
+
+                int choice = DialogManager.CreateConfirmWarningDialog(
+                        LC_std.getInstance().get("ramConfirmClearTitle"),
+                        LC_std.getInstance().get("ramConfirmClearMsg")
+                );
+
+                if(choice == 1){
+                    s.getContents().clear();
                 }
-            }
 
-        });
+            });
 
-        MenuItem save = new MenuItem();
-        save.setDisable(!enabled);
-        save.textProperty().bind(LC_std.getInstance().createStringBinding("ramSaveMenuItem"));
-        save.setOnAction(event -> {
+            MenuItem load = new MenuItem();
+            load.setDisable(!enabled);
+            load.textProperty().bind(LC_std.getInstance().createStringBinding("ramLoadMenuItem"));
+            load.setOnAction(event -> {
 
-            MemState s = factory.getState(instance, circState);
 
-            JFileChooser chooser = proj.createChooser();
-            File oldSelected = factory.getCurrentImage(instance);
-            if (oldSelected != null) chooser.setSelectedFile(oldSelected);
-            chooser.setDialogTitle(Strings.get("ramSaveDialogTitle"));
-            int choice = chooser.showSaveDialog(frame);
-            if (choice == JFileChooser.APPROVE_OPTION) {
-                File f = chooser.getSelectedFile();
-                try {
-                    HexFile.save(f, s.getContents());
-                    factory.setCurrentImage(instance, f);
-                } catch (IOException e) {
-                    JOptionPane.showMessageDialog(frame, e.getMessage(),
-                            Strings.get("ramSaveErrorTitle"), JOptionPane.ERROR_MESSAGE);
+                JFileChooser chooser = proj.createChooser();
+                File oldSelected = factory.getCurrentImage(instance);
+                if (oldSelected != null) chooser.setSelectedFile(oldSelected);
+                chooser.setDialogTitle(Strings.get("ramLoadDialogTitle"));
+                int choice = chooser.showOpenDialog(frame);
+                if (choice == JFileChooser.APPROVE_OPTION) {
+                    File f = chooser.getSelectedFile();
+                    try {
+                        factory.loadImage(circState.getInstanceState(instance), f);
+                    } catch (IOException e) {
+                        JOptionPane.showMessageDialog(frame, e.getMessage(),
+                                Strings.get("ramLoadErrorTitle"), JOptionPane.ERROR_MESSAGE);
+                    }
                 }
-            }
 
-        });
+            });
 
-        contextMenu.getItems().addAll(
-                del,
-                attrs,
-                edit,
-                clear,
-                load,
-                save
-        );
+            MenuItem save = new MenuItem();
+            save.setDisable(!enabled);
+            save.textProperty().bind(LC_std.getInstance().createStringBinding("ramSaveMenuItem"));
+            save.setOnAction(event -> {
 
-        return contextMenu;
+
+                MemState s = factory.getState(instance, circState);
+
+                JFileChooser chooser = proj.createChooser();
+                File oldSelected = factory.getCurrentImage(instance);
+                if (oldSelected != null) chooser.setSelectedFile(oldSelected);
+                chooser.setDialogTitle(Strings.get("ramSaveDialogTitle"));
+                int choice = chooser.showSaveDialog(frame);
+                if (choice == JFileChooser.APPROVE_OPTION) {
+                    File f = chooser.getSelectedFile();
+                    try {
+                        HexFile.save(f, s.getContents());
+                        factory.setCurrentImage(instance, f);
+                    } catch (IOException e) {
+                        JOptionPane.showMessageDialog(frame, e.getMessage(),
+                                Strings.get("ramSaveErrorTitle"), JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+
+            });
+
+            menu.getItems().addAll(
+                    edit,
+                    clear,
+                    load,
+                    save
+            );
+
+        }
 
     }
 

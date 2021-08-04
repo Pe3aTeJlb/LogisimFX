@@ -56,9 +56,7 @@ public class CustomMenuBar extends MenuBar {
         initEditMenu();
         initProjectMenu();
         this.getMenus().add(new SimulateMenu());
-        //initSimulateMenu();
         this.getMenus().add(new WindowMenu());
-       // initWindowMenu();
         initHelpMenu();
 
     }

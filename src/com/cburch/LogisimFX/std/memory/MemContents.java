@@ -9,7 +9,7 @@ import com.cburch.LogisimFX.util.EventSourceWeakSupport;
 import com.cburch.hex.HexModel;
 import com.cburch.hex.HexModelListener;
 
-class MemContents implements Cloneable, HexModel {
+public class MemContents implements Cloneable, HexModel {
 
 	private static final int PAGE_SIZE_BITS = 12;
 	private static final int PAGE_SIZE = 1 << PAGE_SIZE_BITS;

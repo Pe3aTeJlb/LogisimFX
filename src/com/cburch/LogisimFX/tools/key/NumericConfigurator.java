@@ -5,10 +5,10 @@ package com.cburch.LogisimFX.tools.key;
 
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.AttributeSet;
-
-import java.awt.event.KeyEvent;
+import javafx.scene.input.KeyEvent;
 
 public abstract class NumericConfigurator<V> implements KeyConfigurator, Cloneable {
+
 	private static final int MAX_TIME_KEY_LASTS = 800;
 	
 	private Attribute<V> attr;
@@ -16,15 +16,16 @@ public abstract class NumericConfigurator<V> implements KeyConfigurator, Cloneab
 	private int maxValue;
 	private int curValue;
 	private int radix;
-	private int modsEx;
+	private KeyEvent modsEx;
 	private long whenTyped;
 	
-	public NumericConfigurator(Attribute<V> attr, int min, int max, int modifiersEx) {
+	public NumericConfigurator(Attribute<V> attr, int min, int max, KeyEvent modifiersEx) {
 		this(attr, min, max, modifiersEx, 10);
 	}
 	
 	public NumericConfigurator(Attribute<V> attr, int min, int max,
-                               int modifiersEx, int radix) {
+							   KeyEvent modifiersEx, int radix) {
+
 		this.attr = attr;
 		this.minValue = min;
 		this.maxValue = max;
@@ -32,10 +33,12 @@ public abstract class NumericConfigurator<V> implements KeyConfigurator, Cloneab
 		this.modsEx = modifiersEx;
 		this.curValue = 0;
 		this.whenTyped = 0;
+
 	}
 	
 	@Override
 	public NumericConfigurator<V> clone() {
+
 		try {
 			@SuppressWarnings("unchecked")
             NumericConfigurator<V> ret = (NumericConfigurator<V>) super.clone();
@@ -46,6 +49,7 @@ public abstract class NumericConfigurator<V> implements KeyConfigurator, Cloneab
 			e.printStackTrace();
 			return null;
 		}
+
 	}
 	
 	protected int getMinimumValue(AttributeSet attrs) {
@@ -59,10 +63,11 @@ public abstract class NumericConfigurator<V> implements KeyConfigurator, Cloneab
 	protected abstract V createValue(int value);
 	
 	public KeyConfigurationResult keyEventReceived(KeyConfigurationEvent event) {
+
 		if (event.getType() == KeyConfigurationEvent.KEY_TYPED) {
 			KeyEvent e = event.getKeyEvent();
-			int digit = Character.digit(e.getKeyChar(), radix);
-			if (digit >= 0 && e.getModifiersEx() == modsEx) {
+			int digit = Character.digit(e.getCharacter().toCharArray()[0], radix);
+			if (digit >= 0 && e == modsEx) {
 				long now = System.currentTimeMillis();
 				long sinceLast = now - whenTyped;
 				AttributeSet attrs = event.getAttributeSet();
@@ -92,6 +97,9 @@ public abstract class NumericConfigurator<V> implements KeyConfigurator, Cloneab
 				}
 			}
 		}
+
 		return null;
+
 	}
+
 }

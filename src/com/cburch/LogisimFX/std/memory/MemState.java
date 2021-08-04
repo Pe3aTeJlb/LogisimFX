@@ -13,7 +13,7 @@ import com.cburch.hex.HexModelListener;
 
 import javafx.scene.paint.Color;
 
-class MemState implements InstanceData, Cloneable, HexModelListener {
+public class MemState implements InstanceData, Cloneable, HexModelListener {
 
 	private static final int ROWS = 4; // rows in memory display
 

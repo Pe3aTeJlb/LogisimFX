@@ -6,7 +6,7 @@ package com.cburch.LogisimFX.std.memory;
 import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.instance.StdAttr;
 
-class ClockState implements Cloneable {
+public class ClockState implements Cloneable {
 
 	private Value lastClock;
 	

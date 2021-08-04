@@ -8,7 +8,7 @@ import com.cburch.hex.HexModelListener;
 import com.cburch.LogisimFX.proj.Action;
 import com.cburch.LogisimFX.proj.Project;
 
-class RomContentsListener implements HexModelListener {
+public class RomContentsListener implements HexModelListener {
 
 	private static class Change extends Action {
 

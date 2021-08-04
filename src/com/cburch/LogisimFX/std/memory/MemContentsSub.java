@@ -5,7 +5,7 @@ package com.cburch.LogisimFX.std.memory;
 
 import java.util.Arrays;
 
-class MemContentsSub {
+public class MemContentsSub {
 
 	private MemContentsSub() { }
 	

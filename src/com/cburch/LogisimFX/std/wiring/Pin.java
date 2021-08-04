@@ -3,14 +3,13 @@
 
 package com.cburch.LogisimFX.std.wiring;
 
-import java.awt.event.KeyEvent;
-
 import com.cburch.LogisimFX.IconsManager;
+import com.cburch.LogisimFX.KeyEvents;
 import com.cburch.LogisimFX.comp.EndData;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
 import com.cburch.LogisimFX.newgui.DialogManager;
-import com.cburch.LogisimFX.newgui.MainFrame.CustomCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
@@ -58,7 +57,7 @@ public class Pin extends InstanceFactory {
 		setFacingAttribute(StdAttr.FACING);
 		setKeyConfigurator(JoinedConfigurator.create(
 			new BitWidthConfigurator(StdAttr.WIDTH),
-			new DirectionConfigurator(ATTR_LABEL_LOC, KeyEvent.ALT_DOWN_MASK)));
+			new DirectionConfigurator(ATTR_LABEL_LOC, KeyEvents.ALT_DOWN)));
 		setInstanceLogger(PinLogger.class);
 		setInstancePoker(PinPoker.class);
 
@@ -354,12 +353,12 @@ public class Pin extends InstanceFactory {
 		int bitPressed = -1;
 
 		@Override
-		public void mousePressed(InstanceState state, CustomCanvas.CME e) {
+		public void mousePressed(InstanceState state, LayoutCanvas.CME e) {
 			bitPressed = getBit(state, e);
 		}
 
 		@Override
-		public void mouseReleased(InstanceState state, CustomCanvas.CME e) {
+		public void mouseReleased(InstanceState state, LayoutCanvas.CME e) {
 
 			int bit = getBit(state, e);
 			if (bit == bitPressed && bit >= 0) {
@@ -369,14 +368,14 @@ public class Pin extends InstanceFactory {
 
 		}
 
-		private void handleBitPress(InstanceState state, int bit, CustomCanvas.CME e) {
+		private void handleBitPress(InstanceState state, int bit, LayoutCanvas.CME e) {
 
 			PinAttributes attrs = (PinAttributes) state.getAttributeSet();
 			if (!attrs.isInput()) return;
 
 			Object sourceComp = e.event.getSource();
-			if (sourceComp instanceof CustomCanvas && !state.isCircuitRoot()) {
-				CustomCanvas canvas = (CustomCanvas) e.event.getSource();
+			if (sourceComp instanceof LayoutCanvas && !state.isCircuitRoot()) {
+				LayoutCanvas canvas = (LayoutCanvas) e.event.getSource();
 				CircuitState circState = canvas.getCircuitState();
 
 				int choice = DialogManager.CreateConfirmWarningDialog(
@@ -407,7 +406,7 @@ public class Pin extends InstanceFactory {
 
 		}
 
-		private int getBit(InstanceState state, CustomCanvas.CME e) {
+		private int getBit(InstanceState state, LayoutCanvas.CME e) {
 
 			BitWidth width = state.getAttributeValue(StdAttr.WIDTH);
 			if (width.getWidth() == 1) {

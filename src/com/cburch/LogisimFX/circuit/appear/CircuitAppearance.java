@@ -157,25 +157,27 @@ public class CircuitAppearance extends Drawing {
 	}
 
 	public void paintSubcircuit(Graphics g, Direction facing) {
+
 		Direction defaultFacing = getFacing();
 		double rotate = 0.0;
-		if (facing != defaultFacing && g instanceof Graphics2D) {
-			rotate = defaultFacing.toRadians() - facing.toRadians();
-			((Graphics2D) g).rotate(rotate);
+		if (facing != defaultFacing) {
+			rotate = defaultFacing.toDegrees() - facing.toDegrees();
+			g.rotate(rotate);
 		}
+
 		Location offset = findAnchorLocation();
 		g.translate(-offset.getX(), -offset.getY());
 		for (CanvasObject shape : getObjectsFromBottom()) {
 			if (!(shape instanceof AppearanceElement)) {
-				Graphics dup = g.create();
-				shape.paint(dup, null);
-				dup.dispose();
+				shape.paint(g, null);
 			}
 		}
+
 		g.translate(offset.getX(), offset.getY());
 		if (rotate != 0.0) {
-			((Graphics2D) g).rotate(-rotate);
+			g.rotate(-rotate);
 		}
+
 	}
 
 	private Location findAnchorLocation() {

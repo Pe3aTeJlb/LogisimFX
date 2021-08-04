@@ -5,7 +5,7 @@ package com.cburch.LogisimFX.instance;
 
 import com.cburch.LogisimFX.comp.*;
 import com.cburch.LogisimFX.data.*;
-import com.cburch.LogisimFX.newgui.MainFrame.CustomCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.tools.Caret;
 import com.cburch.LogisimFX.tools.SetAttributeAction;
@@ -17,7 +17,7 @@ import javafx.scene.text.Font;
 
 public class InstanceTextField implements AttributeListener, TextFieldListener,
         TextEditable {
-	private CustomCanvas canvas;
+	private LayoutCanvas canvas;
 	private InstanceComponent comp;
 	private TextField field;
 	private Attribute<String> labelAttr;

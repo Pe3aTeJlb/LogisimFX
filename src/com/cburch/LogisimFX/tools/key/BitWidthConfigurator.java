@@ -3,23 +3,23 @@
 
 package com.cburch.LogisimFX.tools.key;
 
+import com.cburch.LogisimFX.KeyEvents;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.BitWidth;
 import com.cburch.LogisimFX.data.Value;
-
-import java.awt.event.InputEvent;
+import javafx.scene.input.KeyEvent;
 
 public class BitWidthConfigurator extends NumericConfigurator<BitWidth> {
-	public BitWidthConfigurator(Attribute<BitWidth> attr, int min, int max, int modifiersEx) {
+	public BitWidthConfigurator(Attribute<BitWidth> attr, int min, int max, KeyEvent modifiersEx) {
 		super(attr, min, max, modifiersEx);
 	}
 	
 	public BitWidthConfigurator(Attribute<BitWidth> attr, int min, int max) {
-		super(attr, min, max, InputEvent.ALT_DOWN_MASK);
+		super(attr, min, max, KeyEvents.ALT_DOWN);
 	}
 	
 	public BitWidthConfigurator(Attribute<BitWidth> attr) {
-		super(attr, 1, Value.MAX_WIDTH, InputEvent.ALT_DOWN_MASK);
+		super(attr, 1, Value.MAX_WIDTH, KeyEvents.ALT_DOWN);
 	}
 	
 	@Override

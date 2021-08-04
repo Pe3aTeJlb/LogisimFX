@@ -9,7 +9,7 @@ import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.AttributeDefaultProvider;
 import com.cburch.LogisimFX.data.AttributeSet;
 import com.cburch.LogisimFX.LogisimVersion;
-import com.cburch.LogisimFX.newgui.MainFrame.CustomCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 
 import javafx.beans.binding.StringBinding;
@@ -33,7 +33,7 @@ public abstract class Tool implements AttributeDefaultProvider {
 	public Tool cloneTool() { return this; }
 	public boolean sharesSource(Tool other) { return this == other; }
 	public AttributeSet getAttributeSet() { return null; }
-	public AttributeSet getAttributeSet(CustomCanvas canvas) { return getAttributeSet(); }
+	public AttributeSet getAttributeSet(LayoutCanvas canvas) { return getAttributeSet(); }
 	public boolean isAllDefaultValues(AttributeSet attrs, LogisimVersion ver) {
 		return false;
 	}
@@ -49,25 +49,25 @@ public abstract class Tool implements AttributeDefaultProvider {
 	// This was the draw method until 2.0.4 - As of 2.0.5, you should
 	// use the other draw method.
 	public void draw(ComponentDrawContext context) { }
-	public void draw(CustomCanvas canvas, ComponentDrawContext context) {
+	public void draw(LayoutCanvas canvas, ComponentDrawContext context) {
 		draw(context);
 	}
-	public Set<Component> getHiddenComponents(CustomCanvas canvas) {
+	public Set<Component> getHiddenComponents(LayoutCanvas canvas) {
 		return null;
 	}
-	public void select(CustomCanvas canvas) { }
-	public void deselect(CustomCanvas canvas) { }
+	public void select(LayoutCanvas canvas) { }
+	public void deselect(LayoutCanvas canvas) { }
 
-	public void mousePressed(CustomCanvas canvas, Graphics g, CustomCanvas.CME e) { }
-	public void mouseDragged(CustomCanvas canvas, Graphics g, CustomCanvas.CME e) { }
-	public void mouseReleased(CustomCanvas canvas, Graphics g, CustomCanvas.CME e) { }
-	public void mouseEntered(CustomCanvas canvas, Graphics g, CustomCanvas.CME e) { }
-	public void mouseExited(CustomCanvas canvas, Graphics g, CustomCanvas.CME e) { }
-	public void mouseMoved(CustomCanvas canvas, Graphics g, CustomCanvas.CME e) { }
+	public void mousePressed(LayoutCanvas canvas, Graphics g, LayoutCanvas.CME e) { }
+	public void mouseDragged(LayoutCanvas canvas, Graphics g, LayoutCanvas.CME e) { }
+	public void mouseReleased(LayoutCanvas canvas, Graphics g, LayoutCanvas.CME e) { }
+	public void mouseEntered(LayoutCanvas canvas, Graphics g, LayoutCanvas.CME e) { }
+	public void mouseExited(LayoutCanvas canvas, Graphics g, LayoutCanvas.CME e) { }
+	public void mouseMoved(LayoutCanvas canvas, Graphics g, LayoutCanvas.CME e) { }
 
-	public void keyTyped(CustomCanvas canvas, KeyEvent e) { }
-	public void keyPressed(CustomCanvas canvas, KeyEvent e) { }
-	public void keyReleased(CustomCanvas canvas, KeyEvent e) { }
+	public void keyTyped(LayoutCanvas canvas, KeyEvent e) { }
+	public void keyPressed(LayoutCanvas canvas, KeyEvent e) { }
+	public void keyReleased(LayoutCanvas canvas, KeyEvent e) { }
 	public Cursor getCursor() { return dflt_cursor; }
 
 }

@@ -21,7 +21,7 @@ import com.cburch.logisim.gui.hex.HexFile;
 import com.cburch.logisim.gui.hex.HexFrame;
 import com.cburch.LogisimFX.proj.Project;
 
-class MemMenu implements ActionListener, MenuExtender {
+public class MemMenu implements ActionListener, MenuExtender {
 
 	private Mem factory;
 	private Instance instance;

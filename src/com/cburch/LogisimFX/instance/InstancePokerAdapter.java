@@ -6,7 +6,7 @@ package com.cburch.LogisimFX.instance;
 import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.comp.ComponentUserEvent;
 import com.cburch.LogisimFX.data.Bounds;
-import com.cburch.LogisimFX.newgui.MainFrame.CustomCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.tools.AbstractCaret;
 import com.cburch.LogisimFX.tools.Caret;
@@ -21,7 +21,7 @@ import javafx.scene.input.PickResult;
 class InstancePokerAdapter extends AbstractCaret implements Pokable {
 
 	private InstanceComponent comp;
-	private CustomCanvas canvas;
+	private LayoutCanvas canvas;
 	private InstancePoker poker;
 	private InstanceStateImpl state;
 	private ComponentDrawContext context;
@@ -51,7 +51,7 @@ class InstancePokerAdapter extends AbstractCaret implements Pokable {
 			canvas = event.getCanvas();
 			CircuitState circState = event.getCircuitState();
 			InstanceStateImpl state = new InstanceStateImpl(circState, comp);
-			CustomCanvas.CME e = new CustomCanvas.CME(new MouseEvent(
+			LayoutCanvas.CME e = new LayoutCanvas.CME(new MouseEvent(
 					MouseEvent.MOUSE_PRESSED,
 					0,0,
 					event.getX(), event.getY(),
@@ -78,17 +78,17 @@ class InstancePokerAdapter extends AbstractCaret implements Pokable {
 	}
 
 	@Override
-	public void mousePressed(CustomCanvas.CME e) {
+	public void mousePressed(LayoutCanvas.CME e) {
 		if (poker != null) { poker.mousePressed(state, e); checkCurrent(); }
 	}
 
 	@Override
-	public void mouseDragged(CustomCanvas.CME e) {
+	public void mouseDragged(LayoutCanvas.CME e) {
 		if (poker != null) { poker.mouseDragged(state, e); checkCurrent(); }
 	}
 
 	@Override
-	public void mouseReleased(CustomCanvas.CME e) {
+	public void mouseReleased(LayoutCanvas.CME e) {
 		if (poker != null) { poker.mouseReleased(state, e); checkCurrent(); }
 	}
 

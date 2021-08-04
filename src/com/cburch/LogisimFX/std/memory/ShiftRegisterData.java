@@ -9,7 +9,7 @@ import com.cburch.LogisimFX.instance.InstanceData;
 
 import java.util.Arrays;
 
-class ShiftRegisterData extends ClockState implements InstanceData {
+public class ShiftRegisterData extends ClockState implements InstanceData {
 
 	private BitWidth width;
 	private Value[] vs;

@@ -5,16 +5,13 @@ package com.cburch.LogisimFX.std.memory;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
-import com.cburch.LogisimFX.newgui.MainFrame.CustomCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
 import javafx.beans.binding.StringBinding;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-
-import java.awt.event.MouseEvent;
 
 abstract class AbstractFlipFlop extends InstanceFactory {
 
@@ -194,12 +191,12 @@ abstract class AbstractFlipFlop extends InstanceFactory {
 		boolean isPressed = true;
 
 		@Override
-		public void mousePressed(InstanceState state, CustomCanvas.CME e) {
+		public void mousePressed(InstanceState state, LayoutCanvas.CME e) {
 			isPressed = isInside(state, e);
 		}
 		
 		@Override
-		public void mouseReleased(InstanceState state, CustomCanvas.CME e) {
+		public void mouseReleased(InstanceState state, LayoutCanvas.CME e) {
 
 			if (isPressed && isInside(state, e)) {
 				StateData myState = (StateData) state.getData();
@@ -212,7 +209,7 @@ abstract class AbstractFlipFlop extends InstanceFactory {
 
 		}
 
-		private boolean isInside(InstanceState state, CustomCanvas.CME e) {
+		private boolean isInside(InstanceState state, LayoutCanvas.CME e) {
 
 			Location loc = state.getInstance().getLocation();
 			int dx = e.localX - (loc.getX() - 20);

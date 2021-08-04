@@ -27,7 +27,7 @@ public class Demultiplexer extends InstanceFactory {
 				Plexers.DEFAULT_TRISTATE, Plexers.DISABLED_FLOATING, Boolean.TRUE
 			});
 		setKeyConfigurator(JoinedConfigurator.create(
-				new BitWidthConfigurator(Plexers.ATTR_SELECT, 1, 5, 0),
+				new BitWidthConfigurator(Plexers.ATTR_SELECT, 1, 5, null),
 				new BitWidthConfigurator(StdAttr.WIDTH)));
 		setFacingAttribute(StdAttr.FACING);
 		setIcon("demultiplexer.gif");

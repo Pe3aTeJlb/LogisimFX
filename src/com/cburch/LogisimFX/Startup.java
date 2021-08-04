@@ -49,7 +49,6 @@ public class Startup {
         if (initialized) {
             Project toPrint = ProjectActions.doOpen(null, file);
             FrameManager.CreatePrintFrame(toPrint);
-            toPrint.getFrame().dispose();
         } else {
             filesToPrint.add(file);
         }

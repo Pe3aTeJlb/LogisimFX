@@ -4,15 +4,18 @@
 package com.cburch.LogisimFX.tools;
 
 import com.cburch.LogisimFX.data.Bounds;
+import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 
-import java.awt.Graphics;
-import java.awt.event.MouseEvent;
-import java.awt.event.KeyEvent;
+import javafx.scene.input.KeyEvent;
+
+
 import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 
 public class AbstractCaret implements Caret {
+
 	private ArrayList<CaretListener> listeners = new ArrayList<CaretListener>();
 	private List<CaretListener> listenersView;
 	private Bounds bds = Bounds.EMPTY_BOUNDS;
@@ -40,10 +43,11 @@ public class AbstractCaret implements Caret {
 	public void stopEditing() { }
 
 	// events to handle
-	public void mousePressed(MouseEvent e) { }
-	public void mouseDragged(MouseEvent e) { }
-	public void mouseReleased(MouseEvent e) { }
+	public void mousePressed(LayoutCanvas.CME e) { }
+	public void mouseDragged(LayoutCanvas.CME e) { }
+	public void mouseReleased(LayoutCanvas.CME e) { }
 	public void keyPressed(KeyEvent e) { }
 	public void keyReleased(KeyEvent e) { }
 	public void keyTyped(KeyEvent e) { }
+
 }

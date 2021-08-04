@@ -14,23 +14,22 @@ import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 public interface Component {
 
 	// listener methods
-	public void addComponentListener(ComponentListener l);
-	public void removeComponentListener(ComponentListener l);
+	 void addComponentListener(ComponentListener l);
+	 void removeComponentListener(ComponentListener l);
 
 	// basic information methods
-	public ComponentFactory getFactory();
-	public AttributeSet getAttributeSet();
+	 ComponentFactory getFactory();
+	 AttributeSet getAttributeSet();
 
 	// location/extent methods
-	public Location getLocation();
-	public Bounds getBounds();
-	public Bounds getBounds(Graphics g);
-	public boolean contains(Location pt);
-	public boolean contains(Location pt, Graphics g);
+	 Location getLocation();
+	 Bounds getBounds();
+	 Bounds getBounds(Graphics g);
+	 boolean contains(Location pt);
+	 boolean contains(Location pt, Graphics g);
 
 	// user interface methods
-	public void expose(ComponentDrawContext context);
-	public void draw(ComponentDrawContext context);
+	 void draw(ComponentDrawContext context);
 	/**
 	 * Retrieves information about a special-purpose feature for this
 	 * component. This technique allows future Logisim versions to add
@@ -52,12 +51,12 @@ public interface Component {
 	 *    supports the feature, or <code>null</code> if it does not support
 	 *    the feature.
 	 */
-	public Object getFeature(Object key);
+	 Object getFeature(Object key);
 	
 	// propagation methods
-	public List<EndData> getEnds(); // list of EndDatas
-	public EndData getEnd(int index);
-	public boolean endsAt(Location pt);
-	public void propagate(CircuitState state);
+	 List<EndData> getEnds(); // list of EndDatas
+	 EndData getEnd(int index);
+	 boolean endsAt(Location pt);
+	 void propagate(CircuitState state);
 
 }

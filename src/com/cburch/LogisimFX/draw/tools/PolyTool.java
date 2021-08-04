@@ -5,7 +5,7 @@ package com.cburch.LogisimFX.draw.tools;
 
 import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.draw.actions.ModelAddAction;
-import com.cburch.LogisimFX.draw.canvas.Canvas;
+import com.cburch.LogisimFX.draw.canvas.AppearanceCanvas;
 import com.cburch.LogisimFX.draw.model.CanvasModel;
 import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.draw.shapes.DrawAttr;
@@ -13,14 +13,11 @@ import com.cburch.LogisimFX.draw.shapes.LineUtil;
 import com.cburch.LogisimFX.draw.shapes.Poly;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Location;
-import com.cburch.LogisimFX.util.Icons;
-import javafx.scene.image.ImageView;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
+import javafx.scene.Cursor;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,19 +56,19 @@ public class PolyTool extends AbstractTool {
 	}
 
 	@Override
-	public Cursor getCursor(Canvas canvas) {
-		return Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
+	public Cursor getCursor(AppearanceCanvas canvas) {
+		return Cursor.CROSSHAIR);
 	}
 	
 	@Override
-	public void toolDeselected(Canvas canvas) {
+	public void toolDeselected(AppearanceCanvas canvas) {
 		CanvasObject add = commit(canvas);
 		canvas.toolGestureComplete(this, add);
 		repaintArea(canvas);
 	}
 	
 	@Override
-	public void mousePressed(Canvas canvas, MouseEvent e) {
+	public void mousePressed(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
 		int mx = e.getX();
 		int my = e.getY();
 		lastMouseX = mx;
@@ -99,12 +96,12 @@ public class PolyTool extends AbstractTool {
 	}
 	
 	@Override
-	public void mouseDragged(Canvas canvas, MouseEvent e) {
+	public void mouseDragged(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
 		updateMouse(canvas, e.getX(), e.getY(), e.getModifiersEx());
 	}
 	
 	@Override
-	public void mouseReleased(Canvas canvas, MouseEvent e) {
+	public void mouseReleased(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
 		if (active) {
 			updateMouse(canvas, e.getX(), e.getY(), e.getModifiersEx());
 			mouseDown = false;
@@ -122,7 +119,7 @@ public class PolyTool extends AbstractTool {
 	}
 	
 	@Override
-	public void keyPressed(Canvas canvas, KeyEvent e) {
+	public void keyPressed(AppearanceCanvas canvas, KeyEvent e) {
 		int code = e.getKeyCode();
 		if (active && mouseDown
 				&& (code == KeyEvent.VK_SHIFT || code == KeyEvent.VK_CONTROL)) {
@@ -131,12 +128,12 @@ public class PolyTool extends AbstractTool {
 	}
 	
 	@Override
-	public void keyReleased(Canvas canvas, KeyEvent e) {
+	public void keyReleased(AppearanceCanvas canvas, KeyEvent e) {
 		keyPressed(canvas, e);
 	}
 
 	@Override
-	public void keyTyped(Canvas canvas, KeyEvent e) {
+	public void keyTyped(AppearanceCanvas canvas, KeyEvent e) {
 		if (active) {
 			char ch = e.getKeyChar();
 			if (ch == '\u001b') { // escape key
@@ -151,7 +148,7 @@ public class PolyTool extends AbstractTool {
 		}
 	}
 	
-	private CanvasObject commit(Canvas canvas) {
+	private CanvasObject commit(AppearanceCanvas canvas) {
 		if (!active) return null;
 		CanvasObject add = null;
 		active = false;
@@ -169,7 +166,7 @@ public class PolyTool extends AbstractTool {
 		return add;
 	}
 	
-	private void updateMouse(Canvas canvas, int mx, int my, int mods) {
+	private void updateMouse(AppearanceCanvas canvas, int mx, int my, int mods) {
 		lastMouseX = mx;
 		lastMouseY = my;
 		if (active) {
@@ -197,12 +194,12 @@ public class PolyTool extends AbstractTool {
 		}
 	}
 
-	private void repaintArea(Canvas canvas) {
+	private void repaintArea(AppearanceCanvas canvas) {
 		canvas.repaint();
 	}
 	
 	@Override
-	public void draw(Canvas canvas, Graphics g) {
+	public void draw(AppearanceCanvas canvas) {
 		if (active) {
 			g.setColor(Color.GRAY);
 			int size = locations.size();

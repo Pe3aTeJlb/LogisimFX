@@ -9,15 +9,16 @@ import com.cburch.LogisimFX.draw.model.HandleGesture;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.util.UnmodifiableList;
+import com.sun.javafx.geom.QuadCurve2D;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.awt.*;
-import java.awt.geom.QuadCurve2D;
 import java.util.List;
 
 public class Curve extends FillableCanvasObject {
+
 	private Location p0;
 	private Location p1;
 	private Location p2;
@@ -68,7 +69,7 @@ public class Curve extends FillableCanvasObject {
 	}
 	
 	public QuadCurve2D getCurve2D() {
-		return new QuadCurve2D.Double(p0.getX(), p0.getY(),
+		return new QuadCurve2D(p0.getX(), p0.getY(),
 				p1.getX(), p1.getY(), p2.getX(), p2.getY());
 	}
 	
@@ -229,7 +230,7 @@ public class Curve extends FillableCanvasObject {
 	
 	private QuadCurve2D getCurve(HandleGesture gesture) {
 		Handle[] p = getHandleArray(gesture);
-		return new QuadCurve2D.Double(p[0].getX(), p[0].getY(),
+		return new QuadCurve2D(p[0].getX(), p[0].getY(),
 				p[1].getX(), p[1].getY(), p[2].getX(), p[2].getY());
 	}
 	

@@ -26,7 +26,7 @@ public class Decoder extends InstanceFactory {
 				Direction.EAST, Plexers.SELECT_BOTTOM_LEFT, Plexers.DEFAULT_SELECT,
 				Plexers.DEFAULT_TRISTATE, Plexers.DISABLED_FLOATING, Boolean.TRUE
 			});
-		setKeyConfigurator(new BitWidthConfigurator(Plexers.ATTR_SELECT, 1, 5, 0));
+		setKeyConfigurator(new BitWidthConfigurator(Plexers.ATTR_SELECT, 1, 5, null));
 		setIcon("decoder.gif");
 		setFacingAttribute(StdAttr.FACING);
 

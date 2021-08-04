@@ -5,7 +5,7 @@ package com.cburch.LogisimFX.proj;
 
 import com.cburch.LogisimFX.file.*;
 import com.cburch.LogisimFX.circuit.*;
-import com.cburch.LogisimFX.newgui.MainFrame.CustomCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.MainFrameController;
 import com.cburch.LogisimFX.newgui.MainFrame.Selection;
 import com.cburch.LogisimFX.newgui.MainFrame.SelectionActions;
@@ -234,7 +234,7 @@ public class Project {
 
 		if (circuitChanged) {
 
-			CustomCanvas canvas = getFrameController() == null ? null : getFrameController().getCanvas();
+			LayoutCanvas canvas = getFrameController() == null ? null : getFrameController().getCanvas();
 			if (canvas != null) {
 				if (tool != null) tool.deselect(canvas);
 				Selection selection = canvas.getSelection();
@@ -291,7 +291,7 @@ public class Project {
 
 		Tool old = tool;
 
-		CustomCanvas canvas = getFrameController().getCanvas();
+		LayoutCanvas canvas = getFrameController().getCanvas();
 		if (old != null) old.deselect(canvas);
 		Selection selection = canvas.getSelection();
 		if (selection != null && !selection.isEmpty()) {

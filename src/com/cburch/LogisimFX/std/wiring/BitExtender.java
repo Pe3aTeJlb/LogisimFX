@@ -42,7 +42,7 @@ public class BitExtender extends InstanceFactory {
 		setFacingAttribute(StdAttr.FACING);
 		setKeyConfigurator(JoinedConfigurator.create(
 				new BitWidthConfigurator(ATTR_OUT_WIDTH),
-				new BitWidthConfigurator(ATTR_IN_WIDTH, 1, Value.MAX_WIDTH, 0)));
+				new BitWidthConfigurator(ATTR_IN_WIDTH, 1, Value.MAX_WIDTH, null)));
 		setOffsetBounds(Bounds.create(-40, -20, 40, 40));
 
 	}

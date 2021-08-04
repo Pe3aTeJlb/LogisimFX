@@ -5,7 +5,7 @@ package com.cburch.LogisimFX.std.io;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
-import com.cburch.LogisimFX.newgui.MainFrame.CustomCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
@@ -89,8 +89,8 @@ public class Joystick extends InstanceFactory {
 		if (inColor) {
 			g.setColor(c == null ? Color.RED : c);
 		} else {
-			double hue = c == null ? 128
-					: (c.getRed()/ + c.getGreen() + c.getBlue()) / 3;
+			double hue = c == null ? 0.502
+					: (c.getRed() + c.getGreen() + c.getBlue()) / 3;
 			g.setColor(Color.color(hue, hue, hue));
 		}
 		g.setLineWidth(1);
@@ -118,17 +118,17 @@ public class Joystick extends InstanceFactory {
 	public static class Poker extends InstancePoker {
 
 		@Override
-		public void mousePressed(InstanceState state, CustomCanvas.CME e) {
+		public void mousePressed(InstanceState state, LayoutCanvas.CME e) {
 			mouseDragged(state, e);
 		}
 		
 		@Override
-		public void mouseReleased(InstanceState state, CustomCanvas.CME e) {
+		public void mouseReleased(InstanceState state, LayoutCanvas.CME e) {
 			updateState(state, 0, 0);
 		}
 		
 		@Override
-		public void mouseDragged(InstanceState state, CustomCanvas.CME e) {
+		public void mouseDragged(InstanceState state, LayoutCanvas.CME e) {
 
 			Location loc = state.getInstance().getLocation();
 			int cx = loc.getX() - 15;

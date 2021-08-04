@@ -27,7 +27,7 @@ public class BitAdder extends InstanceFactory {
 				BitWidth.create(8), Integer.valueOf(1)
 			});
 		setKeyConfigurator(JoinedConfigurator.create(
-				new IntegerConfigurator(NUM_INPUTS, 1, 32, 0),
+				new IntegerConfigurator(NUM_INPUTS, 1, 32, null),
 				new BitWidthConfigurator(StdAttr.WIDTH)));
 		setIcon("bitadder.gif");
 

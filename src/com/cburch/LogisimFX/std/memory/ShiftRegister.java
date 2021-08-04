@@ -37,7 +37,7 @@ public class ShiftRegister extends InstanceFactory {
 				StdAttr.TRIG_RISING, "", StdAttr.DEFAULT_LABEL_FONT
 			});
 		setKeyConfigurator(JoinedConfigurator.create(
-				new IntegerConfigurator(ATTR_LENGTH, 1, 32, 0),
+				new IntegerConfigurator(ATTR_LENGTH, 1, 32, null),
 				new BitWidthConfigurator(StdAttr.WIDTH)));
 
 		setIcon("shiftreg.gif");

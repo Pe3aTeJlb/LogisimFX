@@ -3,38 +3,33 @@
 
 package com.cburch.LogisimFX.tools;
 
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Graphics;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-
-import javax.swing.Icon;
-import javax.swing.JOptionPane;
-
-import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.comp.ComponentFactory;
 import com.cburch.LogisimFX.data.*;
+import com.cburch.LogisimFX.newgui.DialogManager;
+import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.SelectionActions;
+import com.cburch.LogisimFX.newgui.MainFrame.ToolAttributeAction;
 import com.cburch.LogisimFX.tools.key.KeyConfigurationEvent;
 import com.cburch.LogisimFX.tools.key.KeyConfigurationResult;
 import com.cburch.LogisimFX.tools.key.KeyConfigurator;
-import com.cburch.LogisimFX.util.StringUtil;
 import com.cburch.LogisimFX.LogisimVersion;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.circuit.CircuitException;
 import com.cburch.LogisimFX.circuit.CircuitMutation;
 import com.cburch.LogisimFX.circuit.SubcircuitFactory;
-import com.cburch.logisim.gui.main.Canvas;
-import com.cburch.logisim.gui.main.SelectionActions;
-import com.cburch.logisim.gui.main.ToolAttributeAction;
 import com.cburch.LogisimFX.prefs.AppPreferences;
 import com.cburch.LogisimFX.proj.Action;
 import com.cburch.LogisimFX.proj.Dependencies;
 import com.cburch.LogisimFX.proj.Project;
+
 import javafx.beans.binding.StringBinding;
+import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.paint.Color;
 
 public class AddTool extends Tool {
 
@@ -45,8 +40,7 @@ public class AddTool extends Tool {
 	private static int SHOW_ADD     = 2;
 	private static int SHOW_ADD_NO  = 3;
 
-	private static Cursor cursor
-		= Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
+	private static Cursor cursor = Cursor.CROSSHAIR;
 
 	private class MyAttributeListener implements AttributeListener {
 		public void attributeListChanged(AttributeEvent e) {
@@ -232,7 +226,7 @@ public class AddTool extends Tool {
 	}
 
 	@Override
-	public void draw(Canvas canvas, ComponentDrawContext context) {
+	public void draw(LayoutCanvas canvas, ComponentDrawContext context) {
 		// next "if" suggested roughly by Kevin Walsh of Cornell to take care of
 		// repaint problems on OpenJDK under Ubuntu
 		int x = lastX;
@@ -258,39 +252,37 @@ public class AddTool extends Tool {
 	public void cancelOp() { }
 
 	@Override
-	public void select(Canvas canvas) {
+	public void select(LayoutCanvas canvas) {
 		setState(canvas, SHOW_GHOST);
 		bounds = null;
 	}
 
 	@Override
-	public void deselect(Canvas canvas) {
+	public void deselect(LayoutCanvas canvas) {
 		setState(canvas, SHOW_GHOST);
 		moveTo(canvas, canvas.getGraphics(), INVALID_COORD, INVALID_COORD);
 		bounds = null;
 		lastAddition = null;
 	}
 
-	private synchronized void moveTo(Canvas canvas, Graphics g, int x, int y) {
-		if (state != SHOW_NONE) expose(canvas, lastX, lastY);
+	private synchronized void moveTo(LayoutCanvas canvas, Graphics g, int x, int y) {
 		lastX = x;
 		lastY = y;
-		if (state != SHOW_NONE) expose(canvas, lastX, lastY);
 	}
 
 	@Override
-	public void mouseEntered(Canvas canvas, Graphics g, MouseEvent e) {
+	public void mouseEntered(LayoutCanvas canvas, Graphics g, LayoutCanvas.CME e) {
 		if (state == SHOW_GHOST || state == SHOW_NONE) {
 			setState(canvas, SHOW_GHOST);
-			canvas.requestFocusInWindow();
+			canvas.requestFocus();
 		} else if (state == SHOW_ADD_NO) {
 			setState(canvas, SHOW_ADD);
-			canvas.requestFocusInWindow();
+			canvas.requestFocus();
 		}
 	}
 
 	@Override
-	public void mouseExited(Canvas canvas, Graphics g, MouseEvent e) {
+	public void mouseExited(LayoutCanvas canvas, Graphics g, LayoutCanvas.CME e) {
 		if (state == SHOW_GHOST) {
 			moveTo(canvas, canvas.getGraphics(), INVALID_COORD, INVALID_COORD);
 			setState(canvas, SHOW_NONE);
@@ -301,45 +293,75 @@ public class AddTool extends Tool {
 	}
 
 	@Override
-	public void mouseMoved(Canvas canvas, Graphics g, MouseEvent e) {
+	public void mouseMoved(LayoutCanvas canvas, Graphics g, LayoutCanvas.CME e) {
 		if (state != SHOW_NONE) {
-			if (shouldSnap) Canvas.snapToGrid(e);
-			moveTo(canvas, g, e.getX(), e.getY());
+			int x = 0;
+			int y = 0;
+
+			if (shouldSnap){
+				x = e.snappedX;
+				y = e.snappedY;
+			}else{
+				x = e.localX;
+				y = e.localY;
+			}
+			moveTo(canvas, g, x, y);
+			moveTo(canvas, g, x, y);
 		}
 	}
 
 	@Override
-	public void mousePressed(Canvas canvas, Graphics g, MouseEvent e) {
+	public void mousePressed(LayoutCanvas canvas, Graphics g, LayoutCanvas.CME e) {
 		// verify the addition would be valid
 		Circuit circ = canvas.getCircuit();
 		if (!canvas.getProject().getLogisimFile().contains(circ)) {
-			canvas.setErrorMessage(Strings.getter("cannotModifyError"));
+			canvas.setErrorMessage(LC.createStringBinding("cannotModifyError"),null);
 			return;
 		}
 		if (factory instanceof SubcircuitFactory) {
 			SubcircuitFactory circFact = (SubcircuitFactory) factory;
 			Dependencies depends = canvas.getProject().getDependencies();
 			if (!depends.canAdd(circ, circFact.getSubcircuit())) {
-				canvas.setErrorMessage(Strings.getter("circularError"));
+				canvas.setErrorMessage(LC.createStringBinding("circularError"),null);
 				return;
 			}
 		}
 
-		if (shouldSnap) Canvas.snapToGrid(e);
-		moveTo(canvas, g, e.getX(), e.getY());
+		int x = 0;
+		int y = 0;
+
+		if (shouldSnap){
+			x = e.snappedX;
+			y = e.snappedY;
+		}else{
+			x = e.localX;
+			y = e.localY;
+		}
+		moveTo(canvas, g, x, y);
+		moveTo(canvas, g, x, y);
 		setState(canvas, SHOW_ADD);
 	}
 
 	@Override
-	public void mouseDragged(Canvas canvas, Graphics g, MouseEvent e) {
+	public void mouseDragged(LayoutCanvas canvas, Graphics g, LayoutCanvas.CME e) {
 		if (state != SHOW_NONE) {
-			if (shouldSnap) Canvas.snapToGrid(e);
-			moveTo(canvas, g, e.getX(), e.getY());
+			int x = 0;
+			int y = 0;
+
+			if (shouldSnap){
+				x = e.snappedX;
+				y = e.snappedY;
+			}else{
+				x = e.localX;
+				y = e.localY;
+			}
+			moveTo(canvas, g, x, y);
+			moveTo(canvas, g, x, y);
 		}
 	}
 
 	@Override
-	public void mouseReleased(Canvas canvas, Graphics g, MouseEvent e) {
+	public void mouseReleased(LayoutCanvas canvas, Graphics g, LayoutCanvas.CME e) {
 
 		Component added = null;
 
@@ -347,36 +369,45 @@ public class AddTool extends Tool {
 
 			Circuit circ = canvas.getCircuit();
 			if (!canvas.getProject().getLogisimFile().contains(circ)) return;
-			if (shouldSnap) Canvas.snapToGrid(e);
-			moveTo(canvas, g, e.getX(), e.getY());
 
-			Location loc = Location.create(e.getX(), e.getY());
+			int x = 0;
+			int y = 0;
+
+			if (shouldSnap){
+				x = e.snappedX;
+				y = e.snappedY;
+			}else{
+				x = e.localX;
+				y = e.localY;
+			}
+			moveTo(canvas, g, x, y);
+
+			Location loc = Location.create(x, y);
 			AttributeSet attrsCopy = (AttributeSet) attrs.clone();
 			ComponentFactory source = getFactory();
 			if (source == null) return;
 			Component c = source.createComponent(loc, attrsCopy);
 
 			if (circ.hasConflict(c)) {
-				canvas.setErrorMessage(Strings.getter("exclusiveError"));
+				canvas.setErrorMessage(LC.createStringBinding("exclusiveError"),null);
 				return;
 			}
 
 			Bounds bds = c.getBounds(g);
 			if (bds.getX() < 0 || bds.getY() < 0) {
-				canvas.setErrorMessage(Strings.getter("negativeCoordError"));
+				canvas.setErrorMessage(LC.createStringBinding("negativeCoordError"),null);
 				return;
 			}
 
 			try {
 				CircuitMutation mutation = new CircuitMutation(circ);
 				mutation.add(c);
-				Action action = mutation.toAction(Strings.getter("addComponentAction", factory.getDisplayGetter()));
+				Action action = mutation.toAction(LC.createComplexStringBinding("addComponentAction", factory.getDisplayGetter().getValue()));
 				canvas.getProject().doAction(action);
 				lastAddition = action;
 				added = c;
 			} catch (CircuitException ex) {
-				JOptionPane.showMessageDialog(canvas.getProject().getFrame(),
-					ex.getMessage());
+				DialogManager.CreateStackTraceDialog("",ex.getCause().toString(),ex);
 			}
 			setState(canvas, SHOW_GHOST);
 		} else if (state == SHOW_ADD_NO) {
@@ -414,16 +445,16 @@ public class AddTool extends Tool {
 	}
 	
 	@Override
-	public void keyPressed(Canvas canvas, KeyEvent event) {
+	public void keyPressed(LayoutCanvas canvas, KeyEvent event) {
 		processKeyEvent(canvas, event, KeyConfigurationEvent.KEY_PRESSED);
 
-		if (!event.isConsumed() && event.getModifiersEx() == 0) {
-			switch (event.getKeyCode()) {
-			case KeyEvent.VK_UP:    setFacing(canvas, Direction.NORTH); break;
-			case KeyEvent.VK_DOWN:  setFacing(canvas, Direction.SOUTH); break;
-			case KeyEvent.VK_LEFT:  setFacing(canvas, Direction.WEST); break;
-			case KeyEvent.VK_RIGHT: setFacing(canvas, Direction.EAST); break;
-			case KeyEvent.VK_BACK_SPACE:
+		if (!event.isConsumed() && !event.isShortcutDown()) {
+			switch (event.getCode()) {
+			case UP:    setFacing(canvas, Direction.NORTH); break;
+			case DOWN:  setFacing(canvas, Direction.SOUTH); break;
+			case LEFT:  setFacing(canvas, Direction.WEST); break;
+			case RIGHT: setFacing(canvas, Direction.EAST); break;
+			case BACK_SPACE:
 				if (lastAddition != null && canvas.getProject().getLastAction() == lastAddition) {
 					canvas.getProject().undoAction();
 					lastAddition = null;
@@ -433,16 +464,16 @@ public class AddTool extends Tool {
 	}
 	
 	@Override
-	public void keyReleased(Canvas canvas, KeyEvent event) {
+	public void keyReleased(LayoutCanvas canvas, KeyEvent event) {
 		processKeyEvent(canvas, event, KeyConfigurationEvent.KEY_RELEASED);
 	}
 	
 	@Override
-	public void keyTyped(Canvas canvas, KeyEvent event) {
+	public void keyTyped(LayoutCanvas canvas, KeyEvent event) {
 		processKeyEvent(canvas, event, KeyConfigurationEvent.KEY_TYPED);
 	}
 	
-	private void processKeyEvent(Canvas canvas, KeyEvent event, int type) {
+	private void processKeyEvent(LayoutCanvas canvas, KeyEvent event, int type) {
 		KeyConfigurator handler = keyHandler;
 		if (!keyHandlerTried) {
 			ComponentFactory source = getFactory();
@@ -463,7 +494,7 @@ public class AddTool extends Tool {
 		}
 	}
 	
-	private void setFacing(Canvas canvas, Direction facing) {
+	private void setFacing(LayoutCanvas canvas, Direction facing) {
 		ComponentFactory source = getFactory();
 		if (source == null) return;
 		AttributeSet base = getBaseAttributes();
@@ -477,33 +508,9 @@ public class AddTool extends Tool {
 	}
 
 	@Override
-	public void paintIcon(ComponentDrawContext c, int x, int y) {
-		FactoryDescription desc = description;
-		if (desc != null && !desc.isFactoryLoaded()) {
-			Icon icon = desc.getIcon();
-			if (icon != null) {
-				icon.paintIcon(c.getDestination(), c.getGraphics(), x + 2, y + 2);
-				return;
-			}
-		}
-		
-		ComponentFactory source = getFactory();
-		if (source != null) {
-			AttributeSet base = getBaseAttributes();
-			source.paintIcon(c, x, y, base);
-		}
-	}
-
-	private void expose(java.awt.Component c, int x, int y) {
-		Bounds bds = getBounds();
-		c.repaint(x + bds.getX(), y + bds.getY(),
-			bds.getWidth(), bds.getHeight());
-	}
-
-	@Override
 	public Cursor getCursor() { return cursor; }
 
-	private void setState(Canvas canvas, int value) {
+	private void setState(LayoutCanvas canvas, int value) {
 		if (value == SHOW_GHOST) {
 			if (canvas.getProject().getLogisimFile().contains(canvas.getCircuit())
 					&& AppPreferences.ADD_SHOW_GHOSTS.getBoolean()) {

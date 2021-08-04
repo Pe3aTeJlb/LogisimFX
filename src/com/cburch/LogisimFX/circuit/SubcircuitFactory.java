@@ -6,6 +6,7 @@ package com.cburch.LogisimFX.circuit;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
+import com.cburch.LogisimFX.newgui.ContextMenuManager;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.std.LC;
@@ -13,52 +14,15 @@ import com.cburch.LogisimFX.std.wiring.Pin;
 import com.cburch.LogisimFX.tools.MenuExtender;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.StringGetter;
-import com.cburch.LogisimFX.util.StringUtil;
+import com.sun.javafx.tk.FontMetrics;
 import javafx.beans.binding.StringBinding;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Map;
 
 public class SubcircuitFactory extends InstanceFactory {
-
-	private class CircuitFeature implements StringGetter, MenuExtender, ActionListener {
-
-		private Instance instance;
-		private Project proj;
-		
-		public CircuitFeature(Instance instance) {
-			this.instance = instance;
-		}
-		
-		public String get() {
-			return source.getName();
-		}
-
-		public void configureMenu(JPopupMenu menu, Project proj) {
-			this.proj = proj;
-			String name = instance.getFactory().getDisplayName().getValue();
-			String text = Strings.get("subcircuitViewItem", name);
-			JMenuItem item = new JMenuItem(text);
-			item.addActionListener(this);
-			menu.add(item);
-		}
-
-		public void actionPerformed(ActionEvent e) {
-			CircuitState superState = proj.getCircuitState();
-			if (superState == null) return;
-
-			CircuitState subState = getSubstate(superState, instance);
-			if (subState == null) return;
-			proj.setCircuitState(subState);
-		}
-
-	}
 
 	private Circuit source;
 
@@ -122,7 +86,7 @@ public class SubcircuitFactory extends InstanceFactory {
 
 	@Override
 	public Object getInstanceFeature(Instance instance, Object key) {
-		if (key == MenuExtender.class) return new CircuitFeature(instance);
+		if (key == MenuExtender.class) return new ContextMenuManager.CircuitComponentContextMenu(instance);
 		return super.getInstanceFeature(instance, key);
 	}
 
@@ -235,8 +199,9 @@ public class SubcircuitFactory extends InstanceFactory {
 	public void paintGhost(InstancePainter painter) {
 
 		Graphics g = painter.getGraphics();
-		Color fg = (Color) g.getFill();
-		int v = fg.getRed() + fg.getGreen() + fg.getBlue();
+		Color fg =  g.getColor();
+		int v = (int)fg.getRed() + (int)fg.getGreen() + (int)fg.getBlue();
+
 		Composite oldComposite = null;
 		if (g instanceof Graphics2D && v > 50) {
 			oldComposite = ((Graphics2D) g).getComposite();
@@ -248,6 +213,7 @@ public class SubcircuitFactory extends InstanceFactory {
 			((Graphics2D) g).setComposite(oldComposite);
 		}
 
+
 	}
 
 	@Override
@@ -256,16 +222,18 @@ public class SubcircuitFactory extends InstanceFactory {
 		painter.drawPorts();
 	}
 
-	private void paintBase(InstancePainter painter, GraphicsContext g) {
+	private void paintBase(InstancePainter painter, Graphics g) {
+
 		CircuitAttributes attrs = (CircuitAttributes) painter.getAttributeSet();
 		Direction facing = attrs.getFacing();
 		Direction defaultFacing = source.getAppearance().getFacing();
 		Location loc = painter.getLocation();
-		g.translate(loc.getX(), loc.getY());
+		g.c.translate(loc.getX(), loc.getY());
 		source.getAppearance().paintSubcircuit(g, facing);
 		drawCircuitLabel(painter, getOffsetBounds(attrs), facing, defaultFacing);
-		g.translate(-loc.getX(), -loc.getY());
+		g.c.translate(-loc.getX(), -loc.getY());
 		painter.drawLabel();
+
 	}
 
 	private void drawCircuitLabel(InstancePainter painter, Bounds bds,
@@ -288,19 +256,18 @@ public class SubcircuitFactory extends InstanceFactory {
 			
 			int x = bds.getX() + bds.getWidth() / 2;
 			int y = bds.getY() + bds.getHeight() / 2;
-			Graphics g = painter.getGraphics().create();
+			Graphics g = painter.getGraphics();
 			double angle = Math.PI / 2 - (up.toRadians() - defaultFacing.toRadians()) - facing.toRadians();
-			if (g instanceof Graphics2D && Math.abs(angle) > 0.01) {
-				Graphics2D g2 = (Graphics2D) g;
-				g2.rotate(angle, x, y);
+			if (Math.abs(angle) > 0.01) {
+				g.c.rotate(angle, x, y);
 			}
 			g.setFont(font);
 			if (lines == 1 && !backs) {
 				GraphicsUtil.drawCenteredText(g, label, x, y);
 			} else {
 				FontMetrics fm = g.getFontMetrics();
-				int height = fm.getHeight();
-				y = y - (height * lines - fm.getLeading()) / 2 + fm.getAscent(); 
+				int height = (int)fm.getAscent();
+				y = y - (height * lines - (int)fm.getLeading()) / 2 + (int)fm.getAscent();
 				back = label.indexOf('\\');
 				while (back >= 0 && back <= label.length() - 2) {
 					char c = label.charAt(back + 1);
@@ -321,7 +288,9 @@ public class SubcircuitFactory extends InstanceFactory {
 				GraphicsUtil.drawText(g, label, x, y,
 						GraphicsUtil.H_CENTER, GraphicsUtil.V_BASELINE);
 			}
-			g.dispose();
+
+			g.toDefault();
+
 		}
 	}
 
