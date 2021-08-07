@@ -6,6 +6,7 @@ package com.cburch.LogisimFX.draw.shapes;
 import com.cburch.LogisimFX.data.Location;
 
 public class LineUtil {
+
 	private LineUtil() { }
 	
 	// a value we consider "small enough" to equal it to zero:

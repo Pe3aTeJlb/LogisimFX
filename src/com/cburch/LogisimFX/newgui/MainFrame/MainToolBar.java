@@ -87,7 +87,7 @@ public class MainToolBar extends ToolBar {
 
         AbstractTool[] tools = {
                 new SelectTool(),
-                new TextTool(attrs),
+                //new TextTool(attrs),
                 new LineTool(attrs),
                 new CurveTool(attrs),
                 new PolyTool(false, attrs),
@@ -165,9 +165,9 @@ public class MainToolBar extends ToolBar {
             tip.textProperty().bind(tool.getDescription().concat(bindbuff));
             setTooltip(tip);
 
-            this.setOnAction(event -> {
-                proj.setTool(tool);
-            });
+            this.setFocusTraversable(false);
+
+            this.setOnAction(event -> proj.setTool(tool));
 
         }
 
@@ -183,6 +183,8 @@ public class MainToolBar extends ToolBar {
             graphicProperty().setValue(buff);
 
             setActions(tool);
+
+            this.setFocusTraversable(false);
 
         }
 

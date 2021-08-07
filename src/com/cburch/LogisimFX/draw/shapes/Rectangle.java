@@ -7,14 +7,16 @@ import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
+
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Random;
 
 public class Rectangle extends Rectangular {
+
 	public Rectangle(int x, int y, int w, int h) {
 		super(x, y, w, h);
 	}
@@ -93,4 +95,5 @@ public class Rectangle extends Rectangular {
 		if (setForFill(g)) g.fillRect(x, y, w, h);
 		if (setForStroke(g)) g.drawRect(x, y, w, h);
 	}
+
 }

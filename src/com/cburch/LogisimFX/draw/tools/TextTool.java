@@ -7,6 +7,7 @@ import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.draw.actions.ModelAddAction;
 import com.cburch.LogisimFX.draw.actions.ModelEditTextAction;
 import com.cburch.LogisimFX.draw.actions.ModelRemoveAction;
+import com.cburch.LogisimFX.draw.canvas.AppearanceCanvas;
 import com.cburch.LogisimFX.draw.canvas.Canvas;
 import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.draw.shapes.DrawAttr;
@@ -16,14 +17,10 @@ import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.AttributeEvent;
 import com.cburch.LogisimFX.data.AttributeListener;
 import com.cburch.LogisimFX.data.Location;
-import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
+
+import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.util.Collections;
 import java.util.List;
 
@@ -85,8 +82,8 @@ public class TextTool extends AbstractTool {
 	}
 
 	@Override
-	public Cursor getCursor(Canvas canvas) {
-		return Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR);
+	public Cursor getCursor() {
+		return Cursor.TEXT;
 	}
 	
 	@Override
@@ -95,17 +92,17 @@ public class TextTool extends AbstractTool {
 	}
 	
 	@Override
-	public void toolSelected(Canvas canvas) {
+	public void toolSelected(AppearanceCanvas canvas) {
 		cancelText(canvas);
 	}
 	
 	@Override
-	public void toolDeselected(Canvas canvas) {
+	public void toolDeselected(AppearanceCanvas canvas) {
 		commitText(canvas);
 	}
 	
 	@Override
-	public void mousePressed(Canvas canvas, MouseEvent e) {
+	public void mousePressed(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
 		if (curText != null) {
 			commitText(canvas);
 		}
@@ -150,7 +147,7 @@ public class TextTool extends AbstractTool {
 	}
 	
 	@Override
-	public void zoomFactorChanged(LayoutCanvas canvas) {
+	public void zoomFactorChanged(AppearanceCanvas canvas) {
 		Text t = curText;
 		if (t != null) {
 			t.getLabel().configureTextField(field, canvas.getZoomFactor());
@@ -158,7 +155,7 @@ public class TextTool extends AbstractTool {
 	}
 	
 	@Override
-	public void draw(Canvas canvas, Graphics g) {
+	public void draw(AppearanceCanvas canvas) {
 		; // actually, there's nothing to do here - it's handled by the field
 	}
 
@@ -197,4 +194,5 @@ public class TextTool extends AbstractTool {
 			}
 		}
 	}
+
 }

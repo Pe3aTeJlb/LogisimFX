@@ -7,14 +7,15 @@ import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Random;
 
 public class Oval extends Rectangular {
+
 	public Oval(int x, int y, int w, int h) {
 		super(x, y, w, h);
 	}
@@ -82,4 +83,5 @@ public class Oval extends Rectangular {
 		if (setForFill(g)) g.fillOval(x, y, w, h);
 		if (setForStroke(g)) g.drawOval(x, y, w, h);
 	}
+
 }

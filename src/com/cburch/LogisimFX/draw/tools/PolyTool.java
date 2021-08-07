@@ -56,8 +56,8 @@ public class PolyTool extends AbstractTool {
 	}
 
 	@Override
-	public Cursor getCursor(AppearanceCanvas canvas) {
-		return Cursor.CROSSHAIR);
+	public Cursor getCursor() {
+		return Cursor.CROSSHAIR;
 	}
 	
 	@Override

@@ -229,9 +229,7 @@ public class Attributes {
 			ComboBox<Object> cell = new ComboBox<>();
 			cell.getItems().addAll(vals);
 			cell.setValue(value);
-			cell.setOnAction(event -> {
-				AttributeTable.printShit();
-			});
+			cell.setOnAction(event -> AttributeTable.printShit());
 			return cell;
 
 		}

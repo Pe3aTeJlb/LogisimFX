@@ -21,7 +21,7 @@ import javafx.animation.AnimationTimer;
 import javafx.beans.binding.StringBinding;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -99,8 +99,6 @@ public class LayoutCanvas extends Canvas {
 
         g = new Graphics(this.getGraphicsContext2D());
         g.toDefault();
-
-        root.getChildren().add(this);
 
         setCanvasEvents();
 
@@ -403,9 +401,7 @@ public class LayoutCanvas extends Canvas {
     private void setCanvasEvents(){
 
         this.addEventFilter(MouseEvent.ANY, (e) -> this.requestFocus());
-
-        this.setOnContextMenuRequested(event ->
-                contextMenu.show(this, event.getScreenX(), event.getScreenY()));
+        this.addEventFilter(KeyEvent.ANY, (e) -> this.requestFocus());
 
         this.setOnMousePressed(event -> {
 
@@ -420,9 +416,12 @@ public class LayoutCanvas extends Canvas {
 
             if(event.getButton() == MouseButton.SECONDARY){
                 dragTool = new MenuTool();
-                if (dragTool != null) {
-                    dragTool.mousePressed(this, getGraphics(), new CME(event));
-                }
+                dragTool.mousePressed(this, getGraphics(), new CME(event));
+            }
+
+            if(event.getButton() != MouseButton.SECONDARY && contextMenu != null &&
+                    contextMenu.isShowing() && !event.getTarget().equals(contextMenu)){
+                contextMenu.hide();
             }
 
         });
@@ -529,6 +528,7 @@ public class LayoutCanvas extends Canvas {
         });
 
         this.setOnKeyPressed(event -> {
+
             Tool tool = proj.getTool();
             if (tool != null) tool.keyPressed(this, event);
 
@@ -548,12 +548,12 @@ public class LayoutCanvas extends Canvas {
 
     }
 
-    public void showContextMenu(ContextMenu menu, int x, int y){
+    public void showContextMenu(ContextMenu menu, double x, double y){
 
-        //if(contextMenu != null)contextMenu.hide();
+        if(contextMenu != null)contextMenu.hide();
 
         contextMenu = menu;
-        //contextMenu.show(this,x,y);
+        contextMenu.show(this,x,y);
 
     }
 
@@ -624,12 +624,7 @@ public class LayoutCanvas extends Canvas {
 
     public Canvas getCanvas(){return this;}
 
-    public Image getPrintImage(){
 
-        //return cv.snapshot(0,new WritableImage());
-        return null;
-        // return cv.snapshot();
-    }
 
     //ReadLike CanvasMouseEvent
     public static class CME{

@@ -11,7 +11,9 @@ import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.util.UnmodifiableList;
+
 import com.sun.javafx.geom.QuadCurve2D;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

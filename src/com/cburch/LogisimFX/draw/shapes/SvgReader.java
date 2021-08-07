@@ -8,15 +8,17 @@ import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.AttributeOption;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.util.UnmodifiableList;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import org.w3c.dom.Element;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SvgReader {
+
 	private SvgReader() { }
 	
 	private static final Pattern PATH_REGEX = Pattern.compile("[a-zA-Z]|[-0-9.]+");
@@ -244,4 +246,5 @@ public class SvgReader {
 		}
 		return new Color(r, g, b, a);
 	}
+
 }

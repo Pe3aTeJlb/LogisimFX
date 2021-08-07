@@ -9,16 +9,16 @@ import com.cburch.LogisimFX.draw.model.HandleGesture;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.util.UnmodifiableList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.awt.*;
-import java.awt.geom.GeneralPath;
 import java.util.List;
 import java.util.Random;
 
 public class Poly extends FillableCanvasObject {
+
 	private boolean closed;
 	// "handles" should be immutable - create a new array and change using
 	// setHandles rather than changing contents
@@ -400,4 +400,5 @@ public class Poly extends FillableCanvasObject {
 		}
 		return p;
 	}
+
 }

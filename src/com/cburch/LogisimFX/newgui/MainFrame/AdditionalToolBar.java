@@ -66,6 +66,7 @@ public class AdditionalToolBar extends ToolBar {
 
         CustomButton AddCircuitBtn = new CustomButton(prefWidth,prefHeight,"projadd.gif");
         AddCircuitBtn.setTooltip(new ToolTip("projectAddCircuitTip"));
+        AddCircuitBtn.setFocusTraversable(false);
         AddCircuitBtn.setOnAction(event -> {
             ProjectCircuitActions.doAddCircuit(proj);
             treeExplorerAggregation.updateTree();
@@ -74,6 +75,7 @@ public class AdditionalToolBar extends ToolBar {
 
         CustomButton PullCircuitUpBtn = new  CustomButton(prefWidth,prefHeight,"projup.gif");
         PullCircuitUpBtn.setTooltip(new ToolTip("projectMoveCircuitUpTip"));
+        PullCircuitUpBtn.setFocusTraversable(false);
         PullCircuitUpBtn.disableProperty().bind(
                 Bindings.or(logisimFile.obsPos.isEqualTo("first"),logisimFile.obsPos.isEqualTo("first&last"))
         );
@@ -84,6 +86,7 @@ public class AdditionalToolBar extends ToolBar {
 
         CustomButton PullCircuitDownIBtn = new CustomButton(prefWidth,prefHeight,"projdown.gif");
         PullCircuitDownIBtn.setTooltip(new ToolTip("projectMoveCircuitDownTip"));
+        PullCircuitDownIBtn.setFocusTraversable(false);
         PullCircuitDownIBtn.disableProperty().bind(
                 Bindings.or(logisimFile.obsPos.isEqualTo("last"),logisimFile.obsPos.isEqualTo("first&last"))
         );
@@ -94,6 +97,7 @@ public class AdditionalToolBar extends ToolBar {
 
         CustomButton DeleteCircuitBtn = new CustomButton(prefWidth,prefHeight,"projdel.gif");
         DeleteCircuitBtn.setTooltip(new ToolTip("projectRemoveCircuitTip"));
+        DeleteCircuitBtn.setFocusTraversable(false);
         DeleteCircuitBtn.disableProperty().bind(
                 logisimFile.obsPos.isEqualTo("first&last")
         );
@@ -115,21 +119,25 @@ public class AdditionalToolBar extends ToolBar {
 
         CustomButton SimStopBtn = new CustomButton(prefWidth,prefHeight,"simstop.png");
         SimStopBtn.setTooltip(new ToolTip("simulateEnableStepsTip"));
+        SimStopBtn.setFocusTraversable(false);
         SimStopBtn.setOnAction(event -> {
         });
 
         CustomButton SimPlayOneStepBtn = new CustomButton(prefWidth,prefHeight,"simtplay.png");
         SimPlayOneStepBtn.setTooltip(new ToolTip("simulateStepTip"));
+        SimPlayOneStepBtn.setFocusTraversable(false);
         SimPlayOneStepBtn.setOnAction(event -> {
         });
 
         CustomButton SimPlayBtn = new CustomButton(prefWidth,prefHeight,"simplay.png");
         SimPlayBtn.setTooltip(new ToolTip("simulateEnableTicksTip"));
+        SimPlayBtn.setFocusTraversable(false);
         SimPlayBtn.setOnAction(event -> {
         });
 
         CustomButton SimStepBtn = new CustomButton(prefWidth,prefHeight,"simstep.png");
         SimStepBtn.setTooltip(new ToolTip("simulateTickTip"));
+        SimStepBtn.setFocusTraversable(false);
         SimStepBtn.setOnAction(event -> {
         });
 

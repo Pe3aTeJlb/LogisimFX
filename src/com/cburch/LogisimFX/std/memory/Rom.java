@@ -72,7 +72,7 @@ public class Rom extends Mem {
 	}
 
 	@Override
-	MemState getState(InstanceState state) {
+	public MemState getState(InstanceState state) {
 
 		MemState ret = (MemState) state.getData();
 		if (ret == null) {

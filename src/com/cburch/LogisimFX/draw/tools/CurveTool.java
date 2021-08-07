@@ -46,7 +46,7 @@ public class CurveTool extends AbstractTool {
 	}
 
 	@Override
-	public Cursor getCursor(AppearanceCanvas canvas) {
+	public Cursor getCursor() {
 		return Cursor.CROSSHAIR;
 	}
 	

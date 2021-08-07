@@ -1,6 +1,7 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
 import com.cburch.LogisimFX.comp.Component;
+import com.cburch.LogisimFX.draw.canvas.AppearanceCanvas;
 import com.cburch.LogisimFX.localization.LC_gui;
 import com.cburch.LogisimFX.newgui.AbstractController;
 import com.cburch.LogisimFX.localization.Localizer;
@@ -37,7 +38,9 @@ public class MainFrameController extends AbstractController {
     private TreeExplorerAggregation treeExplorerAggregation;
     private AttributeTable attributeTable;
 
-    private LayoutCanvas cv;
+    private AnchorPane canvasRoot;
+    private LayoutCanvas layoutCanvas;
+    private AppearanceCanvas appearanceCanvas;
 
 
 //monolith - strength in unity
@@ -93,10 +96,12 @@ public class MainFrameController extends AbstractController {
 
 
         //Canvas
-        AnchorPane canvasRoot = new AnchorPane();
+        canvasRoot = new AnchorPane();
         canvasRoot.setMinSize(0,0);
 
-        cv = new LayoutCanvas(canvasRoot, proj);
+        layoutCanvas = new LayoutCanvas(canvasRoot, proj);
+        appearanceCanvas = new AppearanceCanvas(canvasRoot, proj);
+        canvasRoot.getChildren().add(layoutCanvas);
 
 
         SplitPane mainSplitPane = new SplitPane(explorerSplitPane,canvasRoot);
@@ -135,17 +140,33 @@ public class MainFrameController extends AbstractController {
     }
 
     public void setAppearanceView(Circuit circ){
+
         proj.setCurrentCircuit(circ);
-        explorerToolBar.EditAppearance();
+        if(!explorerToolBar.EditCircuitAppearance.getValue())
+            explorerToolBar.EditAppearance();
+
+        if(!canvasRoot.getChildren().get(0).equals(appearanceCanvas)){
+            canvasRoot.getChildren().clear();
+            canvasRoot.getChildren().add(appearanceCanvas);
+        }
+
     }
 
-    public void setEditView(){
-        setEditView(proj.getCurrentCircuit());
+    public void setLayoutView(){
+        setLayoutView(proj.getCurrentCircuit());
     }
 
-    public void setEditView(Circuit circ){
+    public void setLayoutView(Circuit circ){
+
         proj.setCurrentCircuit(circ);
+        if(!explorerToolBar.EditCircuitLayout.getValue())
         explorerToolBar.EditCircuit();
+
+        if(!canvasRoot.getChildren().get(0).equals(layoutCanvas)){
+            canvasRoot.getChildren().clear();
+            canvasRoot.getChildren().add(layoutCanvas);
+        }
+
     }
 
 
@@ -199,7 +220,9 @@ public class MainFrameController extends AbstractController {
         return stage;
     }
 
-    public LayoutCanvas getCanvas(){return cv;}
+    public LayoutCanvas getCanvas(){return layoutCanvas;}
+
+
 
     /*
     public void savePreferences() {

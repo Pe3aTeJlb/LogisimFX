@@ -8,12 +8,13 @@ import com.cburch.LogisimFX.draw.model.Handle;
 import com.cburch.LogisimFX.draw.model.HandleGesture;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.util.UnmodifiableList;
 
-import java.awt.*;
 import java.util.List;
 
 abstract class Rectangular extends FillableCanvasObject {
+
 	private Bounds bounds; // excluding the stroke's width
 	
 	public Rectangular(int x, int y, int w, int h) {
@@ -235,5 +236,7 @@ abstract class Rectangular extends FillableCanvasObject {
 	}
 	
 	protected abstract boolean contains(int x, int y, int w, int h, Location q);
+
 	protected abstract void draw(Graphics g, int x, int y, int w, int h);
+
 }

@@ -19,7 +19,7 @@ import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
 
-import java.awt.image.BufferedImage;
+import java.awt.image.*;
 import java.io.File;
 
 public class ExportImageController extends AbstractController {
@@ -184,7 +184,21 @@ public class ExportImageController extends AbstractController {
                 }else if(GifRb.isSelected()){
                     ImageIO.write(bImage, "GIF", where);
                 }else if(JpegRb.isSelected()){
-                    ImageIO.write(bImage, "JPEG", where);
+
+                    int[] RGB_MASKS = {0xFF0000, 0xFF00, 0xFF};
+                    ColorModel RGB_OPAQUE =
+                            new DirectColorModel(32, RGB_MASKS[0], RGB_MASKS[1], RGB_MASKS[2]);
+
+                    PixelGrabber pg = new PixelGrabber(bImage, 0, 0, -1, -1, true);
+                    pg.grabPixels();
+                    int width = pg.getWidth(), height = pg.getHeight();
+
+                    DataBuffer buffer = new DataBufferInt((int[]) pg.getPixels(), pg.getWidth() * pg.getHeight());
+                    WritableRaster raster = Raster.createPackedRaster(buffer, width, height, width, RGB_MASKS, null);
+                    BufferedImage bi = new BufferedImage(RGB_OPAQUE, raster, false, null);
+
+                    ImageIO.write(bi, "JPEG", where);
+
                 }
 
             } catch (Exception e) {

@@ -1,5 +1,6 @@
 package com.cburch.LogisimFX.newgui;
 
+import com.cburch.LogisimFX.FileSelector;
 import com.cburch.LogisimFX.circuit.CircuitMutation;
 import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.comp.Component;
@@ -110,7 +111,7 @@ public class ContextMenuManager {
 
         MenuItem EditCircuit = new MenuItem();
         EditCircuit.textProperty().bind(lc.createStringBinding("projectEditCircuitLayoutItem"));
-        EditCircuit.setOnAction(event -> proj.getFrameController().setEditView(circ));
+        EditCircuit.setOnAction(event -> proj.getFrameController().setLayoutView(circ));
 
         MenuItem EditAppearance = new MenuItem();
         EditAppearance.textProperty().bind(lc.createStringBinding("projectEditCircuitAppearanceItem"));
@@ -317,21 +318,19 @@ public class ContextMenuManager {
             load.textProperty().bind(LC_std.getInstance().createStringBinding("ramLoadMenuItem"));
             load.setOnAction(event -> {
 
-
-                JFileChooser chooser = proj.createChooser();
+                FileSelector fileSelector = new FileSelector(proj.getFrameController().getStage());
                 File oldSelected = factory.getCurrentImage(instance);
-                if (oldSelected != null) chooser.setSelectedFile(oldSelected);
+                if (oldSelected != null)fileSelector.setSelectedFile(oldSelected);
                 chooser.setDialogTitle(Strings.get("ramLoadDialogTitle"));
-                int choice = chooser.showOpenDialog(frame);
-                if (choice == JFileChooser.APPROVE_OPTION) {
-                    File f = chooser.getSelectedFile();
-                    try {
-                        factory.loadImage(circState.getInstanceState(instance), f);
-                    } catch (IOException e) {
-                        JOptionPane.showMessageDialog(frame, e.getMessage(),
-                                Strings.get("ramLoadErrorTitle"), JOptionPane.ERROR_MESSAGE);
-                    }
+                //todo add extension filter
+                File f = fileSelector.showOpenDialog(LC_std.getInstance().get("ramLoadDialogTitle"));
+                try {
+                    factory.loadImage(circState.getInstanceState(instance), f);
+                } catch (IOException e) {
+                    JOptionPane.showMessageDialog(frame, e.getMessage(),
+                            Strings.get("ramLoadErrorTitle"), JOptionPane.ERROR_MESSAGE);
                 }
+
 
             });
 
@@ -343,9 +342,11 @@ public class ContextMenuManager {
 
                 MemState s = factory.getState(instance, circState);
 
-                JFileChooser chooser = proj.createChooser();
+                FileSelector fileSelector = new FileSelector(proj.getFrameController().getStage());
                 File oldSelected = factory.getCurrentImage(instance);
-                if (oldSelected != null) chooser.setSelectedFile(oldSelected);
+                if (oldSelected != null)fileSelector.setSelectedFile(oldSelected);
+
+                LC_std.getInstance().get("ramSaveDialogTitle")
                 chooser.setDialogTitle(Strings.get("ramSaveDialogTitle"));
                 int choice = chooser.showSaveDialog(frame);
                 if (choice == JFileChooser.APPROVE_OPTION) {

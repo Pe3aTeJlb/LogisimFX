@@ -38,7 +38,7 @@ public abstract class AbstractTool extends CanvasTool {
 	// CanvasTool methods
 	//
 	@Override
-	public abstract Cursor getCursor(AppearanceCanvas canvas);
+	public abstract Cursor getCursor();
 	
 	@Override
 	public void toolSelected(AppearanceCanvas canvas) { }

@@ -6,33 +6,35 @@ package com.cburch.LogisimFX.draw.model;
 import com.cburch.LogisimFX.draw.canvas.Selection;
 import com.cburch.LogisimFX.draw.shapes.Text;
 import com.cburch.LogisimFX.data.Bounds;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 
-import java.awt.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 public interface CanvasModel {
+
 	// listener methods
-	public void addCanvasModelListener(CanvasModelListener l);
-	public void removeCanvasModelListener(CanvasModelListener l);
+	void addCanvasModelListener(CanvasModelListener l);
+	void removeCanvasModelListener(CanvasModelListener l);
 	
 	// methods that don't change any data in the model
-	public void paint(Graphics g, Selection selection);
-	public List<CanvasObject> getObjectsFromTop();
-	public List<CanvasObject> getObjectsFromBottom();
-	public Collection<CanvasObject> getObjectsIn(Bounds bds);
-	public Collection<CanvasObject> getObjectsOverlapping(CanvasObject shape);
+	void paint(Graphics g, Selection selection);
+	List<CanvasObject> getObjectsFromTop();
+	List<CanvasObject> getObjectsFromBottom();
+	Collection<CanvasObject> getObjectsIn(Bounds bds);
+	Collection<CanvasObject> getObjectsOverlapping(CanvasObject shape);
 
 	// methods that alter the model
-	public void addObjects(int index, Collection<? extends CanvasObject> shapes);
-	public void addObjects(Map<? extends CanvasObject, Integer> shapes);
-	public void removeObjects(Collection<? extends CanvasObject> shapes);
-	public void translateObjects(Collection<? extends CanvasObject> shapes, int dx, int dy);
-	public void reorderObjects(List<ReorderRequest> requests);
-	public Handle moveHandle(HandleGesture gesture);
-	public void insertHandle(Handle desired, Handle previous);
-	public Handle deleteHandle(Handle handle);
-	public void setAttributeValues(Map<AttributeMapKey,Object> values);
-	public void setText(Text text, String value);
+	void addObjects(int index, Collection<? extends CanvasObject> shapes);
+	void addObjects(Map<? extends CanvasObject, Integer> shapes);
+	void removeObjects(Collection<? extends CanvasObject> shapes);
+	void translateObjects(Collection<? extends CanvasObject> shapes, int dx, int dy);
+	void reorderObjects(List<ReorderRequest> requests);
+	Handle moveHandle(HandleGesture gesture);
+	void insertHandle(Handle desired, Handle previous);
+	Handle deleteHandle(Handle handle);
+	void setAttributeValues(Map<AttributeMapKey,Object> values);
+	void setText(Text text, String value);
+
 }

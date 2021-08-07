@@ -18,6 +18,7 @@ import javafx.scene.text.FontWeight;
 import java.util.List;
 
 public class DrawAttr {
+
 	public static final Font DEFAULT_FONT
 		= Font.font("SansSerif", FontWeight.NORMAL, FontPosture.REGULAR, 12);
 
@@ -105,4 +106,5 @@ public class DrawAttr {
 			return ATTRS_RRECT_BOTH;
 		}
 	}
+
 }

@@ -7,6 +7,7 @@ import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.draw.actions.ModelMoveHandleAction;
 import com.cburch.LogisimFX.draw.actions.ModelRemoveAction;
 import com.cburch.LogisimFX.draw.actions.ModelTranslateAction;
+import com.cburch.LogisimFX.draw.canvas.AppearanceCanvas;
 import com.cburch.LogisimFX.draw.canvas.Canvas;
 import com.cburch.LogisimFX.draw.canvas.Selection;
 import com.cburch.LogisimFX.draw.model.CanvasModel;
@@ -17,14 +18,12 @@ import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.util.GraphicsUtil;
-import com.cburch.LogisimFX.util.Icons;
-import javafx.scene.image.ImageView;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
+import javafx.scene.Cursor;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.paint.Color;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,7 +40,7 @@ public class SelectTool extends AbstractTool {
 	private static final int DRAG_TOLERANCE = 2;
 	private static final int HANDLE_SIZE = 8;
 	
-	private static final Color RECT_SELECT_BACKGROUND = new Color(0, 0, 0, 32);
+	private static final Color RECT_SELECT_BACKGROUND = Color.color(0, 0, 0, 0.125);
 	
 	private int curAction;
 	private List<CanvasObject> beforePressSelection;
@@ -66,8 +65,8 @@ public class SelectTool extends AbstractTool {
 	}
 
 	@Override
-	public Cursor getCursor(Canvas canvas) {
-		return Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
+	public Cursor getCursor(AppearanceCanvas canvas) {
+		return Cursor.DEFAULT;
 	}
 	
 	@Override
@@ -76,26 +75,26 @@ public class SelectTool extends AbstractTool {
 	}
 	
 	@Override
-	public void toolSelected(Canvas canvas) {
+	public void toolSelected(AppearanceCanvas canvas) {
 		curAction = IDLE;
 		canvas.getSelection().clearSelected();
 		repaintArea(canvas);
 	}
 	
 	@Override
-	public void toolDeselected(Canvas canvas) {
+	public void toolDeselected(AppearanceCanvas canvas) {
 		curAction = IDLE;
 		canvas.getSelection().clearSelected();
 		repaintArea(canvas);
 	}
 	
-	private int getHandleSize(Canvas canvas) {
+	private int getHandleSize(AppearanceCanvas canvas) {
 		double zoom = canvas.getZoomFactor();
 		return (int) Math.ceil(HANDLE_SIZE / Math.sqrt(zoom));
 	}
 	
 	@Override
-	public void mousePressed(Canvas canvas, MouseEvent e) {
+	public void mousePressed(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
 		beforePressSelection = new ArrayList<CanvasObject>(canvas.getSelection().getSelected());
 		beforePressHandle = canvas.getSelection().getSelectedHandle();
 		int mx = e.getX();
@@ -175,7 +174,7 @@ public class SelectTool extends AbstractTool {
 	}
 	
 	@Override
-	public void cancelMousePress(Canvas canvas) {
+	public void cancelMousePress(AppearanceCanvas canvas) {
 		List<CanvasObject> before = beforePressSelection;
 		Handle handle = beforePressHandle;
 		beforePressSelection = null;
@@ -193,12 +192,12 @@ public class SelectTool extends AbstractTool {
 	}
 	
 	@Override
-	public void mouseDragged(Canvas canvas, MouseEvent e) {
+	public void mouseDragged(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
 		setMouse(canvas, e.getX(), e.getY(), e.getModifiersEx());
 	}
 	
 	@Override
-	public void mouseReleased(Canvas canvas, MouseEvent e) {
+	public void mouseReleased(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
 		beforePressSelection = null;
 		beforePressHandle = null;
 		setMouse(canvas, e.getX(), e.getY(), e.getModifiersEx());
@@ -279,7 +278,7 @@ public class SelectTool extends AbstractTool {
 	}
 	
 	@Override
-	public void keyPressed(Canvas canvas, KeyEvent e) {
+	public void keyPressed(AppearanceCanvas canvas, KeyEvent e) {
 		int code = e.getKeyCode();
 		if ((code == KeyEvent.VK_SHIFT || code == KeyEvent.VK_CONTROL
 				|| code == KeyEvent.VK_ALT) && curAction != IDLE) {
@@ -288,12 +287,12 @@ public class SelectTool extends AbstractTool {
 	}
 	
 	@Override
-	public void keyReleased(Canvas canvas, KeyEvent e) {
+	public void keyReleased(AppearanceCanvas canvas, KeyEvent e) {
 		keyPressed(canvas, e);
 	}
 	
 	@Override
-	public void keyTyped(Canvas canvas, KeyEvent e) {
+	public void keyTyped(AppearanceCanvas canvas, KeyEvent e) {
 		char ch = e.getKeyChar();
 		Selection selected = canvas.getSelection();
 		if ((ch == '\u0008' || ch == '\u007F') && !selected.isEmpty()) {
@@ -317,7 +316,7 @@ public class SelectTool extends AbstractTool {
 	}
 	
 	
-	private void setMouse(Canvas canvas, int mx, int my, int mods) {
+	private void setMouse(AppearanceCanvas canvas, int mx, int my, int mods) {
 		lastMouseX = mx;
 		lastMouseY = my;
 		boolean shift = (mods & MouseEvent.SHIFT_DOWN_MASK) != 0;
@@ -375,12 +374,12 @@ public class SelectTool extends AbstractTool {
 		repaintArea(canvas);
 	}
 
-	private void repaintArea(Canvas canvas) {
+	private void repaintArea(AppearanceCanvas canvas) {
 		canvas.repaint();
 	}
 	
 	@Override
-	public void draw(Canvas canvas, Graphics g) {
+	public void draw(AppearanceCanvas canvas) {
 		Selection selection = canvas.getSelection();
 		int action = curAction;
 

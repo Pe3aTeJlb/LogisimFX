@@ -5,13 +5,14 @@ package com.cburch.LogisimFX.draw.tools;
 
 import com.cburch.LogisimFX.draw.actions.ModelAddAction;
 import com.cburch.LogisimFX.draw.canvas.AppearanceCanvas;
-import com.cburch.LogisimFX.draw.canvas.Canvas;
 import com.cburch.LogisimFX.draw.model.CanvasModel;
 import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+
 import javafx.scene.Cursor;
+import javafx.scene.input.KeyEvent;
 
 abstract class RectangularTool extends AbstractTool {
 
@@ -31,8 +32,8 @@ abstract class RectangularTool extends AbstractTool {
 	public abstract void fillShape(Graphics g, int x, int y, int w, int h);
 	
 	@Override
-	public Cursor getCursor(AppearanceCanvas canvas) {
-		return Cursor.CROSSHAIR);
+	public Cursor getCursor() {
+		return Cursor.CROSSHAIR;
 	}
 	
 	@Override
@@ -43,7 +44,7 @@ abstract class RectangularTool extends AbstractTool {
 	}
 	
 	@Override
-	public void mousePressed(AppearanceCanvas canvas, MouseEvent e) {
+	public void mousePressed(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
 		Location loc = Location.create(e.getX(), e.getY());
 		Bounds bds = Bounds.create(loc);
 		dragStart = loc;
@@ -54,12 +55,12 @@ abstract class RectangularTool extends AbstractTool {
 	}
 	
 	@Override
-	public void mouseDragged(AppearanceCanvas canvas, MouseEvent e) {
+	public void mouseDragged(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
 		updateMouse(canvas, e.getX(), e.getY(), e.getModifiersEx());
 	}
 	
 	@Override
-	public void mouseReleased(AppearanceCanvas canvas, MouseEvent e) {
+	public void mouseReleased(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
 		if (active) {
 			Bounds oldBounds = currentBounds;
 			Bounds bds = computeBounds(canvas, e.getX(), e.getY(), e.getModifiersEx());
@@ -78,7 +79,7 @@ abstract class RectangularTool extends AbstractTool {
 	}
 	
 	@Override
-	public void keyPressed(AppearanceCanvas canvas, KeyEvent e) {
+	public void keyPressed(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
 		int code = e.getKeyCode();
 		if (active && (code == KeyEvent.VK_SHIFT || code == KeyEvent.VK_ALT
 				|| code == KeyEvent.VK_CONTROL)) {
@@ -170,7 +171,7 @@ abstract class RectangularTool extends AbstractTool {
 	}
 	
 	@Override
-	public void draw(AppearanceCanvas canvas, Graphics g) {
+	public void draw(AppearanceCanvas canvas) {
 		Bounds bds = currentBounds;
 		if (active && bds != null && bds != Bounds.EMPTY_BOUNDS) {
 			g.setColor(Color.GRAY);

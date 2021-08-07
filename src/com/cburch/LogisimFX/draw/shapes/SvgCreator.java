@@ -6,12 +6,14 @@ package com.cburch.LogisimFX.draw.shapes;
 import com.cburch.LogisimFX.draw.model.AbstractCanvasObject;
 import com.cburch.LogisimFX.draw.model.Handle;
 import com.cburch.LogisimFX.data.Location;
+
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.awt.*;
-
 class SvgCreator {
+
 	private SvgCreator() { }
 	
 	public static Element createRectangle(Document doc, Rectangle rect) {
@@ -183,4 +185,5 @@ class SvgCreator {
 	private static String getOpacityString(Color color) {
 		return String.format("%5.3f", Double.valueOf(color.getAlpha() / 255.0));
 	}
+
 }

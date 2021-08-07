@@ -7,6 +7,7 @@ import com.cburch.LogisimFX.draw.model.Handle;
 import com.cburch.LogisimFX.data.Location;
 
 public class PolyUtil {
+
 	private PolyUtil() { }
 
 	public static class ClosestResult {
@@ -70,4 +71,5 @@ public class PolyUtil {
 			return ret;
 		}
 	}
+
 }

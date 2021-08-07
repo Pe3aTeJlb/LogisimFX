@@ -16,7 +16,7 @@ import com.cburch.LogisimFX.util.StringUtil;
 import javax.swing.*;
 
 public class Splitter extends ManagedComponent
-		implements WireRepair, ToolTipMaker, MenuExtender, AttributeListener {
+		implements WireRepair, ToolTipMaker, AttributeListener {
 
 	// basic data
 	byte[] bit_thread; // how each bit maps to thread within end

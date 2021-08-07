@@ -107,7 +107,7 @@ public class Ram extends Mem {
 	}
 
 	@Override
-	MemState getState(InstanceState state) {
+	public MemState getState(InstanceState state) {
 
 		BitWidth addrBits = state.getAttributeValue(ADDR_ATTR);
 		BitWidth dataBits = state.getAttributeValue(DATA_ATTR);

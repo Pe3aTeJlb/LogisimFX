@@ -8,11 +8,10 @@ import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.draw.shapes.DrawAttr;
 import com.cburch.LogisimFX.draw.shapes.RoundRectangle;
 import com.cburch.LogisimFX.data.Attribute;
-import com.cburch.LogisimFX.util.Icons;
+
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import javafx.scene.image.ImageView;
 
-import javax.swing.*;
-import java.awt.*;
 import java.util.List;
 
 public class RoundRectangleTool extends RectangularTool {
@@ -49,4 +48,5 @@ public class RoundRectangleTool extends RectangularTool {
 		int r = 2 * attrs.getValue(DrawAttr.CORNER_RADIUS).intValue();
 		g.fillRoundRect(x, y, w, h, r, r);
 	}
+	
 }

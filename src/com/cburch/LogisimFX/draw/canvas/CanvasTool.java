@@ -8,7 +8,7 @@ import javafx.scene.input.KeyEvent;
 
 public abstract class CanvasTool {
 
-	public abstract Cursor getCursor(AppearanceCanvas canvas);
+	public abstract Cursor getCursor();
 	public void draw(AppearanceCanvas canvas) { }
 
 	public void toolSelected(AppearanceCanvas canvas) { }

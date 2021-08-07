@@ -7,9 +7,11 @@ import com.cburch.LogisimFX.draw.model.AbstractCanvasObject;
 import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.AttributeOption;
+
 import javafx.scene.paint.Color;
 
 abstract class FillableCanvasObject extends AbstractCanvasObject {
+
 	private AttributeOption paintType;
 	private int strokeWidth;
 	private Color strokeColor;
@@ -94,4 +96,5 @@ abstract class FillableCanvasObject extends AbstractCanvasObject {
 			strokeWidth = ((Integer) value).intValue();
 		}
 	}
+
 }

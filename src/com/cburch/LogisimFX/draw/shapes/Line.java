@@ -10,15 +10,19 @@ import com.cburch.LogisimFX.draw.model.HandleGesture;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.util.UnmodifiableList;
+
+import javafx.scene.paint.Color;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Random;
 
 public class Line extends AbstractCanvasObject {
+
 	static final int ON_LINE_THRESH = 2;
 	
 	private int x0;
