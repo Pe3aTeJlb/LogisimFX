@@ -53,9 +53,11 @@ public class FileSelector {
 
     }
 
-    public File showOpenDialog(){
+    public File showOpenDialog(String title){
 
         UpdateLocale();
+
+        fileChooser.setTitle(title);
 
         fileChooser.setSelectedExtensionFilter(null);
         return fileChooser.showOpenDialog(ownerWindow);
