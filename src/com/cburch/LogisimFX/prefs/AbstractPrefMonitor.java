@@ -7,6 +7,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 abstract class AbstractPrefMonitor<E> implements PrefMonitor<E> {
+
 	private String name;
 	
 	AbstractPrefMonitor(String name) {
@@ -38,4 +39,5 @@ abstract class AbstractPrefMonitor<E> implements PrefMonitor<E> {
 		E valObj = (E) Boolean.valueOf(value); 
 		set(valObj);
 	}
+
 }

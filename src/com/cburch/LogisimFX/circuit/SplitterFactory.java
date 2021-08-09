@@ -104,15 +104,6 @@ public class SplitterFactory extends AbstractComponentFactory {
 	}
 
 	@Override
-	public void paintIcon(ComponentDrawContext c,
-			int x, int y, AttributeSet attrs) {
-		Graphics g = c.getGraphics();
-	//	if (toolIcon != null) {
-		//	toolIcon.paintIcon(c.getDestination(), g, x + 2, y + 2);
-		//}
-	}
-
-	@Override
 	public Object getFeature(Object key, AttributeSet attrs) {
 		if (key == FACING_ATTRIBUTE_KEY) {
 			return StdAttr.FACING;
@@ -127,4 +118,5 @@ public class SplitterFactory extends AbstractComponentFactory {
 		}
 		return super.getFeature(key, attrs);
 	}
+
 }

@@ -21,6 +21,7 @@ import javafx.animation.AnimationTimer;
 import javafx.beans.binding.StringBinding;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -401,7 +402,7 @@ public class LayoutCanvas extends Canvas {
     private void setCanvasEvents(){
 
         this.addEventFilter(MouseEvent.ANY, (e) -> this.requestFocus());
-        this.addEventFilter(KeyEvent.ANY, (e) -> this.requestFocus());
+        this.addEventFilter(KeyEvent.ANY, (e) -> {this.requestFocus();});
 
         this.setOnMousePressed(event -> {
 
@@ -503,6 +504,8 @@ public class LayoutCanvas extends Canvas {
 
         this.setOnMouseEntered(event -> {
 
+            this.requestFocus();
+
             if (dragTool != null) {
                 dragTool.mouseEntered(this, getGraphics(), new CME(event));
             } else {
@@ -532,17 +535,26 @@ public class LayoutCanvas extends Canvas {
             Tool tool = proj.getTool();
             if (tool != null) tool.keyPressed(this, event);
 
+            //to avoid focus traversable that binded on arrow keys in javafx
+            if(event.getCode() != KeyCode.TAB)event.consume();
+
         });
 
         this.setOnKeyReleased(event -> {
+
             Tool tool = proj.getTool();
             if (tool != null) tool.keyReleased(this, event);
+
+            event.consume();
 
         });
 
         this.setOnKeyTyped(event -> {
+
             Tool tool = proj.getTool();
             if (tool != null) tool.keyTyped(this, event);
+
+            event.consume();
 
         });
 

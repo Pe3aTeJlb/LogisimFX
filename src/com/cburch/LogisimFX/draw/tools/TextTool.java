@@ -18,6 +18,7 @@ import com.cburch.LogisimFX.data.AttributeEvent;
 import com.cburch.LogisimFX.data.AttributeListener;
 import com.cburch.LogisimFX.data.Location;
 
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
 
@@ -155,7 +156,7 @@ public class TextTool extends AbstractTool {
 	}
 	
 	@Override
-	public void draw(AppearanceCanvas canvas) {
+	public void draw(Graphics g) {
 		; // actually, there's nothing to do here - it's handled by the field
 	}
 

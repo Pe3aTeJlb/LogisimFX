@@ -7,6 +7,7 @@ import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.Preferences;
 
 class PrefMonitorDouble extends AbstractPrefMonitor<Double> {
+
 	private double dflt;
 	private double value;
 	
@@ -44,4 +45,5 @@ class PrefMonitorDouble extends AbstractPrefMonitor<Double> {
 			}
 		}
 	}
+
 }

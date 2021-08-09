@@ -18,15 +18,19 @@ import com.cburch.LogisimFX.file.LoadedLibrary;
 import com.cburch.LogisimFX.file.Loader;
 import com.cburch.LogisimFX.tools.MenuExtender;
 
+import com.cburch.logisim.gui.hex.HexFile;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 
 import java.io.File;
+import java.io.IOException;
 
 public class ContextMenuManager {
 
     private static Localizer lc = LC_null.getInstance();
+
+    //Library menus
 
     public static ContextMenu ProjectContextMenu(Project proj){
 
@@ -151,6 +155,8 @@ public class ContextMenuManager {
         return contextMenu;
 
     }
+
+    //Canvas elements menus
 
     public static ContextMenu ComponentDefaultContextMenu(Project project, Circuit circuit, Component component){
 
@@ -287,8 +293,7 @@ public class ContextMenuManager {
 
                 MemState s = factory.getState(instance, circState);
                 if (s == null) return;
-                FrameManager.CreateHexEditorFrame(proj,instance, circState);
-              //  HexFrame frame = factory.getHexFrame(proj, instance, circState);
+                factory.createHexFrame(proj, instance, circState);
 
             });
 
@@ -321,14 +326,11 @@ public class ContextMenuManager {
                 FileSelector fileSelector = new FileSelector(proj.getFrameController().getStage());
                 File oldSelected = factory.getCurrentImage(instance);
                 if (oldSelected != null)fileSelector.setSelectedFile(oldSelected);
-                chooser.setDialogTitle(Strings.get("ramLoadDialogTitle"));
-                //todo add extension filter
                 File f = fileSelector.showOpenDialog(LC_std.getInstance().get("ramLoadDialogTitle"));
                 try {
-                    factory.loadImage(circState.getInstanceState(instance), f);
+                    if(f!=null)factory.loadImage(circState.getInstanceState(instance), f);
                 } catch (IOException e) {
-                    JOptionPane.showMessageDialog(frame, e.getMessage(),
-                            Strings.get("ramLoadErrorTitle"), JOptionPane.ERROR_MESSAGE);
+                    DialogManager.CreateErrorDialog(LC_std.getInstance().get("ramLoadErrorTitle"),e.getMessage());
                 }
 
 
@@ -339,25 +341,20 @@ public class ContextMenuManager {
             save.textProperty().bind(LC_std.getInstance().createStringBinding("ramSaveMenuItem"));
             save.setOnAction(event -> {
 
-
                 MemState s = factory.getState(instance, circState);
 
                 FileSelector fileSelector = new FileSelector(proj.getFrameController().getStage());
-                File oldSelected = factory.getCurrentImage(instance);
-                if (oldSelected != null)fileSelector.setSelectedFile(oldSelected);
+                File f = fileSelector.showSaveDialog(LC_std.getInstance().get("ramSaveDialogTitle"));
 
-                LC_std.getInstance().get("ramSaveDialogTitle")
-                chooser.setDialogTitle(Strings.get("ramSaveDialogTitle"));
-                int choice = chooser.showSaveDialog(frame);
-                if (choice == JFileChooser.APPROVE_OPTION) {
-                    File f = chooser.getSelectedFile();
-                    try {
+                try {
+
+                    if(f!=null){
                         HexFile.save(f, s.getContents());
                         factory.setCurrentImage(instance, f);
-                    } catch (IOException e) {
-                        JOptionPane.showMessageDialog(frame, e.getMessage(),
-                                Strings.get("ramSaveErrorTitle"), JOptionPane.ERROR_MESSAGE);
                     }
+
+                } catch (IOException e) {
+                    DialogManager.CreateErrorDialog(LC_std.getInstance().get("ramSaveErrorTitle"),e.getMessage());
                 }
 
             });

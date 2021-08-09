@@ -88,7 +88,7 @@ public class MemMenu implements ActionListener, MenuExtender {
 
 		MemState s = factory.getState(instance, circState);
 		if (s == null) return;
-		HexFrame frame = factory.getHexFrame(proj, instance, circState);
+		//HexFrame frame = factory.createHexFrame(proj, instance, circState);
 		frame.setVisible(true);
 		frame.toFront();
 

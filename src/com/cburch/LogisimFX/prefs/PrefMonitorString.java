@@ -7,6 +7,7 @@ import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.Preferences;
 
 class PrefMonitorString extends AbstractPrefMonitor<String> {
+
 	private String dflt;
 	private String value;
 	
@@ -47,4 +48,5 @@ class PrefMonitorString extends AbstractPrefMonitor<String> {
 	private static boolean isSame(String a, String b) {
 		return a == null ? b == null : a.equals(b);
 	}
+
 }

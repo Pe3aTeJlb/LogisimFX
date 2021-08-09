@@ -59,7 +59,7 @@ public class Rom extends Mem {
 	}
 
 	@Override
-	MemState getState(Instance instance, CircuitState state) {
+	public MemState getState(Instance instance, CircuitState state) {
 
 		MemState ret = (MemState) instance.getData(state);
 		if (ret == null) {
@@ -85,9 +85,9 @@ public class Rom extends Mem {
 	}
 
 	@Override
-	HexFrame getHexFrame(Project proj, Instance instance, CircuitState state) {
+	public void createHexFrame(Project proj, Instance instance, CircuitState state) {
 
-		return RomAttributes.getHexFrame(getMemContents(instance), proj);
+		RomAttributes.createHexFrame(getMemContents(instance), proj);
 
 	}
 
@@ -216,7 +216,7 @@ public class Rom extends Mem {
 
 			if (contents == null) return;
 			Project proj = source instanceof Frame ? ((Frame) source).getProject() : null;
-			HexFrame frame = RomAttributes.getHexFrame(contents, proj);
+			HexFrame frame = RomAttributes.createHexFrame(contents, proj);
 			frame.setVisible(true);
 			frame.toFront();
 

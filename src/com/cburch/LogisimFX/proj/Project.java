@@ -3,6 +3,7 @@
 
 package com.cburch.LogisimFX.proj;
 
+import com.cburch.LogisimFX.draw.tools.AbstractTool;
 import com.cburch.LogisimFX.file.*;
 import com.cburch.LogisimFX.circuit.*;
 import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
@@ -64,6 +65,7 @@ public class Project {
 	private HashMap<Circuit,CircuitState> stateMap = new HashMap<>();
 	private MainFrameController frameController;
 	private Tool tool = null;
+	private AbstractTool abstractTool = null;
 	private LinkedList<ActionData> undoLog = new LinkedList<ActionData>();
 	private int undoMods = 0;
 
@@ -142,6 +144,10 @@ public class Project {
 
 	public Tool getTool() {
 		return tool;
+	}
+
+	public AbstractTool getAbstractTool(){
+		return abstractTool;
 	}
 
 	public boolean isFileDirty() {
@@ -316,6 +322,14 @@ public class Project {
 
 		tool = value;
 		fireEvent(ProjectEvent.ACTION_SET_TOOL, old, tool);
+
+	}
+
+	public void setAbstractTool(AbstractTool value){
+
+		if (abstractTool == value) return;
+		//Todo attribute table
+		abstractTool = value;
 
 	}
 

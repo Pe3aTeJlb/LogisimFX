@@ -7,6 +7,7 @@ import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.Preferences;
 
 class PrefMonitorBoolean extends AbstractPrefMonitor<Boolean> {
+
 	private boolean dflt;
 	private boolean value;
 
@@ -48,4 +49,5 @@ class PrefMonitorBoolean extends AbstractPrefMonitor<Boolean> {
 			}
 		}
 	}
+
 }

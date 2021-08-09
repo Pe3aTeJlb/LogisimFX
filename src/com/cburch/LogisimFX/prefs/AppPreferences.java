@@ -26,6 +26,7 @@ import com.cburch.LogisimFX.circuit.RadixOption;
 import com.cburch.logisim.gui.start.Startup;
 
 public class AppPreferences {
+
 	// class variables for maintaining consistency between properties,
 	// internal variables, and other classes
 	private static Preferences prefs = null;
@@ -431,4 +432,5 @@ public class AppPreferences {
 			return null;
 		}
 	}
+
 }

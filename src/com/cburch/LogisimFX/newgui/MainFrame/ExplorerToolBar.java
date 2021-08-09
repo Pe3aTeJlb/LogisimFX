@@ -71,24 +71,20 @@ public class ExplorerToolBar extends ToolBar {
 
         CustomButton ShowProjectExplorerBtn = new CustomButton(prefWidth,prefHeight,"projtool.gif");
         ShowProjectExplorerBtn.setTooltip(new ToolTip("projectViewToolboxTip"));
-        ShowProjectExplorerBtn.setFocusTraversable(false);
         ShowProjectExplorerBtn.setOnAction(event -> ShowProjectExplorer());
 
         CustomButton ShowSimulationBtn = new CustomButton(prefWidth,prefHeight,"projsim.gif");
         ShowSimulationBtn.setTooltip(new ToolTip("projectViewSimulationTip"));
-        ShowSimulationBtn.setFocusTraversable(false);
         ShowSimulationBtn.setOnAction(event -> ShowSimulation());
 
         Separator sep = new Separator();
 
         CustomButton EditCircuitBtn = new CustomButton(prefWidth,prefHeight,"projlayo.gif");
         EditCircuitBtn.setTooltip(new ToolTip("projectEditLayoutTip"));
-        EditCircuitBtn.setFocusTraversable(false);
         EditCircuitBtn.setOnAction(event -> EditCircuit());
 
         CustomButton EditAppearanceBtn = new CustomButton(prefWidth,prefHeight,"projapp.gif");
         EditAppearanceBtn.setTooltip(new ToolTip("projectEditAppearanceTip"));
-        EditAppearanceBtn.setFocusTraversable(false);
         EditAppearanceBtn.setOnAction(event -> EditAppearance());
 
         ControlBtnsList.addAll(

@@ -9,6 +9,7 @@ import com.cburch.LogisimFX.comp.ComponentFactory;
 import com.cburch.LogisimFX.data.AttributeSet;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.file.LogisimFile;
+import com.cburch.LogisimFX.localization.LC_gui;
 import com.cburch.LogisimFX.proj.Action;
 import com.cburch.LogisimFX.proj.JoinedAction;
 import com.cburch.LogisimFX.proj.Project;
@@ -93,8 +94,8 @@ public class SelectionActions {
 
 		@Override
 		public String getName() {
-			return numDrops == 1 ? Strings.get("dropComponentAction")
-					: Strings.get("dropComponentsAction");
+			return numDrops == 1 ? LC_gui.getInstance().get("dropComponentAction")
+					: LC_gui.getInstance().get("dropComponentsAction");
 		}
 
 		@Override
@@ -139,7 +140,7 @@ public class SelectionActions {
 
 		@Override
 		public String getName() {
-			return Strings.get("deleteSelectionAction");
+			return LC_gui.getInstance().get("deleteSelectionAction");
 		}
 
 		@Override
@@ -168,7 +169,7 @@ public class SelectionActions {
 
 		@Override
 		public String getName() {
-			return Strings.get("duplicateSelectionAction");
+			return LC_gui.getInstance().get("duplicateSelectionAction");
 		}
 
 		@Override
@@ -199,7 +200,7 @@ public class SelectionActions {
 
 		@Override
 		public String getName() {
-			return Strings.get("cutSelectionAction");
+			return LC_gui.getInstance().get("cutSelectionAction");
 		}
 
 		@Override
@@ -228,7 +229,7 @@ public class SelectionActions {
 
 		@Override
 		public String getName() {
-			return Strings.get("copySelectionAction");
+			return LC_gui.getInstance().get("copySelectionAction");
 		}
 
 		@Override
@@ -274,9 +275,9 @@ public class SelectionActions {
 				} else {
 					String msg = Strings.get("pasteCloneQuery",
 							compFactory.getName());
-					Object[] opts = { Strings.get("pasteCloneReplace"),
-							Strings.get("pasteCloneIgnore"),
-							Strings.get("pasteCloneCancel") };
+					Object[] opts = { LC_gui.getInstance().get("pasteCloneReplace"),
+							LC_gui.getInstance().get("pasteCloneIgnore"),
+							LC_gui.getInstance().get("pasteCloneCancel") };
 					int select = JOptionPane.showOptionDialog(proj.getFrame(),
 							msg, Strings.get("pasteCloneTitle"), 0,
 							JOptionPane.QUESTION_MESSAGE, null, opts, opts[0]);
@@ -376,7 +377,7 @@ public class SelectionActions {
 
 		@Override
 		public String getName() {
-			return Strings.get("pasteClipboardAction");
+			return LC_gui.getInstance().get("pasteClipboardAction");
 		}
 
 		@Override

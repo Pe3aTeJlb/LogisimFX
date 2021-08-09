@@ -82,4 +82,5 @@ public class SubcircuitPoker extends InstancePoker {
 		int dy = e.getY() - cy;
 		return dx * dx + dy * dy <= 60;
 	}
+
 }

@@ -138,7 +138,7 @@ class SplitterPainter {
 		int dx = parms.getEndToEndDeltaX();
 		int dy = parms.getEndToEndDeltaY();
 		if (parms.getTextAngle() != 0) {
-			g.c.rotate(Math.PI / 2.0);
+			g.c.rotate(180 / 2.0);
 			int t;
 			t = -x; x = y; y = t;
 			t = -dx; dx = dy; dy = t;

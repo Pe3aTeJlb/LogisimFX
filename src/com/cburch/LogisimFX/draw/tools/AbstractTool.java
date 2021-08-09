@@ -7,6 +7,7 @@ import com.cburch.LogisimFX.draw.canvas.AppearanceCanvas;
 import com.cburch.LogisimFX.draw.canvas.CanvasTool;
 import com.cburch.LogisimFX.data.Attribute;
 
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
@@ -70,6 +71,6 @@ public abstract class AbstractTool extends CanvasTool {
 	public void keyTyped(AppearanceCanvas canvas, KeyEvent e) { }
 	
 	@Override
-	public void draw(AppearanceCanvas canvas) { }
+	public void draw(Graphics g) { }
 
 }

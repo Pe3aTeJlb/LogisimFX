@@ -70,7 +70,7 @@ public abstract class Mem extends InstanceFactory {
 	public abstract AttributeSet createAttributeSet();
 	public abstract MemState getState(InstanceState state);
 	public abstract MemState getState(Instance instance, CircuitState state);
-	abstract HexFrame getHexFrame(Project proj, Instance instance, CircuitState state);
+	public abstract void createHexFrame(Project proj, Instance instance, CircuitState state);
 	@Override
 	public abstract void propagate(InstanceState state);
 

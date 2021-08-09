@@ -9,6 +9,7 @@ import java.awt.event.WindowEvent;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
 import com.cburch.LogisimFX.circuit.CircuitState;
+import com.cburch.LogisimFX.newgui.FrameManager;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.logisim.gui.hex.HexFrame;
 import com.cburch.LogisimFX.proj.Project;
@@ -126,7 +127,7 @@ public class Ram extends Mem {
 	}
 
 	@Override
-	MemState getState(Instance instance, CircuitState state) {
+	public MemState getState(Instance instance, CircuitState state) {
 
 		BitWidth addrBits = instance.getAttributeValue(ADDR_ATTR);
 		BitWidth dataBits = instance.getAttributeValue(DATA_ATTR);
@@ -144,10 +145,10 @@ public class Ram extends Mem {
 	}
 
 	@Override
-	HexFrame getHexFrame(Project proj, Instance instance, CircuitState circState) {
+	public void createHexFrame(Project proj, Instance instance, CircuitState circState) {
 
 		RamState state = (RamState) getState(instance, circState);
-		return state.getHexFrame(proj);
+		state.createHexFrame(proj);
 
 	}
 
@@ -268,8 +269,10 @@ public class Ram extends Mem {
 		}
 		
 		// Retrieves a HexFrame for editing within a separate window
-		public HexFrame getHexFrame(Project proj) {
+		public void createHexFrame(Project proj) {
 
+			FrameManager.CreateHexEditorFrame(proj, getContents());
+/*
 			if (hexFrame == null) {
 				hexFrame = new HexFrame(proj, getContents());
 				hexFrame.addWindowListener(new WindowAdapter() {
@@ -280,6 +283,8 @@ public class Ram extends Mem {
 				});
 			}
 			return hexFrame;
+
+ */
 
 		}
 		

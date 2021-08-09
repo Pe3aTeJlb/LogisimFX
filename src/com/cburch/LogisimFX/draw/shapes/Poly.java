@@ -336,8 +336,8 @@ public class Poly extends FillableCanvasObject {
 	@Override
 	public void paint(Graphics g, HandleGesture gesture) {
 		List<Handle> hs = getHandles(gesture);
-		int[] xs = new int[hs.size()];
-		int[] ys = new int[hs.size()];
+		double[] xs = new double[hs.size()];
+		double[] ys = new double[hs.size()];
 		int i = -1;
 		for (Handle h : hs) {
 			i++;
@@ -346,11 +346,11 @@ public class Poly extends FillableCanvasObject {
 		}
 
 		if (setForFill(g)) {
-			g.fillPolygon(xs, ys, xs.length);
+			g.c.fillPolygon(xs, ys, xs.length);
 		}
 		if (setForStroke(g)) {
-			if (closed) g.drawPolygon(xs, ys, xs.length);
-			else g.drawPolyline(xs, ys, xs.length);
+			if (closed) g.c.strokePolygon(xs, ys, xs.length);
+			else g.c.strokePolyline(xs, ys, xs.length);
 		}
 	}
 

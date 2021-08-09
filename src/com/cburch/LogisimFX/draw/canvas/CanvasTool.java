@@ -3,13 +3,14 @@
 
 package com.cburch.LogisimFX.draw.canvas;
 
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import javafx.scene.Cursor;
 import javafx.scene.input.KeyEvent;
 
 public abstract class CanvasTool {
 
 	public abstract Cursor getCursor();
-	public void draw(AppearanceCanvas canvas) { }
+	public void draw(Graphics g) { }
 
 	public void toolSelected(AppearanceCanvas canvas) { }
 	public void toolDeselected(AppearanceCanvas canvas) { }

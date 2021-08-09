@@ -171,7 +171,7 @@ abstract class RectangularTool extends AbstractTool {
 	}
 	
 	@Override
-	public void draw(AppearanceCanvas canvas) {
+	public void draw(Graphics g) {
 		Bounds bds = currentBounds;
 		if (active && bds != null && bds != Bounds.EMPTY_BOUNDS) {
 			g.setColor(Color.GRAY);

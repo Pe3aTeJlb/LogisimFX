@@ -28,6 +28,8 @@ public class FileSelector {
 
     private Window ownerWindow;
 
+
+
     public FileSelector(Window owner){
 
         ownerWindow = owner;
@@ -42,6 +44,8 @@ public class FileSelector {
         );
 
     }
+
+
 
     public File chooseDirectory(String title){
 
@@ -59,7 +63,8 @@ public class FileSelector {
 
         fileChooser.setTitle(title);
 
-        fileChooser.setSelectedExtensionFilter(null);
+        fileChooser.getExtensionFilters().clear();
+
         return fileChooser.showOpenDialog(ownerWindow);
 
     }
@@ -70,11 +75,15 @@ public class FileSelector {
 
         fileChooser.setTitle(title);
 
+        fileChooser.getExtensionFilters().clear();
+
         tempFile = fileChooser.showSaveDialog(ownerWindow);
 
         return tempFile;
 
     }
+
+
 
     public File OpenCircFile(){
 
@@ -173,6 +182,7 @@ public class FileSelector {
         return tempFile;
 
     }
+
 
 
     public void setCircFilter(){

@@ -4,6 +4,7 @@ import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.draw.model.CanvasModel;
+import com.cburch.LogisimFX.draw.tools.AbstractTool;
 import com.cburch.LogisimFX.localization.LC_gui;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
@@ -45,6 +46,7 @@ public class AppearanceCanvas extends Canvas {
     private static final double SPACING_Y = 10;
 
     private CanvasModel model;
+    private CanvasTool tool;
     private Selection selection;
 
     public AppearanceCanvas(AnchorPane rt, Project project){
@@ -96,21 +98,19 @@ public class AppearanceCanvas extends Canvas {
         g.setColor(Color.GREEN);
         g.c.fillOval(0,0,10,10);
 
-        /*
-        CanvasModel model = this.model;
-        CanvasTool tool = listener.getTool();
-        if (model != null) {
-            java.awt.Graphics dup = g.create();
-            model.paint(g, selection);
-            dup.dispose();
-        }
-        if (tool != null) {
-            java.awt.Graphics dup = g.create();
-            tool.draw(this, dup);
-            dup.dispose();
-        }
+        tool = proj.getAbstractTool();
 
-         */
+        if (model != null) {
+            model.paint(g, selection);
+            g.toDefault();
+        }
+        System.out.println(
+                tool
+        );
+        if (tool != null) {
+            tool.draw(g);
+            g.toDefault();
+        }
 
     }
 
@@ -295,6 +295,20 @@ public class AppearanceCanvas extends Canvas {
         });
         */
 
+    }
+
+
+    public void setModel(CanvasModel value, ActionDispatcher dispatcher) {
+        CanvasModel oldValue = model;
+        if (oldValue != value) {
+            if (oldValue != null) oldValue.removeCanvasModelListener(listener);
+            model = value;
+            this.dispatcher = dispatcher;
+            if (value != null) value.addCanvasModelListener(listener);
+            selection.clearSelected();
+            repaint();
+            firePropertyChange(MODEL_PROPERTY, oldValue, value);
+        }
     }
 
 

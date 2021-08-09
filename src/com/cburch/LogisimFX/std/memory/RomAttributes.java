@@ -6,6 +6,7 @@ package com.cburch.LogisimFX.std.memory;
 import com.cburch.LogisimFX.data.AbstractAttributeSet;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.BitWidth;
+import com.cburch.LogisimFX.newgui.FrameManager;
 import com.cburch.logisim.gui.hex.HexFrame;
 import com.cburch.LogisimFX.proj.Project;
 
@@ -33,8 +34,10 @@ public class RomAttributes extends AbstractAttributeSet {
 
 	}
 	
-	static HexFrame getHexFrame(MemContents value, Project proj) {
+	static void createHexFrame(MemContents value, Project proj) {
 
+		FrameManager.CreateHexEditorFrame(proj, value);
+/*
 		synchronized(windowRegistry) {
 			HexFrame ret = windowRegistry.get(value);
 			if (ret == null) {
@@ -43,6 +46,8 @@ public class RomAttributes extends AbstractAttributeSet {
 			}
 			return ret;
 		}
+
+ */
 
 	}
 

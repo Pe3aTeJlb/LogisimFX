@@ -8,10 +8,12 @@ import com.cburch.LogisimFX.file.Loader;
 import com.cburch.LogisimFX.localization.LC_gui;
 import com.cburch.LogisimFX.newgui.CircuitStatisticFrame.CircuitStatisticController;
 import com.cburch.LogisimFX.newgui.HelpFrame.HelpController;
+import com.cburch.LogisimFX.newgui.HexEditorFrame.HexEditorController;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.proj.ProjectActions;
 import com.cburch.LogisimFX.instance.Instance;
 
+import com.cburch.LogisimFX.std.memory.MemContents;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -54,7 +56,7 @@ public class FrameManager {
 
         public HashMap<String, Stage> ProjectAssociatedFrames = new HashMap<>();
         public HashMap<Circuit, Stage> AssociatedCircuitStatisticFrames = new HashMap<>();
-        public HashMap<Instance, Stage> AssociatedMemoryEditors = new HashMap<>();
+        public HashMap<MemContents, Stage> AssociatedMemoryEditors = new HashMap<>();
 
         Data(Stage s, AbstractController c, Boolean i){
             this.stage = s;
@@ -358,9 +360,9 @@ public class FrameManager {
 
     //Memory based frames
 
-    private static void CreateNewFrame(String resourcePath, Project proj, Instance inst, Modality modality) {
+    private static void CreateNewFrame(String resourcePath, Project proj, MemContents memContents, Modality modality) {
 
-        if (!OpenedMainFrames.get(proj).AssociatedMemoryEditors.containsKey(inst)) {
+        if (!OpenedMainFrames.get(proj).AssociatedMemoryEditors.containsKey(memContents)) {
 
             loader = new FXMLLoader(ClassLoader.getSystemResource("com/cburch/" + resourcePath));
             Parent root = null;
@@ -382,7 +384,7 @@ public class FrameManager {
 
             newStage.setOnHidden(event -> {
                 c.onClose();
-                OpenedMainFrames.get(proj).AssociatedMemoryEditors.remove(inst);
+                OpenedMainFrames.get(proj).AssociatedMemoryEditors.remove(memContents);
             });
 
             newStage.initModality(modality);
@@ -390,17 +392,17 @@ public class FrameManager {
 
             newStage.show();
 
-            OpenedMainFrames.get(proj).AssociatedMemoryEditors.put(inst, newStage);
+            OpenedMainFrames.get(proj).AssociatedMemoryEditors.put(memContents, newStage);
 
         } else {
-            FocusOnFrame(OpenedMainFrames.get(proj).AssociatedMemoryEditors.get(inst));
+            FocusOnFrame(OpenedMainFrames.get(proj).AssociatedMemoryEditors.get(memContents));
         }
 
     }
 
-    public static void CreateHexEditorFrame(Project proj, Instance inst, CircuitState circuitState){
-        CreateNewFrame("LogisimFX/newgui/CircuitStatisticFrame/CircuitStatistic.fxml", proj, inst, Modality.NONE);
-        //((MemoryEditorController)curr).describeCircuit(inst);
+    public static void CreateHexEditorFrame(Project proj, MemContents memContents){
+        CreateNewFrame("LogisimFX/newgui/HexEditorFrame/HexEditor.fxml", proj, memContents, Modality.NONE);
+        ((HexEditorController)curr).openHex(memContents);
     }
 
 

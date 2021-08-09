@@ -20,6 +20,7 @@ import com.cburch.LogisimFX.circuit.CircuitState;
 import javafx.scene.text.Font;
 
 class InstanceComponent implements Component, AttributeListener, ToolTipMaker {
+
 	private EventSourceWeakSupport<ComponentListener> listeners;
 	private InstanceFactory factory;
 	private Instance instance;

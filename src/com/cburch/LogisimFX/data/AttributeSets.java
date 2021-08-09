@@ -9,9 +9,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class AttributeSets {
+
 	private AttributeSets() { }
 	
 	public static final AttributeSet EMPTY = new AttributeSet() {
+
 		@Override
 		public Object clone() { return this; }
 		public void addAttributeListener(AttributeListener l) { }
@@ -29,6 +31,7 @@ public class AttributeSets {
 
 		public <V> V getValue(Attribute<V> attr) { return null; }
 		public <V> void setValue(Attribute<V> attr, V value) { }
+
 	};
 
 	public static <V> AttributeSet fixedSet(Attribute<V> attr, V initValue) {
@@ -36,6 +39,7 @@ public class AttributeSets {
 	}
 
 	public static AttributeSet fixedSet(Attribute<?>[] attrs, Object[] initValues) {
+
 		if (attrs.length > 1) {
 			return new FixedSet(attrs, initValues);
 		} else if (attrs.length == 1) {
@@ -43,9 +47,11 @@ public class AttributeSets {
 		} else {
 			return EMPTY;
 		}
+
 	}
 
 	public static void copy(AttributeSet src, AttributeSet dst) {
+
 		if (src == null || src.getAttributes() == null) return;
 		for (Attribute<?> attr : src.getAttributes()) {
 			@SuppressWarnings("unchecked")
@@ -53,9 +59,11 @@ public class AttributeSets {
 			Object value = src.getValue(attr);
 			dst.setValue(attrObj, value);
 		}
+
 	}
 
 	private static class SingletonSet extends AbstractAttributeSet {
+
 		private List<Attribute<?>> attrs;
 		private Object value;
 		private boolean readOnly = false;
@@ -110,11 +118,13 @@ public class AttributeSets {
 	}
 
 	private static class FixedSet extends AbstractAttributeSet {
+
 		private List<Attribute<?>> attrs;
 		private Object[] values;
 		private int readOnly = 0;
 
 		FixedSet(Attribute<?>[] attrs, Object[] initValues) {
+
 			if (attrs.length != initValues.length) {
 				throw new IllegalArgumentException("attribute and value arrays must have same length");
 			}
@@ -123,14 +133,17 @@ public class AttributeSets {
 			}
 			this.attrs = Arrays.asList(attrs);
 			this.values = initValues.clone();
+
 		}
 
 		@Override
 		protected void copyInto(AbstractAttributeSet destSet) {
+
 			FixedSet dest = (FixedSet) destSet;
 			dest.attrs = this.attrs;
 			dest.values = this.values.clone();
-			dest.readOnly = this.readOnly;
+
+
 		}
 
 		@Override
@@ -140,22 +153,27 @@ public class AttributeSets {
 
 		@Override
 		public boolean isReadOnly(Attribute<?> attr) {
+
 			int index = attrs.indexOf(attr);
 			if (index < 0) return true;
 			return isReadOnly(index);
+
 		}
 
 		@Override
 		public void setReadOnly(Attribute<?> attr, boolean value) {
+
 			int index = attrs.indexOf(attr);
 			if (index < 0) throw new IllegalArgumentException("attribute " + attr.getName() + " absent");
 
 			if (value) readOnly |= (1 << index);
 			else readOnly &= ~(1 << index);
+
 		}
 
 		@Override
 		public <V> V getValue(Attribute<V> attr) {
+
 			int index = attrs.indexOf(attr);
 			if (index < 0) {
 				return null;
@@ -164,20 +182,24 @@ public class AttributeSets {
 				V ret = (V) values[index];
 				return ret;
 			}
+
 		}
 
 		@Override
 		public <V> void setValue(Attribute<V> attr, V value) {
+
 			int index = attrs.indexOf(attr);
 			if (index < 0) throw new IllegalArgumentException("attribute " + attr.getName() + " absent");
 			if (isReadOnly(index)) throw new IllegalArgumentException("read only");
 			values[index] = value;
 			fireAttributeValueChanged(attr, value);
+
 		}
 		
 		private boolean isReadOnly(int index) {
 			return ((readOnly >> index) & 1) == 1;
 		}
+
 	}
 
 }

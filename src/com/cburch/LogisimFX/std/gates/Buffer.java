@@ -142,7 +142,7 @@ class Buffer extends InstanceFactory {
 		g.c.translate(x, y);
 		double rotate = 0.0;
 		if (facing != Direction.EAST) {
-			rotate = -facing.toRadians();
+			rotate = -facing.toDegrees();
 			g.c.rotate(rotate);
 		}
 

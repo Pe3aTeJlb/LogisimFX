@@ -14,6 +14,7 @@ import com.cburch.LogisimFX.draw.shapes.Poly;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Location;
 
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
@@ -199,7 +200,7 @@ public class PolyTool extends AbstractTool {
 	}
 	
 	@Override
-	public void draw(AppearanceCanvas canvas) {
+	public void draw(Graphics g) {
 		if (active) {
 			g.setColor(Color.GRAY);
 			int size = locations.size();
@@ -216,4 +217,5 @@ public class PolyTool extends AbstractTool {
 			g.fillOval(lastX - 2, lastY - 2, 4, 4);
 		}
 	}
+
 }

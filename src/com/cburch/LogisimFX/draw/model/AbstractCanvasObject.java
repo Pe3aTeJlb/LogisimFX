@@ -7,7 +7,9 @@ import com.cburch.LogisimFX.draw.shapes.DrawAttr;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.util.EventSourceWeakSupport;
-import com.cburch.LogisimFX.util.GraphicsUtil;
+
+import javafx.scene.paint.Color;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -16,6 +18,7 @@ import java.util.Random;
 
 public abstract class AbstractCanvasObject
 		implements AttributeSet, CanvasObject, Cloneable {
+
 	private static final int OVERLAP_TRIES = 50;
 	private static final int GENERATE_RANDOM_TRIES = 20;
 	
@@ -71,6 +74,7 @@ public abstract class AbstractCanvasObject
 	}
 	
 	public boolean overlaps(CanvasObject other) {
+
 		Bounds a = this.getBounds();
 		Bounds b = other.getBounds();
 		Bounds c = a.intersect(b);
@@ -96,9 +100,11 @@ public abstract class AbstractCanvasObject
 			}
 			return false;
 		}
+
 	}
 
 	protected Location getRandomPoint(Bounds bds, Random rand) {
+
 		int x = bds.getX();
 		int y = bds.getY();
 		int w = bds.getWidth();
@@ -107,7 +113,9 @@ public abstract class AbstractCanvasObject
 			Location loc = Location.create(x + rand.nextInt(w), y + rand.nextInt(h));
 			if (contains(loc, false)) return loc;
 		}
+
 		return null;
+
 	}
 
 	// methods required by AttributeSet interface
@@ -157,6 +165,7 @@ public abstract class AbstractCanvasObject
 	}
 
 	public final <V> void setValue(Attribute<V> attr, V value) {
+
 		Object old = getValue(attr);
 		boolean same = old == null ? value == null : old.equals(value);
 		if (!same) {
@@ -166,16 +175,20 @@ public abstract class AbstractCanvasObject
 				listener.attributeValueChanged(e);
 			}
 		}
+
 	}
 	
 	protected void fireAttributeListChanged() {
+
 		AttributeEvent e = new AttributeEvent(this);
 		for (AttributeListener listener : listeners) {
 			listener.attributeListChanged(e);
 		}
+
 	}
 	
 	protected boolean setForStroke(Graphics g) {
+
 		List<Attribute<?>> attrs = getAttributes();
 		if (attrs.contains(DrawAttr.PAINT_TYPE)) {
 			Object value = getValue(DrawAttr.PAINT_TYPE);
@@ -183,21 +196,23 @@ public abstract class AbstractCanvasObject
 		}
 
 		Integer width = getValue(DrawAttr.STROKE_WIDTH);
-		if (width != null && width.intValue() > 0) {
+		if (width != null && width > 0) {
 			Color color = getValue(DrawAttr.STROKE_COLOR);
-			if (color != null && color.getAlpha() == 0) {
+			if (color != null && color.getOpacity() == 0) {
 				return false;
 			} else {
-				GraphicsUtil.switchToWidth(g, width.intValue());
+				g.setLineWidth(width);
 				if (color != null) g.setColor(color);
 				return true;
 			}
 		} else {
 			return false;
 		}
+
 	}
 	
 	protected boolean setForFill(Graphics g) {
+
 		List<Attribute<?>> attrs = getAttributes();
 		if (attrs.contains(DrawAttr.PAINT_TYPE)) {
 			Object value = getValue(DrawAttr.PAINT_TYPE);
@@ -205,12 +220,13 @@ public abstract class AbstractCanvasObject
 		}
 
 		Color color = getValue(DrawAttr.FILL_COLOR);
-		if (color != null && color.getAlpha() == 0) {
+		if (color != null && color.getOpacity() == 0) {
 			return false;
 		} else {
 			if (color != null) g.setColor(color);
 			return true;
 		}
+
 	}
 
 }

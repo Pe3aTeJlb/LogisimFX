@@ -1,4 +1,4 @@
-package com.cburch.LogisimFX.newgui.MemoryEditorFrame;
+package com.cburch.LogisimFX.newgui.HexEditorFrame;
 
 import com.cburch.LogisimFX.localization.LC_menu;
 import com.cburch.LogisimFX.localization.Localizer;

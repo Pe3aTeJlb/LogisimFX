@@ -13,6 +13,7 @@ import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 
 class RecentProjects implements PreferenceChangeListener {
+
 	private static final String BASE_PROPERTY = "recent";
 	private static final int NUM_RECENT = 10;
 	
@@ -179,4 +180,5 @@ class RecentProjects implements PreferenceChangeListener {
 	private static boolean isSame(Object a, Object b) {
 		return a == null ? b == null : a.equals(b);
 	}
+
 }

@@ -4,6 +4,7 @@
 package com.cburch.LogisimFX;
 
 public class LogisimVersion {
+
 	private static final int FINAL_REVISION = Integer.MAX_VALUE / 4;
 	
 	public static LogisimVersion get(int major, int minor, int release) {
@@ -15,6 +16,7 @@ public class LogisimVersion {
 	}
 	
 	public static LogisimVersion parse(String versionString) {
+
 		String[] parts = versionString.split("\\.");
 		int major = 0;
 		int minor = 0;
@@ -26,7 +28,9 @@ public class LogisimVersion {
 			if (parts.length >= 3) release = Integer.parseInt(parts[2]);
 			if (parts.length >= 4) revision = Integer.parseInt(parts[3]);
 		} catch (NumberFormatException e) { }
+
 		return new LogisimVersion(major, minor, release, revision);
+
 	}
 	
 	private int major;
@@ -36,23 +40,28 @@ public class LogisimVersion {
 	private String repr;
 	
 	private LogisimVersion(int major, int minor, int release, int revision) {
+
 		this.major = major;
 		this.minor = minor;
 		this.release = release;
 		this.revision = revision;
 		this.repr = null;
+
 	}
 	
 	@Override
 	public int hashCode() {
+
 		int ret = major * 31 + minor;
 		ret = ret * 31 + release;
 		ret = ret * 31 + revision;
 		return ret;
+
 	}
 	
 	@Override
 	public boolean equals(Object other) {
+
 		if (other instanceof LogisimVersion) {
 			LogisimVersion o = (LogisimVersion) other;
 			return this.major == o.major && this.minor == o.minor
@@ -60,9 +69,11 @@ public class LogisimVersion {
 		} else {
 			return false;
 		}
+
 	}
 	
 	public int compareTo(LogisimVersion other) {
+
 		int ret = this.major - other.major;
 		if (ret != 0) {
 			return ret;
@@ -79,10 +90,12 @@ public class LogisimVersion {
 				}
 			}
 		}
+
 	}
 	
 	@Override
 	public String toString() {
+
 		String ret = repr;
 		if (ret == null) {
 			ret = major + "." + minor + "." + release;
@@ -90,5 +103,7 @@ public class LogisimVersion {
 			repr = ret;
 		}
 		return ret;
+
 	}
+
 }

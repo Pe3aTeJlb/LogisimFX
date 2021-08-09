@@ -24,8 +24,8 @@ public class MainToolBar extends ToolBar {
     private ObservableList<Node> RedactCircuitBtnsList;
     private ObservableList<Node> RedactAppearanceBtnsList;
 
-    private int prefWidth = 15;
-    private int prefHeight = 15;
+    private final int prefWidth = 15;
+    private final int prefHeight = 15;
 
     private int toolsCounter = 1;
 
@@ -97,6 +97,8 @@ public class MainToolBar extends ToolBar {
                 new PolyTool(true, attrs),
         };
 
+        proj.setAbstractTool(tools[0]);
+
         for (AbstractTool tool: tools) {
             RedactAppearanceBtnsList.add(new ToolButton(tool));
         }
@@ -165,8 +167,6 @@ public class MainToolBar extends ToolBar {
             tip.textProperty().bind(tool.getDescription().concat(bindbuff));
             setTooltip(tip);
 
-            this.setFocusTraversable(false);
-
             this.setOnAction(event -> proj.setTool(tool));
 
         }
@@ -182,25 +182,10 @@ public class MainToolBar extends ToolBar {
             ImageView buff = new ImageView(tool.getIcon().getImage());
             graphicProperty().setValue(buff);
 
-            setActions(tool);
-
-            this.setFocusTraversable(false);
+            this.setOnAction(event -> proj.setAbstractTool(tool));
 
         }
 
-        public void setActions(Tool tool){
-
-            this.setOnAction(event -> proj.setTool(tool));
-
-        }
-
-        public void setActions(AbstractTool tool){
-
-            this.setOnAction(event -> {
-               // proj.setTool(tool);
-            });
-
-        }
 
     }
 

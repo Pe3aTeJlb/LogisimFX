@@ -9,13 +9,15 @@ import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 
 public interface PrefMonitor<E> extends PreferenceChangeListener {
-	public String getIdentifier();
-	public boolean isSource(PropertyChangeEvent event);
-	public void addPropertyChangeListener(PropertyChangeListener listener);
-	public void removePropertyChangeListener(PropertyChangeListener listener);
-	public E get();
-	public void set(E value);
-	public boolean getBoolean();
-	public void setBoolean(boolean value);
-	public void preferenceChange(PreferenceChangeEvent e);
+
+	String getIdentifier();
+	boolean isSource(PropertyChangeEvent event);
+	void addPropertyChangeListener(PropertyChangeListener listener);
+	void removePropertyChangeListener(PropertyChangeListener listener);
+	E get();
+	void set(E value);
+	boolean getBoolean();
+	void setBoolean(boolean value);
+	void preferenceChange(PreferenceChangeEvent e);
+
 }

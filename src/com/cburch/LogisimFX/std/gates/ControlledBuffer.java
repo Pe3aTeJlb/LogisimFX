@@ -139,7 +139,7 @@ class ControlledBuffer extends InstanceFactory {
 		Graphics g = painter.getGraphics();
 		g.c.translate(x, y);
 		if (facing != Direction.EAST) {
-			rotate = -facing.toRadians();
+			rotate = -facing.toDegrees();
 			g.c.rotate(rotate);
 		}
 

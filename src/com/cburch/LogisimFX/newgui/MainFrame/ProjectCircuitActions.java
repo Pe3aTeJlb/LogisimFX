@@ -40,62 +40,6 @@ public class ProjectCircuitActions {
 
 	}
 
-	private static String promptForCircuitName(JFrame frame,
-			Library lib, String initialValue) {
-		JLabel label = new JLabel(Strings.get("circuitNamePrompt"));
-		final JTextField field = new JTextField(15);
-		field.setText(initialValue);
-		JLabel error = new JLabel(" ");
-		GridBagLayout gb = new GridBagLayout();
-		GridBagConstraints gc = new GridBagConstraints();
-		JPanel strut = new JPanel(null);
-		strut.setPreferredSize(new Dimension(3 * field.getPreferredSize().width / 2, 0));
-		JPanel panel = new JPanel(gb);
-		gc.gridx = 0;
-		gc.gridy = GridBagConstraints.RELATIVE;
-		gc.weightx = 1.0;
-		gc.fill = GridBagConstraints.NONE;
-		gc.anchor = GridBagConstraints.LINE_START;
-		gb.setConstraints(label, gc); panel.add(label);
-		gb.setConstraints(field, gc); panel.add(field);
-		gb.setConstraints(error, gc); panel.add(error);
-		gb.setConstraints(strut, gc); panel.add(strut);
-		JOptionPane pane = new JOptionPane(panel, JOptionPane.QUESTION_MESSAGE,
-				JOptionPane.OK_CANCEL_OPTION);
-		pane.setInitialValue(field);
-		JDialog dlog = pane.createDialog(frame, Strings.get("circuitNameDialogTitle"));
-		dlog.addWindowFocusListener(new WindowFocusListener() {
-			public void windowGainedFocus(WindowEvent arg0) {
-				field.requestFocus();
-			}
-
-			public void windowLostFocus(WindowEvent arg0) { }
-		});
-		
-		while (true) {
-			field.selectAll();
-			dlog.pack();
-			dlog.setVisible(true);
-			field.requestFocusInWindow();
-			Object action = pane.getValue();
-			if (action == null || !(action instanceof Integer)
-					|| ((Integer) action).intValue() != JOptionPane.OK_OPTION) {
-				return null;
-			}
-
-			String name = field.getText().trim();
-			if (name.equals("")) {
-				error.setText(Strings.get("circuitNameMissingError"));
-			} else {
-				if (lib.getTool(name) == null) {
-					return name;
-				} else {
-					error.setText(Strings.get("circuitNameDuplicateError"));
-				}
-			}
-		}
-	}
-
 	public static void doMoveCircuit(Project proj, Circuit cur, int delta) {
 		AddTool tool = proj.getLogisimFile().getAddTool(cur);
 		if (tool != null) {

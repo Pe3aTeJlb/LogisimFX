@@ -13,6 +13,7 @@ import com.cburch.LogisimFX.draw.shapes.DrawAttr;
 import com.cburch.LogisimFX.draw.shapes.LineUtil;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Location;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 
 import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
@@ -58,15 +59,15 @@ public class CurveTool extends AbstractTool {
 	
 	@Override
 	public void mousePressed(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
-		int mx = e.getX();
-		int my = e.getY();
+		int mx = e.localX();
+		int my = e.localY();
 		lastMouseX = mx;
 		lastMouseY = my;
 		mouseDown = true;
 		int mods = e.getModifiersEx();
-		if ((mods & InputEvent.CTRL_DOWN_MASK) != 0) {
-			mx = canvas.snapX(mx);
-			my = canvas.snapY(my);
+		if (e.event.isControlDown()) {
+			mx = e.snappedX;
+			my = e.snappedY;
 		}
 		
 		switch (state) {
@@ -202,7 +203,7 @@ public class CurveTool extends AbstractTool {
 	}
 
 	@Override
-	public void draw(AppearanceCanvas canvas) {
+	public void draw(Graphics g) {
 		g.setColor(Color.GRAY);
 		switch (state) {
 		case ENDPOINT_DRAG:

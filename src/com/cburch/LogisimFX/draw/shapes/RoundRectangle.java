@@ -7,8 +7,8 @@ import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
-
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -159,8 +159,8 @@ public class RoundRectangle extends Rectangular {
 	@Override
 	public void draw(Graphics g, int x, int y, int w, int h) {
 		int diam = 2 * radius;
-		if (setForFill(g)) g.fillRoundRect(x, y, w, h, diam, diam);
-		if (setForStroke(g)) g.drawRoundRect(x, y, w, h, diam, diam);
+		if (setForFill(g)) g.c.fillRoundRect(x, y, w, h, diam, diam);
+		if (setForStroke(g)) g.c.strokeRoundRect(x, y, w, h, diam, diam);
 	}
 
 }

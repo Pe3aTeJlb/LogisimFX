@@ -14,6 +14,7 @@ import com.cburch.LogisimFX.draw.shapes.LineUtil;
 import com.cburch.LogisimFX.draw.shapes.Poly;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Location;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.util.UnmodifiableList;
 import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
@@ -41,7 +42,7 @@ public class LineTool extends AbstractTool {
 	}
 
 	@Override
-	public Cursor getCursor() { return Cursor.CROSSHAIR);
+	public Cursor getCursor() { return Cursor.CROSSHAIR));
 	}
 	
 	@Override
@@ -144,7 +145,7 @@ public class LineTool extends AbstractTool {
 	}
 	
 	@Override
-	public void draw(AppearanceCanvas canvas) {
+	public void draw(Graphics g) {
 		if (active) {
 			Location start = mouseStart;
 			Location end = mouseEnd;
