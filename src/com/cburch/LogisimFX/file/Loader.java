@@ -3,6 +3,7 @@
 
 package com.cburch.LogisimFX.file;
 
+import com.cburch.LogisimFX.FileSelector;
 import com.cburch.LogisimFX.localization.LC_file;
 import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.newgui.DialogManager;
@@ -402,6 +403,10 @@ public class Loader implements LibraryLoader {
 			// It doesn't exist. Figure it out from the user.
 			DialogManager.CreateInfoDialog("File missing", StringUtil.format(lc.get("fileLibraryMissingError"),
 					file.getName()));
+
+			FileSelector fileSelector = new FileSelector();
+
+
 
 			JFileChooser chooser = createChooser();
 			chooser.setFileFilter(filter);

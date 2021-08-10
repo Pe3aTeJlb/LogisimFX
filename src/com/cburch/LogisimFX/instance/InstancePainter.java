@@ -10,6 +10,7 @@ import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.circuit.WireSet;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.proj.Project;
+
 import com.sun.javafx.tk.FontMetrics;
 import com.sun.javafx.tk.Toolkit;
 import javafx.scene.canvas.GraphicsContext;
@@ -58,10 +59,6 @@ public class InstancePainter implements InstanceState {
 
 	public boolean shouldDrawColor() {
 		return context.shouldDrawColor();
-	}
-
-	public java.awt.Component getDestination() {
-		return context.getDestination();
 	}
 
 	public Graphics getGraphics() {

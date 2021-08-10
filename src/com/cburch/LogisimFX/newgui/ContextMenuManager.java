@@ -18,7 +18,6 @@ import com.cburch.LogisimFX.file.LoadedLibrary;
 import com.cburch.LogisimFX.file.Loader;
 import com.cburch.LogisimFX.tools.MenuExtender;
 
-import com.cburch.logisim.gui.hex.HexFile;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
@@ -156,7 +155,7 @@ public class ContextMenuManager {
 
     }
 
-    //Canvas elements menus
+    //LayoutCanvas elements menus
 
     public static ContextMenu ComponentDefaultContextMenu(Project project, Circuit circuit, Component component){
 
@@ -365,6 +364,93 @@ public class ContextMenuManager {
                     load,
                     save
             );
+
+        }
+
+    }
+
+    //AppearanceCanvas elements menus
+
+    public static class AppearanceEditContextMenu {
+
+        private ContextMenu menu;
+
+        public AppearanceEditContextMenu(){
+
+            menu = new ContextMenu();
+
+            MenuItem cut = new MenuItem();
+            cut.textProperty().bind(LC_menu.getInstance().createStringBinding("editCutItem"));
+            cut.setDisable();
+            cut.setOnAction(event -> {
+
+            });
+
+            MenuItem copy = new MenuItem();
+            copy.textProperty().bind(LC_menu.getInstance().createStringBinding("editCopyItem"));
+            copy.setDisable();
+            copy.setOnAction(event -> {
+
+            });
+
+            MenuItem delete = new MenuItem();
+            delete.textProperty().bind(LC_menu.getInstance().createStringBinding("editClearItem"));
+            delete.setDisable();
+            delete.setOnAction(event -> {
+
+            });
+
+            MenuItem duplicate = new MenuItem();
+            duplicate.textProperty().bind(LC_menu.getInstance().createStringBinding("editDuplicateItem"));
+            duplicate.setDisable();
+            duplicate.setOnAction(event -> {
+
+            });
+
+            MenuItem raise = new MenuItem();
+            raise.textProperty().bind(LC_menu.getInstance().createStringBinding("editRaiseItem"));
+            raise.setDisable();
+            raise.setOnAction(event -> {
+
+            });
+
+            MenuItem lower = new MenuItem();
+            lower.textProperty().bind(LC_menu.getInstance().createStringBinding("editLowerItem"));
+            lower.setDisable();
+            lower.setOnAction(event -> {
+
+            });
+
+            MenuItem raiseTop = new MenuItem();
+            raiseTop.textProperty().bind(LC_menu.getInstance().createStringBinding("editRaiseTopItem"));
+            raiseTop.setDisable();
+            raiseTop.setOnAction(event -> {
+
+            });
+
+            MenuItem lowerBottom = new MenuItem();
+            lowerBottom.textProperty().bind(LC_menu.getInstance().createStringBinding("editLowerBottomItem"));
+            lowerBottom.setDisable();
+            lowerBottom.setOnAction(event -> {
+
+            });
+
+
+            boolean x = false;
+            x |= add(LogisimMenuBar.CUT, Strings.get("editCutItem"));
+            x |= add(LogisimMenuBar.COPY, Strings.get("editCopyItem"));
+            if (x) { addSeparator(); x = false; }
+            x |= add(LogisimMenuBar.DELETE, Strings.get("editClearItem"));
+            x |= add(LogisimMenuBar.DUPLICATE, Strings.get("editDuplicateItem"));
+            if (x) { addSeparator(); x = false; }
+            x |= add(LogisimMenuBar.RAISE, Strings.get("editRaiseItem"));
+            x |= add(LogisimMenuBar.LOWER, Strings.get("editLowerItem"));
+            x |= add(LogisimMenuBar.RAISE_TOP, Strings.get("editRaiseTopItem"));
+            x |= add(LogisimMenuBar.LOWER_BOTTOM, Strings.get("editLowerBottomItem"));
+            if (x) { addSeparator(); x = false; }
+            x |= add(LogisimMenuBar.ADD_CONTROL, Strings.get("editAddControlItem"));
+            x |= add(LogisimMenuBar.REMOVE_CONTROL, Strings.get("editRemoveControlItem"));
+            if (!x && getComponentCount() > 0) { remove(getComponentCount() - 1); }
 
         }
 
