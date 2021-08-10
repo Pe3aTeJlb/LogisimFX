@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 class SplitterAttributes extends AbstractAttributeSet {
+
 	public static final AttributeOption APPEAR_LEGACY
 		= new AttributeOption("legacy", LC.createStringBinding("splitterAppearanceLegacy"));
 	public static final AttributeOption APPEAR_LEFT
@@ -348,4 +349,5 @@ class SplitterAttributes extends AbstractAttributeSet {
 		}
 		return ret;
 	}
+
 }

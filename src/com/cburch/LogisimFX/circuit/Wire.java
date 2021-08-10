@@ -18,6 +18,7 @@ import java.util.List;
 
 public final class Wire implements Component, AttributeSet, CustomHandles,
 		Iterable<Location> {
+
 	/** Stroke width when drawing wires. */
 	public static final int WIDTH = 3;
 
@@ -170,13 +171,6 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 	//
 	// user interface methods
 	//
-	public void expose(ComponentDrawContext context) {
-		java.awt.Component dest = context.getDestination();
-		int x0 = e0.getX();
-		int y0 = e0.getY();
-		dest.repaint(x0 - 5, y0 - 5,
-				e1.getX() - x0 + 10, e1.getY() - y0 + 10);
-	}
 
 	public void draw(ComponentDrawContext context) {
 
@@ -224,6 +218,7 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 
 	@SuppressWarnings("unchecked")
 	public <V> V getValue(Attribute<V> attr) {
+
 		if (attr == dir_attr) {
 			return (V) (is_x_equal ? VALUE_VERT : VALUE_HORZ);
 		} else if (attr == len_attr) {
@@ -231,6 +226,7 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 		} else {
 			return null;
 		}
+
 	}
 
 	public <V> void setValue(Attribute<V> attr, V value) {
@@ -262,6 +258,7 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 	}
 
 	private boolean overlaps(Location q0, Location q1, boolean includeEnds) {
+
 		if (is_x_equal) {
 			int x0 = q0.getX();
 			if (x0 != q1.getX() || x0 != e0.getX()) return false;
@@ -279,6 +276,7 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 				return e1.getX() > q0.getX() && e0.getX() < q1.getX();
 			}
 		}
+
 	}
 
 	public boolean isParallel(Wire other) {
@@ -290,7 +288,10 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 	}
 	
 	public void drawHandles(ComponentDrawContext context) {
+
 		context.drawHandle(e0);
 		context.drawHandle(e1);
+
 	}
+
 }

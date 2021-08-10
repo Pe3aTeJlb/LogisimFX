@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Random;
 
 public abstract class AppearanceElement extends AbstractCanvasObject {
+
 	private Location location;
 	
 	public AppearanceElement(Location location) {
@@ -26,12 +27,14 @@ public abstract class AppearanceElement extends AbstractCanvasObject {
 	
 	@Override
 	public boolean matches(CanvasObject other) {
+
 		if (other instanceof AppearanceElement) {
 			AppearanceElement that = (AppearanceElement) other;
 			return this.location.equals(that.location);
 		} else {
 			return false;
 		}
+
 	}
 
 	@Override
@@ -65,9 +68,12 @@ public abstract class AppearanceElement extends AbstractCanvasObject {
 	}
 
 	protected boolean isInCircle(Location loc, int radius) {
+
 		int dx = loc.getX() - location.getX();
 		int dy = loc.getY() - location.getY();
+
 		return dx * dx + dy * dy < radius * radius;
+
 	}
 	
 	@Override
@@ -79,4 +85,5 @@ public abstract class AppearanceElement extends AbstractCanvasObject {
 		return Bounds.create(location.getX() - radius, location.getY() - radius,
 				2 * radius, 2 * radius);
 	}
+
 }

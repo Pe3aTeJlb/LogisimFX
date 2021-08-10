@@ -20,6 +20,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class ComponentDrawContext {
+
 	private static final int PIN_OFFS = 2;
 	private static final int PIN_RAD = 4;
 
@@ -35,6 +36,7 @@ public class ComponentDrawContext {
 	public ComponentDrawContext(
 			Circuit circuit, CircuitState circuitState,
 			Graphics cvcontext, boolean printView) {
+
 		this.circuit = circuit;
 		this.circuitState = circuitState;
 		this.g = cvcontext;
@@ -43,12 +45,14 @@ public class ComponentDrawContext {
 		this.printView = printView;
 		this.highlightedWires = WireSet.EMPTY;
 		this.instancePainter = new InstancePainter(this, null);
+
 	}
 
-	public ComponentDrawContext(
-			Circuit circuit, CircuitState circuitState,
+	public ComponentDrawContext(Circuit circuit, CircuitState circuitState,
 			Graphics cvcontext) {
+
 		this(circuit, circuitState, cvcontext, false);
+
 	}
 	
 	public void setShowState(boolean value) {
@@ -115,11 +119,13 @@ public class ComponentDrawContext {
 	// helper methods
 	//
 	public void drawBounds(Component comp) {
+
 		g.setLineWidth(2);
 		g.setColor(Color.BLACK);
 		Bounds bds = comp.getBounds();
 		g.c.strokeRect(bds.getX(), bds.getY(),
 				bds.getWidth(), bds.getHeight());
+
 	}
 
 	public void drawRectangle(Component comp) {
@@ -127,13 +133,16 @@ public class ComponentDrawContext {
 	}
 
 	public void drawRectangle(Component comp, String label) {
+
 		Bounds bds = comp.getBounds(g);
 		drawRectangle(bds.getX(), bds.getY(), bds.getWidth(),
 			bds.getHeight(), label);
+
 	}
 
 	public void drawRectangle(int x, int y,
 			int width, int height, String label) {
+
 		g.setLineWidth(2);
 		g.c.strokeRect(x, y, width, height);
 		if (label != null && !label.equals("")) {
@@ -147,13 +156,16 @@ public class ComponentDrawContext {
 					y + (height + fm.getAscent()) / 2 - 1);
 			}
 		}
+
 	}
 
 	public void drawRectangle(ComponentFactory source, int x, int y,
                               AttributeSet attrs, String label) {
+
 		Bounds bds = source.getOffsetBounds(attrs);
 		drawRectangle(source, x + bds.getX(), y + bds.getY(), bds.getWidth(),
 			bds.getHeight(), label);
+
 	}
 
 	public void drawRectangle(ComponentFactory source, int x, int y,
@@ -172,15 +184,19 @@ public class ComponentDrawContext {
 					y + (height + fm.getAscent()) / 2 - 1);
 			}
 		}
+
 	}
 
 	public void drawDongle(int x, int y) {
+
 		g.setLineWidth(2);
 		g.c.strokeOval(x - 4, y - 4, 9, 9);
+
 	}
 
 	public void drawPin(Component comp, int i,
                         String label, Direction dir) {
+
 		Color curColor = g.getColor();
 		if (i < 0 || i >= comp.getEnds().size()) return;
 		EndData e = comp.getEnd(i);
@@ -212,6 +228,7 @@ public class ComponentDrawContext {
 	}
 
 	public void drawPin(Component comp, int i) {
+
 		EndData e = comp.getEnd(i);
 		Location pt = e.getLocation();
 		Color curColor = g.getColor();
@@ -224,9 +241,11 @@ public class ComponentDrawContext {
 		g.c.fillOval(pt.getX() - PIN_OFFS, pt.getY() - PIN_OFFS, PIN_RAD, PIN_RAD);
 
 		g.setColor(curColor);
+
 	}
 
 	public void drawPins(Component comp) {
+
 		Color curColor = g.getColor();
 		for (EndData e : comp.getEnds()) {
 			Location pt = e.getLocation();
@@ -245,6 +264,7 @@ public class ComponentDrawContext {
 
 	public void drawClock(Component comp, int i,
                           Direction dir) {
+
 		Color curColor = g.getColor();
 		g.setColor(Color.BLACK);
 		g.setLineWidth(2);
@@ -274,6 +294,7 @@ public class ComponentDrawContext {
 	}
 
 	public void drawHandles(Component comp) {
+
 		Bounds b = comp.getBounds(g);
 		int left = b.getX();
 		int right = left + b.getWidth();
@@ -283,6 +304,7 @@ public class ComponentDrawContext {
 		drawHandle(left,  bot);
 		drawHandle(right, bot);
 		drawHandle(left,  top);
+
 	}
 	
 	public void drawHandle(Location loc) {
@@ -290,10 +312,12 @@ public class ComponentDrawContext {
 	}
 
 	public void drawHandle(int x, int y) {
+
 		g.setColor(Color.WHITE);
 		g.c.fillRect(x - 3, y - 3, 7, 7);
 		g.setColor(Color.BLACK);
 		g.c.strokeRect(x - 3, y - 3, 7, 7);
+
 	}
 
 }

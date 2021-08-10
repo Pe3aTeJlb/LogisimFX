@@ -9,12 +9,12 @@ import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.data.AttributeSet;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
-import com.cburch.LogisimFX.util.GraphicsUtil;
-import com.cburch.LogisimFX.util.StringGetter;
+import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+
 import javafx.beans.binding.StringBinding;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 
-import java.awt.*;
 
 class WireFactory extends AbstractComponentFactory {
 
@@ -42,6 +42,7 @@ class WireFactory extends AbstractComponentFactory {
 
 	@Override
 	public Component createComponent(Location loc, AttributeSet attrs) {
+
 		Object dir = attrs.getValue(Wire.dir_attr);
 		int len = attrs.getValue(Wire.len_attr).intValue();
 
@@ -50,10 +51,12 @@ class WireFactory extends AbstractComponentFactory {
 		} else {
 			return Wire.create(loc, loc.translate(0, len));
 		}
+
 	}
 
 	@Override
 	public Bounds getOffsetBounds(AttributeSet attrs) {
+
 		Object dir = attrs.getValue(Wire.dir_attr);
 		int len = attrs.getValue(Wire.len_attr).intValue();
 
@@ -62,6 +65,7 @@ class WireFactory extends AbstractComponentFactory {
 		} else {
 			return Bounds.create(-2, 0, 5, len);
 		}
+
 	}
 
 	//
@@ -69,22 +73,20 @@ class WireFactory extends AbstractComponentFactory {
 	//
 	@Override
 	public void drawGhost(ComponentDrawContext context,
-			Color color, int x, int y, AttributeSet attrs) {
+						  Color color, int x, int y, AttributeSet attrs) {
+
 		Graphics g = context.getGraphics();
 		Object dir = attrs.getValue(Wire.dir_attr);
 		int len = attrs.getValue(Wire.len_attr).intValue();
 
 		g.setColor(color);
-		GraphicsUtil.switchToWidth(g, 3);
+		g.setLineWidth(3);
 		if (dir == Wire.VALUE_HORZ) {
-			g.drawLine(x, y, x + len, y);
+			g.c.strokeLine(x, y, x + len, y);
 		} else {
-			g.drawLine(x, y, x, y + len);
+			g.c.strokeLine(x, y, x, y + len);
 		}
-	}
-
-	@Override
-	public void paintIcon(ComponentDrawContext context, int x, int y, AttributeSet attrs) {
 
 	}
+
 }

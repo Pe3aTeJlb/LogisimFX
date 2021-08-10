@@ -3,10 +3,6 @@
 
 package com.cburch.LogisimFX.comp;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.cburch.LogisimFX.data.AttributeSet;
 import com.cburch.LogisimFX.data.BitWidth;
 import com.cburch.LogisimFX.data.Bounds;
@@ -14,7 +10,12 @@ import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.util.EventSourceWeakSupport;
 import com.cburch.LogisimFX.circuit.CircuitState;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public abstract class ManagedComponent extends AbstractComponent {
+
 	private EventSourceWeakSupport<ComponentListener> listeners
 		= new EventSourceWeakSupport<ComponentListener>();
 	private Location loc;
@@ -24,10 +25,12 @@ public abstract class ManagedComponent extends AbstractComponent {
 	private Bounds bounds = null;
 
 	public ManagedComponent(Location loc, AttributeSet attrs, int num_ends) {
+
 		this.loc = loc;
 		this.attrs = attrs;
 		this.ends = new ArrayList<EndData>(num_ends);
 		this.endsView = Collections.unmodifiableList(ends);
+
 	}
 
 	//
@@ -45,6 +48,7 @@ public abstract class ManagedComponent extends AbstractComponent {
 	}
 
 	protected void fireEndChanged(ComponentEvent e) {
+
 		ComponentEvent copy = null;
 		for (ComponentListener l : listeners) {
 			if (copy == null) {
@@ -54,20 +58,25 @@ public abstract class ManagedComponent extends AbstractComponent {
 			}
 			l.endChanged(copy);
 		}
+
 	}
 
 	protected void fireEndsChanged(List<EndData> oldEnds, List<EndData> newEnds) {
+
 		ComponentEvent e = null;
 		for (ComponentListener l : listeners) {
 			if (e == null) e = new ComponentEvent(this, oldEnds, newEnds);
 			l.endChanged(e);
 		}
+
 	}
 
 	protected void fireComponentInvalidated(ComponentEvent e) {
+
 		for (ComponentListener l : listeners) {
 			l.componentInvalidated(e);
 		}
+
 	}
 
 	@Override
@@ -81,12 +90,15 @@ public abstract class ManagedComponent extends AbstractComponent {
 
 	@Override
 	public Bounds getBounds() {
+
 		if (bounds == null) {
 			Location loc = getLocation();
 			Bounds offBounds = getFactory().getOffsetBounds(getAttributeSet());
 			bounds = offBounds.translate(loc.getX(), loc.getY());
 		}
+
 		return bounds;
+
 	}
 	
 	protected void recomputeBounds() {
@@ -109,11 +121,13 @@ public abstract class ManagedComponent extends AbstractComponent {
 	// methods for altering data
 	//
 	public void clearManager() {
+
 		for (EndData end : ends) {
 			fireEndChanged(new ComponentEvent(this, end, null));
 		}
 		ends.clear();
 		bounds = null;
+
 	}
 
 	public void setBounds(Bounds bounds) {
@@ -129,6 +143,7 @@ public abstract class ManagedComponent extends AbstractComponent {
 	}
 
 	public void setEnd(int i, EndData data) {
+
 		if (i == ends.size()) {
 			ends.add(data);
 			fireEndChanged(new ComponentEvent(this, null, data));
@@ -139,6 +154,7 @@ public abstract class ManagedComponent extends AbstractComponent {
 				fireEndChanged(new ComponentEvent(this, old, data));
 			}
 		}
+
 	}
 
 	public void setEnd(int i, Location end, BitWidth width, int type) {
@@ -150,6 +166,7 @@ public abstract class ManagedComponent extends AbstractComponent {
 	}
 	
 	public void setEnds(EndData[] newEnds) {
+
 		List<EndData> oldEnds = ends;
 		int minLen = Math.min(oldEnds.size(), newEnds.length);
 		ArrayList<EndData> changesOld = new ArrayList<EndData>();
@@ -172,6 +189,7 @@ public abstract class ManagedComponent extends AbstractComponent {
 			changesNew.add(newEnds[i]);
 		}
 		fireEndsChanged(changesOld, changesNew);
+
 	}
 
 	public Location getEndLocation(int i) {
@@ -181,16 +199,9 @@ public abstract class ManagedComponent extends AbstractComponent {
 	//
 	// user interface methods
 	//
-	public void expose(ComponentDrawContext context) {
-		Bounds bounds = getBounds();
-		java.awt.Component dest = context.getDestination();
-		if (bounds != null) {
-			dest.repaint(bounds.getX() - 5, bounds.getY() - 5,
-				bounds.getWidth() + 10, bounds.getHeight() + 10);
-		}
-	}
 	
 	public Object getFeature(Object key) {
 		return null;
 	}
+
 }

@@ -4,6 +4,8 @@
 package com.cburch.LogisimFX.comp;
 
 public interface ComponentListener {
+
 	public void endChanged(ComponentEvent e);
 	public void componentInvalidated(ComponentEvent e);
+
 }

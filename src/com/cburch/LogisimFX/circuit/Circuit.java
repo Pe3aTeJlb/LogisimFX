@@ -21,15 +21,18 @@ import java.util.*;
 public class Circuit {
 
 	private class EndChangedTransaction extends CircuitTransaction {
+
 		private Component comp;
 		private Map<Location,EndData> toRemove;
 		private Map<Location,EndData> toAdd;
 		
 		EndChangedTransaction(Component comp, Map<Location,EndData> toRemove,
 				Map<Location,EndData> toAdd) {
+
 			this.comp = comp;
 			this.toRemove = toRemove;
 			this.toAdd = toAdd;
+
 		}
 		
 		@Override
@@ -39,6 +42,7 @@ public class Circuit {
 
 		@Override
 		protected void run(CircuitMutator mutator) {
+
 			for (Location loc : toRemove.keySet()) {
 				EndData removed = toRemove.get(loc);
 				EndData replaced = toAdd.remove(loc);
@@ -52,7 +56,9 @@ public class Circuit {
 				wires.add(comp, end);
 			}
 			((CircuitMutatorImpl) mutator).markModified(Circuit.this);
+
 		}
+
 	}
 
 	private class MyComponentListener implements ComponentListener {
@@ -104,11 +110,13 @@ public class Circuit {
 	private WeakHashMap<Component, Circuit> circuitsUsingThis;
 
 	public Circuit(String name) {
+
 		appearance = new CircuitAppearance(this);
 		staticAttrs = CircuitAttributes.createBaseAttrs(this, name);
 		subcircuitFactory = new SubcircuitFactory(this);
 		locker = new CircuitLocker();
 		circuitsUsingThis = new WeakHashMap<Component, Circuit>();
+
 	}
 
 	CircuitLocker getLocker() {
@@ -120,6 +128,7 @@ public class Circuit {
 	}
 
 	public void mutatorClear() {
+
 		locker.checkForWritePermission("clear");
 
 		Set<Component> oldComps = comps;
@@ -132,7 +141,9 @@ public class Circuit {
 				sub.getSubcircuit().circuitsUsingThis.remove(comp);
 			}
 		}
+
 		fireEvent(CircuitEvent.ACTION_CLEAR, oldComps);
+
 	}
 
 	@Override
@@ -233,10 +244,13 @@ public class Circuit {
 	}
 	
 	public boolean isConnected(Location loc, Component ignore) {
+
 		for (Component o : wires.points.getComponents(loc)) {
 			if (o != ignore) return true;
 		}
+
 		return false;
+
 	}
 	
 	public Set<Location> getSplitLocations() {
@@ -244,35 +258,47 @@ public class Circuit {
 	}
 
 	public Collection<Component> getAllContaining(Location pt) {
+
 		HashSet<Component> ret = new HashSet<Component>();
 		for (Component comp : getComponents()) {
 			if (comp.contains(pt)) ret.add(comp);
 		}
+
 		return ret;
+
 	}
 
 	public Collection<Component> getAllContaining(Location pt, Graphics g) {
+
 		HashSet<Component> ret = new HashSet<Component>();
 		for (Component comp : getComponents()) {
 			if (comp.contains(pt, g)) ret.add(comp);
 		}
+
 		return ret;
+
 	}
 
 	public Collection<Component> getAllWithin(Bounds bds) {
+
 		HashSet<Component> ret = new HashSet<Component>();
 		for (Component comp : getComponents()) {
 			if (bds.contains(comp.getBounds())) ret.add(comp);
 		}
+
 		return ret;
+
 	}
 
 	public Collection<Component> getAllWithin(Bounds bds, Graphics g) {
+
 		HashSet<Component> ret = new HashSet<Component>();
 		for (Component comp : getComponents()) {
 			if (bds.contains(comp.getBounds(g))) ret.add(comp);
 		}
+
 		return ret;
+
 	}
 	
 	public WireSet getWireSet(Wire start) {
@@ -280,6 +306,7 @@ public class Circuit {
 	}
 
 	public Bounds getBounds() {
+
 		Bounds wireBounds = wires.getWireBounds();
 		Iterator<Component> it = comps.iterator();
 		if (!it.hasNext()) return wireBounds;
@@ -305,9 +332,11 @@ public class Circuit {
 		} else {
 			return compBounds.add(wireBounds);
 		}
+
 	}
 
 	public Bounds getBounds(Graphics g) {
+
 		Bounds ret = wires.getWireBounds();
 		int xMin = ret.getX();
 		int yMin = ret.getY();
@@ -331,7 +360,9 @@ public class Circuit {
 			}
 		}
 		if (xMin > xMax || yMin > yMax) return Bounds.EMPTY_BOUNDS;
+
 		return Bounds.create(xMin, yMin, xMax - xMin, yMax - yMin);
+
 	}
 
 	ArrayList<Component> getClocks() {
@@ -346,6 +377,7 @@ public class Circuit {
 	}
 
 	void mutatorAdd(Component c) {
+
 		locker.checkForWritePermission("add");
 
 		if (c instanceof Wire) {
@@ -368,10 +400,13 @@ public class Circuit {
 			}
 			c.addComponentListener(myComponentListener);
 		}
+
 		fireEvent(CircuitEvent.ACTION_ADD, c);
+
 	}
 
 	void mutatorRemove(Component c) {
+
 		locker.checkForWritePermission("remove");
 
 		if (c instanceof Wire) {
@@ -388,7 +423,9 @@ public class Circuit {
 			}
 			c.removeComponentListener(myComponentListener);
 		}
+
 		fireEvent(CircuitEvent.ACTION_REMOVE, c);
+
 	}
 
 	//
@@ -423,4 +460,5 @@ public class Circuit {
 	public static boolean isInput(Component comp) {
 		return comp.getEnd(0).getType() != EndData.INPUT_ONLY;
 	}
+
 }

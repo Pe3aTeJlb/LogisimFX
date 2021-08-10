@@ -202,24 +202,26 @@ public class SubcircuitFactory extends InstanceFactory {
 		Color fg =  g.getColor();
 		int v = (int)fg.getRed() + (int)fg.getGreen() + (int)fg.getBlue();
 
-		Composite oldComposite = null;
-		if (g instanceof Graphics2D && v > 50) {
-			oldComposite = ((Graphics2D) g).getComposite();
-			Composite c = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f);
-			((Graphics2D) g).setComposite(c);
-		}
+		//Composite oldComposite = null;
+		//if (g instanceof Graphics2D && v > 50) {
+			//oldComposite = ((Graphics2D) g).getComposite();
+			//Composite c = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f);
+			//((Graphics2D) g).setComposite(c);
+		//}
 		paintBase(painter, g);
-		if (oldComposite != null) {
-			((Graphics2D) g).setComposite(oldComposite);
-		}
+		//if (oldComposite != null) {
+		//	((Graphics2D) g).setComposite(oldComposite);
+		//}
 
 
 	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
+
 		paintBase(painter, painter.getGraphics());
 		painter.drawPorts();
+
 	}
 
 	private void paintBase(InstancePainter painter, Graphics g) {
@@ -238,6 +240,7 @@ public class SubcircuitFactory extends InstanceFactory {
 
 	private void drawCircuitLabel(InstancePainter painter, Bounds bds,
 			Direction facing, Direction defaultFacing) {
+
 		AttributeSet staticAttrs = source.getStaticAttributes();
 		String label = staticAttrs.getValue(CircuitAttributes.CIRCUIT_LABEL_ATTR);
 		if (label != null && !label.equals("")) {
@@ -257,9 +260,11 @@ public class SubcircuitFactory extends InstanceFactory {
 			int x = bds.getX() + bds.getWidth() / 2;
 			int y = bds.getY() + bds.getHeight() / 2;
 			Graphics g = painter.getGraphics();
-			double angle = Math.PI / 2 - (up.toRadians() - defaultFacing.toRadians()) - facing.toRadians();
+			double angle = 180 / 2 - (up.toDegrees() - defaultFacing.toDegrees()) - facing.toDegrees();
 			if (Math.abs(angle) > 0.01) {
-				g.c.rotate(angle, x, y);
+				g.c.translate(x,y);
+				g.c.rotate(angle);
+				g.c.translate(-x,-y);
 			}
 			g.setFont(font);
 			if (lines == 1 && !backs) {
@@ -289,13 +294,19 @@ public class SubcircuitFactory extends InstanceFactory {
 						GraphicsUtil.H_CENTER, GraphicsUtil.V_BASELINE);
 			}
 
+			g.c.translate(x,y);
+			g.c.rotate(-angle);
+			g.c.translate(-x,-y);
+
 			g.toDefault();
 
 		}
+
 	}
 
 	/* TODO
 	public String getToolTip(ComponentUserEvent e) {
 		return StringUtil.format(Strings.get("subcircuitCircuitTip"), source.getDisplayName());
 	} */
+
 }
