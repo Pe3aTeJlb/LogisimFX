@@ -11,9 +11,9 @@ import com.cburch.LogisimFX.instance.InstanceState;
 import com.cburch.LogisimFX.instance.StdAttr;
 import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
-import javafx.scene.paint.Color;
 
-import java.awt.event.KeyEvent;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.paint.Color;
 
 public class RegisterPoker extends InstancePoker {
 

@@ -3,8 +3,6 @@
 
 package com.cburch.LogisimFX.std.memory;
 
-import java.awt.event.KeyEvent;
-
 import com.cburch.LogisimFX.data.BitWidth;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Value;
@@ -14,6 +12,8 @@ import com.cburch.LogisimFX.instance.InstanceState;
 import com.cburch.LogisimFX.instance.StdAttr;
 import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 
 public class ShiftRegisterPoker extends InstancePoker {

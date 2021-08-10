@@ -3,8 +3,6 @@
 
 package com.cburch.LogisimFX.std.memory;
 
-import java.awt.event.KeyEvent;
-
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.instance.InstancePainter;
 import com.cburch.LogisimFX.instance.InstancePoker;
@@ -13,6 +11,7 @@ import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.proj.Project;
 
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 
 public class MemPoker extends InstancePoker {
@@ -42,10 +41,12 @@ public class MemPoker extends InstancePoker {
 	public Bounds getBounds(InstancePainter state) {
 		return sub.getBounds(state);
 	}
+
 	@Override
 	public void paint(InstancePainter painter) {
 		sub.paint(painter);
 	}
+
 	@Override
 	public void keyTyped(InstanceState state, KeyEvent e) {
 		sub.keyTyped(state, e);

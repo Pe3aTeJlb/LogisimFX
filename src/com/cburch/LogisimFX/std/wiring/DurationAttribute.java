@@ -9,6 +9,8 @@ import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.util.StringUtil;
 
 import javafx.beans.binding.StringBinding;
+import javafx.scene.Node;
+import javafx.scene.control.TextField;
 
 public class DurationAttribute extends Attribute<Integer> {
 
@@ -53,9 +55,9 @@ public class DurationAttribute extends Attribute<Integer> {
 	}
 
 	@Override
-	public java.awt.Component getCellEditor(Integer value) {
+	public Node getCell(Integer value){
 
-		JTextField field = new JTextField();
+		TextField field = new TextField();
 		field.setText(value.toString());
 		return field;
 

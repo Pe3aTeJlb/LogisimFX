@@ -4,7 +4,10 @@
 package com.cburch.LogisimFX.tools;
 
 import com.cburch.LogisimFX.comp.ComponentUserEvent;
+import javafx.beans.binding.StringBinding;
 
 public interface ToolTipMaker {
-	public String getToolTip(ComponentUserEvent event);
+
+	StringBinding getToolTip(ComponentUserEvent event);
+
 }

@@ -7,6 +7,7 @@ import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Attributes;
 import com.cburch.LogisimFX.data.Direction;
 import com.cburch.LogisimFX.util.StringUtil;
+import javafx.scene.Node;
 
 class NegateAttribute extends Attribute<Boolean> {
 
@@ -61,12 +62,10 @@ class NegateAttribute extends Attribute<Boolean> {
 		return BOOLEAN_ATTR.parse(value);
 	}
 
-	
 
 	@Override
-	public java.awt.Component getCellEditor(Boolean value) {
-		return BOOLEAN_ATTR.getCellEditor(null, value);
+	public Node getCell(Boolean value){
+		return BOOLEAN_ATTR.getCell(value);
 	}
-
 
 }
