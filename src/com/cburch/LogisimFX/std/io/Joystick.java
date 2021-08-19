@@ -5,8 +5,8 @@ package com.cburch.LogisimFX.std.io;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
-import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 

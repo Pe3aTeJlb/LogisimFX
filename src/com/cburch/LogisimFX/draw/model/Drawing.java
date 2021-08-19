@@ -3,17 +3,18 @@
 
 package com.cburch.LogisimFX.draw.model;
 
-import com.cburch.LogisimFX.draw.canvas.Selection;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.Selection;
 import com.cburch.LogisimFX.draw.shapes.Text;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Bounds;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.util.EventSourceWeakSupport;
 
-import java.awt.*;
 import java.util.List;
 import java.util.*;
 
 public class Drawing implements CanvasModel {
+
 	private EventSourceWeakSupport<CanvasModelListener> listeners;
 	private ArrayList<CanvasObject> canvasObjects;
 	private DrawingOverlaps overlaps;
@@ -43,16 +44,17 @@ public class Drawing implements CanvasModel {
 	}
 
 	public void paint(Graphics g, Selection selection) {
+
 		Set<CanvasObject> suppressed = selection.getDrawsSuppressed();
 		for (CanvasObject shape : getObjectsFromBottom()) {
-			Graphics dup = g.create();
 			if (suppressed.contains(shape)) {
-				selection.drawSuppressed(dup, shape);
+				selection.drawSuppressed(g, shape);
 			} else {
-				shape.paint(dup, null);
+				shape.paint(g, null);
 			}
-			dup.dispose();
+			g.toDefault();
 		}
+
 	}
 
 	public List<CanvasObject> getObjectsFromTop() {
@@ -246,4 +248,5 @@ public class Drawing implements CanvasModel {
 		}
 		return ret;
 	}
+
 }

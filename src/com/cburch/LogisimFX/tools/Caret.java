@@ -4,33 +4,33 @@
 package com.cburch.LogisimFX.tools;
 
 import com.cburch.LogisimFX.data.Bounds;
-import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 
 import javafx.scene.input.KeyEvent;
 
 public interface Caret {
 
 	// listener methods
-	public void addCaretListener(CaretListener e);
-	public void removeCaretListener(CaretListener e);
+	void addCaretListener(CaretListener e);
+	void removeCaretListener(CaretListener e);
 
 	// query/Graphics methods
-	public String getText();
-	public Bounds getBounds(Graphics g);
-	public void draw(Graphics g);
+	String getText();
+	Bounds getBounds(Graphics g);
+	void draw(Graphics g);
 
 	// finishing
-	public void commitText(String text);
-	public void cancelEditing();
-	public void stopEditing();
+	void commitText(String text);
+	void cancelEditing();
+	void stopEditing();
 
 	// events to handle
-	public void mousePressed(LayoutCanvas.CME e);
-	public void mouseDragged(LayoutCanvas.CME e);
-	public void mouseReleased(LayoutCanvas.CME e);
-	public void keyPressed(KeyEvent e);
-	public void keyReleased(KeyEvent e);
-	public void keyTyped(KeyEvent e);
+	void mousePressed(LayoutCanvas.CME e);
+	void mouseDragged(LayoutCanvas.CME e);
+	void mouseReleased(LayoutCanvas.CME e);
+	void keyPressed(KeyEvent e);
+	void keyReleased(KeyEvent e);
+	void keyTyped(KeyEvent e);
 
 }

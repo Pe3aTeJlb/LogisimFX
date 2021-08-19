@@ -3,7 +3,7 @@
 
 package com.cburch.LogisimFX.draw.undo;
 
-import com.cburch.LogisimFX.draw.canvas.ActionDispatcher;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.ActionDispatcher;
 
 public class UndoLogDispatcher implements ActionDispatcher {
 	private UndoLog log;

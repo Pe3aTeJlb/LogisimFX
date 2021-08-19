@@ -8,9 +8,9 @@ import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.newgui.ContextMenuManager;
-import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
-import com.cburch.LogisimFX.newgui.MainFrame.Selection;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.Selection;
 import com.cburch.LogisimFX.proj.Project;
 
 import javafx.beans.binding.StringBinding;

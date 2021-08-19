@@ -3,20 +3,25 @@
 
 package com.cburch.LogisimFX.draw.model;
 
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceCanvas;
+
 import java.awt.event.InputEvent;
 
 public class HandleGesture {
+
 	private Handle handle;
 	private int dx;
 	private int dy;
 	private int modifiersEx;
 	private Handle resultingHandle;
 
-	public HandleGesture(Handle handle, int dx, int dy, int modifiersEx) {
+	public HandleGesture(Handle handle, int dx, int dy, AppearanceCanvas.CME e) {
+
 		this.handle = handle;
 		this.dx = dx;
 		this.dy = dy;
 		this.modifiersEx = modifiersEx;
+
 	}
 
 	public Handle getHandle() {
@@ -54,4 +59,5 @@ public class HandleGesture {
 	public Handle getResultingHandle() {
 		return resultingHandle;
 	}
+
 }

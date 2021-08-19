@@ -1,5 +1,6 @@
 package com.cburch.LogisimFX.newgui.HexEditorFrame;
 
+import com.cburch.LogisimFX.localization.LC_hex;
 import com.cburch.LogisimFX.localization.LC_menu;
 import com.cburch.LogisimFX.localization.Localizer;
 import javafx.beans.binding.StringBinding;
@@ -11,7 +12,7 @@ import javafx.beans.binding.StringBinding;
 
 public class LC {
 
-    private static Localizer lc = LC_menu.getInstance();
+    private static Localizer lc = LC_hex.getInstance();
 
     public static StringBinding createStringBinding(final String key, Object... args) {
         return lc.createStringBinding(key, args);

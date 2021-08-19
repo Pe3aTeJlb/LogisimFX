@@ -9,8 +9,8 @@ import com.cburch.LogisimFX.instance.InstancePainter;
 import com.cburch.LogisimFX.instance.InstancePoker;
 import com.cburch.LogisimFX.instance.InstanceState;
 import com.cburch.LogisimFX.instance.StdAttr;
-import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
@@ -59,7 +59,7 @@ public class RegisterPoker extends InstancePoker {
 	@Override
 	public void keyTyped(InstanceState state, KeyEvent e) {
 
-		int val = Character.digit(e.getKeyChar(), 16);
+		int val = Character.digit(e.getCharacter().toCharArray()[0], 16);
 		if (val < 0) return;
 
 		BitWidth dataWidth = state.getAttributeValue(StdAttr.WIDTH);

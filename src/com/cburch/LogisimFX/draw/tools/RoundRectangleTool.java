@@ -9,7 +9,7 @@ import com.cburch.LogisimFX.draw.shapes.DrawAttr;
 import com.cburch.LogisimFX.draw.shapes.RoundRectangle;
 import com.cburch.LogisimFX.data.Attribute;
 
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import javafx.scene.image.ImageView;
 
 import java.util.List;
@@ -39,14 +39,20 @@ public class RoundRectangleTool extends RectangularTool {
 
 	@Override
 	public void drawShape(Graphics g, int x, int y, int w, int h) {
+
 		int r = 2 * attrs.getValue(DrawAttr.CORNER_RADIUS).intValue();
-		g.drawRoundRect(x, y, w, h, r, r);
+		g.c.strokeRoundRect(x, y, w, h, r, r);
+		g.toDefault();
+
 	}
 
 	@Override
 	public void fillShape(Graphics g, int x, int y, int w, int h) {
+
 		int r = 2 * attrs.getValue(DrawAttr.CORNER_RADIUS).intValue();
-		g.fillRoundRect(x, y, w, h, r, r);
+		g.c.fillRoundRect(x, y, w, h, r, r);
+		g.toDefault();
+
 	}
 	
 }

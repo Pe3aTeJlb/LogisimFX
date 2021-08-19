@@ -6,10 +6,9 @@ package com.cburch.LogisimFX.circuit;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.comp.*;
 import com.cburch.LogisimFX.data.*;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.tools.CustomHandles;
 import com.cburch.LogisimFX.util.Cache;
-import com.cburch.LogisimFX.util.GraphicsUtil;
 
 import java.util.AbstractList;
 import java.util.Arrays;

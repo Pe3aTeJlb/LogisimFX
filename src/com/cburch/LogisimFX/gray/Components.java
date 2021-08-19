@@ -4,13 +4,16 @@
 package com.cburch.LogisimFX.gray;
 
 import com.cburch.LogisimFX.tools.AddTool;
+import com.cburch.LogisimFX.tools.LC;
 import com.cburch.LogisimFX.tools.Library;
+import javafx.beans.binding.StringBinding;
 
 import java.util.Arrays;
 import java.util.List;
 
 /** The library of components that the user can access. */
 public class Components extends Library {
+
 	/** The list of all tools contained in this library. Technically,
 	 * libraries contain tools, which is a slightly more general concept
 	 * than components; practically speaking, though, you'll most often want
@@ -23,17 +26,16 @@ public class Components extends Library {
 	 * a no-arguments constructor method of the user-designated class.
 	 */
 	public Components() {
-		tools = Arrays.asList(new AddTool[] {
+		tools = Arrays.asList(
 				new AddTool(new GrayIncrementer()),
 				new AddTool(new SimpleGrayCounter()),
-				new AddTool(new GrayCounter()),
-		});
+				new AddTool(new GrayCounter()));
 	}
 	
 	/** Returns the name of the library that the user will see. */ 
 	@Override
-	public String getDisplayName() {
-		return "Gray Tools";
+	public StringBinding getDisplayName() {
+		return LC.castToBind( "Gray Tools");
 	}
 	
 	/** Returns a list of all the tools available in this library. */
@@ -41,5 +43,6 @@ public class Components extends Library {
 	public List<AddTool> getTools() {
 		return tools;
 	}
+
 }
 

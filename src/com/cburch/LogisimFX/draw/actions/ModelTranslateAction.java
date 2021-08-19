@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.HashSet;
 
 public class ModelTranslateAction extends ModelAction {
+
 	private HashSet<CanvasObject> moved;
 	private int dx;
 	private int dy;
@@ -65,4 +66,5 @@ public class ModelTranslateAction extends ModelAction {
 		}
 		return super.append(other);
 	}
+
 }

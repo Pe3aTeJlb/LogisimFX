@@ -4,14 +4,13 @@ import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.data.Bounds;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.proj.Project;
 
 import com.sun.javafx.tk.FontMetrics;
 import javafx.print.PageLayout;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;

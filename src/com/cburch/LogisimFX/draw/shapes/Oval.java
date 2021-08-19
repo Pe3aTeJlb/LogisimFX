@@ -7,7 +7,7 @@ import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -22,11 +22,13 @@ public class Oval extends Rectangular {
 	
 	@Override
 	public boolean matches(CanvasObject other) {
+
 		if (other instanceof Oval) {
 			return super.matches(other);
 		} else {
 			return false;
 		}
+
 	}
 
 	@Override
@@ -51,16 +53,19 @@ public class Oval extends Rectangular {
 
 	@Override
 	protected boolean contains(int x, int y, int w, int h, Location q) {
+
 		int qx = q.getX();
 		int qy = q.getY();
 		double dx = qx - (x + 0.5 * w);
 		double dy = qy - (y + 0.5 * h);
 		double sum = (dx * dx) / (w * w) + (dy * dy) / (h * h);
 		return sum <= 0.25;
+
 	}
 
 	@Override
 	protected Location getRandomPoint(Bounds bds, Random rand) {
+
 		if (getPaintType() == DrawAttr.PAINT_STROKE) {
 			double rx = getWidth() / 2.0;
 			double ry = getHeight() / 2.0;
@@ -76,12 +81,15 @@ public class Oval extends Rectangular {
 		} else {
 			return super.getRandomPoint(bds, rand);
 		}
+
 	}
 	
 	@Override
 	public void draw(Graphics g, int x, int y, int w, int h) {
-		if (setForFill(g)) g.fillOval(x, y, w, h);
-		if (setForStroke(g)) g.drawOval(x, y, w, h);
+
+		if (setForFill(g)) g.c.fillOval(x, y, w, h);
+		if (setForStroke(g)) g.c.strokeOval(x, y, w, h);
+
 	}
 
 }

@@ -4,9 +4,8 @@
 package com.cburch.LogisimFX.circuit;
 
 import com.cburch.LogisimFX.data.Bounds;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
-import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
-import com.cburch.logisim.gui.main.Canvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
 import com.cburch.LogisimFX.instance.InstancePainter;
 import com.cburch.LogisimFX.instance.InstancePoker;
 import com.cburch.LogisimFX.instance.InstanceState;
@@ -34,8 +33,7 @@ public class SubcircuitPoker extends InstancePoker {
 	@Override
 	public void paint(InstancePainter painter) {
 
-		if (painter.getDestination() instanceof Canvas
-				&& painter.getData() instanceof CircuitState) {
+		if (painter.getData() instanceof CircuitState) {
 			Bounds bds = painter.getInstance().getBounds();
 			int cx = bds.getX() + bds.getWidth() / 2;
 			int cy = bds.getY() + bds.getHeight() / 2;

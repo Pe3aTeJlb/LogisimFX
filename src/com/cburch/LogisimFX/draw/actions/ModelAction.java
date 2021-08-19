@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 public abstract class ModelAction extends Action {
+
 	private CanvasModel model;
 	
 	public ModelAction(CanvasModel model) {
@@ -43,11 +44,14 @@ public abstract class ModelAction extends Action {
 	}
 	
 	static String getShapesName(Collection<CanvasObject> coll) {
+
 		if (coll.size() != 1) {
 			return Strings.get("shapeMultiple");
 		} else {
 			CanvasObject shape = coll.iterator().next();
 			return shape.getDisplayName();
 		}
+
 	}
+
 }

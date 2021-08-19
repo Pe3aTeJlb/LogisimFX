@@ -9,7 +9,7 @@ import com.cburch.LogisimFX.data.AttributeSet;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.circuit.CircuitState;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 
 public interface Component {
 

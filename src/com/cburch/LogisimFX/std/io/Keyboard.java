@@ -3,22 +3,20 @@
 
 package com.cburch.LogisimFX.std.io;
 
-
-import java.awt.event.KeyEvent;
-
-import java.util.ArrayList;
-
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.sun.javafx.tk.FontMetrics;
 import com.sun.javafx.tk.Toolkit;
 
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
+
+import java.util.ArrayList;
 
 public class Keyboard extends InstanceFactory {
 
@@ -165,29 +163,29 @@ public class Keyboard extends InstanceFactory {
 		int y = bds.getY();
 
 		g.setFont(DEFAULT_FONT);
-		if (fm == null) fm = Toolkit.getToolkit().getFontLoader().getFontMetrics(g.getFont());
+		if (fm == null) fm = g.getFontMetrics();
 		int asc = (int) fm.getAscent();
 		int x0 = x + 8;
 		int ys = y + (HEIGHT + asc) / 2;
 		int dotsWidth = (int)fm.computeStringWidth("m");
 		int xs;
 		if (dispStart > 0) {
-			g.c.strokeText(str.substring(0, 1), x0, ys);
+			g.c.fillText(str.substring(0, 1), x0, ys);
 			xs = x0 + (int)fm.computeStringWidth(str.charAt(0) + "m");
 			drawDots(g, xs - dotsWidth, ys, dotsWidth, asc);
 			String sub = str.substring(dispStart, dispEnd);
-			g.c.strokeText(sub, xs, ys);
+			g.c.fillText(sub, xs, ys);
 			if (dispEnd < str.length()) {
 				drawDots(g, xs + (int)fm.computeStringWidth(sub), ys, dotsWidth, asc);
 			}
 		} else if (dispEnd < str.length()) {
 			String sub = str.substring(dispStart, dispEnd);
 			xs = x0;
-			g.c.strokeText(sub, xs, ys);
+			g.c.fillText(sub, xs, ys);
 			drawDots(g, xs + (int)fm.computeStringWidth(sub), ys, dotsWidth, asc);
 		} else {
 			xs = x0;
-			g.c.strokeText(str, xs, ys);
+			g.c.fillText(str, xs, ys);
 		}
 
 		if (specials.size() > 0) {
@@ -195,7 +193,6 @@ public class Keyboard extends InstanceFactory {
 					str, dispStart, dispEnd);
 		}
 
-		g.toDefaultFont();
 
 	}
 
@@ -286,12 +283,12 @@ public class Keyboard extends InstanceFactory {
 			boolean changed = false;
 			boolean used = true;
 			synchronized(data) {
-				switch (e.getKeyCode()) {
-				case KeyEvent.VK_DELETE: changed = data.delete(); break;
-				case KeyEvent.VK_LEFT:   data.moveCursorBy(-1); break;
-				case KeyEvent.VK_RIGHT:  data.moveCursorBy(1); break;
-				case KeyEvent.VK_HOME:   data.setCursor(0); break;
-				case KeyEvent.VK_END:    data.setCursor(Integer.MAX_VALUE); break;
+				switch (e.getCode()) {
+				case DELETE: changed = data.delete(); break;
+				case LEFT:   data.moveCursorBy(-1); break;
+				case RIGHT:  data.moveCursorBy(1); break;
+				case HOME:   data.setCursor(0); break;
+				case END:    data.setCursor(Integer.MAX_VALUE); break;
 				default: used = false;
 				}
 			}
@@ -304,15 +301,15 @@ public class Keyboard extends InstanceFactory {
 		public void keyTyped(InstanceState state, KeyEvent e) {
 
 			KeyboardData data = getKeyboardState(state);
-			char ch = e.getKeyChar();
+			char ch = e.getCharacter().toCharArray()[0];
 			boolean changed = false;
-			if (ch != KeyEvent.CHAR_UNDEFINED) {
+			//if (e.getCode() != KeyCode.UNDEFINED) {
 				if (!Character.isISOControl(ch) || ch == '\b' || ch == '\n'
 						|| ch == FORM_FEED) {
 					synchronized(data) { changed = data.insert(ch); }
 					e.consume();
 				}
-			}
+			//}
 			if (changed) state.getInstance().fireInvalidated();
 
 		}
@@ -322,7 +319,7 @@ public class Keyboard extends InstanceFactory {
 			KeyboardData data = getKeyboardState(painter);
 			Bounds bds = painter.getInstance().getBounds();
 			Graphics g = painter.getGraphics();
-			FontMetrics fm = Toolkit.getToolkit().getFontLoader().getFontMetrics(DEFAULT_FONT);
+			FontMetrics fm = g.getFontmetricsForFont(DEFAULT_FONT);
 
 			String str;
 			int cursor;
@@ -346,6 +343,7 @@ public class Keyboard extends InstanceFactory {
 			}
 			int y = bds.getY() + (bds.getHeight() + asc) / 2;
 			g.c.strokeLine(x, y - asc, x, y);
+			g.toDefault();
 
 		}
 

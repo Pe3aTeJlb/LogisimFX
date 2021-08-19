@@ -5,8 +5,8 @@ package com.cburch.LogisimFX.instance;
 
 import com.cburch.LogisimFX.comp.*;
 import com.cburch.LogisimFX.data.*;
-import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.tools.Caret;
 import com.cburch.LogisimFX.tools.SetAttributeAction;
 import com.cburch.LogisimFX.tools.TextEditable;

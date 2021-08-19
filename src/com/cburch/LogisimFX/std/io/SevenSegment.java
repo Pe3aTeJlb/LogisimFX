@@ -7,7 +7,7 @@ import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.instance.*;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.std.LC;
 
 import javafx.scene.paint.Color;

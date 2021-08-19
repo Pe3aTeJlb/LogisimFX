@@ -3,10 +3,10 @@
 
 package com.cburch.LogisimFX.draw.model;
 
-import com.cburch.LogisimFX.draw.canvas.Selection;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.Selection;
 import com.cburch.LogisimFX.draw.shapes.Text;
 import com.cburch.LogisimFX.data.Bounds;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 
 import java.util.Collection;
 import java.util.List;

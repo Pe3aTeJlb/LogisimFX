@@ -7,8 +7,8 @@ import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.instance.InstancePainter;
 import com.cburch.LogisimFX.instance.InstancePoker;
 import com.cburch.LogisimFX.instance.InstanceState;
-import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.proj.Project;
 
 import javafx.scene.input.KeyEvent;
@@ -25,6 +25,8 @@ public class MemPoker extends InstancePoker {
 		MemState data = (MemState) state.getData();
 		long addr = data.getAddressAt(event.localX - bds.getX(),
 				event.localY - bds.getY());
+
+		//long addr = data.getAddressAt(event.localX, event.localY);
 
 		// See if outside box
 		if (addr < 0) {
@@ -104,8 +106,8 @@ public class MemPoker extends InstancePoker {
 		@Override
 		public void keyTyped(InstanceState state, KeyEvent e) {
 
-			char c = e.getKeyChar();
-			int val = Character.digit(e.getKeyChar(), 16);
+			char c = e.getCharacter().toCharArray()[0];
+			int val = Character.digit(c, 16);
 			MemState data = (MemState) state.getData();
 			if (val >= 0) {
 				curValue = curValue * 16 + val;
@@ -159,8 +161,8 @@ public class MemPoker extends InstancePoker {
 		@Override
 		public void keyTyped(InstanceState state, KeyEvent e) {
 
-			char c = e.getKeyChar();
-			int val = Character.digit(e.getKeyChar(), 16);
+			char c = e.getCharacter().toCharArray()[0];
+			int val = Character.digit(c, 16);
 			MemState data = (MemState) state.getData();
 			if (val >= 0) {
 				long newScroll = (data.getScroll() * 16 + val) & (data.getLastAddress());

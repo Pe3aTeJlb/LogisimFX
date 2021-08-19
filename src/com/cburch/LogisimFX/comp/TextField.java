@@ -4,11 +4,9 @@
 package com.cburch.LogisimFX.comp;
 
 import com.cburch.LogisimFX.data.Bounds;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.sun.javafx.tk.FontMetrics;
-import com.sun.javafx.tk.Toolkit;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;
 
 import java.util.ArrayList;

@@ -3,20 +3,16 @@
 
 package com.cburch.LogisimFX.std.gates;
 
-import javax.swing.Icon;
-
 import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.comp.ComponentFactory;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.WireRepair;
 import com.cburch.LogisimFX.tools.WireRepairData;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
-import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.file.Options;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 

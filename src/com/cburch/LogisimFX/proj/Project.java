@@ -6,10 +6,10 @@ package com.cburch.LogisimFX.proj;
 import com.cburch.LogisimFX.draw.tools.AbstractTool;
 import com.cburch.LogisimFX.file.*;
 import com.cburch.LogisimFX.circuit.*;
-import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.MainFrameController;
-import com.cburch.LogisimFX.newgui.MainFrame.Selection;
-import com.cburch.LogisimFX.newgui.MainFrame.SelectionActions;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.Selection;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.SelectionActions;
 import com.cburch.LogisimFX.tools.AddTool;
 import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.tools.Tool;
@@ -77,11 +77,10 @@ public class Project {
 		= new EventSourceWeakSupport<CircuitListener>();
 
 	private Dependencies depends;
-	//private MyListener myListener = new MyListener();
-	//private boolean startupScreen = false;
+	private MyListener myListener = new MyListener();
 
 	public Project(LogisimFile file) {
-		//addLibraryListener(myListener);
+		addLibraryListener(myListener);
 		setLogisimFile(file);
 	}
 
@@ -240,7 +239,7 @@ public class Project {
 
 		if (circuitChanged) {
 
-			LayoutCanvas canvas = getFrameController() == null ? null : getFrameController().getCanvas();
+			LayoutCanvas canvas = getFrameController() == null ? null : getFrameController().getLayoutCanvas();
 			if (canvas != null) {
 				if (tool != null) tool.deselect(canvas);
 				Selection selection = canvas.getSelection();
@@ -285,6 +284,8 @@ public class Project {
 
 		getLogisimFile().setCurrent(circuit);
 
+		if(frameController!=null)frameController.computeTitle();
+
 	}
 
 	public void setTool(Tool value) {
@@ -297,7 +298,7 @@ public class Project {
 
 		Tool old = tool;
 
-		LayoutCanvas canvas = getFrameController().getCanvas();
+		LayoutCanvas canvas = getFrameController().getLayoutCanvas();
 		if (old != null) old.deselect(canvas);
 		Selection selection = canvas.getSelection();
 		if (selection != null && !selection.isEmpty()) {
@@ -318,7 +319,7 @@ public class Project {
 		}
 
 		tool = value;
-		if (tool != null) tool.select(getFrameController().getCanvas());
+		if (tool != null) tool.select(getFrameController().getLayoutCanvas());
 
 		tool = value;
 		fireEvent(ProjectEvent.ACTION_SET_TOOL, old, tool);
@@ -337,7 +338,6 @@ public class Project {
 
 		if (act == null) return;
 		Action toAdd = act;
-		//startupScreen = false;
 		if (!undoLog.isEmpty() && act.shouldAppendTo(getLastAction())) {
 			ActionData firstData = undoLog.removeLast();
 			Action first = firstData.action;

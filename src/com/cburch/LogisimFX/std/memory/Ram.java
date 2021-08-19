@@ -3,9 +3,6 @@
 
 package com.cburch.LogisimFX.std.memory;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
 import com.cburch.LogisimFX.circuit.CircuitState;

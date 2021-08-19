@@ -25,6 +25,10 @@ public class LC {
         return lc.createComplexStringBinding(key, strings);
     }
 
+    public static StringBinding castToBind(String string){
+        return lc.castToBind(string);
+    }
+
     public static String get(final String key, final Object... args) {
        return lc.get(key, args);
     }

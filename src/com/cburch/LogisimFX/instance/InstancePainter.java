@@ -8,7 +8,7 @@ import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.circuit.WireSet;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.proj.Project;
 
 import com.sun.javafx.tk.FontMetrics;

@@ -8,11 +8,7 @@ import com.cburch.LogisimFX.analyze.model.Expressions;
 import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.instance.InstancePainter;
 import com.cburch.LogisimFX.instance.InstanceState;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import com.cburch.LogisimFX.std.LC;
-import com.cburch.LogisimFX.util.GraphicsUtil;
-
-import java.awt.*;
 
 class NandGate extends AbstractGate {
 

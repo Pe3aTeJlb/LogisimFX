@@ -4,10 +4,11 @@
 package com.cburch.LogisimFX.comp;
 
 import com.cburch.LogisimFX.circuit.CircuitState;
-import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
 
 public class ComponentUserEvent {
 
+	private LayoutCanvas.CME e;
 	private LayoutCanvas canvas;
 	private int x = 0;
 	private int y = 0;
@@ -16,10 +17,11 @@ public class ComponentUserEvent {
 		this.canvas = canvas;
 	}
 
-	public ComponentUserEvent(LayoutCanvas canvas, int x, int y) {
+	public ComponentUserEvent(LayoutCanvas canvas, int x, int y, LayoutCanvas.CME e) {
 		this.canvas = canvas;
 		this.x = x;
 		this.y = y;
+		this.e = e;
 	}
 
 	public LayoutCanvas getCanvas() {
@@ -38,4 +40,7 @@ public class ComponentUserEvent {
 		return y;
 	}
 
+	public LayoutCanvas.CME getEvent() {
+		return e;
+	}
 }

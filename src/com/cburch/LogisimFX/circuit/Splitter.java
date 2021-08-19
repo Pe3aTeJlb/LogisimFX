@@ -12,11 +12,13 @@ import com.cburch.LogisimFX.tools.ToolTipMaker;
 import com.cburch.LogisimFX.tools.WireRepair;
 import com.cburch.LogisimFX.tools.WireRepairData;
 import com.cburch.LogisimFX.util.StringUtil;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.SeparatorMenuItem;
 
 import javax.swing.*;
 
 public class Splitter extends ManagedComponent
-		implements WireRepair, ToolTipMaker, AttributeListener {
+		implements WireRepair, MenuExtender, ToolTipMaker, AttributeListener {
 
 	// basic data
 	byte[] bit_thread; // how each bit maps to thread within end
@@ -180,6 +182,7 @@ public class Splitter extends ManagedComponent
 			return null;
 		}
 	}
+
 	private static void appendBuf(StringBuilder buf, int start, int end) {
 		if (buf.length() > 0) buf.append(",");
 		if (start == end) {
@@ -189,10 +192,14 @@ public class Splitter extends ManagedComponent
 		}
 	}
 
-	public void configureMenu(JPopupMenu menu, Project proj) {
-		menu.addSeparator();
-		menu.add(new SplitterDistributeItem(proj, this, 1));
-		menu.add(new SplitterDistributeItem(proj, this, -1));
+	public void configureMenu(ContextMenu menu, Project proj) {
+
+		menu.getItems().addAll(
+				new SeparatorMenuItem(),
+				new SplitterDistributeItem(proj, this, 1),
+				new SplitterDistributeItem(proj, this, -1)
+		);
+
 	}
 
 	//

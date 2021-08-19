@@ -4,15 +4,17 @@
 package com.cburch.LogisimFX.draw.tools;
 
 import com.cburch.LogisimFX.draw.actions.ModelAddAction;
-import com.cburch.LogisimFX.draw.canvas.AppearanceCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceCanvas;
 import com.cburch.LogisimFX.draw.model.CanvasModel;
 import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 
 import javafx.scene.Cursor;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.paint.Color;
 
 abstract class RectangularTool extends AbstractTool {
 
@@ -40,30 +42,30 @@ abstract class RectangularTool extends AbstractTool {
 	public void toolDeselected(AppearanceCanvas canvas) {
 		Bounds bds = currentBounds;
 		active = false;
-		repaintArea(canvas, bds);
 	}
 	
 	@Override
 	public void mousePressed(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
-		Location loc = Location.create(e.getX(), e.getY());
+
+		Location loc = Location.create(e.localX, e.localY);
 		Bounds bds = Bounds.create(loc);
 		dragStart = loc;
 		lastMouseX = loc.getX();
 		lastMouseY = loc.getY();
 		active = canvas.getModel() != null;
-		repaintArea(canvas, bds);
+
 	}
 	
 	@Override
 	public void mouseDragged(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
-		updateMouse(canvas, e.getX(), e.getY(), e.getModifiersEx());
+		updateMouse(canvas, e.localX, e.localY, e);
 	}
 	
 	@Override
 	public void mouseReleased(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
+
 		if (active) {
-			Bounds oldBounds = currentBounds;
-			Bounds bds = computeBounds(canvas, e.getX(), e.getY(), e.getModifiersEx());
+			Bounds bds = computeBounds(canvas, e.localX, e.localY, e);
 			currentBounds = Bounds.EMPTY_BOUNDS;
 			active = false;
 			CanvasObject add = null;
@@ -72,19 +74,20 @@ abstract class RectangularTool extends AbstractTool {
 				add = createShape(bds.getX(), bds.getY(),
 						bds.getWidth(), bds.getHeight());
 				canvas.doAction(new ModelAddAction(model, add));
-				repaintArea(canvas, oldBounds.add(bds));
 			}
 			canvas.toolGestureComplete(this, add);
 		}
+
 	}
 	
 	@Override
-	public void keyPressed(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
-		int code = e.getKeyCode();
-		if (active && (code == KeyEvent.VK_SHIFT || code == KeyEvent.VK_ALT
-				|| code == KeyEvent.VK_CONTROL)) {
-			updateMouse(canvas, lastMouseX, lastMouseY, e.getModifiersEx());
+	public void keyPressed(AppearanceCanvas canvas, KeyEvent e) {
+
+		KeyCode code = e.getCode();
+		if (active && (code == KeyCode.SHIFT || code == KeyCode.ALT || code == KeyCode.CONTROL)) {
+			updateMouse(canvas, lastMouseX, lastMouseY, null);
 		}
+
 	}
 	
 	@Override
@@ -92,16 +95,18 @@ abstract class RectangularTool extends AbstractTool {
 		keyPressed(canvas, e);
 	}
 	
-	private void updateMouse(AppearanceCanvas canvas, int mx, int my, int mods) {
+	private void updateMouse(AppearanceCanvas canvas, int mx, int my, AppearanceCanvas.CME e) {
+
 		Bounds oldBounds = currentBounds;
-		Bounds bds = computeBounds(canvas, mx, my, mods);
+		Bounds bds = computeBounds(canvas, mx, my, e);
 		if (!bds.equals(oldBounds)) {
 			currentBounds = bds;
-			repaintArea(canvas, oldBounds.add(bds));
 		}
+
 	}
 	
-	private Bounds computeBounds(AppearanceCanvas canvas, int mx, int my, int mods) {
+	private Bounds computeBounds(AppearanceCanvas canvas, int mx, int my, AppearanceCanvas.CME e) {
+
 		lastMouseX = mx;
 		lastMouseY = my;
 		if (!active) {
@@ -116,16 +121,16 @@ abstract class RectangularTool extends AbstractTool {
 				return Bounds.EMPTY_BOUNDS;
 			}
 
-			boolean ctrlDown = (mods & MouseEvent.CTRL_DOWN_MASK) != 0;
+			boolean ctrlDown = e.event.isControlDown();
 			if (ctrlDown) {
-				x0 = canvas.snapX(x0);
-				y0 = canvas.snapY(y0);
-				x1 = canvas.snapX(x1);
-				y1 = canvas.snapY(y1);
+				x0 = AppearanceCanvas.snapXToGrid(x0);
+				y0 = AppearanceCanvas.snapYToGrid(y0);
+				x1 = AppearanceCanvas.snapXToGrid(x1);
+				y1 = AppearanceCanvas.snapYToGrid(y1);
 			}
 			
-			boolean altDown = (mods & MouseEvent.ALT_DOWN_MASK) != 0;
-			boolean shiftDown = (mods & MouseEvent.SHIFT_DOWN_MASK) != 0;
+			boolean altDown = e.event.isAltDown();
+			boolean shiftDown = e.event.isShiftDown();
 			if (altDown) {
 				if (shiftDown) {
 					int r = Math.min(Math.abs(x0 - x1), Math.abs(y0 - y1));
@@ -159,24 +164,22 @@ abstract class RectangularTool extends AbstractTool {
 			}
 			return Bounds.create(x, y, w, h);
 		}
-	}
 
-	private void repaintArea(AppearanceCanvas canvas, Bounds bds) {
-		canvas.repaint();
-		/* The below doesn't work because Java doesn't deal correctly with stroke
-		 * widths that go outside the clip area
-		canvas.repaintCanvasCoords(bds.getX() - 10, bds.getY() - 10,
-				bds.getWidth() + 20, bds.getHeight() + 20);
-		 */
 	}
 	
 	@Override
-	public void draw(Graphics g) {
+	public void draw(AppearanceCanvas canvas) {
+
+		Graphics g = canvas.getGraphics();
+
 		Bounds bds = currentBounds;
 		if (active && bds != null && bds != Bounds.EMPTY_BOUNDS) {
 			g.setColor(Color.GRAY);
 			drawShape(g, bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight());
 		}
+
+		g.toDefault();
+
 	}
 
 }

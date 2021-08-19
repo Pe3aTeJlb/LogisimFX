@@ -2,6 +2,7 @@ package com.cburch.LogisimFX.std;
 
 import com.cburch.LogisimFX.localization.LC_std;
 import com.cburch.LogisimFX.localization.Localizer;
+import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 
 // package localizer
@@ -23,6 +24,10 @@ public class LC {
 
     public static StringBinding createComplexStringBinding(final String key, String... strings) {
         return lc.createComplexStringBinding(key, strings);
+    }
+
+    public static StringBinding castToBind(final String string){
+        return lc.castToBind(string);
     }
 
     public static StringBinding createRawStringBinding(final String string){

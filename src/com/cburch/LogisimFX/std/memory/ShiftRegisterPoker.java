@@ -10,8 +10,8 @@ import com.cburch.LogisimFX.instance.InstancePainter;
 import com.cburch.LogisimFX.instance.InstancePoker;
 import com.cburch.LogisimFX.instance.InstanceState;
 import com.cburch.LogisimFX.instance.StdAttr;
-import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
@@ -30,19 +30,23 @@ public class ShiftRegisterPoker extends InstancePoker {
 	
 	private int computeStage(InstanceState state, LayoutCanvas.CME e) {
 
+		e.print();
+
 		Integer lenObj = state.getAttributeValue(ShiftRegister.ATTR_LENGTH);
 		BitWidth widObj = state.getAttributeValue(StdAttr.WIDTH);
 		Boolean loadObj = state.getAttributeValue(ShiftRegister.ATTR_LOAD);
 		Bounds bds = state.getInstance().getBounds();
-
 		int y = bds.getY();
 		String label = state.getAttributeValue(StdAttr.LABEL);
 		if (label == null || label.equals("")) y += bds.getHeight() / 2;
 		else y += 3 * bds.getHeight() / 4;
 		y = e.localY - y;
+		//y = e.localY;
 		if (y <= -6 || y >= 8) return -1;
 		
 		int x = e.localX - (bds.getX() + 15);
+		//int x = e.localX;
+		System.out.println("xy "+x+" "+y+" "+lenObj.intValue() * 10);
 		if (!loadObj.booleanValue() || widObj.getWidth() > 4) return -1;
 		if (x < 0 || x >= lenObj.intValue() * 10) return -1;
 		return x / 10;
@@ -97,7 +101,7 @@ public class ShiftRegisterPoker extends InstancePoker {
 
 		int loc = this.loc;
 		if (loc < 0) return;
-		char c = e.getKeyChar();
+		char c = e.getCharacter().toCharArray()[0];
 		if (c == ' ') {
 			Integer lenObj = state.getAttributeValue(ShiftRegister.ATTR_LENGTH);
 			if (loc < lenObj.intValue() - 1) {
@@ -111,7 +115,7 @@ public class ShiftRegisterPoker extends InstancePoker {
 			}
 		} else {
 			try {
-				int val = Integer.parseInt("" + e.getKeyChar(), 16);
+				int val = Integer.parseInt("" + c, 16);
 				BitWidth widObj = state.getAttributeValue(StdAttr.WIDTH);
 				if ((val & ~widObj.getMask()) != 0) return;
 				Value valObj = Value.createKnown(widObj, val);

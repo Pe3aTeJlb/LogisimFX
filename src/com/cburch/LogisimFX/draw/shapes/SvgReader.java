@@ -8,8 +8,12 @@ import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.AttributeOption;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.util.UnmodifiableList;
+
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
@@ -24,6 +28,7 @@ public class SvgReader {
 	private static final Pattern PATH_REGEX = Pattern.compile("[a-zA-Z]|[-0-9.]+");
 	
 	public static AbstractCanvasObject createShape(Element elt) {
+
 		String name = elt.getTagName();
 		AbstractCanvasObject ret;
 		if (name.equals("ellipse")) {
@@ -75,10 +80,13 @@ public class SvgReader {
 				ret.setValue(DrawAttr.FILL_COLOR, getColor(color, opacity));
 			}
 		}
+
 		return ret;
+
 	}
 
 	private static AbstractCanvasObject createRectangle(Element elt) {
+
 		int x = Integer.parseInt(elt.getAttribute("x"));
 		int y = Integer.parseInt(elt.getAttribute("y"));
 		int w = Integer.parseInt(elt.getAttribute("width"));
@@ -91,9 +99,11 @@ public class SvgReader {
 		} else {
 			return new Rectangle(x, y, w, h);
 		}
+
 	}
 
 	private static AbstractCanvasObject createOval(Element elt) {
+
 		double cx = Double.parseDouble(elt.getAttribute("cx"));
 		double cy = Double.parseDouble(elt.getAttribute("cy"));
 		double rx = Double.parseDouble(elt.getAttribute("rx"));
@@ -102,15 +112,20 @@ public class SvgReader {
 		int y = (int) Math.round(cy - ry);
 		int w = (int) Math.round(rx * 2);
 		int h = (int) Math.round(ry * 2);
+
 		return new Oval(x, y, w, h);
+
 	}
 
 	private static AbstractCanvasObject createLine(Element elt) {
+
 		int x0 = Integer.parseInt(elt.getAttribute("x1"));
 		int y0 = Integer.parseInt(elt.getAttribute("y1"));
 		int x1 = Integer.parseInt(elt.getAttribute("x2"));
 		int y1 = Integer.parseInt(elt.getAttribute("y2"));
+
 		return new Line(x0, y0, x1, y1);
+
 	}
 
 	private static AbstractCanvasObject createPolygon(Element elt) {
@@ -122,6 +137,7 @@ public class SvgReader {
 	}
 
 	private static AbstractCanvasObject createText(Element elt) {
+
 		int x = Integer.parseInt(elt.getAttribute("x"));
 		int y = Integer.parseInt(elt.getAttribute("y"));
 		String text = elt.getTextContent();
@@ -131,11 +147,12 @@ public class SvgReader {
 		String fontStyle = elt.getAttribute("font-style");
 		String fontWeight = elt.getAttribute("font-weight");
 		String fontSize = elt.getAttribute("font-size");
-		int styleFlags = 0;
-		if (fontStyle.equals("italic")) styleFlags |= Font.ITALIC;
-		if (fontWeight.equals("bold")) styleFlags |= Font.BOLD;
+		FontWeight fw = FontWeight.NORMAL;
+		FontPosture fp = FontPosture.REGULAR;
+		if (fontStyle.equals("italic")) fp = FontPosture.ITALIC;
+		if (fontWeight.equals("bold")) fw = FontWeight.BOLD;
 		int size = Integer.parseInt(fontSize);
-		ret.setValue(DrawAttr.FONT, new Font(fontFamily, styleFlags, size));
+		ret.setValue(DrawAttr.FONT, Font.font(fontFamily, fw, fp, size));
 
 		String alignStr = elt.getAttribute("text-anchor");
 		AttributeOption halign;
@@ -150,9 +167,11 @@ public class SvgReader {
 		
 		// fill color is handled after we return
 		return ret;
+
 	}
 	
 	private static List<Location> parsePoints(String points) {
+
 		Pattern patt = Pattern.compile("[ ,\n\r\t]+");
 		String[] toks = patt.split(points);
 		Location[] ret = new Location[toks.length / 2];
@@ -161,10 +180,13 @@ public class SvgReader {
 			int y = Integer.parseInt(toks[2 * i + 1]);
 			ret[i] = Location.create(x, y);
 		}
+
 		return UnmodifiableList.create(ret);
+
 	}
 	
 	private static AbstractCanvasObject createPath(Element elt) {
+
 		Matcher patt = PATH_REGEX.matcher(elt.getAttribute("d"));
 		List<String> tokens = new ArrayList<String>();
 		int type = -1; // -1 error, 0 start, 1 curve, 2 polyline
@@ -223,9 +245,11 @@ public class SvgReader {
 		} else {
 			throw new NumberFormatException("Unrecognized path");
 		}
+
 	}
 	
 	private static Color getColor(String hue, String opacity) {
+
 		int r;
 		int g;
 		int b;
@@ -244,7 +268,9 @@ public class SvgReader {
 		} else {
 			a = (int) Math.round(Double.parseDouble(opacity) * 255);
 		}
+
 		return new Color(r, g, b, a);
+
 	}
 
 }

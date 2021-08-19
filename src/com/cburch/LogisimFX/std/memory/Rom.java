@@ -7,20 +7,14 @@ import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.AttributeSet;
 import com.cburch.LogisimFX.data.BitWidth;
 import com.cburch.LogisimFX.data.Value;
+import com.cburch.LogisimFX.newgui.HexEditorFrame.HexFile;
 import com.cburch.LogisimFX.instance.Instance;
 import com.cburch.LogisimFX.instance.InstanceState;
 import com.cburch.LogisimFX.instance.Port;
 import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.std.LC;
-import com.cburch.logisim.gui.hex.HexFile;
-import com.cburch.logisim.gui.hex.HexFrame;
-import com.cburch.logisim.gui.main.Frame;
 import com.cburch.LogisimFX.proj.Project;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -135,21 +129,11 @@ public class Rom extends Mem {
 
 	}
 
+
 	private static class ContentsAttribute extends Attribute<MemContents> {
 
 		public ContentsAttribute() {
 			super("contents", LC.createStringBinding("romContentsAttr"));
-		}
-
-		@Override
-		public java.awt.Component getCellEditor(Window source, MemContents value) {
-			if (source instanceof Frame) {
-				Project proj = ((Frame) source).getProject();
-				RomAttributes.register(value, proj);
-			}
-			ContentsCell ret = new ContentsCell(source, value);
-			ret.mouseClicked(null);
-			return ret;
 		}
 
 		@Override
@@ -197,39 +181,5 @@ public class Rom extends Mem {
 
 	}
 
-	private static class ContentsCell extends JLabel
-			implements MouseListener {
-
-		Window source;
-		MemContents contents;
-
-		ContentsCell(Window source, MemContents contents) {
-
-			super(Strings.get("romContentsValue"));
-			this.source = source;
-			this.contents = contents;
-			addMouseListener(this);
-
-		}
-
-		public void mouseClicked(MouseEvent e) {
-
-			if (contents == null) return;
-			Project proj = source instanceof Frame ? ((Frame) source).getProject() : null;
-			HexFrame frame = RomAttributes.createHexFrame(contents, proj);
-			frame.setVisible(true);
-			frame.toFront();
-
-		}
-
-		public void mousePressed(MouseEvent e) { }
-
-		public void mouseReleased(MouseEvent e) { }
-
-		public void mouseEntered(MouseEvent e) { }
-
-		public void mouseExited(MouseEvent e) { }
-
-	}
 
 }

@@ -7,16 +7,13 @@ import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
 import com.cburch.LogisimFX.newgui.ContextMenuManager;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
-import com.cburch.LogisimFX.proj.Project;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.std.wiring.Pin;
 import com.cburch.LogisimFX.tools.MenuExtender;
 import com.cburch.LogisimFX.util.GraphicsUtil;
-import com.cburch.LogisimFX.util.StringGetter;
 import com.sun.javafx.tk.FontMetrics;
 import javafx.beans.binding.StringBinding;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
@@ -30,7 +27,6 @@ public class SubcircuitFactory extends InstanceFactory {
 		super("", null);
 		this.source = source;
 		setFacingAttribute(StdAttr.FACING);
-		//setDefaultToolTip(new CircuitFeature(null));
 		setInstancePoker(SubcircuitPoker.class);
 		setIcon("subcirc.gif");
 	}
@@ -46,7 +42,7 @@ public class SubcircuitFactory extends InstanceFactory {
 
 	@Override
 	public StringBinding getDisplayGetter() {
-		return LC.createStringBinding(source.getName());
+		return LC.castToBind(source.getName());
 	}
 
 	@Override
@@ -235,6 +231,7 @@ public class SubcircuitFactory extends InstanceFactory {
 		drawCircuitLabel(painter, getOffsetBounds(attrs), facing, defaultFacing);
 		g.c.translate(-loc.getX(), -loc.getY());
 		painter.drawLabel();
+		g.toDefault();
 
 	}
 

@@ -8,20 +8,19 @@ import java.io.IOException;
 import java.util.WeakHashMap;
 
 import com.cburch.LogisimFX.data.*;
+import com.cburch.LogisimFX.newgui.HexEditorFrame.HexFile;
+import com.cburch.LogisimFX.newgui.HexEditorFrame.HexModel;
+import com.cburch.LogisimFX.newgui.HexEditorFrame.HexModelListener;
 import com.cburch.LogisimFX.instance.*;
 import com.cburch.LogisimFX.newgui.ContextMenuManager;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.MenuExtender;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.JoinedConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.StringUtil;
-import com.cburch.hex.HexModel;
-import com.cburch.hex.HexModelListener;
 import com.cburch.LogisimFX.circuit.CircuitState;
-import com.cburch.logisim.gui.hex.HexFile;
-import com.cburch.logisim.gui.hex.HexFrame;
 import com.cburch.LogisimFX.proj.Project;
 
 import javafx.beans.binding.StringBinding;

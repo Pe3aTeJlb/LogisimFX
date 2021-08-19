@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class ModelAddAction extends ModelAction {
+
 	private ArrayList<CanvasObject> added;
 	private int addIndex;
 	
@@ -19,16 +20,19 @@ public class ModelAddAction extends ModelAction {
 	}
 
 	public ModelAddAction(CanvasModel model, Collection<CanvasObject> added) {
+
 		super(model);
 		this.added = new ArrayList<CanvasObject>(added);
 		this.addIndex = model.getObjectsFromBottom().size();
+
 	}
 
-	public ModelAddAction(CanvasModel model, Collection<CanvasObject> added,
-                          int index) {
+	public ModelAddAction(CanvasModel model, Collection<CanvasObject> added, int index) {
+
 		super(model);
 		this.added = new ArrayList<CanvasObject>(added);
-		this.addIndex = index; 
+		this.addIndex = index;
+
 	}
 	
 	public int getDestinationIndex() {
@@ -54,4 +58,5 @@ public class ModelAddAction extends ModelAction {
 	void undoSub(CanvasModel model) {
 		model.removeObjects(added);
 	}
+
 }

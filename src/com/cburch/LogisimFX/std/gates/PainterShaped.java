@@ -9,12 +9,11 @@ import com.cburch.LogisimFX.data.Direction;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.instance.InstancePainter;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.sun.javafx.geom.Path2D;
 import com.sun.javafx.geom.Point2D;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 public class PainterShaped {

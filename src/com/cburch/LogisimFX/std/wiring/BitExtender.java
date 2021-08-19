@@ -5,13 +5,12 @@ package com.cburch.LogisimFX.std.wiring;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.tools.key.JoinedConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.sun.javafx.tk.FontMetrics;
-import javafx.scene.canvas.GraphicsContext;
 
 public class BitExtender extends InstanceFactory {
 
@@ -39,7 +38,6 @@ public class BitExtender extends InstanceFactory {
 			}, new Object[] {
 				BitWidth.create(8), BitWidth.create(16), ATTR_TYPE.parse("zero")
 			});
-		setFacingAttribute(StdAttr.FACING);
 		setKeyConfigurator(JoinedConfigurator.create(
 				new BitWidthConfigurator(ATTR_OUT_WIDTH),
 				new BitWidthConfigurator(ATTR_IN_WIDTH, 1, Value.MAX_WIDTH, null)));

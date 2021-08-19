@@ -7,7 +7,7 @@ import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.draw.model.Handle;
 import com.cburch.LogisimFX.draw.model.HandleGesture;
 import com.cburch.LogisimFX.data.*;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.util.UnmodifiableList;
 
 import javafx.scene.paint.Color;

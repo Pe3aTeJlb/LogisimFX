@@ -5,13 +5,12 @@ package com.cburch.LogisimFX.std.memory;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.StringUtil;
 
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Register extends InstanceFactory {

@@ -10,7 +10,7 @@ import com.cburch.LogisimFX.data.AttributeSet;
 import com.cburch.LogisimFX.data.BitWidth;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.std.wiring.Clock;
 import com.cburch.LogisimFX.util.CollectionUtil;
 import com.cburch.LogisimFX.util.EventSourceWeakSupport;

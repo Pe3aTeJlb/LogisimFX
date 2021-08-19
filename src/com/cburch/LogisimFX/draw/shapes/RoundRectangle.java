@@ -7,7 +7,7 @@ import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -26,12 +26,14 @@ public class RoundRectangle extends Rectangular {
 	
 	@Override
 	public boolean matches(CanvasObject other) {
+
 		if (other instanceof RoundRectangle) {
 			RoundRectangle that = (RoundRectangle) other;
 			return super.matches(other) && this.radius == that.radius;
 		} else {
 			return false;
 		}
+
 	}
 
 	@Override
@@ -57,30 +59,36 @@ public class RoundRectangle extends Rectangular {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <V> V getValue(Attribute<V> attr) {
+
 		if (attr == DrawAttr.CORNER_RADIUS) {
 			return (V) Integer.valueOf(radius);
 		} else {
 			return super.getValue(attr);
 		}
+
 	}
 
 	@Override
 	public void updateValue(Attribute<?> attr, Object value) {
+
 		if (attr == DrawAttr.CORNER_RADIUS) {
 			radius = ((Integer) value).intValue();
 		} else {
 			super.updateValue(attr, value);
 		}
+
 	}
 	
 	@Override
 	protected boolean contains(int x, int y, int w, int h, Location q) {
+
 		int qx = q.getX();
 		int qy = q.getY();
 		int rx = radius;
 		int ry = radius;
 		if (2 * rx > w) rx = w / 2;
 		if (2 * ry > h) ry = h / 2;
+
 		if (!isInRect(qx, qy, x, y, w, h)) {
 			return false;
 		} else if (qx < x + rx) {
@@ -94,10 +102,12 @@ public class RoundRectangle extends Rectangular {
 			else if (qy < y + h - ry) return true;
 			else return inCircle(qx, qy, x + w - rx, y + h - ry, rx, ry);
 		}
+
 	}
 
 	@Override
 	protected Location getRandomPoint(Bounds bds, Random rand) {
+
 		if (getPaintType() == DrawAttr.PAINT_STROKE) {
 			int w = getWidth();
 			int h = getHeight();
@@ -147,20 +157,25 @@ public class RoundRectangle extends Rectangular {
 		} else {
 			return super.getRandomPoint(bds, rand);
 		}
+
 	}
 
 	private static boolean inCircle(int qx, int qy, int cx, int cy, int rx, int ry) {
+
 		double dx = qx - cx;
 		double dy = qy - cy;
 		double sum = (dx * dx) / (4 * rx * rx) + (dy * dy) / (4 * ry * ry);
 		return sum <= 0.25;
+
 	}
 	
 	@Override
 	public void draw(Graphics g, int x, int y, int w, int h) {
+
 		int diam = 2 * radius;
 		if (setForFill(g)) g.c.fillRoundRect(x, y, w, h, diam, diam);
 		if (setForStroke(g)) g.c.strokeRoundRect(x, y, w, h, diam, diam);
+
 	}
 
 }

@@ -5,7 +5,7 @@ package com.cburch.LogisimFX.draw.model;
 
 import com.cburch.LogisimFX.draw.shapes.DrawAttr;
 import com.cburch.LogisimFX.data.*;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.util.EventSourceWeakSupport;
 
 import javafx.scene.paint.Color;
@@ -120,6 +120,7 @@ public abstract class AbstractCanvasObject
 
 	// methods required by AttributeSet interface
 	public abstract List<Attribute<?>> getAttributes();
+
 	public abstract <V> V getValue(Attribute<V> attr);
 
 	public void addAttributeListener(AttributeListener l) {

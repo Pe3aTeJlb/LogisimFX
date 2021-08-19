@@ -5,7 +5,7 @@ package com.cburch.LogisimFX.draw.tools;
 
 import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.draw.actions.ModelAddAction;
-import com.cburch.LogisimFX.draw.canvas.AppearanceCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceCanvas;
 import com.cburch.LogisimFX.draw.model.CanvasModel;
 import com.cburch.LogisimFX.draw.shapes.Curve;
 import com.cburch.LogisimFX.draw.shapes.CurveUtil;
@@ -13,10 +13,13 @@ import com.cburch.LogisimFX.draw.shapes.DrawAttr;
 import com.cburch.LogisimFX.draw.shapes.LineUtil;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Location;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 
 import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.paint.Color;
 
 import java.util.List;
 
@@ -36,9 +39,11 @@ public class CurveTool extends AbstractTool {
 	private int lastMouseY;
 	
 	public CurveTool(DrawingAttributeSet attrs) {
+
 		this.attrs = attrs;
 		state = BEFORE_CREATION;
 		mouseDown = false;
+
 	}
 	
 	@Override
@@ -54,17 +59,17 @@ public class CurveTool extends AbstractTool {
 	@Override
 	public void toolDeselected(AppearanceCanvas canvas) {
 		state = BEFORE_CREATION;
-		repaintArea(canvas);
 	}
 	
 	@Override
 	public void mousePressed(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
-		int mx = e.localX();
-		int my = e.localY();
+
+		int mx = e.localX;
+		int my = e.localY;
 		lastMouseX = mx;
 		lastMouseY = my;
 		mouseDown = true;
-		int mods = e.getModifiersEx();
+
 		if (e.event.isControlDown()) {
 			mx = e.snappedX;
 			my = e.snappedY;
@@ -82,18 +87,18 @@ public class CurveTool extends AbstractTool {
 			state = CONTROL_DRAG;
 			break;
 		}
-		repaintArea(canvas);
+
 	}
 	
 	@Override
 	public void mouseDragged(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
-		updateMouse(canvas, e.getX(), e.getY(), e.getModifiersEx());
-		repaintArea(canvas);
+		updateMouse(canvas, e.localX, e.localY, e);
 	}
 	
 	@Override
 	public void mouseReleased(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
-		Curve c = updateMouse(canvas, e.getX(), e.getY(), e.getModifiersEx());
+
+		Curve c = updateMouse(canvas, e.localX, e.localY, e);
 		mouseDown = false;
 		if (state == CONTROL_DRAG) {
 			if (c != null) {
@@ -104,17 +109,18 @@ public class CurveTool extends AbstractTool {
 			}
 			state = BEFORE_CREATION;
 		}
-		repaintArea(canvas);
+
 	}
 	
 	@Override
 	public void keyPressed(AppearanceCanvas canvas, KeyEvent e) {
-		int code = e.getKeyCode();
-		if (mouseDown && (code == KeyEvent.VK_SHIFT
-				|| code == KeyEvent.VK_CONTROL || code == KeyEvent.VK_ALT)) {
-			updateMouse(canvas, lastMouseX, lastMouseY, e.getModifiersEx());
-			repaintArea(canvas);
+
+		KeyCode code = e.getCode();
+		if (mouseDown && (code == KeyCode.SHIFT
+				|| code == KeyCode.CONTROL || code == KeyCode.ALT)) {
+			updateMouse(canvas, lastMouseX, lastMouseY, null);
 		}
+
 	}
 	
 	@Override
@@ -124,21 +130,22 @@ public class CurveTool extends AbstractTool {
 
 	@Override
 	public void keyTyped(AppearanceCanvas canvas, KeyEvent e) {
-		char ch = e.getKeyChar();
-		if (ch == '\u001b') { // escape key
+
+		if (e.getCode() == KeyCode.ESCAPE) { // escape key
 			state = BEFORE_CREATION;
-			repaintArea(canvas);
 			canvas.toolGestureComplete(this, null);
 		}
+
 	}
 	
-	private Curve updateMouse(AppearanceCanvas canvas, int mx, int my, int mods) {
+	private Curve updateMouse(AppearanceCanvas canvas, int mx, int my, AppearanceCanvas.CME e) {
+
 		lastMouseX = mx;
 		lastMouseY = my;
 		
-		boolean shiftDown = (mods & MouseEvent.SHIFT_DOWN_MASK) != 0;
-		boolean ctrlDown = (mods & MouseEvent.CTRL_DOWN_MASK) != 0;
-		boolean altDown = (mods & MouseEvent.ALT_DOWN_MASK) != 0;
+		boolean shiftDown = e.event.isShiftDown();
+		boolean ctrlDown = e.event.isControlDown();
+		boolean altDown = e.event.isAltDown();
 		Curve ret = null;
 		switch (state) {
 		case ENDPOINT_DRAG:
@@ -149,8 +156,8 @@ public class CurveTool extends AbstractTool {
 					my = p.getY();
 				}
 				if (ctrlDown) {
-					mx = canvas.snapX(mx);
-					my = canvas.snapY(my);
+					mx = e.snappedX;
+					my = e.snappedY;
 				}
 				end1 = Location.create(mx, my);
 			}
@@ -160,8 +167,8 @@ public class CurveTool extends AbstractTool {
 				int cx = mx;
 				int cy = my;
 				if (ctrlDown) {
-					cx = canvas.snapX(cx);
-					cy = canvas.snapY(cy);
+					cx = AppearanceCanvas.snapXToGrid(cx);
+					cy = AppearanceCanvas.snapYToGrid(cy);
 				}
 				if (shiftDown) {
 					double x0 = end0.getX();
@@ -190,11 +197,9 @@ public class CurveTool extends AbstractTool {
 			}
 			break;
 		}
-		return ret;
-	}
 
-	private void repaintArea(AppearanceCanvas canvas) {
-		canvas.repaint();
+		return ret;
+
 	}
 	
 	@Override
@@ -203,16 +208,22 @@ public class CurveTool extends AbstractTool {
 	}
 
 	@Override
-	public void draw(Graphics g) {
+	public void draw(AppearanceCanvas canvas) {
+
+		Graphics g = canvas.getGraphics();
 		g.setColor(Color.GRAY);
+
 		switch (state) {
 		case ENDPOINT_DRAG:
-			g.drawLine(end0.getX(), end0.getY(), end1.getX(), end1.getY());
+			g.c.strokeLine(end0.getX(), end0.getY(), end1.getX(), end1.getY());
 			break;
 		case CONTROL_DRAG:
-			((Graphics2D) g).draw(curCurve.getCurve2D());
+			curCurve.strokeCurve2D(g);
 			break;
 		}
+
+		g.toDefault();
+
 	}
 
 }

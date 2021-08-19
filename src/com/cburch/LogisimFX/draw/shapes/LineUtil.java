@@ -14,9 +14,11 @@ public class LineUtil {
 	private static final double zeroMax = 0.0000001;
 	
 	public static double distanceSquared(double x0, double y0, double x1, double y1) {
+
 		double dx = x1 - x0;
 		double dy = y1 - y0;
 		return dx * dx + dy * dy;
+
 	}
 	
 	public static double distance(double x0, double y0, double x1, double y1) {
@@ -25,6 +27,7 @@ public class LineUtil {
 	
 	public static double ptDistSqSegment(double x0, double y0,
 			double x1, double y1, double xq, double yq) {
+
 		double dx = x1 - x0;
 		double dy = y1 - y0;
 		double len2 = dx * dx + dy * dy;
@@ -36,6 +39,7 @@ public class LineUtil {
 		if (u <= 0) return distanceSquared(xq, yq, x0, y0);
 		if (u >= 1) return distanceSquared(xq, yq, x1, y1);
 		return distanceSquared(xq, yq, x0 + u * dx, y0 + u * dy);
+
 	}
 
 	public static double[] nearestPointSegment(double xq, double yq,
@@ -50,6 +54,7 @@ public class LineUtil {
 
 	private static double[] nearestPoint(double xq, double yq,
 			double x0, double y0, double x1, double y1, boolean isSegment) {
+
 		double dx = x1 - x0;
 		double dy = y1 - y0;
 		double len2 = dx * dx + dy * dy;
@@ -67,10 +72,13 @@ public class LineUtil {
 		} else {
 			u = num / len2;
 		}
+
 		return new double[] { x0 + u * dx, y0 + u * dy };
+
 	}
 
 	public static Location snapTo8Cardinals(Location from, int mx, int my) {
+
 		int px = from.getX();
 		int py = from.getY();
 		if (mx != px && my != py) {
@@ -94,7 +102,9 @@ public class LineUtil {
 				return Location.create(px - d45, py + d45);
 			}
 		}
+
 		return Location.create(mx, my); // should never happen
+
 	}
 
 }

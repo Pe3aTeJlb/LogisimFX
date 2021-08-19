@@ -1,10 +1,15 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
 import com.cburch.LogisimFX.comp.Component;
-import com.cburch.LogisimFX.draw.canvas.AppearanceCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.EditHandler;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceCanvas;
 import com.cburch.LogisimFX.localization.LC_gui;
 import com.cburch.LogisimFX.newgui.AbstractController;
 import com.cburch.LogisimFX.localization.Localizer;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.ProjectExplorer.AdditionalToolBar;
+import com.cburch.LogisimFX.newgui.MainFrame.ProjectExplorer.ExplorerToolBar;
+import com.cburch.LogisimFX.newgui.MainFrame.ProjectExplorer.TreeExplorerAggregation;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.tools.Tool;
@@ -16,6 +21,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+
 
 public class MainFrameController extends AbstractController {
 
@@ -101,12 +107,13 @@ public class MainFrameController extends AbstractController {
 
         layoutCanvas = new LayoutCanvas(canvasRoot, proj);
         appearanceCanvas = new AppearanceCanvas(canvasRoot, proj);
-        canvasRoot.getChildren().add(layoutCanvas);
+        canvasRoot.getChildren().add(appearanceCanvas);
 
 
         SplitPane mainSplitPane = new SplitPane(explorerSplitPane,canvasRoot);
         mainSplitPane.setOrientation(Orientation.HORIZONTAL);
         setAnchor(0,50,0,0,mainSplitPane);
+        mainSplitPane.setDividerPositions(0.25);
 
 
         menubar = new CustomMenuBar(explorerToolBar,proj,treeExplorerAggregation);
@@ -114,9 +121,11 @@ public class MainFrameController extends AbstractController {
 
         Root.getChildren().addAll(menubar,mainToolBar,mainSplitPane);
 
+        setLayoutView();
+
     }
 
-    private void computeTitle(){
+    public void computeTitle(){
 
         stage.titleProperty().unbind();
 
@@ -146,8 +155,15 @@ public class MainFrameController extends AbstractController {
             explorerToolBar.EditAppearance();
 
         if(!canvasRoot.getChildren().get(0).equals(appearanceCanvas)){
+
             canvasRoot.getChildren().clear();
             canvasRoot.getChildren().add(appearanceCanvas);
+
+            menubar.setEditHandler(appearanceCanvas.getEditHandler());
+
+            appearanceCanvas.updateResume();
+            layoutCanvas.updateStop();
+
         }
 
     }
@@ -163,8 +179,15 @@ public class MainFrameController extends AbstractController {
         explorerToolBar.EditCircuit();
 
         if(!canvasRoot.getChildren().get(0).equals(layoutCanvas)){
+
             canvasRoot.getChildren().clear();
             canvasRoot.getChildren().add(layoutCanvas);
+
+            menubar.setEditHandler(layoutCanvas.getEditHandler());
+
+            layoutCanvas.updateResume();
+            appearanceCanvas.updateStop();
+
         }
 
     }
@@ -177,9 +200,9 @@ public class MainFrameController extends AbstractController {
 
     }
 
-    public void setAttributeTable(Circuit circ, Component comp){
+    public void setAttributeTable(Component comp){
 
-       // attributeTable.setTool(tool);
+        attributeTable.setComponent(comp);
 
     }
 
@@ -210,6 +233,8 @@ public class MainFrameController extends AbstractController {
     }
 
 
+
+
     //Getter
 
     public Project getProj(){
@@ -220,10 +245,21 @@ public class MainFrameController extends AbstractController {
         return stage;
     }
 
-    public LayoutCanvas getCanvas(){return layoutCanvas;}
+    public LayoutCanvas getLayoutCanvas(){return layoutCanvas;}
 
+    public AppearanceCanvas getAppearanceCanvas(){return appearanceCanvas;}
 
+    public EditHandler getEditHandler(){
 
+        if(canvasRoot.getChildren().get(0).equals(layoutCanvas)){
+            return layoutCanvas.getEditHandler();
+        }else if(canvasRoot.getChildren().get(0).equals(appearanceCanvas)){
+            return appearanceCanvas.getEditHandler();
+        }else {
+            return null;
+        }
+
+    }
     /*
     public void savePreferences() {
         AppPreferences.TICK_FREQUENCY.set(Double.valueOf(proj.getSimulator().getTickFrequency()));
@@ -257,7 +293,10 @@ public class MainFrameController extends AbstractController {
 
     @Override
     public void onClose() {
+        appearanceCanvas.updateStop();
+        layoutCanvas.updateStop();
         System.out.println("main close. requested by:" + this);
+
     }
 
 }

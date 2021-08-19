@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class EditableLabelField extends JTextField {
+
 	static final int FIELD_BORDER = 2;
 
 	public EditableLabelField() {
@@ -24,4 +25,5 @@ public class EditableLabelField extends JTextField {
 		g.fillRect(0,0, getWidth(),getHeight());
 		super.paintComponent(g);
 	}
+
 }

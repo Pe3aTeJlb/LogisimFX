@@ -10,24 +10,26 @@ import com.cburch.LogisimFX.instance.InstancePainter;
 import com.cburch.LogisimFX.instance.InstancePoker;
 import com.cburch.LogisimFX.instance.InstanceState;
 import com.cburch.LogisimFX.instance.StdAttr;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 
-import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.paint.Color;
 
 /** When the user clicks a counter using the Poke Tool, a CounterPoker object
  * is created, and that object will handle all user events. Note that
  * CounterPoker is a class specific to GrayCounter, and that it must be a
  * subclass of InstancePoker in the com.cburch.logisim.instance package. */
 public class CounterPoker extends InstancePoker {
+
 	public CounterPoker() { }
 
 	/** Determines whether the location the mouse was pressed should result
 	 * in initiating a poke. 
 	 */
 	@Override
-	public boolean init(InstanceState state, MouseEvent e) {
-		return state.getInstance().getBounds().contains(e.getX(), e.getY());
+	public boolean init(InstanceState state, LayoutCanvas.CME e) {
+		return state.getInstance().getBounds().contains(e.localX, e.localY);
 			// Anywhere in the main rectangle initiates the poke. The user might
 			// have clicked within a label, but that will be outside the bounds.
 	}
@@ -36,6 +38,7 @@ public class CounterPoker extends InstancePoker {
 	 * a red rectangle around the value. */
 	@Override
 	public void paint(InstancePainter painter) {
+
 		Bounds bds = painter.getBounds();
 		BitWidth width = painter.getAttributeValue(StdAttr.WIDTH);
 		int len = (width.getWidth() + 3) / 4;
@@ -44,16 +47,18 @@ public class CounterPoker extends InstancePoker {
 		g.setColor(Color.RED);
 		int wid = 7 * len + 2; // width of caret rectangle
 		int ht = 16; // height of caret rectangle
-		g.drawRect(bds.getX() + (bds.getWidth() - wid) / 2,
+		g.c.strokeRect(bds.getX() + (bds.getWidth() - wid) / 2,
 				bds.getY() + (bds.getHeight() - ht) / 2, wid, ht);
 		g.setColor(Color.BLACK);
+
 	}
 
 	/** Processes a key by just adding it onto the end of the current value. */
 	@Override
 	public void keyTyped(InstanceState state, KeyEvent e) {
+
 		// convert it to a hex digit; if it isn't a hex digit, abort.
-		int val = Character.digit(e.getKeyChar(), 16);
+		int val = Character.digit(e.getCharacter().toCharArray()[0], 16);
 		BitWidth width = state.getAttributeValue(StdAttr.WIDTH);
 		if (val < 0 || (val & width.getMask()) != val) return;
 
@@ -69,5 +74,7 @@ public class CounterPoker extends InstancePoker {
 		// another thread, and invoking setPort directly could interfere with
 		// that. Using fireInvalidated notifies the propagation thread to
 		// invoke propagate on the counter at its next opportunity.
+
 	}
+
 }

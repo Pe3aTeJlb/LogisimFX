@@ -9,7 +9,6 @@ import java.util.List;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.AttributeSet;
-import com.cburch.LogisimFX.util.StringGetter;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.circuit.CircuitMutation;
 import com.cburch.LogisimFX.circuit.CircuitTransaction;
@@ -17,8 +16,11 @@ import com.cburch.LogisimFX.circuit.CircuitTransactionResult;
 import com.cburch.LogisimFX.proj.Action;
 import com.cburch.LogisimFX.proj.Project;
 
+import javafx.beans.binding.StringBinding;
+
 public class SetAttributeAction extends Action {
-	private StringGetter nameGetter;
+
+	private StringBinding nameGetter;
 	private Circuit circuit;
 	private List<Component> comps;
 	private List<Attribute<Object>> attrs;
@@ -26,21 +28,25 @@ public class SetAttributeAction extends Action {
 	private List<Object> oldValues;
 	private CircuitTransaction xnReverse;
 	
-	public SetAttributeAction(Circuit circuit, StringGetter nameGetter) {
+	public SetAttributeAction(Circuit circuit, StringBinding nameGetter) {
+
 		this.nameGetter = nameGetter;
 		this.circuit = circuit;
 		this.comps = new ArrayList<Component>();
 		this.attrs = new ArrayList<Attribute<Object>>();
 		this.values = new ArrayList<Object>();
 		this.oldValues = new ArrayList<Object>();
+
 	}
 	
 	public void set(Component comp, Attribute<?> attr, Object value) {
+
 		@SuppressWarnings("unchecked")
         Attribute<Object> a = (Attribute<Object>) attr;
 		comps.add(comp);
 		attrs.add(a);
 		values.add(value);
+
 	}
 	
 	public boolean isEmpty() {
@@ -54,6 +60,7 @@ public class SetAttributeAction extends Action {
 	
 	@Override
 	public void doIt(Project proj) {
+
 		CircuitMutation xn = new CircuitMutation(circuit);
 		int len = values.size();
 		oldValues.clear();
@@ -75,10 +82,12 @@ public class SetAttributeAction extends Action {
 			CircuitTransactionResult result = xn.execute();
 			xnReverse = result.getReverseTransaction();
 		}
+
 	}
 
 	@Override
 	public void undo(Project proj) {
+
 		if (xnReverse != null) xnReverse.execute();
 		for (int i = oldValues.size() - 1; i >= 0; i--) {
 			Component comp = comps.get(i);
@@ -88,5 +97,7 @@ public class SetAttributeAction extends Action {
 				comp.getAttributeSet().setValue(attr, value);
 			}
 		}
+
 	}
+
 }

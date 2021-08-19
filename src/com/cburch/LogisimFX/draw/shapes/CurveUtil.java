@@ -6,6 +6,7 @@ package com.cburch.LogisimFX.draw.shapes;
 import com.cburch.LogisimFX.data.Bounds;
 
 public class CurveUtil {
+
 	private CurveUtil() { }
 	
 	/**
@@ -20,6 +21,7 @@ public class CurveUtil {
 
 	// note: p0 and p2 are endpoints, p1 is control point
 	public static Bounds getBounds(double[] p0, double[] p1, double[] p2) {
+
 		double[] A = computeA(p0, p1);
 		double[] B = computeB(p0, p1, p2);
 		
@@ -49,6 +51,7 @@ public class CurveUtil {
 		int w = (int) Math.ceil(xMax) - x;
 		int h = (int) Math.ceil(yMax) - y;
 		return Bounds.create(x, y, w, h);
+
 	}
 	
 	private static double[] computeA(double[] p0, double[] p1) {
@@ -56,9 +59,11 @@ public class CurveUtil {
 	}
 	
 	private static double[] computeB(double[] p0, double[] p1, double[] p2) {
+
 		return new double[] {
 				p0[0] - 2 * p1[0] + p2[0],
 				p0[1] - 2 * p1[1] + p2[1] };
+
 	}
 	
 	// returns { t:Number, pos:Point, dist:Number, nor:Point }
@@ -66,6 +71,7 @@ public class CurveUtil {
 	// note: p0 and p2 are endpoints, p1 is control point
 	public static double[] findNearestPoint(double[] q,
 			double[] p0, double[] p1, double[] p2) {
+
 		double[] A = computeA(p0, p1);
 		double[] B = computeB(p0, p1, p2);
 		
@@ -112,21 +118,25 @@ public class CurveUtil {
 		} else {
 			return posMin;
 		}
+
 	}
 	
 	private static void getPos(double[] result, double t,
 			double[] p0, double[] p1, double[] p2) {
+
 		double a = (1 - t) * (1 - t);
 		double b = 2 * t * (1 - t);
 		double c = t * t;
 		result[0] = a * p0[0] + b * p1[0] + c * p2[0];
 		result[1] = a * p0[1] + b * p1[1] + c * p2[1];
+
 	}
 	
 	// a local duplicate & optimized version of com.gludion.utils.MathUtils.thirdDegreeEquation(a,b,c,d):Object
 	//WARNING: s2, s3 may be non - null if count = 1.
 	// use only result["s"+i] where i <= count
 	private static double[] solveCubic(double a, double b, double c, double d) {
+
 		if (Math.abs(a) > zeroMax) {
 			// let's adopt form: x3 + ax2 + bx + d = 0
 			double z = a; // multi-purpose util variable
@@ -191,6 +201,7 @@ public class CurveUtil {
 			// a, b, and c are all 0 - this is a constant equation
 			return null;
 		}
+
 	}
 
 	// Translated from ActionScript written by Jim Armstrong, at
@@ -205,6 +216,7 @@ public class CurveUtil {
 	// prospective economic advantage, resulting from the use or misuse of this
 	// software program.
 	public static double[] interpolate(double[] end0, double[] end1, double[] mid) {
+
 		double dx = mid[0] - end0[0];
 		double dy = mid[1] - end0[1];
 		double d0 = Math.sqrt(dx * dx + dy * dy);
@@ -227,5 +239,7 @@ public class CurveUtil {
 		double xNum = mid[0] - u2 * end0[0] - t2 * end1[0];
 		double yNum = mid[1] - u2 * end0[1] - t2 * end1[1];
 		return new double[] { xNum / den, yNum / den };
+
 	}
+
 }

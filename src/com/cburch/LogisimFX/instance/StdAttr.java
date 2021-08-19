@@ -12,35 +12,25 @@ import javafx.scene.text.FontWeight;
 
 public interface StdAttr {
 
-	public static final Attribute<Direction> FACING
-		= Attributes.forDirection("facing", LC.createStringBinding("stdFacingAttr"));
+	Attribute<Direction> FACING = Attributes.forDirection("facing", LC.createStringBinding("stdFacingAttr"));
 
-	public static final Attribute<BitWidth> WIDTH
-		= Attributes.forBitWidth("width", LC.createStringBinding("stdDataWidthAttr"));
+	Attribute<BitWidth> WIDTH = Attributes.forBitWidth("width", LC.createStringBinding("stdDataWidthAttr"));
 
-	public static final AttributeOption TRIG_RISING
-		= new AttributeOption("rising", LC.createStringBinding("stdTriggerRising"));
-	public static final AttributeOption TRIG_FALLING
-		= new AttributeOption("falling", LC.createStringBinding("stdTriggerFalling"));
-	public static final AttributeOption TRIG_HIGH
-		= new AttributeOption("high", LC.createStringBinding("stdTriggerHigh"));
-	public static final AttributeOption TRIG_LOW
-		= new AttributeOption("low", LC.createStringBinding("stdTriggerLow"));
-	public static final Attribute<AttributeOption> TRIGGER
-		= Attributes.forOption("trigger", LC.createStringBinding("stdTriggerAttr"),
+	AttributeOption TRIG_RISING = new AttributeOption("rising", LC.createStringBinding("stdTriggerRising"));
+	AttributeOption TRIG_FALLING = new AttributeOption("falling", LC.createStringBinding("stdTriggerFalling"));
+	AttributeOption TRIG_HIGH = new AttributeOption("high", LC.createStringBinding("stdTriggerHigh"));
+	AttributeOption TRIG_LOW = new AttributeOption("low", LC.createStringBinding("stdTriggerLow"));
+	Attribute<AttributeOption> TRIGGER = Attributes.forOption("trigger", LC.createStringBinding("stdTriggerAttr"),
 			new AttributeOption[] {
 				TRIG_RISING, TRIG_FALLING, TRIG_HIGH, TRIG_LOW
 			});
-	public static final Attribute<AttributeOption> EDGE_TRIGGER
+	Attribute<AttributeOption> EDGE_TRIGGER
 		= Attributes.forOption("trigger", LC.createStringBinding("stdTriggerAttr"),
 			new AttributeOption[] { TRIG_RISING, TRIG_FALLING });
 
-	public static final Attribute<String> LABEL
-		= Attributes.forString("label", LC.createStringBinding("stdLabelAttr"));
+	Attribute<String> LABEL = Attributes.forString("label", LC.createStringBinding("stdLabelAttr"));
 
-	public static final Attribute<Font> LABEL_FONT
-		= Attributes.forFont("labelfont", LC.createStringBinding("stdLabelFontAttr"));
-	public static final Font DEFAULT_LABEL_FONT
-		= Font.font("SansSerif", FontWeight.BOLD, FontPosture.REGULAR, 12);
+	Attribute<Font> LABEL_FONT = Attributes.forFont("labelfont", LC.createStringBinding("stdLabelFontAttr"));
+	Font DEFAULT_LABEL_FONT = Font.font("SansSerif", FontWeight.NORMAL, FontPosture.REGULAR, 12);
 
 }

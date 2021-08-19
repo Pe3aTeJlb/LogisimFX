@@ -9,8 +9,8 @@ import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.AttributeDefaultProvider;
 import com.cburch.LogisimFX.data.AttributeSet;
 import com.cburch.LogisimFX.LogisimVersion;
-import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 
 import javafx.beans.binding.StringBinding;
 import javafx.scene.Cursor;

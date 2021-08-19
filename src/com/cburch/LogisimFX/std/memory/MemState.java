@@ -4,12 +4,12 @@
 package com.cburch.LogisimFX.std.memory;
 
 import com.cburch.LogisimFX.data.Bounds;
+import com.cburch.LogisimFX.newgui.HexEditorFrame.HexModel;
+import com.cburch.LogisimFX.newgui.HexEditorFrame.HexModelListener;
 import com.cburch.LogisimFX.instance.InstanceData;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.StringUtil;
-import com.cburch.hex.HexModel;
-import com.cburch.hex.HexModelListener;
 
 import javafx.scene.paint.Color;
 

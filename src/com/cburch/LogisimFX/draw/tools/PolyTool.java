@@ -5,7 +5,7 @@ package com.cburch.LogisimFX.draw.tools;
 
 import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.draw.actions.ModelAddAction;
-import com.cburch.LogisimFX.draw.canvas.AppearanceCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceCanvas;
 import com.cburch.LogisimFX.draw.model.CanvasModel;
 import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.draw.shapes.DrawAttr;
@@ -14,10 +14,13 @@ import com.cburch.LogisimFX.draw.shapes.Poly;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Location;
 
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
 import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,22 +68,22 @@ public class PolyTool extends AbstractTool {
 	public void toolDeselected(AppearanceCanvas canvas) {
 		CanvasObject add = commit(canvas);
 		canvas.toolGestureComplete(this, add);
-		repaintArea(canvas);
 	}
 	
 	@Override
 	public void mousePressed(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
-		int mx = e.getX();
-		int my = e.getY();
+
+		int mx = e.localX;
+		int my = e.localY;
 		lastMouseX = mx;
 		lastMouseY = my;
-		int mods = e.getModifiersEx();
-		if ((mods & InputEvent.CTRL_DOWN_MASK) != 0) {
-			mx = canvas.snapX(mx);
-			my = canvas.snapY(my);
+
+		if (e.event.isControlDown()) {
+			mx = LayoutCanvas.snapXToGrid(mx);
+			my = LayoutCanvas.snapYToGrid(my);
 		}
 
-		if (active && e.getClickCount() > 1) {
+		if (active && e.event.getClickCount() > 1) {
 			CanvasObject add = commit(canvas);
 			canvas.toolGestureComplete(this, add);
 			return;
@@ -93,18 +96,19 @@ public class PolyTool extends AbstractTool {
 
 		mouseDown = true;
 		active = canvas.getModel() != null;
-		repaintArea(canvas);
+
 	}
 	
 	@Override
 	public void mouseDragged(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
-		updateMouse(canvas, e.getX(), e.getY(), e.getModifiersEx());
+		updateMouse(canvas, e.localX, e.localY, e);
 	}
 	
 	@Override
 	public void mouseReleased(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
+
 		if (active) {
-			updateMouse(canvas, e.getX(), e.getY(), e.getModifiersEx());
+			updateMouse(canvas, e.localX, e.localY, e);
 			mouseDown = false;
 			int size = locations.size();
 			if (size >= 3) {
@@ -117,15 +121,18 @@ public class PolyTool extends AbstractTool {
 				}
 			}
 		}
+
 	}
 	
 	@Override
 	public void keyPressed(AppearanceCanvas canvas, KeyEvent e) {
-		int code = e.getKeyCode();
+
+		KeyCode code = e.getCode();
 		if (active && mouseDown
-				&& (code == KeyEvent.VK_SHIFT || code == KeyEvent.VK_CONTROL)) {
-			updateMouse(canvas, lastMouseX, lastMouseY, e.getModifiersEx());
+				&& (code == KeyCode.SHIFT || code == KeyCode.CONTROL)) {
+			updateMouse(canvas, lastMouseX, lastMouseY, null);
 		}
+
 	}
 	
 	@Override
@@ -135,21 +142,23 @@ public class PolyTool extends AbstractTool {
 
 	@Override
 	public void keyTyped(AppearanceCanvas canvas, KeyEvent e) {
+
 		if (active) {
-			char ch = e.getKeyChar();
-			if (ch == '\u001b') { // escape key
+			KeyCode code = e.getCode();
+			if (code == KeyCode.ESCAPE) { // escape key
 				active = false;
 				locations.clear();
-				repaintArea(canvas);
 				canvas.toolGestureComplete(this, null);
-			} else if (ch == '\n') { // enter key
+			} else if (code == KeyCode.ENTER) { // enter key
 				CanvasObject add = commit(canvas);
 				canvas.toolGestureComplete(this, add);
 			}
 		}
+
 	}
 	
 	private CanvasObject commit(AppearanceCanvas canvas) {
+
 		if (!active) return null;
 		CanvasObject add = null;
 		active = false;
@@ -161,61 +170,65 @@ public class PolyTool extends AbstractTool {
 			CanvasModel model = canvas.getModel();
 			add = new Poly(closed, locs);
 			canvas.doAction(new ModelAddAction(model, add));
-			repaintArea(canvas);
 		}
 		locs.clear();
+
 		return add;
+
 	}
 	
-	private void updateMouse(AppearanceCanvas canvas, int mx, int my, int mods) {
+	private void updateMouse(AppearanceCanvas canvas, int mx, int my, AppearanceCanvas.CME e) {
+
 		lastMouseX = mx;
 		lastMouseY = my;
 		if (active) {
 			int index = locations.size() - 1;
 			Location last = locations.get(index);
 			Location newLast;
-			if ((mods & MouseEvent.SHIFT_DOWN_MASK) != 0 && index > 0) {
+			if (e.event.isShiftDown() && index > 0) {
 				Location nextLast = locations.get(index - 1);
 				newLast = LineUtil.snapTo8Cardinals(nextLast, mx, my);
 			} else {
 				newLast = Location.create(mx, my);
 			}
-			if ((mods & MouseEvent.CTRL_DOWN_MASK) != 0) {
+			if (e.event.isControlDown()) {
 				int lastX = newLast.getX();
 				int lastY = newLast.getY();
-				lastX = canvas.snapX(lastX);
-				lastY = canvas.snapY(lastY);
+				lastX = AppearanceCanvas.snapXToGrid(lastX);
+				lastY = AppearanceCanvas.snapYToGrid(lastY);
 				newLast = Location.create(lastX, lastY);
 			}
 			
 			if (!newLast.equals(last)) {
 				locations.set(index, newLast);
-				repaintArea(canvas);
 			}
 		}
-	}
 
-	private void repaintArea(AppearanceCanvas canvas) {
-		canvas.repaint();
 	}
 	
 	@Override
-	public void draw(Graphics g) {
+	public void draw(AppearanceCanvas canvas) {
+
+		Graphics g = canvas.getGraphics();
+
 		if (active) {
 			g.setColor(Color.GRAY);
 			int size = locations.size();
-			int[] xs = new int[size];
-			int[] ys = new int[size];
+			double[] xs = new double[size];
+			double[] ys = new double[size];
 			for(int i = 0; i < size; i++) {
 				Location loc = locations.get(i);
 				xs[i] = loc.getX();
 				ys[i] = loc.getY();
 			}
-			g.drawPolyline(xs, ys, size);
-			int lastX = xs[xs.length - 1];
-			int lastY = ys[ys.length - 1];
-			g.fillOval(lastX - 2, lastY - 2, 4, 4);
+			g.c.strokePolyline(xs, ys, size);
+			double lastX = xs[xs.length - 1];
+			double lastY = ys[ys.length - 1];
+			g.c.fillOval(lastX - 2, lastY - 2, 4, 4);
 		}
+
+		g.toDefault();
+
 	}
 
 }

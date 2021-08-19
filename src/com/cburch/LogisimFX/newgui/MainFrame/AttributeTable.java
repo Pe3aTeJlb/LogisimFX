@@ -1,6 +1,8 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
+import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.data.Attribute;
+import com.cburch.LogisimFX.data.AttributeSet;
 import com.cburch.LogisimFX.localization.LC_gui;
 import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.tools.Tool;
@@ -18,6 +20,8 @@ public class AttributeTable extends GridPane {
     private ColumnConstraints attr,value;
 
     private static Tool tool = null;
+    private static Component comp = null;
+    private static AttributeSet attributeSet;
 
     private int currRow = 1;
 
@@ -62,14 +66,14 @@ public class AttributeTable extends GridPane {
 
         setTitle();
 
-        System.out.println("attr size "+tool.getAttributeSet().getAttributes().size());
+        System.out.println("attr size "+attributeSet.getAttributes().size());
 
-        for (Attribute attr: tool.getAttributeSet().getAttributes()) {
+        for (Attribute attr: attributeSet.getAttributes()) {
             currRow += 1;
             this.add(new Label(attr.getDisplayName()),0,currRow);
-            this.add(attr.getCell(tool.getAttributeSet().getValue(attr)), 1,currRow);
+            this.add(attr.getCell(attributeSet.getValue(attr)), 1,currRow);
 
-            System.out.println("attr "+attr.getName()+" "+tool.getAttributeSet().getValue(attr).toString());
+            System.out.println("attr "+attr.getName()+" "+attributeSet.getValue(attr).toString());
 
         }
 
@@ -77,8 +81,8 @@ public class AttributeTable extends GridPane {
 
     public static void printShit(){
 
-        for (Attribute attr: tool.getAttributeSet().getAttributes()) {
-            System.out.println("attr "+attr.getName()+" "+tool.getAttributeSet().getValue(attr).toString());
+        for (Attribute attr: attributeSet.getAttributes()) {
+            System.out.println("attr "+attr.getName()+" "+attributeSet.getValue(attr).toString());
         }
 
     }
@@ -87,6 +91,19 @@ public class AttributeTable extends GridPane {
 
         if(tool != tl && tl.getAttributeSet() != null) {
             tool = tl;
+            comp = null;
+            attributeSet = tool.getAttributeSet();
+            updateTable();
+        }
+
+    }
+
+    public void setComponent(Component cmp){
+
+        if(comp != cmp && cmp.getAttributeSet() != null) {
+            tool = null;
+            comp = cmp;
+            attributeSet = cmp.getAttributeSet();
             updateTable();
         }
 

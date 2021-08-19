@@ -8,11 +8,10 @@ import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.draw.shapes.DrawAttr;
 import com.cburch.LogisimFX.draw.shapes.Oval;
 import com.cburch.LogisimFX.data.Attribute;
-import com.cburch.LogisimFX.util.Icons;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
+
 import javafx.scene.image.ImageView;
 
-import javax.swing.*;
-import java.awt.*;
 import java.util.List;
 
 public class OvalTool extends RectangularTool {
@@ -40,12 +39,12 @@ public class OvalTool extends RectangularTool {
 
 	@Override
 	public void drawShape(Graphics g, int x, int y, int w, int h) {
-		g.drawOval(x, y, w, h);
+		g.c.strokeOval(x, y, w, h);
 	}
 
 	@Override
 	public void fillShape(Graphics g, int x, int y, int w, int h) {
-		g.fillOval(x, y, w, h);
+		g.c.fillOval(x, y, w, h);
 	}
 
 }

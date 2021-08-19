@@ -5,12 +5,11 @@ package com.cburch.LogisimFX.comp;
 
 import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.data.*;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.LogisimVersion;
 
 import javafx.beans.binding.StringBinding;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 

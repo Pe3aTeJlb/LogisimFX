@@ -9,7 +9,7 @@ import com.cburch.LogisimFX.draw.model.HandleGesture;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.util.UnmodifiableList;
 
 import com.sun.javafx.geom.QuadCurve2D;
@@ -73,6 +73,16 @@ public class Curve extends FillableCanvasObject {
 	public QuadCurve2D getCurve2D() {
 		return new QuadCurve2D(p0.getX(), p0.getY(),
 				p1.getX(), p1.getY(), p2.getX(), p2.getY());
+	}
+
+	public void strokeCurve2D(Graphics g){
+
+		g.c.beginPath();
+		g.c.moveTo(p0.getX(), p0.getY());
+		g.c.quadraticCurveTo(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+		g.c.closePath();
+		g.c.stroke();
+
 	}
 	
 	@Override
@@ -221,13 +231,24 @@ public class Curve extends FillableCanvasObject {
 	
 	@Override
 	public void paint(Graphics g, HandleGesture gesture) {
-		QuadCurve2D curve = getCurve(gesture);
+
+		Handle[] p = getHandleArray(gesture);
+
+		//QuadCurve2D curve = getCurve(gesture);
+
+		g.c.beginPath();
+		g.c.moveTo(p[0].getX(), p[0].getY());
+		g.c.quadraticCurveTo(p[1].getX(), p[1].getY(), p[2].getX(), p[2].getY());
+		g.c.closePath();
+		//g.c.fill();
+		//g.c.stroke();
 		if (setForFill(g)) {
-			((Graphics2D) g).fill(curve);
+			g.c.fill();
 		}
 		if (setForStroke(g)) {
-			((Graphics2D) g).draw(curve);
+			g.c.stroke();
 		}
+
 	}
 	
 	private QuadCurve2D getCurve(HandleGesture gesture) {

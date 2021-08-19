@@ -5,9 +5,10 @@ package com.cburch.LogisimFX.std.memory;
 
 import java.util.Arrays;
 
+import com.cburch.LogisimFX.newgui.HexEditorFrame.HexModel;
+import com.cburch.LogisimFX.newgui.HexEditorFrame.HexModelListener;
 import com.cburch.LogisimFX.util.EventSourceWeakSupport;
-import com.cburch.hex.HexModel;
-import com.cburch.hex.HexModelListener;
+
 
 public class MemContents implements Cloneable, HexModel {
 

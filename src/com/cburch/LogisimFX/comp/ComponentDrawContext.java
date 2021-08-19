@@ -8,7 +8,7 @@ import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Direction;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.instance.InstancePainter;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.circuit.CircuitState;

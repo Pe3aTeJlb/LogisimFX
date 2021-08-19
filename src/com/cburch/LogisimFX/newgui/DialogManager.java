@@ -122,6 +122,34 @@ public class DialogManager {
 
     }
 
+    public static void CreateScrollWarning(String header, String content){
+
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("LogisimFX");
+        alert.setTitle(header);
+
+        TextArea textArea = new TextArea(content);
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+
+        textArea.setMaxWidth(Double.MAX_VALUE);
+        textArea.setMaxHeight(Double.MAX_VALUE);
+        GridPane.setVgrow(textArea, Priority.ALWAYS);
+        GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+        GridPane expContent = new GridPane();
+        expContent.setMaxWidth(Double.MAX_VALUE);
+        expContent.add(textArea, 0, 1);
+
+        // Set expandable Exception into the dialog pane.
+        alert.getDialogPane().setExpandableContent(expContent);
+
+        ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().add(IconsManager.LogisimFX);
+
+        alert.showAndWait();
+
+    }
+
     public static void CreateScrollError(String header, String content){
 
         Alert alert = new Alert(Alert.AlertType.ERROR);

@@ -8,5 +8,7 @@ import com.cburch.LogisimFX.proj.Project;
 import javafx.scene.control.ContextMenu;
 
 public interface MenuExtender {
-	public void configureMenu(ContextMenu menu, Project proj);
+
+	void configureMenu(ContextMenu menu, Project proj);
+
 }

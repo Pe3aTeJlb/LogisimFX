@@ -429,10 +429,27 @@ public class Attributes {
 
 		@Override
 		public Font parse(String value) {
-			//Todo
-			//return Font.
-			//return Font.decode(value);
-			return Font.font("Monospaced", FontWeight.BOLD, FontPosture.ITALIC,72);
+
+			System.out.println(value);
+			String[] data = value.split(" ");
+
+			FontPosture fp = FontPosture.REGULAR;
+			FontWeight fw = FontWeight.NORMAL;
+
+			if(data[1].equals("plain")){
+				fp = FontPosture.REGULAR;
+			}else if(data[1].equals("italic")){
+				fp = FontPosture.ITALIC;
+			}else if(data[1].equals("bold")){
+				fw = FontWeight.BOLD;
+				if(data.length == 4 && data[2].equals("italic")){
+					fp = FontPosture.ITALIC;
+				}
+
+			}
+
+			return Font.font(data[0], fw, fp, Double.parseDouble(data[data.length-1]));
+
 		}
 
 		public Node getCell(Font value){

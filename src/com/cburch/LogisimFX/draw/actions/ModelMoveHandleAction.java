@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class ModelMoveHandleAction extends ModelAction {
+
 	private HandleGesture gesture;
 	private Handle newHandle;
 	
@@ -44,7 +45,8 @@ public class ModelMoveHandleAction extends ModelAction {
 		Handle oldHandle = gesture.getHandle();
 		int dx = oldHandle.getX() - newHandle.getX();
 		int dy = oldHandle.getY() - newHandle.getY();
-		HandleGesture reverse = new HandleGesture(newHandle, dx, dy, 0);
+		HandleGesture reverse = new HandleGesture(newHandle, dx, dy, null);
 		model.moveHandle(reverse);
 	}
+
 }

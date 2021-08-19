@@ -6,7 +6,7 @@ package com.cburch.LogisimFX.std.plexers;
 import java.util.List;
 
 import com.cburch.LogisimFX.data.*;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.FactoryDescription;
 import com.cburch.LogisimFX.tools.Library;

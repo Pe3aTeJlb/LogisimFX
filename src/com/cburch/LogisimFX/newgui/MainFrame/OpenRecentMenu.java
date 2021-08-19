@@ -3,7 +3,6 @@
 
 package com.cburch.LogisimFX.newgui.MainFrame;
 
-
 import com.cburch.LogisimFX.localization.LC_menu;
 import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.proj.Project;

@@ -4,11 +4,17 @@ import com.cburch.LogisimFX.FileSelector;
 import com.cburch.LogisimFX.circuit.CircuitMutation;
 import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.comp.Component;
+import com.cburch.LogisimFX.newgui.HexEditorFrame.HexFile;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceEditHandler;
 import com.cburch.LogisimFX.instance.Instance;
 import com.cburch.LogisimFX.localization.*;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.file.LogisimFileActions;
 import com.cburch.LogisimFX.newgui.MainFrame.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.Selection;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.SelectionActions;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.std.memory.Mem;
 import com.cburch.LogisimFX.std.memory.MemState;
@@ -21,6 +27,7 @@ import com.cburch.LogisimFX.tools.MenuExtender;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 
 import java.io.File;
 import java.io.IOException;
@@ -182,7 +189,7 @@ public class ContextMenuManager {
         MenuItem attrs = new MenuItem("Menu Item");
         attrs.textProperty().bind(LC_tools.getInstance().createStringBinding("compShowAttrItem"));
         attrs.setOnAction(event -> {
-            proj.getFrameController().setAttributeTable(circ, comp);
+            proj.getFrameController().setAttributeTable(comp);
         });
 
         contextMenu.getItems().addAll(del,attrs);
@@ -371,88 +378,96 @@ public class ContextMenuManager {
 
     //AppearanceCanvas elements menus
 
-    public static class AppearanceEditContextMenu {
+    public static ContextMenu AppearanceEditContextMenu(AppearanceCanvas canvas) {
 
-        private ContextMenu menu;
+        ContextMenu menu = new ContextMenu();
+        AppearanceEditHandler handler = new AppearanceEditHandler(canvas);
 
-        public AppearanceEditContextMenu(){
+        MenuItem cut = new MenuItem();
+        cut.textProperty().bind(LC_menu.getInstance().createStringBinding("editCutItem"));
+        cut.setDisable(!handler.computeEnabled("CUT"));
+        cut.setOnAction(event -> handler.cut());
 
-            menu = new ContextMenu();
+        MenuItem copy = new MenuItem();
+        copy.textProperty().bind(LC_menu.getInstance().createStringBinding("editCopyItem"));
+        copy.setDisable(!handler.computeEnabled("COPY"));
+        copy.setOnAction(event -> handler.copy());
 
-            MenuItem cut = new MenuItem();
-            cut.textProperty().bind(LC_menu.getInstance().createStringBinding("editCutItem"));
-            cut.setDisable();
-            cut.setOnAction(event -> {
+        MenuItem delete = new MenuItem();
+        delete.textProperty().bind(LC_menu.getInstance().createStringBinding("editClearItem"));
+        delete.setDisable(!handler.computeEnabled("DELETE"));
+        delete.setOnAction(event -> handler.delete());
 
-            });
+        MenuItem duplicate = new MenuItem();
+        duplicate.textProperty().bind(LC_menu.getInstance().createStringBinding("editDuplicateItem"));
+        duplicate.setDisable(!handler.computeEnabled("DUPLICATE"));
+        duplicate.setOnAction(event -> handler.duplicate());
 
-            MenuItem copy = new MenuItem();
-            copy.textProperty().bind(LC_menu.getInstance().createStringBinding("editCopyItem"));
-            copy.setDisable();
-            copy.setOnAction(event -> {
+        MenuItem raise = new MenuItem();
+        raise.textProperty().bind(LC_menu.getInstance().createStringBinding("editRaiseItem"));
+        raise.setDisable(!handler.computeEnabled("RAISE"));
+        raise.setOnAction(event -> handler.raise());
 
-            });
+        MenuItem lower = new MenuItem();
+        lower.textProperty().bind(LC_menu.getInstance().createStringBinding("editLowerItem"));
+        lower.setDisable(!handler.computeEnabled("LOWER"));
+        lower.setOnAction(event -> handler.lower());
 
-            MenuItem delete = new MenuItem();
-            delete.textProperty().bind(LC_menu.getInstance().createStringBinding("editClearItem"));
-            delete.setDisable();
-            delete.setOnAction(event -> {
+        MenuItem raiseTop = new MenuItem();
+        raiseTop.textProperty().bind(LC_menu.getInstance().createStringBinding("editRaiseTopItem"));
+        raiseTop.setDisable(!handler.computeEnabled("RAISE_TOP"));
+        raiseTop.setOnAction(event -> handler.raiseTop());
 
-            });
+        MenuItem lowerBottom = new MenuItem();
+        lowerBottom.textProperty().bind(LC_menu.getInstance().createStringBinding("editLowerBottomItem"));
+        lowerBottom.setDisable(!handler.computeEnabled("LOWER_BOTTOM"));
+        lowerBottom.setOnAction(event -> handler.lowerBottom());
 
-            MenuItem duplicate = new MenuItem();
-            duplicate.textProperty().bind(LC_menu.getInstance().createStringBinding("editDuplicateItem"));
-            duplicate.setDisable();
-            duplicate.setOnAction(event -> {
+        MenuItem addControl = new MenuItem();
+        addControl.textProperty().bind(LC_menu.getInstance().createStringBinding("editAddControlItem"));
+        addControl.setDisable(!handler.computeEnabled("ADD_CONTROL"));
+        addControl.setOnAction(event -> handler.addControlPoint());
 
-            });
+        MenuItem removeControl = new MenuItem();
+        removeControl.textProperty().bind(LC_menu.getInstance().createStringBinding("editRemoveControlItem"));
+        removeControl.setDisable(!handler.computeEnabled("REMOVE_CONTROL"));
+        removeControl.setOnAction(event -> handler.removeControlPoint());
 
-            MenuItem raise = new MenuItem();
-            raise.textProperty().bind(LC_menu.getInstance().createStringBinding("editRaiseItem"));
-            raise.setDisable();
-            raise.setOnAction(event -> {
-
-            });
-
-            MenuItem lower = new MenuItem();
-            lower.textProperty().bind(LC_menu.getInstance().createStringBinding("editLowerItem"));
-            lower.setDisable();
-            lower.setOnAction(event -> {
-
-            });
-
-            MenuItem raiseTop = new MenuItem();
-            raiseTop.textProperty().bind(LC_menu.getInstance().createStringBinding("editRaiseTopItem"));
-            raiseTop.setDisable();
-            raiseTop.setOnAction(event -> {
-
-            });
-
-            MenuItem lowerBottom = new MenuItem();
-            lowerBottom.textProperty().bind(LC_menu.getInstance().createStringBinding("editLowerBottomItem"));
-            lowerBottom.setDisable();
-            lowerBottom.setOnAction(event -> {
-
-            });
-
-
-            boolean x = false;
-            x |= add(LogisimMenuBar.CUT, Strings.get("editCutItem"));
-            x |= add(LogisimMenuBar.COPY, Strings.get("editCopyItem"));
-            if (x) { addSeparator(); x = false; }
-            x |= add(LogisimMenuBar.DELETE, Strings.get("editClearItem"));
-            x |= add(LogisimMenuBar.DUPLICATE, Strings.get("editDuplicateItem"));
-            if (x) { addSeparator(); x = false; }
-            x |= add(LogisimMenuBar.RAISE, Strings.get("editRaiseItem"));
-            x |= add(LogisimMenuBar.LOWER, Strings.get("editLowerItem"));
-            x |= add(LogisimMenuBar.RAISE_TOP, Strings.get("editRaiseTopItem"));
-            x |= add(LogisimMenuBar.LOWER_BOTTOM, Strings.get("editLowerBottomItem"));
-            if (x) { addSeparator(); x = false; }
-            x |= add(LogisimMenuBar.ADD_CONTROL, Strings.get("editAddControlItem"));
-            x |= add(LogisimMenuBar.REMOVE_CONTROL, Strings.get("editRemoveControlItem"));
-            if (!x && getComponentCount() > 0) { remove(getComponentCount() - 1); }
-
+        menu.getItems().add(cut);
+        menu.getItems().add(copy);
+        menu.getItems().add(new SeparatorMenuItem());
+        menu.getItems().add(delete);
+        menu.getItems().add(duplicate);
+        menu.getItems().add(new SeparatorMenuItem());
+        menu.getItems().add(raise);
+        menu.getItems().add(lower);
+        menu.getItems().add(raiseTop);
+        menu.getItems().add(lowerBottom);
+        if(handler.canAddCtrl || handler.canRemCtrl) {
+            menu.getItems().add(new SeparatorMenuItem());
+            menu.getItems().add(addControl);
+            menu.getItems().add(removeControl);
         }
+
+        /*
+                /*class MenuListener check check chekc*/
+        /*
+        setEnabled(LogisimMenuBar.CUT, selHasRemovable && canChange);
+		setEnabled(LogisimMenuBar.COPY, !selEmpty);
+		setEnabled(LogisimMenuBar.PASTE, canChange && clipExists);
+		setEnabled(LogisimMenuBar.DELETE, selHasRemovable && canChange);
+		setEnabled(LogisimMenuBar.DUPLICATE, !selEmpty && canChange);
+		setEnabled(LogisimMenuBar.SELECT_ALL, true);
+		setEnabled(LogisimMenuBar.RAISE, canRaise);
+		setEnabled(LogisimMenuBar.LOWER, canLower);
+		setEnabled(LogisimMenuBar.RAISE_TOP, canRaise);
+		setEnabled(LogisimMenuBar.LOWER_BOTTOM, canLower);
+		setEnabled(LogisimMenuBar.ADD_CONTROL, canAddCtrl);
+		setEnabled(LogisimMenuBar.REMOVE_CONTROL, canRemCtrl);
+         */
+
+
+        return menu;
 
     }
 

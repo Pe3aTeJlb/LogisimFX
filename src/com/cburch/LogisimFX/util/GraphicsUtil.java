@@ -3,7 +3,7 @@
 
 package com.cburch.LogisimFX.util;
 
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.sun.javafx.tk.FontMetrics;
 import com.sun.javafx.tk.Toolkit;
 
@@ -40,6 +40,7 @@ public class GraphicsUtil {
 		return ret;
 
 	}
+
 	static public Rectangle getTextBounds(Graphics g, String text,
 			int x, int y, int halign, int valign) {
 
@@ -85,6 +86,7 @@ public class GraphicsUtil {
 		if (font != null) g.setFont(oldfont);
 
 	}
+
 	static public void drawText(Graphics g, String text,
 			int x, int y, int halign, int valign) {
 
@@ -96,6 +98,7 @@ public class GraphicsUtil {
 				bd.getY() + g.getFontMetrics().getAscent());
 		g.setLineWidth(buf);
 	}
+
 	static public void drawCenteredText(Graphics g, String text,
 			int x, int y) {
 

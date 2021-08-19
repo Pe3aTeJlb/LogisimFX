@@ -5,8 +5,8 @@ package com.cburch.LogisimFX.std.memory;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
-import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 
@@ -137,7 +137,7 @@ abstract class AbstractFlipFlop extends InstanceFactory {
 				g.c.fillOval(x - 26, y + 4, 13, 13);
 				g.setColor(Color.WHITE);
 				GraphicsUtil.drawCenteredText(g,
-					myState.curValue.toDisplayString(), x - 19, y + 9);
+					myState.curValue.toDisplayString(), x - 19, y + 7);
 				g.setColor(Color.BLACK);
 			}
 		}

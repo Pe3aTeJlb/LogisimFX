@@ -6,8 +6,8 @@ package com.cburch.LogisimFX.instance;
 import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.comp.ComponentUserEvent;
 import com.cburch.LogisimFX.data.Bounds;
-import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.tools.AbstractCaret;
 import com.cburch.LogisimFX.tools.Caret;
 import com.cburch.LogisimFX.tools.Pokable;
@@ -51,6 +51,7 @@ class InstancePokerAdapter extends AbstractCaret implements Pokable {
 			canvas = event.getCanvas();
 			CircuitState circState = event.getCircuitState();
 			InstanceStateImpl state = new InstanceStateImpl(circState, comp);
+			/*
 			LayoutCanvas.CME e = new LayoutCanvas.CME(new MouseEvent(
 					MouseEvent.MOUSE_PRESSED,
 					0,0,
@@ -63,12 +64,14 @@ class InstancePokerAdapter extends AbstractCaret implements Pokable {
 					)
 			);
 
-			boolean isAccepted = poker.init(state, e);
+			 */
+
+			boolean isAccepted = poker.init(state, event.getEvent());
 			if (isAccepted) {
 				this.state = state;
 				this.context = new ComponentDrawContext(
 						event.getCanvas().getCircuit(), circState, null, false);
-				mousePressed(e);
+				mousePressed(event.getEvent());
 				return this;
 			} else {
 				poker = null;

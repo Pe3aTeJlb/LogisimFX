@@ -9,8 +9,8 @@ import com.cburch.LogisimFX.draw.shapes.DrawAttr;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.util.EventSourceWeakSupport;
 import com.cburch.LogisimFX.util.UnmodifiableList;
+import javafx.scene.paint.Color;
 
-import java.awt.*;
 import java.util.List;
 import java.util.*;
 

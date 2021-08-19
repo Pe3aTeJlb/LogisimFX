@@ -3,8 +3,8 @@
 
 package com.cburch.LogisimFX.std.memory;
 
-import com.cburch.hex.HexModel;
-import com.cburch.hex.HexModelListener;
+import com.cburch.LogisimFX.newgui.HexEditorFrame.HexModel;
+import com.cburch.LogisimFX.newgui.HexEditorFrame.HexModelListener;
 import com.cburch.LogisimFX.proj.Action;
 import com.cburch.LogisimFX.proj.Project;
 

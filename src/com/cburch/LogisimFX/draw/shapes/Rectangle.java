@@ -8,7 +8,7 @@ import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
 
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -23,11 +23,13 @@ public class Rectangle extends Rectangular {
 
 	@Override
 	public boolean matches(CanvasObject other) {
+
 		if (other instanceof Rectangle) {
 			return super.matches(other);
 		} else {
 			return false;
 		}
+
 	}
 
 	@Override
@@ -62,6 +64,7 @@ public class Rectangle extends Rectangular {
 
 	@Override
 	protected Location getRandomPoint(Bounds bds, Random rand) {
+
 		if (getPaintType() == DrawAttr.PAINT_STROKE) {
 			int w = getWidth();
 			int h = getHeight();
@@ -88,12 +91,15 @@ public class Rectangle extends Rectangular {
 		} else {
 			return super.getRandomPoint(bds, rand);
 		}
+
 	}
 	
 	@Override
 	public void draw(Graphics g, int x, int y, int w, int h) {
+
 		if (setForFill(g)) g.c.fillRect(x, y, w, h);
 		if (setForStroke(g)) g.c.strokeRect(x, y, w, h);
+
 	}
 
 }

@@ -22,24 +22,31 @@ class SvgCreator {
 
 	public static Element createRoundRectangle(Document doc,
 			RoundRectangle rrect) {
+
 		Element elt = createRectangular(doc, rrect);
 		int r = rrect.getValue(DrawAttr.CORNER_RADIUS).intValue();
 		elt.setAttribute("rx", "" + r);
 		elt.setAttribute("ry", "" + r);
+
 		return elt;
+
 	}
 
 	private static Element createRectangular(Document doc, Rectangular rect) {
+
 		Element elt = doc.createElement("rect");
 		elt.setAttribute("x", "" + rect.getX());
 		elt.setAttribute("y", "" + rect.getY());
 		elt.setAttribute("width", "" + rect.getWidth());
 		elt.setAttribute("height", "" + rect.getHeight());
 		populateFill(elt, rect);
+
 		return elt;
+
 	}
 
 	public static Element createOval(Document doc, Oval oval) {
+
 		double x = oval.getX();
 		double y = oval.getY();
 		double width = oval.getWidth();
@@ -50,10 +57,13 @@ class SvgCreator {
 		elt.setAttribute("rx", "" + (width / 2));
 		elt.setAttribute("ry", "" + (height / 2));
 		populateFill(elt, oval);
+
 		return elt;
+
 	}
 
 	public static Element createLine(Document doc, Line line) {
+
 		Element elt = doc.createElement("line");
 		Location v1 = line.getEnd0();
 		Location v2 = line.getEnd1();
@@ -62,10 +72,13 @@ class SvgCreator {
 		elt.setAttribute("x2", "" + v2.getX());
 		elt.setAttribute("y2", "" + v2.getY());
 		populateStroke(elt, line);
+
 		return elt;
+
 	}
 
 	public static Element createCurve(Document doc, Curve curve) {
+
 		Element elt = doc.createElement("path");
 		Location e0 = curve.getEnd0();
 		Location e1 = curve.getEnd1();
@@ -74,10 +87,13 @@ class SvgCreator {
 				+ " Q" + ct.getX() + "," + ct.getY()
 				+ " " + e1.getX() + "," + e1.getY());
 		populateFill(elt, curve);
+
 		return elt;
+
 	}
 
 	public static Element createPoly(Document doc, Poly poly) {
+
 		Element elt;
 		if (poly.isClosed()) {
 			elt = doc.createElement("polygon");
@@ -95,10 +111,13 @@ class SvgCreator {
 		elt.setAttribute("points", points.toString());
 
 		populateFill(elt, poly);
+
 		return elt;
+
 	}
 
 	public static Element createText(Document doc, Text text) {
+
 		Element elt = doc.createElement("text");
 		Location loc = text.getLocation();
 		Font font = text.getValue(DrawAttr.FONT);
@@ -114,11 +133,11 @@ class SvgCreator {
 		}
 		elt.setAttribute("font-family", font.getFamily());
 		elt.setAttribute("font-size", "" + font.getSize());
-		int style = font.getStyle();
-		if ((style & Font.ITALIC) != 0) {
+
+		if (font.getStyle().contains("ITALIC")) {
 			elt.setAttribute("font-style", "italic");
 		}
-		if ((style & Font.BOLD) != 0) {
+		if (font.getStyle().contains("BOLD")) {
 			elt.setAttribute("font-weight", "bold");
 		}
 		if (halign == DrawAttr.ALIGN_LEFT) {
@@ -129,10 +148,13 @@ class SvgCreator {
 			elt.setAttribute("text-anchor", "middle");
 		}
 		elt.appendChild(doc.createTextNode(text.getText()));
+
 		return elt;
+
 	}
 
 	private static void populateFill(Element elt, AbstractCanvasObject shape) {
+
 		Object type = shape.getValue(DrawAttr.PAINT_TYPE);
 		if (type == DrawAttr.PAINT_FILL) {
 			elt.setAttribute("stroke", "none");
@@ -152,9 +174,11 @@ class SvgCreator {
 				elt.setAttribute("fill-opacity", getOpacityString(fill));
 			}
 		}
+
 	}
 
 	private static void populateStroke(Element elt, AbstractCanvasObject shape) {
+
 		Integer width = shape.getValue(DrawAttr.STROKE_WIDTH);
 		if (width != null && width.intValue() != 1) {
 			elt.setAttribute("stroke-width", width.toString());
@@ -165,6 +189,7 @@ class SvgCreator {
 			elt.setAttribute("stroke-opacity", getOpacityString(stroke));
 		}
 		elt.setAttribute("fill", "none");
+
 	}
 	
 	private static boolean colorMatches(Color a, Color b) {
@@ -174,16 +199,15 @@ class SvgCreator {
 	
 	private static String getColorString(Color color) {
 		return String.format("#%02x%02x%02x",
-			Integer.valueOf(color.getRed()), Integer.valueOf(color.getGreen()),
-			Integer.valueOf(color.getBlue()));
+				(int)color.getRed(), (int)color.getGreen(), (int)color.getBlue());
 	}
 	
 	private static boolean showOpacity(Color color) {
-		return color.getAlpha() != 255;
+		return color.getOpacity() != 1;
 	}
 	
 	private static String getOpacityString(Color color) {
-		return String.format("%5.3f", Double.valueOf(color.getAlpha() / 255.0));
+		return String.format("%5.3f", color.getOpacity());
 	}
 
 }

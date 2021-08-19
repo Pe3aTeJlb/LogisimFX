@@ -7,8 +7,7 @@ import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.draw.actions.ModelAddAction;
 import com.cburch.LogisimFX.draw.actions.ModelEditTextAction;
 import com.cburch.LogisimFX.draw.actions.ModelRemoveAction;
-import com.cburch.LogisimFX.draw.canvas.AppearanceCanvas;
-import com.cburch.LogisimFX.draw.canvas.Canvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceCanvas;
 import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.draw.shapes.DrawAttr;
 import com.cburch.LogisimFX.draw.shapes.Text;
@@ -18,7 +17,6 @@ import com.cburch.LogisimFX.data.AttributeEvent;
 import com.cburch.LogisimFX.data.AttributeListener;
 import com.cburch.LogisimFX.data.Location;
 
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
 import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
 
@@ -28,6 +26,7 @@ import java.util.List;
 public class TextTool extends AbstractTool {
 
 	private class FieldListener extends AbstractAction implements AttributeListener {
+
 		public void actionPerformed(ActionEvent e) {
 			commitText(curCanvas);
 		}
@@ -44,6 +43,7 @@ public class TextTool extends AbstractTool {
 		public void attributeValueChanged(AttributeEvent e) {
 			attributeListChanged(e);
 		}
+
 	}
 	
 	private class CancelListener extends AbstractAction {
@@ -57,7 +57,7 @@ public class TextTool extends AbstractTool {
 	private FieldListener fieldListener;
 
 	private Text curText;
-	private Canvas curCanvas;
+	private AppearanceCanvas curCanvas;
 	private boolean isTextNew;
 	
 	public TextTool(DrawingAttributeSet attrs) {
@@ -104,6 +104,7 @@ public class TextTool extends AbstractTool {
 	
 	@Override
 	public void mousePressed(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
+
 		if (curText != null) {
 			commitText(canvas);
 		}
@@ -144,34 +145,38 @@ public class TextTool extends AbstractTool {
 		canvas.getSelection().setSelected(clicked, true);
 		canvas.getSelection().setHidden(Collections.singleton(clicked), true);
 		clicked.addAttributeListener(fieldListener);
-		canvas.repaint();
+
 	}
 	
 	@Override
 	public void zoomFactorChanged(AppearanceCanvas canvas) {
+
 		Text t = curText;
 		if (t != null) {
 			t.getLabel().configureTextField(field, canvas.getZoomFactor());
 		}
+
 	}
 	
 	@Override
-	public void draw(Graphics g) {
+	public void draw(AppearanceCanvas canvas) {
 		; // actually, there's nothing to do here - it's handled by the field
 	}
 
-	private void cancelText(Canvas canvas) {
+	private void cancelText(AppearanceCanvas canvas) {
+
 		Text cur = curText;
 		if (cur != null) {
 			curText = null;
 			cur.removeAttributeListener(fieldListener);
 			canvas.remove(field);
 			canvas.getSelection().clearSelected();
-			canvas.repaint();
 		}
+
 	}
 
-	private void commitText(Canvas canvas) {
+	private void commitText(AppearanceCanvas canvas) {
+
 		Text cur = curText;
 		boolean isNew = isTextNew;
 		String newText = field.getText();
@@ -194,6 +199,7 @@ public class TextTool extends AbstractTool {
 						newText));
 			}
 		}
+
 	}
 
 }

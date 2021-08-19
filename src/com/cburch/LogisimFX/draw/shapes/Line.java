@@ -10,7 +10,7 @@ import com.cburch.LogisimFX.draw.model.HandleGesture;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.util.UnmodifiableList;
 
 import javafx.scene.paint.Color;
@@ -34,6 +34,7 @@ public class Line extends AbstractCanvasObject {
 	private Color strokeColor;
 	
 	public Line(int x0, int y0, int x1, int y1) {
+
 		this.x0 = x0;
 		this.y0 = y0;
 		this.x1 = x1;
@@ -41,10 +42,12 @@ public class Line extends AbstractCanvasObject {
 		bounds = Bounds.create(x0, y0, 0, 0).add(x1, y1);
 		strokeWidth = 1;
 		strokeColor = Color.BLACK;
+
 	}
 	
 	@Override
 	public boolean matches(CanvasObject other) {
+
 		if (other instanceof Line) {
 			Line that = (Line) other;
 			return this.x0 == that.x0
@@ -56,15 +59,19 @@ public class Line extends AbstractCanvasObject {
 		} else {
 			return false;
 		}
+
 	}
 	
 	@Override
 	public int matchesHashCode() {
+
 		int ret = x0 * 31 + y0;
 		ret = ret * 31 * 31 + x1 * 31 + y1;
 		ret = ret * 31 + strokeWidth;
 		ret = ret * 31 + strokeColor.hashCode();
+
 		return ret;
+
 	}
 		
 	@Override
@@ -93,6 +100,7 @@ public class Line extends AbstractCanvasObject {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <V> V getValue(Attribute<V> attr) {
+
 		if (attr == DrawAttr.STROKE_COLOR) {
 			return (V) strokeColor;
 		} else if (attr == DrawAttr.STROKE_WIDTH) {
@@ -100,15 +108,18 @@ public class Line extends AbstractCanvasObject {
 		} else {
 			return null;
 		}
+
 	}
 	
 	@Override
 	public void updateValue(Attribute<?> attr, Object value) {
+
 		if (attr == DrawAttr.STROKE_COLOR) {
 			strokeColor = (Color) value;
 		} else if (attr == DrawAttr.STROKE_WIDTH) {
 			strokeWidth = ((Integer) value).intValue();
 		}
+
 	}
 	
 	@Override
@@ -118,6 +129,7 @@ public class Line extends AbstractCanvasObject {
 	
 	@Override
 	public Location getRandomPoint(Bounds bds, Random rand) {
+
 		double u = rand.nextDouble();
 		int x = (int) Math.round(x0 + u * (x1 - x0));
 		int y = (int) Math.round(y0 + u * (y1 - y0));
@@ -126,24 +138,30 @@ public class Line extends AbstractCanvasObject {
 			x += (rand.nextInt(w) - w / 2);
 			y += (rand.nextInt(w) - w / 2);
 		}
+
 		return Location.create(x, y);
+
 	}
 
 	@Override
 	public boolean contains(Location loc, boolean assumeFilled) {
+
 		int xq = loc.getX();
 		int yq = loc.getY();
 		double d = LineUtil.ptDistSqSegment(x0, y0, x1, y1, xq, yq);
 		int thresh = Math.max(ON_LINE_THRESH, strokeWidth / 2);
 		return d < thresh * thresh;
+
 	}
 	
 	@Override
 	public void translate(int dx, int dy) {
+
 		x0 += dx;
 		y0 += dy;
 		x1 += dx;
 		y1 += dy;
+
 	}
 	
 	public List<Handle> getHandles() {
@@ -152,6 +170,7 @@ public class Line extends AbstractCanvasObject {
 	
 	@Override
 	public List<Handle> getHandles(HandleGesture gesture) {
+
 		if (gesture == null) {
 			return UnmodifiableList.create(new Handle[] {
 					new Handle(this, x0, y0), new Handle(this, x1, y1) });
@@ -166,6 +185,7 @@ public class Line extends AbstractCanvasObject {
 					? Location.create(x1 + dx, y1 + dy) : Location.create(x1, y1));
 			return UnmodifiableList.create(ret);
 		}
+
 	}
 	
 	@Override
@@ -175,6 +195,7 @@ public class Line extends AbstractCanvasObject {
 	
 	@Override
 	public Handle moveHandle(HandleGesture gesture) {
+
 		Handle h = gesture.getHandle();
 		int dx = gesture.getDeltaX();
 		int dy = gesture.getDeltaY();
@@ -191,10 +212,12 @@ public class Line extends AbstractCanvasObject {
 		}
 		bounds = Bounds.create(x0, y0, 0, 0).add(x1, y1);
 		return ret;
+
 	}
 	
 	@Override
 	public void paint(Graphics g, HandleGesture gesture) {
+
 		if (setForStroke(g)) {
 			int x0 = this.x0;
 			int y0 = this.y0;
@@ -209,8 +232,9 @@ public class Line extends AbstractCanvasObject {
 				x1 += gesture.getDeltaX();
 				y1 += gesture.getDeltaY();
 			}
-			g.drawLine(x0, y0, x1, y1);
+			g.c.strokeLine(x0, y0, x1, y1);
 		}
+
 	}
 
 }

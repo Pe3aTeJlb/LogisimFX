@@ -9,6 +9,7 @@ import com.cburch.LogisimFX.draw.model.CanvasObject;
 import java.util.*;
 
 public class ZOrder {
+
 	private ZOrder() { }
 	
 	public static int getZIndex(CanvasObject query, CanvasModel model) {
@@ -18,6 +19,7 @@ public class ZOrder {
 	
 	public static Map<CanvasObject, Integer> getZIndex(
             Collection<? extends CanvasObject> query, CanvasModel model) {
+
 		// returns 0 for bottommost element, large number for topmost, ordered
 		// from the bottom up.
 		if (query == null) return Collections.emptyMap();
@@ -32,7 +34,9 @@ public class ZOrder {
 				ret.put(o, Integer.valueOf(z));
 			}
 		}
+
 		return ret;
+
 	}
 	
 	public static <E extends CanvasObject> List<E> sortTopFirst(
@@ -47,6 +51,7 @@ public class ZOrder {
 	
 	private static <E extends CanvasObject> List<E> sortXFirst(
             Collection<E> objects, CanvasModel model, Collection<CanvasObject> objs) {
+
 		Set<E> set = toSet(objects);
 		ArrayList<E> ret = new ArrayList<E>(objects.size());
 		for (CanvasObject o : objs) {
@@ -56,15 +61,19 @@ public class ZOrder {
 				ret.add(toAdd);
 			}
 		}
+
 		return ret;
+
 	}
 	
 	private static <E> Set<E> toSet(Collection<E> objects) {
+
 		if (objects instanceof Set) {
 			return (Set<E>) objects;
 		} else {
 			return new HashSet<E>(objects);
 		}
+
 	}
 	
 	// returns first object above query in the z-order that overlaps query
@@ -82,6 +91,7 @@ public class ZOrder {
 	private static CanvasObject getPrevious(CanvasObject query,
                                             List<CanvasObject> objs, CanvasModel model,
                                             Collection<? extends CanvasObject> ignore) {
+
 		int index = getIndex(query, objs);
 		if (index <= 0) {
 			return null;
@@ -94,16 +104,20 @@ public class ZOrder {
 			}
 			return null;
 		}
+
 	}
 	
 	
 	private static int getIndex(CanvasObject query, List<CanvasObject> objs) {
+
 		int index = -1;
 		for (CanvasObject o : objs) {
 			index++;
 			if (o == query) return index;
 		}
+
 		return -1;
+
 	}
 
 }

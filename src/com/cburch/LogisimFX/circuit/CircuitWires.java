@@ -9,14 +9,12 @@ import com.cburch.LogisimFX.comp.EndData;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.Instance;
 import com.cburch.LogisimFX.instance.StdAttr;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.std.wiring.PullResistor;
 import com.cburch.LogisimFX.std.wiring.Tunnel;
-import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.IteratorUtil;
 import com.cburch.LogisimFX.util.SmallSet;
 
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import java.util.List;

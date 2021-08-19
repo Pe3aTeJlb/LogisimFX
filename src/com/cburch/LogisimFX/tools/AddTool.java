@@ -8,9 +8,9 @@ import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.comp.ComponentFactory;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.newgui.DialogManager;
-import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
-import com.cburch.LogisimFX.newgui.MainFrame.SelectionActions;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.SelectionActions;
 import com.cburch.LogisimFX.newgui.MainFrame.ToolAttributeAction;
 import com.cburch.LogisimFX.tools.key.KeyConfigurationEvent;
 import com.cburch.LogisimFX.tools.key.KeyConfigurationResult;
@@ -239,6 +239,7 @@ public class AddTool extends Tool {
 		} else if (state == SHOW_ADD) {
 			source.drawGhost(context, Color.BLACK, x, y, getBaseAttributes());
 		}
+
 	}
 
 	private AttributeSet getBaseAttributes() {
@@ -364,7 +365,6 @@ public class AddTool extends Tool {
 	public void mouseReleased(LayoutCanvas canvas, Graphics g, LayoutCanvas.CME e) {
 
 		Component added = null;
-
 		if (state == SHOW_ADD) {
 
 			Circuit circ = canvas.getCircuit();

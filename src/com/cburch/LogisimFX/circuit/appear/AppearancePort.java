@@ -9,7 +9,7 @@ import com.cburch.LogisimFX.draw.model.HandleGesture;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.instance.Instance;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.std.wiring.Pin;
 import com.cburch.LogisimFX.util.UnmodifiableList;
 

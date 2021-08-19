@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 public class MatchingSet<E extends CanvasObject> extends AbstractSet<E> {
+
 	private static class Member<E extends CanvasObject> {
 		E value;
 		
@@ -59,10 +60,12 @@ public class MatchingSet<E extends CanvasObject> extends AbstractSet<E> {
 	}
 	
 	public MatchingSet(Collection<E> initialContents) {
+
 		set = new HashSet<Member<E>>(initialContents.size());
 		for (E value : initialContents) {
 			set.add(new Member<E>(value));
 		}
+
 	}
 	
 	@Override

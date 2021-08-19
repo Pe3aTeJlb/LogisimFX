@@ -7,12 +7,13 @@ import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.data.Direction;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.data.Value;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.util.GraphicsUtil;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 
 class SplitterPainter {
 
@@ -129,8 +130,8 @@ class SplitterPainter {
 		}
 
 		Graphics g = context.getGraphics();
-		Font font = g.getFont();
-		//g.setFont(font.deriveFont(7.0f));
+		Font f = Font.font("System", FontWeight.THIN, FontPosture.REGULAR, 7);
+		g.setFont(f);
 		
 		SplitterParameters parms = attrs.getParameters();
 		int x = origin.getX() + parms.getEnd0X() + parms.getEndToSpineDeltaX();
@@ -145,8 +146,8 @@ class SplitterPainter {
 		}
 		int halign = parms.getTextHorzAlign();
 		int valign = parms.getTextVertAlign();
-		x += (halign == GraphicsUtil.H_RIGHT ? -1 : 1) * (SPINE_WIDTH / 2 + 1);
-		y += valign == GraphicsUtil.V_TOP ? 0 : -3;
+		x += (halign == GraphicsUtil.H_RIGHT ? -1.5 : 1) * (SPINE_WIDTH / 2 + 3);
+		y += valign == GraphicsUtil.V_TOP ? -5 : -9;
 		for (int i = 0, n = attrs.fanout; i < n; i++) {
 			String text = ends[i + 1];
 			if (text != null) {

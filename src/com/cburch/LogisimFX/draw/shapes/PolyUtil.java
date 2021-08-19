@@ -11,6 +11,7 @@ public class PolyUtil {
 	private PolyUtil() { }
 
 	public static class ClosestResult {
+
 		private double dist;
 		private Location loc;
 		private Handle prevHandle;
@@ -31,10 +32,12 @@ public class PolyUtil {
 		public Handle getNextHandle() {
 			return nextHandle;
 		}
+
 	}
 	
 	public static ClosestResult getClosestPoint(Location loc, boolean closed,
 			Handle[] hs) {
+
 		int xq = loc.getX();
 		int yq = loc.getY();
 		ClosestResult ret = new ClosestResult();
@@ -70,6 +73,7 @@ public class PolyUtil {
 					(int) Math.round(p[1]));
 			return ret;
 		}
+
 	}
 
 }

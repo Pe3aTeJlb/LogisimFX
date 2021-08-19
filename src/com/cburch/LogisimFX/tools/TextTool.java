@@ -9,8 +9,8 @@ import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.comp.ComponentUserEvent;
 import com.cburch.LogisimFX.data.AttributeSet;
 import com.cburch.LogisimFX.data.Location;
-import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.std.base.Text;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.circuit.CircuitEvent;
@@ -196,7 +196,7 @@ public class TextTool extends Tool {
 		int x = e.localX;
 		int y = e.localY;
 		Location loc = Location.create(x, y);
-		ComponentUserEvent event = new ComponentUserEvent(canvas, x, y);
+		ComponentUserEvent event = new ComponentUserEvent(canvas, x, y,e);
 
 		// First search in selection.
 		for (Component comp : canvas.getSelection().getComponentsContaining(loc, g)) {
@@ -204,7 +204,7 @@ public class TextTool extends Tool {
 			if (editable != null) {
 				caret = editable.getTextCaret(event);
 				if (caret != null) {
-					proj.getFrameController().setAttributeTable(circ, comp);
+					proj.getFrameController().setAttributeTable(comp);
 					caretComponent = comp;
 					caretCreatingText = false;
 					break;
@@ -219,7 +219,7 @@ public class TextTool extends Tool {
 				if (editable != null) {
 					caret = editable.getTextCaret(event);
 					if (caret != null) {
-						proj.getFrameController().setAttributeTable(circ, comp);
+						proj.getFrameController().setAttributeTable(comp);
 						caretComponent = comp;
 						caretCreatingText = false;
 						break;
@@ -237,7 +237,7 @@ public class TextTool extends Tool {
 			TextEditable editable = (TextEditable) caretComponent.getFeature(TextEditable.class);
 			if (editable != null) {
 				caret = editable.getTextCaret(event);
-				proj.getFrameController().setAttributeTable(circ, caretComponent);
+				proj.getFrameController().setAttributeTable(caretComponent);
 			}
 		}
 

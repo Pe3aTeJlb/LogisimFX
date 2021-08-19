@@ -26,6 +26,7 @@ abstract class FillableCanvasObject extends AbstractCanvasObject {
 
 	@Override
 	public boolean matches(CanvasObject other) {
+
 		if (other instanceof FillableCanvasObject) {
 			FillableCanvasObject that = (FillableCanvasObject) other;
 			boolean ret = this.paintType == that.paintType;
@@ -40,10 +41,12 @@ abstract class FillableCanvasObject extends AbstractCanvasObject {
 		} else {
 			return false;
 		}
+
 	}
 
 	@Override
 	public int matchesHashCode() {
+
 		int ret = paintType.hashCode();
 		if (paintType != DrawAttr.PAINT_FILL) {
 			ret = ret * 31 + strokeWidth;
@@ -56,7 +59,9 @@ abstract class FillableCanvasObject extends AbstractCanvasObject {
 		} else {
 			ret = ret * 31;
 		}
+
 		return ret;
+
 	}
 
 	public AttributeOption getPaintType() {
@@ -70,6 +75,7 @@ abstract class FillableCanvasObject extends AbstractCanvasObject {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <V> V getValue(Attribute<V> attr) {
+
 		if (attr == DrawAttr.PAINT_TYPE) {
 			return (V) paintType;
 		} else if (attr == DrawAttr.STROKE_COLOR) {
@@ -81,10 +87,12 @@ abstract class FillableCanvasObject extends AbstractCanvasObject {
 		} else {
 			return null;
 		}
+
 	}
 
 	@Override
 	public void updateValue(Attribute<?> attr, Object value) {
+
 		if (attr == DrawAttr.PAINT_TYPE) {
 			paintType = (AttributeOption) value;
 			fireAttributeListChanged();
@@ -95,6 +103,7 @@ abstract class FillableCanvasObject extends AbstractCanvasObject {
 		} else if (attr == DrawAttr.STROKE_WIDTH) {
 			strokeWidth = ((Integer) value).intValue();
 		}
+
 	}
 
 }

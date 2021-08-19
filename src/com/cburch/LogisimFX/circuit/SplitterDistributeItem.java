@@ -5,12 +5,14 @@ package com.cburch.LogisimFX.circuit;
 
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.util.StringGetter;
+import javafx.beans.binding.StringBinding;
+import javafx.scene.control.MenuItem;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-class SplitterDistributeItem extends JMenuItem implements ActionListener {
+class SplitterDistributeItem extends MenuItem {
 
 	private Project proj;
 	private Splitter splitter;
@@ -21,7 +23,6 @@ class SplitterDistributeItem extends JMenuItem implements ActionListener {
 		this.proj = proj;
 		this.splitter = splitter;
 		this.order = order;
-		addActionListener(this);
 		
 		SplitterAttributes attrs = (SplitterAttributes) splitter.getAttributeSet();
 		byte[] actual = attrs.bit_end;
@@ -33,35 +34,32 @@ class SplitterDistributeItem extends JMenuItem implements ActionListener {
 				same = false;
 			}
 		}
-		setEnabled(!same);
-		setText(toGetter().get());
+
+		this.setOnAction(event -> {
+
+			CircuitMutation xn = new CircuitMutation(proj.getCircuitState().getCircuit());
+			for (int i = 0, n = Math.min(actual.length, desired.length); i < n; i++) {
+				if (actual[i] != desired[i]) {
+					xn.set(splitter, attrs.getBitOutAttribute(i),
+							Integer.valueOf(desired[i]));
+				}
+			}
+			proj.doAction(xn.toAction(toGetter()));
+
+		});
+
+		this.setDisable(same);
+		this.textProperty().bind(toGetter());
 
 	}
 	
-	private StringGetter toGetter() {
+	private StringBinding toGetter() {
 
 		if (order > 0) {
-			return Strings.getter("splitterDistributeAscending");
+			return LC.createStringBinding("splitterDistributeAscending");
 		} else {
-			return Strings.getter("splitterDistributeDescending");
+			return LC.createStringBinding("splitterDistributeDescending");
 		}
-
-	}
-	
-	public void actionPerformed(ActionEvent e) {
-
-		SplitterAttributes attrs = (SplitterAttributes) splitter.getAttributeSet();
-		byte[] actual = attrs.bit_end;
-		byte[] desired = SplitterAttributes.computeDistribution(attrs.fanout,
-				actual.length, order);
-		CircuitMutation xn = new CircuitMutation(proj.getCircuitState().getCircuit());
-		for (int i = 0, n = Math.min(actual.length, desired.length); i < n; i++) {
-			if (actual[i] != desired[i]) {
-				xn.set(splitter, attrs.getBitOutAttribute(i),
-						Integer.valueOf(desired[i]));
-			}
-		}
-		proj.doAction(xn.toAction(toGetter()));
 
 	}
 

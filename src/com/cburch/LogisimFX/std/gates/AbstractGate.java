@@ -11,7 +11,7 @@ import com.cburch.LogisimFX.analyze.model.Expressions;
 import com.cburch.LogisimFX.comp.TextField;
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.*;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.tools.WireRepair;
 import com.cburch.LogisimFX.tools.WireRepairData;
 import com.cburch.LogisimFX.tools.key.BitWidthConfigurator;

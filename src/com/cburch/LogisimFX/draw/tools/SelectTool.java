@@ -7,9 +7,8 @@ import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.draw.actions.ModelMoveHandleAction;
 import com.cburch.LogisimFX.draw.actions.ModelRemoveAction;
 import com.cburch.LogisimFX.draw.actions.ModelTranslateAction;
-import com.cburch.LogisimFX.draw.canvas.AppearanceCanvas;
-import com.cburch.LogisimFX.draw.canvas.Canvas;
-import com.cburch.LogisimFX.draw.canvas.Selection;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.Selection;
 import com.cburch.LogisimFX.draw.model.CanvasModel;
 import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.draw.model.Handle;
@@ -17,10 +16,12 @@ import com.cburch.LogisimFX.draw.model.HandleGesture;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
-import com.cburch.LogisimFX.util.GraphicsUtil;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 
 import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 
@@ -65,7 +66,7 @@ public class SelectTool extends AbstractTool {
 	}
 
 	@Override
-	public Cursor getCursor(AppearanceCanvas canvas) {
+	public Cursor getCursor() {
 		return Cursor.DEFAULT;
 	}
 	
@@ -73,33 +74,32 @@ public class SelectTool extends AbstractTool {
 	public List<Attribute<?>> getAttributes() {
 		return Collections.emptyList();
 	}
-	
+
 	@Override
 	public void toolSelected(AppearanceCanvas canvas) {
 		curAction = IDLE;
 		canvas.getSelection().clearSelected();
-		repaintArea(canvas);
 	}
 	
 	@Override
 	public void toolDeselected(AppearanceCanvas canvas) {
 		curAction = IDLE;
 		canvas.getSelection().clearSelected();
-		repaintArea(canvas);
 	}
 	
 	private int getHandleSize(AppearanceCanvas canvas) {
-		double zoom = canvas.getZoomFactor();
+		double zoom = canvas.getZoom();
 		return (int) Math.ceil(HANDLE_SIZE / Math.sqrt(zoom));
 	}
 	
 	@Override
 	public void mousePressed(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
+
 		beforePressSelection = new ArrayList<CanvasObject>(canvas.getSelection().getSelected());
 		beforePressHandle = canvas.getSelection().getSelectedHandle();
-		int mx = e.getX();
-		int my = e.getY();
-		boolean shift = (e.getModifiersEx() & MouseEvent.SHIFT_DOWN_MASK) != 0;
+		int mx = e.localX;
+		int my = e.localY;
+		boolean shift = e.event.isShiftDown();
 		dragStart = Location.create(mx, my);
 		dragEffective = false;
 		dragEnd = dragStart;
@@ -120,9 +120,7 @@ public class SelectTool extends AbstractTool {
 						&& dy >= -halfSize && dy <= halfSize) {
 					if (shape.canMoveHandle(han)) {
 						curAction = MOVE_HANDLE;
-						curGesture = new HandleGesture(han, 0, 0,
-								e.getModifiersEx());
-						repaintArea(canvas);
+						curGesture = new HandleGesture(han, 0, 0, e);
 						return;
 					} else if (clicked == null) {
 						clicked = shape;
@@ -133,7 +131,7 @@ public class SelectTool extends AbstractTool {
 
 		// see whether the user is clicking within a shape
 		if (clicked == null) {
-			clicked = getObjectAt(canvas.getModel(), e.getX(), e.getY(), false);
+			clicked = getObjectAt(canvas.getModel(), e.localX, e.localY, false);
 		}
 		if (clicked != null) {
 			if (shift && selection.isSelected(clicked)) {
@@ -147,11 +145,10 @@ public class SelectTool extends AbstractTool {
 				selection.setMovingShapes(selection.getSelected(), 0, 0);
 				curAction = MOVE_ALL;
 			}
-			repaintArea(canvas);
 			return;
 		}
 		
-		clicked = getObjectAt(canvas.getModel(), e.getX(), e.getY(), true);
+		clicked = getObjectAt(canvas.getModel(), e.localX, e.localY, true);
 		if (clicked != null && selection.isSelected(clicked)) {
 			if (shift) {
 				selection.setSelected(clicked, false);
@@ -160,7 +157,6 @@ public class SelectTool extends AbstractTool {
 				selection.setMovingShapes(selection.getSelected(), 0, 0);
 				curAction = MOVE_ALL;
 			}
-			repaintArea(canvas);
 			return;
 		}
 
@@ -170,11 +166,12 @@ public class SelectTool extends AbstractTool {
 			selection.clearSelected();
 			curAction = RECT_SELECT;
 		}
-		repaintArea(canvas);
+
 	}
 	
 	@Override
 	public void cancelMousePress(AppearanceCanvas canvas) {
+
 		List<CanvasObject> before = beforePressSelection;
 		Handle handle = beforePressHandle;
 		beforePressSelection = null;
@@ -187,20 +184,21 @@ public class SelectTool extends AbstractTool {
 			sel.clearSelected();
 			sel.setSelected(before, true);
 			sel.setHandleSelected(handle);
-			repaintArea(canvas);
 		}
+
 	}
 	
 	@Override
 	public void mouseDragged(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
-		setMouse(canvas, e.getX(), e.getY(), e.getModifiersEx());
+		setMouse(canvas, e.localX, e.localY, e);
 	}
 	
 	@Override
 	public void mouseReleased(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
+
 		beforePressSelection = null;
 		beforePressHandle = null;
-		setMouse(canvas, e.getX(), e.getY(), e.getModifiersEx());
+		setMouse(canvas, e.localX, e.localY, e);
 		
 		CanvasModel model = canvas.getModel();
 		Selection selection = canvas.getSelection();
@@ -225,8 +223,8 @@ public class SelectTool extends AbstractTool {
 		}
 		
 		Location start = dragStart;
-		int x1 = e.getX();
-		int y1 = e.getY();
+		int x1 = e.localX;
+		int y1 = e.localY;
 		switch (action) {
 		case MOVE_ALL:
 			Location moveDelta = selection.getMovingDelta();
@@ -274,15 +272,15 @@ public class SelectTool extends AbstractTool {
 			break;
 		}
 		selection.clearDrawsSuppressed();
-		repaintArea(canvas);
+
 	}
 	
 	@Override
 	public void keyPressed(AppearanceCanvas canvas, KeyEvent e) {
-		int code = e.getKeyCode();
-		if ((code == KeyEvent.VK_SHIFT || code == KeyEvent.VK_CONTROL
-				|| code == KeyEvent.VK_ALT) && curAction != IDLE) {
-			setMouse(canvas, lastMouseX, lastMouseY, e.getModifiersEx());
+		KeyCode code = e.getCode();
+		if ((code == KeyCode.SHIFT || code == KeyCode.CONTROL
+				|| code == KeyCode.ALT) && curAction != IDLE) {
+			setMouse(canvas, lastMouseX, lastMouseY, null);
 		}
 	}
 	
@@ -293,9 +291,10 @@ public class SelectTool extends AbstractTool {
 	
 	@Override
 	public void keyTyped(AppearanceCanvas canvas, KeyEvent e) {
-		char ch = e.getKeyChar();
+
+		KeyCode code = e.getCode();
 		Selection selected = canvas.getSelection();
-		if ((ch == '\u0008' || ch == '\u007F') && !selected.isEmpty()) {
+		if (code == KeyCode.DELETE && !selected.isEmpty()) {
 			ArrayList<CanvasObject> toRemove = new ArrayList<CanvasObject>();
 			for (CanvasObject shape : selected.getSelected()) {
 				if (shape.canRemove()) {
@@ -307,20 +306,20 @@ public class SelectTool extends AbstractTool {
 				CanvasModel model = canvas.getModel();
 				canvas.doAction(new ModelRemoveAction(model, toRemove));
 				selected.clearSelected();
-				repaintArea(canvas);
 			}
-		} else if (ch == '\u001b' && !selected.isEmpty()) {
+		} else if (code == KeyCode.ESCAPE && !selected.isEmpty()) {
 			selected.clearSelected();
-			repaintArea(canvas);
 		}
+
 	}
 	
 	
-	private void setMouse(AppearanceCanvas canvas, int mx, int my, int mods) {
+	private void setMouse(AppearanceCanvas canvas, int mx, int my, AppearanceCanvas.CME e) {
+
 		lastMouseX = mx;
 		lastMouseY = my;
-		boolean shift = (mods & MouseEvent.SHIFT_DOWN_MASK) != 0;
-		boolean ctrl = (mods & InputEvent.CTRL_DOWN_MASK) != 0;
+		boolean shift = e.event.isShiftDown();
+		boolean ctrl = e.event.isControlDown();
 		Location newEnd = Location.create(mx, my);
 		dragEnd = newEnd;
 
@@ -340,10 +339,10 @@ public class SelectTool extends AbstractTool {
 			HandleGesture gesture = curGesture;
 			if (ctrl) {
 				Handle h = gesture.getHandle();
-				dx = canvas.snapX(h.getX() + dx) - h.getX();
-				dy = canvas.snapY(h.getY() + dy) - h.getY();
+				dx = AppearanceCanvas.snapXToGrid(h.getX() + dx) - h.getX();
+				dy = AppearanceCanvas.snapYToGrid(h.getY() + dy) - h.getY();
 			}
-			curGesture = new HandleGesture(gesture.getHandle(), dx, dy, mods);
+			curGesture = new HandleGesture(gesture.getHandle(), dx, dy, e);
 			canvas.getSelection().setHandleGesture(curGesture);
 			break;
 		case MOVE_ALL:
@@ -358,8 +357,8 @@ public class SelectTool extends AbstractTool {
 						if (y < minY) minY = y;
 					}
 				}
-				dx = canvas.snapX(minX + dx) - minX;
-				dy = canvas.snapY(minY + dy) - minY;
+				dx = AppearanceCanvas.snapXToGrid(minX + dx) - minX;
+				dy = AppearanceCanvas.snapYToGrid(minY + dy) - minY;
 			}
 			if (shift) {
 				if (Math.abs(dx) > Math.abs(dy)) {
@@ -371,15 +370,13 @@ public class SelectTool extends AbstractTool {
 			canvas.getSelection().setMovingDelta(dx, dy);
 			break;
 		}
-		repaintArea(canvas);
-	}
 
-	private void repaintArea(AppearanceCanvas canvas) {
-		canvas.repaint();
 	}
 	
 	@Override
 	public void draw(AppearanceCanvas canvas) {
+
+		Graphics g = canvas.getGraphics();
 		Selection selection = canvas.getSelection();
 		int action = curAction;
 
@@ -402,18 +399,10 @@ public class SelectTool extends AbstractTool {
 		CanvasObject moveHandleObj = null;
 		if (gesture != null) moveHandleObj = gesture.getHandle().getObject();
 		if (drawHandles) {
-			// unscale the coordinate system so that the stroke width isn't scaled
-			double zoom = 1.0;
-			Graphics gCopy = g.create();
-			if (gCopy instanceof Graphics2D) {
-				zoom = canvas.getZoomFactor();
-				if (zoom != 1.0) {
-					((Graphics2D) gCopy).scale(1.0 / zoom, 1.0 / zoom);
-				}
-			}
-			GraphicsUtil.switchToWidth(gCopy, 1);
 
-			int size = (int) Math.ceil(HANDLE_SIZE * Math.sqrt(zoom));
+			g.setLineWidth(1);
+
+			int size = (int) Math.ceil(HANDLE_SIZE);
 			int offs = size / 2;
 			for (CanvasObject obj : selection.getSelected()) {
 				List<Handle> handles;
@@ -430,10 +419,10 @@ public class SelectTool extends AbstractTool {
 						x += delta.getX();
 						y += delta.getY();
 					}
-					x = (int) Math.round(zoom * x);
-					y = (int) Math.round(zoom * y);
-					gCopy.clearRect(x - offs, y - offs, size, size);
-					gCopy.drawRect(x - offs, y - offs, size, size);
+					x = (int) Math.round(x);
+					y = (int) Math.round(y);
+					g.c.clearRect(x - offs, y - offs, size, size);
+					g.c.strokeRect(x - offs, y - offs, size, size);
 				}
 			}
 			Handle selHandle = selection.getSelectedHandle();
@@ -445,14 +434,15 @@ public class SelectTool extends AbstractTool {
 					x += delta.getX();
 					y += delta.getY();
 				}
-				x = (int) Math.round(zoom * x);
-				y = (int) Math.round(zoom * y);
-				int[] xs = { x - offs, x, x + offs, x };
-				int[] ys = { y, y - offs, y, y + offs };
-				gCopy.setColor(Color.WHITE);
-				gCopy.fillPolygon(xs, ys, 4);
-				gCopy.setColor(Color.BLACK);
-				gCopy.drawPolygon(xs, ys, 4);
+				x = Math.round(x);
+				y = Math.round(y);
+				double[] xs = { x - offs, x, x + offs, x };
+				double[] ys = { y, y - offs, y, y + offs };
+				g.setColor(Color.WHITE);
+				g.c.fillPolygon(xs, ys, 4);
+				g.setColor(Color.BLACK);
+				g.c.strokePolygon(xs, ys, 4);
+				g.toDefault();
 			}
 		}
 		
@@ -469,17 +459,18 @@ public class SelectTool extends AbstractTool {
 				if (y1 < y0) { int t = y0; y0 = y1; y1 = t; }
 
 				// make the region that's not being selected darker
-				int w = canvas.getWidth();
-				int h = canvas.getHeight();
+				int w = (int)canvas.getWidth();
+				int h = (int)canvas.getHeight();
 				g.setColor(RECT_SELECT_BACKGROUND);
-				g.fillRect(0, 0, w, y0);
-				g.fillRect(0, y0, x0, y1 - y0);
-				g.fillRect(x1, y0, w - x1, y1 - y0);
-				g.fillRect(0, y1, w, h - y1);
+				g.c.fillRect(0, 0, w, y0);
+				g.c.fillRect(0, y0, x0, y1 - y0);
+				g.c.fillRect(x1, y0, w - x1, y1 - y0);
+				g.c.fillRect(0, y1, w, h - y1);
 
 				// now draw the rectangle
 				g.setColor(Color.GRAY);
-				g.drawRect(x0, y0, x1 - x0, y1 - y0);
+				g.c.strokeRect(x0, y0, x1 - x0, y1 - y0);
+				g.toDefault();
 			}
 			break;
 		}
@@ -491,6 +482,9 @@ public class SelectTool extends AbstractTool {
 		for (CanvasObject o : model.getObjectsFromTop()) {
 			if (o.contains(loc, assumeFilled)) return o;
 		}
+
 		return null;
+
 	}
+
 }

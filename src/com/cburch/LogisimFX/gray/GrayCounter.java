@@ -11,18 +11,18 @@ import com.cburch.LogisimFX.instance.*;
 import com.cburch.LogisimFX.util.GraphicsUtil;
 import com.cburch.LogisimFX.util.StringUtil;
 
-import javax.swing.*;
-import java.net.URL;
-
 /** Manufactures a counter that iterates over Gray codes. This demonstrates
  * several additional features beyond the SimpleGrayCounter class. */
 class GrayCounter extends InstanceFactory {
+
 	public GrayCounter() {
+
 		super("Gray Counter");
 		setOffsetBounds(Bounds.create(-30, -15, 30, 30));
 		setPorts(new Port[] {
 				new Port(-30, 0, Port.INPUT, 1),
 				new Port(  0, 0, Port.OUTPUT, StdAttr.WIDTH),
+
 		});
 		
 		// We'll have width, label, and label font attributes. The latter two
@@ -40,8 +40,7 @@ class GrayCounter extends InstanceFactory {
 		// These next two lines set it up so that the explorer window shows a
 		// customized icon representing the component type. This should be a
 		// 16x16 image.
-		URL url = getClass().getClassLoader().getResource("com/cburch/gray/counter.gif");
-		if (url != null) setIcon(new ImageIcon(url));
+		setIcon("counter.gif");
 	}
 	
 	/** The configureNewInstance method is invoked every time a new instance
@@ -52,14 +51,17 @@ class GrayCounter extends InstanceFactory {
 	 * for its label. */
 	@Override
 	protected void configureNewInstance(Instance instance) {
+
 		Bounds bds = instance.getBounds();
 		instance.setTextField(StdAttr.LABEL, StdAttr.LABEL_FONT,
 				bds.getX() + bds.getWidth() / 2, bds.getY() - 3,
 				GraphicsUtil.H_CENTER, GraphicsUtil.V_BASELINE);
+
 	}
 
 	@Override
 	public void propagate(InstanceState state) {
+
 		// This is the same as with SimpleGrayCounter, except that we use the
 		// StdAttr.WIDTH attribute to determine the bit width to work with.
 		BitWidth width = state.getAttributeValue(StdAttr.WIDTH);
@@ -67,10 +69,12 @@ class GrayCounter extends InstanceFactory {
 		boolean trigger = cur.updateClock(state.getPort(0));
 		if (trigger) cur.setValue(GrayIncrementer.nextGray(cur.getValue()));
 		state.setPort(1, cur.getValue(), 9);
+
 	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
+
 		// This is essentially the same as with SimpleGrayCounter, except for
 		// the invocation of painter.drawLabel to make the label be drawn.
 		painter.drawBounds();
@@ -87,5 +91,7 @@ class GrayCounter extends InstanceFactory {
 					bds.getX() + bds.getWidth() / 2,
 					bds.getY() + bds.getHeight() / 2);
 		}
+
 	}
+
 }

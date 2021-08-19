@@ -16,8 +16,8 @@ import com.cburch.LogisimFX.circuit.CircuitListener;
 import com.cburch.LogisimFX.circuit.RadixOption;
 import com.cburch.LogisimFX.circuit.Wire;
 import com.cburch.LogisimFX.circuit.WireSet;
-import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.prefs.AppPreferences;
 import com.cburch.LogisimFX.proj.Project;
 
@@ -169,7 +169,7 @@ public class PokeTool extends Tool {
 			removeCaret(true);
 		}
 		if (pokeCaret == null) {
-			ComponentUserEvent event = new ComponentUserEvent(canvas, x, y);
+			ComponentUserEvent event = new ComponentUserEvent(canvas, x, y,e);
 			Circuit circ = canvas.getCircuit();
 			for (Component c : circ.getAllContaining(loc, g)) {
 				if (pokeCaret != null) break;
@@ -187,7 +187,7 @@ public class PokeTool extends Tool {
 						AttributeSet attrs = c.getAttributeSet();
 						if (attrs != null && attrs.getAttributes().size() > 0) {
 							Project proj = canvas.getProject();
-							proj.getFrameController().setAttributeTable(circ,c);
+							proj.getFrameController().setAttributeTable(c);
 						}
 					}
 				}

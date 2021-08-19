@@ -11,10 +11,10 @@ import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.AttributeSet;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
-import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
-import com.cburch.LogisimFX.newgui.MainFrame.Selection;
-import com.cburch.LogisimFX.newgui.MainFrame.SelectionActions;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.Selection;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.SelectionActions;
 import com.cburch.LogisimFX.tools.key.KeyConfigurationEvent;
 import com.cburch.LogisimFX.tools.key.KeyConfigurationResult;
 import com.cburch.LogisimFX.tools.key.KeyConfigurator;
@@ -128,6 +128,7 @@ public class SelectTool extends Tool {
 		int dx = curDx;
 		int dy = curDy;
 		if (state == MOVING) {
+
 			canvas.getSelection().drawGhostsShifted(context, dx, dy);
 
 			MoveGesture gesture = moveGesture;
@@ -157,6 +158,7 @@ public class SelectTool extends Tool {
 			}
 
 		} else if (state == RECT_SELECT) {
+
 			int left = start.getX();
 			int right = left + dx;
 			if (left > right) { int i = left; left = right; right = i; }
@@ -220,6 +222,7 @@ public class SelectTool extends Tool {
 		// selection is being modified
 		Collection<Component> in_sel = sel.getComponentsContaining(start, g);
 		if (!in_sel.isEmpty()) {
+			System.out.println("clicked1");
 			if (!e.event.isShiftDown()) {
 				setState(canvas, MOVING);
 				return;
@@ -236,6 +239,7 @@ public class SelectTool extends Tool {
 		Collection<Component> clicked = circuit.getAllContaining(start, g);
 		if (!clicked.isEmpty()) {
 			if (!e.event.isShiftDown()) {
+				//canvas.getProject().getFrameController().setAttributeTable();
 				if (sel.getComponentsContaining(start).isEmpty()) {
 					Action act = SelectionActions.dropAll(sel);
 					if (act != null) {
@@ -444,7 +448,7 @@ public class SelectTool extends Tool {
 			}
 			if (!results.isEmpty()) {
 				SetAttributeAction act = new SetAttributeAction(canvas.getCircuit(),
-						Strings.getter("changeComponentAttributesAction"));
+						LC.createStringBinding("changeComponentAttributesAction"));
 				for (KeyConfigurationResult result : results) {
 					Component comp = (Component) result.getEvent().getData();
 					Map<Attribute<?>,Object> newValues = result.getAttributeValues();

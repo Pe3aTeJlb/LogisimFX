@@ -7,13 +7,14 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import com.cburch.LogisimFX.data.Bounds;
-import com.cburch.LogisimFX.newgui.MainFrame.LayoutCanvas;
-import com.cburch.LogisimFX.newgui.MainFrame.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.tools.Caret;
 import com.cburch.LogisimFX.tools.CaretEvent;
 import com.cburch.LogisimFX.tools.CaretListener;
 
 import com.sun.javafx.tk.FontMetrics;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -58,6 +59,7 @@ class TextFieldCaret implements Caret, TextFieldListener {
 	}
 
 	public void draw(Graphics g) {
+
 		if (field.getFont() != null) g.setFont(field.getFont());
 		// draw boundary
 		Bounds bds = getBounds(g);
@@ -71,7 +73,7 @@ class TextFieldCaret implements Caret, TextFieldListener {
 		// draw text
 		int x = field.getX();
 		int y = field.getY();
-		FontMetrics fm = g.getFontMetrics();
+		FontMetrics fm = g.getFontmetricsForFont(field.getFont());
 		int width = (int)fm.computeStringWidth(curText);
 		int ascent = (int)fm.getAscent();
 		int descent = (int)fm.getDescent();
@@ -86,11 +88,12 @@ class TextFieldCaret implements Caret, TextFieldListener {
 			case TextField.V_BOTTOM:    y -= descent; break;
 			default:                    break;
 		}
-		g.c.strokeText(curText, x, y);
+		g.c.fillText(curText, x, y);
 
 		// draw cursor
-		if (pos > 0) x += fm.computeStringWidth(curText.substring(0, pos));
+		if (pos > 0) x += Math.ceil(fm.computeStringWidth(curText.substring(0, pos)));
 		g.c.strokeLine(x, y, x, y - ascent);
+
 	}
 
 	public Bounds getBounds(Graphics g) {
@@ -211,13 +214,18 @@ class TextFieldCaret implements Caret, TextFieldListener {
 
 		if (e.isAltDown() || e.isControlDown() || e.isMetaDown()) return;
 
-		String c = e.getCharacter();
-		if (c == "\n") {
+		char c = e.getCharacter().toCharArray()[0];
+
+		//System.out.println("is not ind "+ (e.getCode() != KeyCode.UNDEFINED)+" "+e.getCode()+" "+e.getCharacter()+" "+e.getCode().getName());
+		//System.out.println("is iso " +(!Character.isISOControl(c)));
+
+		if (c == '\n') {
 			stopEditing();
-		} else if (c != KeyEvent.CHAR_UNDEFINED
-				//todo && !Character.isISOControl(c)) {
-		){
+		} else if (
+				/*e.getCode() != KeyCode.UNDEFINED &&*/
+				!Character.isISOControl(c)) {
 			if (pos < curText.length()) {
+				System.out.println(curText);
 				curText = curText.substring(0, pos) + c
 					+ curText.substring(pos);
 			} else {
