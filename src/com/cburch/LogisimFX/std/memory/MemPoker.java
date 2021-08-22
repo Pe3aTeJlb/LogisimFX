@@ -108,6 +108,7 @@ public class MemPoker extends InstancePoker {
 
 			char c = e.getCharacter().toCharArray()[0];
 			int val = Character.digit(c, 16);
+
 			MemState data = (MemState) state.getData();
 			if (val >= 0) {
 				curValue = curValue * 16 + val;

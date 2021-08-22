@@ -19,7 +19,7 @@
           <RowConstraints maxHeight="45.0" minHeight="-Infinity" prefHeight="38.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <TableView fx:id="hexTableVw" prefHeight="405.0" prefWidth="600.0" GridPane.columnSpan="2" />
+            <TableView fx:id="hexTableVw" editable="true" prefHeight="405.0" prefWidth="600.0" GridPane.columnSpan="2" />
             <Button fx:id="loadBtn" alignment="CENTER" mnemonicParsing="false" prefWidth="125.0" text="Button" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets right="20.0" />
