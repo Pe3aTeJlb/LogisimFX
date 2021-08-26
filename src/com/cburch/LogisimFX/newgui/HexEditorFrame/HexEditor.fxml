@@ -11,25 +11,31 @@
    <children>
       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
-          <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="225.0" />
-            <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="225.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="225.0" />
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="225.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="225.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="50.0" prefHeight="425.0" vgrow="SOMETIMES" />
           <RowConstraints maxHeight="45.0" minHeight="-Infinity" prefHeight="38.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <TableView fx:id="hexTableVw" editable="true" prefHeight="405.0" prefWidth="600.0" GridPane.columnSpan="2" />
-            <Button fx:id="loadBtn" alignment="CENTER" mnemonicParsing="false" prefWidth="125.0" text="Button" GridPane.rowIndex="1">
+            <TableView fx:id="hexTableVw" editable="true" prefHeight="405.0" prefWidth="600.0" GridPane.columnSpan="3" />
+            <Button fx:id="loadBtn" alignment="CENTER" mnemonicParsing="false" prefWidth="125.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <GridPane.margin>
-                  <Insets right="20.0" />
+                  <Insets />
                </GridPane.margin>
             </Button>
-            <Button fx:id="saveBtn" mnemonicParsing="false" prefWidth="125.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <Button fx:id="saveBtn" mnemonicParsing="false" prefWidth="125.0" text="Button" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <GridPane.margin>
-                  <Insets left="20.0" />
+                  <Insets />
                </GridPane.margin>
             </Button>
+            <TextField prefWidth="125.0" GridPane.rowIndex="1">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+            </TextField>
          </children>
       </GridPane>
    </children>

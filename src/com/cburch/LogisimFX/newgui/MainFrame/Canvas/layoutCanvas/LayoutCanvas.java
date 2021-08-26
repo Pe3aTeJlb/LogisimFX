@@ -323,8 +323,8 @@ public class LayoutCanvas extends Canvas {
         if(errorMessage != null) {
             g.setFont(DEFAULT_ERROR_FONT);
             g.setColor(errorColor);
-            g.c.fillText(errorMessage.getValue(), (this.getWidth() / 2),
-                   (3 * this.getHeight() / 4));
+            g.c.fillText(errorMessage.getValue(), inverseTransformX(this.getWidth() / 2),
+                   inverseTransformY(3 * this.getHeight() / 4));
 
             g.toDefault();
         }
@@ -335,9 +335,9 @@ public class LayoutCanvas extends Canvas {
 
         g.setFont(DEFAULT_ERROR_FONT);
         FontMetrics fm = g.getFontMetrics();
-        int x = ((int)getWidth() - (int)fm.computeStringWidth(msg)) / 2;
+        int x = inverseTransformX((getWidth() - fm.computeStringWidth(msg)) / 2);
         if (x < 0) x = 0;
-        g.c.fillText(msg, x, getHeight() - 23);
+        g.c.fillText(msg, x, inverseTransformY(getHeight() - 23));
 
     }
 
@@ -351,8 +351,8 @@ public class LayoutCanvas extends Canvas {
                 g.setColor(TICK_RATE_COLOR);
                 g.setFont(TICK_RATE_FONT);
                 FontMetrics fm = g.getFontMetrics();
-                int x = (int)getWidth() - (int)fm.computeStringWidth(hz) - 5;
-                int y = (int)fm.getAscent() + 5;
+                int x = inverseTransformX(getWidth() - fm.computeStringWidth(hz) - 5);
+                int y = inverseTransformY(fm.getAscent() + 5);
                 g.c.fillText(hz, x, y);
             }
 

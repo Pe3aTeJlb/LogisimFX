@@ -4,7 +4,8 @@
 package com.cburch.LogisimFX.newgui.HexEditorFrame;
 
 public interface HexModelListener {
-	public void metainfoChanged(HexModel source);
-	public void bytesChanged(HexModel source, long start, long numBytes,
-                             int[] oldValues);
+
+	void metainfoChanged(HexModel source);
+	void bytesChanged(HexModel source, long start, long numBytes, int[] oldValues);
+
 }
