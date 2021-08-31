@@ -6,10 +6,13 @@ import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.std.memory.MemContents;
 
-import com.cburch.hex.HexEditor;
+import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -35,6 +38,9 @@ public class HexEditorController extends AbstractController {
     @FXML
     private Button saveBtn;
 
+    @FXML
+    private TextField scrollToTxtFld;
+
     private MemContents memContents;
     private HexModel hexModel;
     private Listener listener;
@@ -47,16 +53,15 @@ public class HexEditorController extends AbstractController {
     private int maxCols;
     private int columnCount = 8;
 
-    private double COLUMN_SIZE = 80;
+    private final double COLUMN_SIZE = 80;
 
-    private Thread thread;
-
-    private int upperRecalculateBound = 0;
-    private int lowerRecalculateBound = 0;
     private ScrollBar scrollBar;
-    private double scrollValue=0;
-    private TableViewExt<?> tableViewExt;
+    private float scrollValue = -1;
 
+
+    private int ADJUST = 100;
+    private int realUpAdjust, realBottomAdjust;
+    private int currAdr = 0;
     private TableView.TableViewSelectionModel<HexEditorDataModel> selectionModel;
     private TableColumn<HexEditorDataModel, Integer> adrColumn;
     private ArrayList<TableColumn<HexEditorDataModel, Long>> dataColumns = new ArrayList<>();
@@ -96,6 +101,25 @@ public class HexEditorController extends AbstractController {
 
         });
 
+        //scrollToTxtFld.promptTextProperty().bind(LC.createStringBinding("scrollTo"));
+        scrollToTxtFld.setOnKeyPressed(event -> {
+
+            if(event.getText().matches("^[0-9A-Fa-f]") && !event.isControlDown()) {
+
+                if(!scrollToTxtFld.getText().equals("")) {
+                    StringBuilder buff = new StringBuilder(scrollToTxtFld.getText().substring(1) + event.getText());
+                    scrollToTxtFld.setText(String.format("%0" + maxAdrLen + "X", Integer.parseInt(buff.toString(), 16)));
+                }else{
+                    scrollToTxtFld.setText(String.format("%0" + maxAdrLen + "X", Integer.parseInt(event.getText(), 16)));
+                }
+                event.consume();
+
+            }
+
+        });
+        scrollToTxtFld.setOnKeyTyped(Event::consume);
+        scrollToTxtFld.setOnAction(event -> scrollTo());
+
     }
 
     @Override
@@ -129,8 +153,6 @@ public class HexEditorController extends AbstractController {
         selectionModel = hexTableVw.getSelectionModel();
         selectionModel.setCellSelectionEnabled(true);
         selectionModel.setSelectionMode(SelectionMode.MULTIPLE);
-
-        tableViewExt = new TableViewExt<>(hexTableVw);
 
         createColumns();
 
@@ -267,8 +289,6 @@ public class HexEditorController extends AbstractController {
                         memContents.set(
                                 hexTableVw.getItems().get(cell.getTableRow().getIndex()).getAdr(j),
                                 (int)Long.parseLong(buff.toString(),16));
-
-                        //hexTableVw.refresh();
 
                         event.consume();
 
@@ -414,6 +434,8 @@ public class HexEditorController extends AbstractController {
         //set default columncount model
         columnCount = 8;
 
+        scrollToTxtFld.promptTextProperty().bind(LC.createStringBinding("scrollTo"));
+
         //Define first data row for correct tableviewext class work
         hexTableVw.getItems().add(new HexEditorDataModel(0));
 
@@ -421,18 +443,36 @@ public class HexEditorController extends AbstractController {
 
         //Find tableview scrollbar and add listener for rows scroll
         scrollBar = (ScrollBar) hexTableVw.lookup(".scroll-bar");
+
         if(scrollBar!=null){
 
-            scrollBar.setOnScroll(event -> {
-            });
-
             scrollBar.valueProperty().addListener(observable -> {
-                if(scrollBar.getValue()-scrollValue<0){
-                    calculateChunk(-1);
-                }else{
+
+                System.out.println("from scroll" +scrollBar.getValue());
+
+                if (scrollBar.getValue() == scrollBar.getMax() && hexTableVw.getItems().size() < maxAdrValue / columnCount) {
+                    System.out.println("Adding new persons bottom. ");
                     calculateChunk(1);
+                    float adjust = (float)realBottomAdjust;
+                    float size = (float)hexTableVw.getItems().size();
+                    System.out.println(size + " " + adjust + " " + (size - adjust) / size);
+                    System.out.println(hexTableVw.getItems().size()-realBottomAdjust);
+                    scrollValue = (size - adjust) / size;
+                    scrollBar.setValue(scrollValue);
+                    hexTableVw.scrollTo(hexTableVw.getItems().size()-realBottomAdjust);
                 }
-                scrollValue=scrollBar.getValue();
+
+                if (scrollBar.getValue() == scrollBar.getMin() && currAdr != 0 && !hexTableVw.getItems().isEmpty()) {
+                    System.out.println("Adding new persons up. ");
+                    calculateChunk(-1);
+                    float adjust = (float)realUpAdjust;
+                    float size = (float)hexTableVw.getItems().size();
+                    System.out.println(size + " " + adjust + " " + (adjust) / size);
+                    scrollValue = adjust / size;
+                    hexTableVw.scrollTo(realUpAdjust);
+                    scrollBar.setValue(scrollValue);
+                }
+
             });
 
         }
@@ -440,8 +480,6 @@ public class HexEditorController extends AbstractController {
     }
 
     private void calculateTableColumns() {
-
-        System.out.println("fucked up");
 
         if (memContents.getLogLength() % 4 == 0) {
             maxAdrLen = memContents.getLogLength() / 4;
@@ -456,52 +494,14 @@ public class HexEditorController extends AbstractController {
         }
 
         maxAdrValue = (int)Math.pow(2, memContents.getLogLength())-1;
-        String maxValueHex = Long.toHexString(maxAdrValue);
-
-        System.out.println("max length: "+maxLength);
-        System.out.println("max val: "+maxAdrValue+ " "+ maxValueHex);
 
         for(int n = 0; n < 16; n++){
             hexTableVw.getColumns().get(n+1).setVisible(n < columnCount);
         }
 
+        hexTableVw.getItems().clear();
+
         calculateChunk(1);
-
-        /*
-        long l = 0;
-        ObservableList<HexEditorDataModel> list = FXCollections.observableArrayList();
-        for (int i = 0; i <= hexModel.getLastOffset(); i += columnCount) {
-            l++;
-            list.add(new HexEditorDataModel(i));
-        }
-        System.out.println("l "+l);
-        hexTableVw.getItems().setAll(list);
-
- */
-
-        /*
-        //todo gc manual update
-        if(thread != null && thread.getState() != Thread.State.TERMINATED) {
-            thread.interrupt();
-            hexTableVw.getItems().clear();
-        }
-
-        Runnable task = () -> {
-
-            for (int i = 0; i <= hexModel.getLastOffset(); i += columnCount) {
-                hexTableVw.getItems().add(new HexEditorDataModel(i));
-            }
-
-            hexTableVw.refresh();
-
-        };
-
-        thread = new Thread(task);
-        thread.start();
-        */
-
-
-        hexTableVw.refresh();
 
     }
 
@@ -510,66 +510,100 @@ public class HexEditorController extends AbstractController {
         //note that first and last visible index differs from the real ones value by -1
         //so, if first visible index is 1, the real one is 2
         //idk not my script
-        System.out.println("current first "+tableViewExt.getFirstVisibleIndex());
-        System.out.println("current last "+tableViewExt.getLastVisibleIndex());
-        System.out.println("calculate first "+ upperRecalculateBound);
-        System.out.println("calculate last "+ lowerRecalculateBound);
+
 
         //Пошло всё нахуй я хайлоад программист
 
-        if(tableViewExt.getFirstVisibleIndex() <= upperRecalculateBound ||
-                tableViewExt.getLastVisibleIndex() >= lowerRecalculateBound) {
+        ObservableList<HexEditorDataModel> list = FXCollections.observableArrayList();
 
+        list.addAll(hexTableVw.getItems());
 
-            ObservableList<HexEditorDataModel> list = FXCollections.observableArrayList();
+        int count = 0;
 
-            int count = 0;
-            int adr = hexTableVw.getItems().get(tableViewExt.getFirstVisibleIndex()+1).getAddress();
+        if(direction == 1){
 
+            if(!hexTableVw.getItems().isEmpty() && hexTableVw.getItems().size() != 1)
+                currAdr = hexTableVw.getItems().get(hexTableVw.getItems().size()-1).getAddress();
+            System.out.println("curr adr "+String.format("%0"+maxAdrLen+"X",currAdr));
+            int adr = currAdr;
 
-            hexTableVw.refresh();
+            while (count < ADJUST) {
 
-            hexTableVw.getItems().clear();
+                if (adr + columnCount * count < maxAdrValue)list.add(new HexEditorDataModel(adr + columnCount * count));
+                else { break;}
 
-            while (count < 100) {
+                count++;
 
-                if (adr - columnCount * count > 0) list.add(new HexEditorDataModel(adr - columnCount * count));
+            }
+
+            realBottomAdjust = count;
+
+            if(list.size()>1100)list = FXCollections.observableArrayList(list.subList(ADJUST,list.size()));
+
+        }else{
+
+            if(!hexTableVw.getItems().isEmpty() && hexTableVw.getItems().size() != 1)
+                currAdr = hexTableVw.getItems().get(0).getAddress();
+            System.out.println("curr adr "+String.format("%0"+maxAdrLen+"X",currAdr));
+            int adr = currAdr;
+
+            while (count < ADJUST) {
+
+                if (adr - columnCount * count >= 0) list.add(0,
+                        new HexEditorDataModel(adr - columnCount * count));
                 else break;
 
                 count++;
 
             }
 
-            upperRecalculateBound += (direction*(count/2));
-            if(upperRecalculateBound <0) upperRecalculateBound =0;
+            realUpAdjust = count;
 
-            count = 0;
-
-            while (count < 100) {
-
-                if (adr + columnCount * count < maxAdrValue)list.add(new HexEditorDataModel(adr + columnCount * count));
-                else {
-                    System.out.println("BREAKED!!!!!");break;}
-
-                count++;
-
-            }
-
-            lowerRecalculateBound = (tableViewExt.getLastVisibleIndex()+1+(direction*(count/2)))-(tableViewExt.getLastVisibleIndex()-tableViewExt.getFirstVisibleIndex());
-
-            if(lowerRecalculateBound<0)lowerRecalculateBound=0;
-            if(lowerRecalculateBound >maxAdrValue/columnCount) lowerRecalculateBound =maxAdrValue/columnCount;
-
-            System.out.println("new calculate first "+ upperRecalculateBound);
-            System.out.println("new calculate last "+ lowerRecalculateBound);
-
-            hexTableVw.setItems(list);
-            hexTableVw.refresh();
-            System.out.println(hexTableVw.getItems().size());
+            if(list.size()>1100)list = FXCollections.observableArrayList(list.subList(0,list.size()-ADJUST));
 
         }
 
+        hexTableVw.setItems(list);
+        //hexTableVw.refresh();
+        System.out.println(hexTableVw.getItems().size());
+
     }
+
+    private void scrollTo(){
+
+        double adr = Integer.parseInt(scrollToTxtFld.getText(),16);
+        double buff = Math.floor(adr / columnCount);
+        buff = buff * columnCount;
+
+        hexTableVw.getItems().clear();
+        hexTableVw.refresh();
+
+        ObservableList<HexEditorDataModel> list = FXCollections.observableArrayList();
+        int count = 0;
+        while (count < ADJUST) {
+
+            if (adr + columnCount * count < maxAdrValue)list.add(new HexEditorDataModel((int)buff + columnCount * count));
+            else { break;}
+
+            count++;
+
+        }
+
+        currAdr = (int)buff;
+        System.out.println(String.format("%0"+maxAdrLen+"X",currAdr));
+        hexTableVw.getItems().clear();
+        hexTableVw.setItems(list);
+        hexTableVw.scrollTo(0);
+        hexTableVw.getSelectionModel().select(0,dataColumns.get((int)(adr-buff)));
+
+        scrollBar.setValue(0.0001);
+
+        hexTableVw.refresh();
+
+
+
+    }
+
 
     @Override
     public void onClose() {
@@ -589,7 +623,6 @@ public class HexEditorController extends AbstractController {
         stage = null;
 
     }
-
 
     private class Listener implements HexModelListener {
 

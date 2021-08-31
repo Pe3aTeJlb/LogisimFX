@@ -31,7 +31,7 @@
                   <Insets />
                </GridPane.margin>
             </Button>
-            <TextField prefWidth="125.0" GridPane.rowIndex="1">
+            <TextField fx:id="scrollToTxtFld" prefWidth="125.0" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
