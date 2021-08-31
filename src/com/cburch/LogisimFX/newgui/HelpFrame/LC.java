@@ -1,6 +1,6 @@
 package com.cburch.LogisimFX.newgui.HelpFrame;
 
-import com.cburch.LogisimFX.localization.LC_menu;
+import com.cburch.LogisimFX.localization.LC_help;
 import com.cburch.LogisimFX.localization.Localizer;
 import javafx.beans.binding.StringBinding;
 
@@ -11,7 +11,7 @@ import javafx.beans.binding.StringBinding;
 
 public class LC {
 
-    private static Localizer lc = LC_menu.getInstance();
+    private static Localizer lc = LC_help.getInstance();
 
     public static StringBinding createStringBinding(final String key, Object... args) {
         return lc.createStringBinding(key, args);

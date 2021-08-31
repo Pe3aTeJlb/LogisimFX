@@ -14,8 +14,8 @@ import com.cburch.LogisimFX.circuit.appear.AppearanceAnchor;
 import com.cburch.LogisimFX.circuit.appear.AppearanceElement;
 import com.cburch.LogisimFX.data.Direction;
 import com.cburch.LogisimFX.data.Location;
-import com.cburch.LogisimFX.localization.LC_gui;
 import com.cburch.LogisimFX.newgui.MainFrame.Canvas.EditHandler;
+import com.cburch.LogisimFX.newgui.MainFrame.LC;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.logisim.gui.menu.LogisimMenuBar;
 
@@ -167,7 +167,7 @@ public class AppearanceEditHandler extends EditHandler {
 		}
 			
 		canvas.getProject().doAction(new SelectionAction(canvas,
-				LC_gui.getInstance().createStringBinding("pasteClipboardAction"), null, add, add,
+				LC.createStringBinding("pasteClipboardAction"), null, add, add,
 				anchorLocation, clip.getAnchorFacing()));
 
 	}
@@ -196,7 +196,7 @@ public class AppearanceEditHandler extends EditHandler {
 		
 		if (!remove.isEmpty()) {
 			canvas.getProject().doAction(new SelectionAction(canvas,
-					LC_gui.getInstance().createStringBinding("deleteSelectionAction"), remove, null, select,
+					LC.createStringBinding("deleteSelectionAction"), remove, null, select,
 				anchorLocation, anchorFacing));
 		}
 
@@ -222,7 +222,7 @@ public class AppearanceEditHandler extends EditHandler {
 		
 		if (!clones.isEmpty()) {
 			canvas.getProject().doAction(new SelectionAction(canvas,
-					LC_gui.getInstance().createStringBinding("duplicateSelectionAction"), null, clones, select,
+					LC.createStringBinding("duplicateSelectionAction"), null, clones, select,
 				null, null));
 		}
 

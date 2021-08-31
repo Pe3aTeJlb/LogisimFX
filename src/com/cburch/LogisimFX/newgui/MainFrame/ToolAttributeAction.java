@@ -5,7 +5,6 @@ package com.cburch.LogisimFX.newgui.MainFrame;
 
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.AttributeSet;
-import com.cburch.LogisimFX.localization.LC_gui;
 import com.cburch.LogisimFX.proj.Action;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.tools.Tool;
@@ -38,7 +37,7 @@ public class ToolAttributeAction extends Action {
 	
 	@Override
 	public String getName() {
-		return LC_gui.getInstance().get("changeToolAttrAction");
+		return LC.get("changeToolAttrAction");
 	}
 
 	@Override

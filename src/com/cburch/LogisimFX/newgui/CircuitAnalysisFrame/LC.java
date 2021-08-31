@@ -1,6 +1,6 @@
 package com.cburch.LogisimFX.newgui.CircuitAnalysisFrame;
 
-import com.cburch.LogisimFX.localization.LC_start;
+import com.cburch.LogisimFX.localization.LC_analyze;
 import com.cburch.LogisimFX.localization.Localizer;
 import javafx.beans.binding.StringBinding;
 
@@ -11,7 +11,7 @@ import javafx.beans.binding.StringBinding;
 
 public class LC {
 
-    private static Localizer lc = LC_start.getInstance();
+    private static Localizer lc = LC_analyze.getInstance();
 
     public static StringBinding createStringBinding(final String key, Object... args) {
         return lc.createStringBinding(key, args);

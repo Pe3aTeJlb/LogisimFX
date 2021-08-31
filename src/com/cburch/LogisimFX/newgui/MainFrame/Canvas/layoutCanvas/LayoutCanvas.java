@@ -10,8 +10,8 @@ import com.cburch.LogisimFX.data.BitWidth;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.data.Value;
-import com.cburch.LogisimFX.localization.LC_gui;
 import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import com.cburch.LogisimFX.newgui.MainFrame.LC;
 import com.cburch.LogisimFX.prefs.AppPreferences;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.tools.MenuTool;
@@ -181,13 +181,13 @@ public class LayoutCanvas extends Canvas {
 
         if (proj.getSimulator().isOscillating()) {
             g.setColor(DEFAULT_ERROR_COLOR);
-            drawString(g, LC_gui.getInstance().get("canvasOscillationError"));
+            drawString(g, LC.get("canvasOscillationError"));
             return;
         }
 
         if (proj.getSimulator().isExceptionEncountered()) {
             g.setColor(DEFAULT_ERROR_COLOR);
-            drawString(g, LC_gui.getInstance().get("canvasExceptionError"));
+            drawString(g, LC.get("canvasExceptionError"));
             return;
         }
 

@@ -3,7 +3,6 @@ package com.cburch.LogisimFX.newgui.MainFrame;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.newgui.MainFrame.Canvas.EditHandler;
 import com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceCanvas;
-import com.cburch.LogisimFX.localization.LC_gui;
 import com.cburch.LogisimFX.newgui.AbstractController;
 import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
@@ -31,8 +30,6 @@ public class MainFrameController extends AbstractController {
 
     @FXML
     private AnchorPane Root;
-
-    private static Localizer lc = LC_gui.getInstance();
 
     private Project proj;
 
@@ -133,9 +130,9 @@ public class MainFrameController extends AbstractController {
         String name = proj.getLogisimFile().getName();
 
         if (circuit != null) {
-            stage.titleProperty().bind(lc.createComplexStringBinding("titleCircFileKnown",circuit.getName(), name));
+            stage.titleProperty().bind(LC.createComplexStringBinding("titleCircFileKnown",circuit.getName(), name));
         } else {
-            stage.titleProperty().bind(lc.createComplexStringBinding("titleCircFileKnown", name));
+            stage.titleProperty().bind(LC.createComplexStringBinding("titleCircFileKnown", name));
         }
 
     }

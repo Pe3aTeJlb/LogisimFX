@@ -3,7 +3,6 @@
 
 package com.cburch.LogisimFX.newgui.MainFrame;
 
-import com.cburch.LogisimFX.localization.LC_gui;
 import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.analyze.gui.Analyzer;
 import com.cburch.LogisimFX.analyze.gui.AnalyzerManager;
@@ -26,7 +25,6 @@ import java.util.Map;
 
 public class ProjectCircuitActions {
 
-	private static Localizer lc = LC_gui.getInstance();
 
 	public static void doAddCircuit(Project proj) {
 
@@ -59,9 +57,9 @@ public class ProjectCircuitActions {
 	public static void doRemoveCircuit(Project proj, Circuit circuit) {
 
 		if (proj.getLogisimFile().getTools().size() == 1) {
-			DialogManager.CreateErrorDialog(lc.get("circuitRemoveErrorTitle"),lc.get("circuitRemoveLastError"));
+			DialogManager.CreateErrorDialog(LC.get("circuitRemoveErrorTitle"),LC.get("circuitRemoveLastError"));
 		} else if (!proj.getDependencies().canRemove(circuit)) {
-			DialogManager.CreateErrorDialog(lc.get("circuitRemoveErrorTitle"),lc.get("circuitRemoveUsedError"));
+			DialogManager.CreateErrorDialog(LC.get("circuitRemoveErrorTitle"),LC.get("circuitRemoveUsedError"));
 		} else {
 			proj.doAction(LogisimFileActions.removeCircuit(circuit));
 		}
@@ -82,20 +80,20 @@ public class ProjectCircuitActions {
 			}
 			if (pin.getAttributeValue(StdAttr.WIDTH).getWidth() > 1) {
 				if (isInput) {
-					analyzeError(proj, lc.get("analyzeMultibitInputError"));
+					analyzeError(proj, LC.get("analyzeMultibitInputError"));
 				} else {
-					analyzeError(proj, lc.get("analyzeMultibitOutputError"));
+					analyzeError(proj, LC.get("analyzeMultibitOutputError"));
 				}
 				return;
 			}
 		}
 		if (inputNames.size() > AnalyzerModel.MAX_INPUTS) {
-			analyzeError(proj, StringUtil.format(lc.get("analyzeTooManyInputsError"),
+			analyzeError(proj, StringUtil.format(LC.get("analyzeTooManyInputsError"),
 					"" + AnalyzerModel.MAX_INPUTS));
 			return;
 		}
 		if (outputNames.size() > AnalyzerModel.MAX_OUTPUTS) {
-			analyzeError(proj, StringUtil.format(lc.get("analyzeTooManyOutputsError"),
+			analyzeError(proj, StringUtil.format(LC.get("analyzeTooManyOutputsError"),
 					"" + AnalyzerModel.MAX_OUTPUTS));
 			return;
 		}
@@ -131,7 +129,7 @@ public class ProjectCircuitActions {
 			analyzer.setSelectedTab(Analyzer.EXPRESSION_TAB);
 			return;
 		} catch (AnalyzeException ex) {
-			DialogManager.CreateScrollError(lc.get("analyzeNoExpressionTitle"),ex.getMessage());
+			DialogManager.CreateScrollError(LC.get("analyzeNoExpressionTitle"),ex.getMessage());
 		}
 		
 		// As a backup measure, we compute a truth table.
@@ -140,7 +138,7 @@ public class ProjectCircuitActions {
 	}
 		
 	private static void analyzeError(Project proj, String message) {
-		DialogManager.CreateErrorDialog(lc.get("analyzeErrorTitle"), message);
+		DialogManager.CreateErrorDialog(LC.get("analyzeErrorTitle"), message);
 	}
 
 }

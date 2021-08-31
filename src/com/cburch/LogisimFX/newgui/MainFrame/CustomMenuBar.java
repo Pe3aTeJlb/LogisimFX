@@ -3,8 +3,6 @@ package com.cburch.LogisimFX.newgui.MainFrame;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.circuit.Simulator;
-import com.cburch.LogisimFX.data.AttributeEvent;
-import com.cburch.LogisimFX.data.AttributeListener;
 import com.cburch.LogisimFX.newgui.MainFrame.Canvas.EditHandler;
 import com.cburch.LogisimFX.localization.LC_menu;
 import com.cburch.LogisimFX.newgui.FrameManager;

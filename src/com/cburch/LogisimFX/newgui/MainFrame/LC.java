@@ -1,4 +1,4 @@
-package com.cburch.LogisimFX.newgui.MainFrame.ProjectExplorer;
+package com.cburch.LogisimFX.newgui.MainFrame;
 
 import com.cburch.LogisimFX.localization.LC_gui;
 import com.cburch.LogisimFX.localization.Localizer;
@@ -31,6 +31,10 @@ public class LC {
 
     public static String get(final String key, final Object... args) {
        return lc.get(key, args);
+    }
+
+    public static String getFormatted(final String key, String... strings) {
+        return lc.getFormatted(key,strings);
     }
 
 }

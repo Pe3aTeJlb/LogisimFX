@@ -9,7 +9,6 @@ import com.cburch.LogisimFX.comp.ComponentFactory;
 import com.cburch.LogisimFX.data.AttributeSet;
 import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.file.LogisimFile;
-import com.cburch.LogisimFX.localization.LC_gui;
 import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.proj.Action;
 import com.cburch.LogisimFX.proj.JoinedAction;
@@ -17,6 +16,7 @@ import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.tools.AddTool;
 import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.tools.Tool;
+import com.cburch.LogisimFX.newgui.MainFrame.LC;
 
 import java.util.*;
 
@@ -94,8 +94,8 @@ public class SelectionActions {
 
 		@Override
 		public String getName() {
-			return numDrops == 1 ? LC_gui.getInstance().get("dropComponentAction")
-					: LC_gui.getInstance().get("dropComponentsAction");
+			return numDrops == 1 ? LC.get("dropComponentAction")
+					: LC.get("dropComponentsAction");
 		}
 
 		@Override
@@ -140,7 +140,7 @@ public class SelectionActions {
 
 		@Override
 		public String getName() {
-			return LC_gui.getInstance().get("deleteSelectionAction");
+			return LC.get("deleteSelectionAction");
 		}
 
 		@Override
@@ -169,7 +169,7 @@ public class SelectionActions {
 
 		@Override
 		public String getName() {
-			return LC_gui.getInstance().get("duplicateSelectionAction");
+			return LC.get("duplicateSelectionAction");
 		}
 
 		@Override
@@ -200,7 +200,7 @@ public class SelectionActions {
 
 		@Override
 		public String getName() {
-			return LC_gui.getInstance().get("cutSelectionAction");
+			return LC.get("cutSelectionAction");
 		}
 
 		@Override
@@ -229,7 +229,7 @@ public class SelectionActions {
 
 		@Override
 		public String getName() {
-			return LC_gui.getInstance().get("copySelectionAction");
+			return LC.get("copySelectionAction");
 		}
 
 		@Override
@@ -273,12 +273,12 @@ public class SelectionActions {
 					}
 					dropped.add(compFactory.getDisplayName().getValue());
 				} else {
-					String msg = LC_gui.getInstance().get("pasteCloneQuery",
+					String msg = LC.get("pasteCloneQuery",
 							compFactory.getName());
-					Object[] opts = { LC_gui.getInstance().get("pasteCloneReplace"),
-							LC_gui.getInstance().get("pasteCloneIgnore"),
-							LC_gui.getInstance().get("pasteCloneCancel") };
-					int select = DialogManager.CreateConfirmWarningDialog(LC_gui.getInstance().get("pasteCloneTitle"),"");
+					Object[] opts = { LC.get("pasteCloneReplace"),
+							LC.get("pasteCloneIgnore"),
+							LC.get("pasteCloneCancel") };
+					int select = DialogManager.CreateConfirmWarningDialog(LC.get("pasteCloneTitle"),"");
 					if (select == 0) {
 						copyFactory = candidate;
 					} else if (select == 1) {
@@ -303,7 +303,7 @@ public class SelectionActions {
 		if (dropped != null) {
 			Collections.sort(dropped);
 			StringBuilder droppedStr = new StringBuilder();
-			droppedStr.append(LC_gui.getInstance().get("pasteDropMessage"));
+			droppedStr.append(LC.get("pasteDropMessage"));
 			String curName = dropped.get(0);
 			int curCount = 1;
 			int lines = 1;
@@ -324,7 +324,7 @@ public class SelectionActions {
 				}
 			}
 			
-			DialogManager.CreateScrollWarning(LC_gui.getInstance().get("pasteDropTitle"),droppedStr.toString());
+			DialogManager.CreateScrollWarning(LC.get("pasteDropTitle"),droppedStr.toString());
 
 		}
 		
@@ -368,7 +368,7 @@ public class SelectionActions {
 
 		@Override
 		public String getName() {
-			return LC_gui.getInstance().get("pasteClipboardAction");
+			return LC.get("pasteClipboardAction");
 		}
 
 		@Override

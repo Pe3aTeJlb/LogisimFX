@@ -1,8 +1,7 @@
 package com.cburch.LogisimFX.newgui.MainFrame.ProjectExplorer;
 
-import com.cburch.LogisimFX.localization.LC_gui;
-import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.file.LogisimFile;
+import com.cburch.LogisimFX.newgui.MainFrame.LC;
 import com.cburch.LogisimFX.newgui.MainFrame.ProjectCircuitActions;
 import com.cburch.LogisimFX.proj.Project;
 
@@ -27,13 +26,11 @@ public class AdditionalToolBar extends ToolBar {
     private Project proj;
     private LogisimFile logisimFile;
 
-    private static Localizer lc = LC_gui.getInstance();
-
     private static class ToolTip extends Tooltip{
 
         public ToolTip(String text){
             super();
-            textProperty().bind(lc.createStringBinding(text));
+            textProperty().bind(LC.createStringBinding(text));
         }
 
     }

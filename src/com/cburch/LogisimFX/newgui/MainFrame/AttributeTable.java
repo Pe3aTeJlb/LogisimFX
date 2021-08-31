@@ -3,8 +3,6 @@ package com.cburch.LogisimFX.newgui.MainFrame;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.AttributeSet;
-import com.cburch.LogisimFX.localization.LC_gui;
-import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.tools.Tool;
 
 import javafx.geometry.Insets;
@@ -14,8 +12,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 
 public class AttributeTable extends GridPane {
-
-    private Localizer lc = LC_gui.getInstance();
 
     private ColumnConstraints attr,value;
 
@@ -51,11 +47,11 @@ public class AttributeTable extends GridPane {
     private void setTitle(){
 
         attrNameLbl = new Label();
-        attrNameLbl.textProperty().bind(lc.createStringBinding("attributeNameTitle"));
+        attrNameLbl.textProperty().bind(LC.createStringBinding("attributeNameTitle"));
         this.add(attrNameLbl,0,0);
 
         attrValueLbl = new Label();
-        attrValueLbl.textProperty().bind(lc.createStringBinding("attributeValueTitle"));
+        attrValueLbl.textProperty().bind(LC.createStringBinding("attributeValueTitle"));
         this.add(attrValueLbl,1,0);
 
     }

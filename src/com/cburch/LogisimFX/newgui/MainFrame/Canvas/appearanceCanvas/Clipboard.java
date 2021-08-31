@@ -9,7 +9,7 @@ import com.cburch.LogisimFX.draw.util.ZOrder;
 import com.cburch.LogisimFX.circuit.appear.AppearanceAnchor;
 import com.cburch.LogisimFX.data.Direction;
 import com.cburch.LogisimFX.data.Location;
-import com.cburch.LogisimFX.localization.LC_gui;
+import com.cburch.LogisimFX.newgui.MainFrame.LC;
 import com.cburch.LogisimFX.proj.Action;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.util.PropertyChangeWeakSupport;
@@ -114,9 +114,9 @@ class ClipboardActions extends Action {
 	public String getName() {
 
 		if (remove) {
-			return LC_gui.getInstance().get("cutSelectionAction");
+			return LC.get("cutSelectionAction");
 		} else {
-			return LC_gui.getInstance().get("copySelectionAction");
+			return LC.get("copySelectionAction");
 		}
 
 	}

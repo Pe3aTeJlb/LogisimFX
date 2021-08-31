@@ -6,7 +6,7 @@ package com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas;
 import com.cburch.LogisimFX.circuit.Simulator;
 import com.cburch.LogisimFX.circuit.SimulatorEvent;
 import com.cburch.LogisimFX.circuit.SimulatorListener;
-import com.cburch.LogisimFX.localization.LC_gui;
+import com.cburch.LogisimFX.newgui.MainFrame.LC;
 
 class TickCounter implements SimulatorListener {
 
@@ -125,10 +125,10 @@ class TickCounter implements SimulatorListener {
 				if (min < 0.9 * rate) min = rate;
 
 				if (min >= 1000.0) {
-					return LC_gui.getInstance().getFormatted("tickRateKHz",
+					return LC.getFormatted("tickRateKHz",
 							roundString(rate / 1000.0, min / 1000.0));
 				} else {
-					return LC_gui.getInstance().getFormatted("tickRateHz", roundString(rate, min));
+					return LC.getFormatted("tickRateHz", roundString(rate, min));
 				}
 			}
 		}
