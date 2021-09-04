@@ -193,7 +193,7 @@ public class PreferencesController extends AbstractController {
         CustomTemplRB.textProperty().bind(LC.createStringBinding("templateCustomOption"));
         CustomTemplRB.setOnAction(event -> {
 
-            if(!FilePath.toString().equals("")){
+            if(!FilePathTextField.getText().equals("")){
                 EmptyTemplRB.setSelected(false);
                 PlainTemplRB.setSelected(false);
                 AppPreferences.setTemplateType(AppPreferences.TEMPLATE_CUSTOM);
@@ -201,16 +201,13 @@ public class PreferencesController extends AbstractController {
 
         });
 
-        /*
-        if(AppPreferences.getTemplateFile().toString().equals("")){
+        if(AppPreferences.getTemplateFile() == null || AppPreferences.getTemplateFile().toString().equals("")){
             CustomTemplRB.setDisable(true);
             FilePathTextField.setText("");
         }
         else{
             FilePathTextField.setText(AppPreferences.getTemplateFile().toString());
         }
-
-         */
 
         FilePathSelectBtn.textProperty().bind(LC.createStringBinding("templateSelectButton"));
         FilePathSelectBtn.setOnAction(event -> {
@@ -228,9 +225,15 @@ public class PreferencesController extends AbstractController {
                     Template template = Template.create(reader);
                     reader2 = template.createStream();
                     LogisimFile.load(reader2, loader); // to see if OK
-                    //Todo:
-                    //AppPreferences.setTemplateFile(f, template);
+
+                    AppPreferences.setTemplateFile(f, template);
                     AppPreferences.setTemplateType(AppPreferences.TEMPLATE_CUSTOM);
+
+                    FilePathTextField.setText(AppPreferences.getTemplateFile().toString());
+                    PlainTemplRB.setSelected(false);
+                    EmptyTemplRB.setSelected(false);
+                    CustomTemplRB.setSelected(true);
+
                 } catch (LoaderException ex) {
 
                 }
@@ -494,4 +497,5 @@ class TranslationCell extends ListCell<PrefOption> {
         }
 
     }
+
 }

@@ -17,10 +17,6 @@ public class LC {
         return lc.createStringBinding(key, args);
     }
 
-    public static String createComplexString(final String key, String... strings){
-        return lc.createComplexString(key, strings);
-    }
-
     public static StringBinding createComplexStringBinding(final String key, String... strings) {
         return lc.createComplexStringBinding(key, strings);
     }

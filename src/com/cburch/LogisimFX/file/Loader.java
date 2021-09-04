@@ -44,7 +44,7 @@ public class Loader implements LibraryLoader {
 
 		@Override
 		public String getDescription() {
-			return Strings.get("logisimFileFilter");
+			return LC.get("logisimFileFilter");
 		}
 
 	}
@@ -59,7 +59,7 @@ public class Loader implements LibraryLoader {
 
 		@Override
 		public String getDescription() {
-			return Strings.get("jarFileFilter");
+			return LC.get("jarFileFilter");
 		}
 
 	}
@@ -210,7 +210,7 @@ public class Loader implements LibraryLoader {
 				} catch (IOException e) {
 					if (backupCreated) recoverBackup(backup, dest);
 					if (dest.exists() && dest.length() == 0) dest.delete();
-					DialogManager.CreateStackTraceDialog(lc.get("fileSaveErrorTitle"),StringUtil.format(Strings.get("fileSaveCloseError"),
+					DialogManager.CreateStackTraceDialog(lc.get("fileSaveErrorTitle"),LC.getFormatted("fileSaveCloseError",
 							e.toString()),e);
 					return false;
 				}
@@ -261,7 +261,7 @@ public class Loader implements LibraryLoader {
 		File actual = getSubstitution(request);
 		for (File fileOpening : filesOpening) {
 			if (fileOpening.equals(actual)) {
-				throw new LoadFailedException(StringUtil.format(Strings.get("logisimCircularError"),
+				throw new LoadFailedException(LC.getFormatted("logisimCircularError",
 						toProjectName(actual)));
 			}
 		}
@@ -271,7 +271,7 @@ public class Loader implements LibraryLoader {
 		try {
 			ret = LogisimFile.load(actual, this);
 		} catch (IOException e) {
-			throw new LoadFailedException(StringUtil.format(Strings.get("logisimLoadError"),
+			throw new LoadFailedException(LC.getFormatted("logisimLoadError",
 					toProjectName(actual), e.toString()));
 		} finally {
 			filesOpening.pop();
@@ -312,10 +312,10 @@ public class Loader implements LibraryLoader {
 		try {
 			retClass = loader.loadClass(className);
 		} catch (ClassNotFoundException e) {
-			throw new LoadFailedException(StringUtil.format(Strings.get("jarClassNotFoundError"), className));
+			throw new LoadFailedException(LC.getFormatted("jarClassNotFoundError", className));
 		}
 		if (!(Library.class.isAssignableFrom(retClass))) {
-			throw new LoadFailedException(StringUtil.format(Strings.get("jarClassNotLibraryError"), className));
+			throw new LoadFailedException(LC.getFormatted("jarClassNotLibraryError", className));
 		}
 
 		// instantiate library
@@ -323,7 +323,7 @@ public class Loader implements LibraryLoader {
 		try {
 			ret = (Library) retClass.newInstance();
 		} catch (Exception e) {
-			throw new LoadFailedException(StringUtil.format(Strings.get("jarLibraryNotCreatedError"), className));
+			throw new LoadFailedException(LC.getFormatted("jarLibraryNotCreatedError", className));
 		}
 		return ret;
 	}
@@ -410,12 +410,12 @@ public class Loader implements LibraryLoader {
 
 			JFileChooser chooser = createChooser();
 			chooser.setFileFilter(filter);
-			chooser.setDialogTitle(StringUtil.format(Strings.get("fileLibraryMissingTitle"), file.getName()));
+			chooser.setDialogTitle(LC.getFormatted("fileLibraryMissingTitle", file.getName()));
 
-			int action = chooser.showDialog(parent, Strings.get("fileLibraryMissingButton"));
+			int action = chooser.showDialog(parent, LC.get("fileLibraryMissingButton"));
 
 			if (action != JFileChooser.APPROVE_OPTION) {
-				throw new LoaderException(Strings.get("fileLoadCanceledError"));
+				throw new LoaderException(LC.get("fileLoadCanceledError"));
 			}
 			file = chooser.getSelectedFile();
 

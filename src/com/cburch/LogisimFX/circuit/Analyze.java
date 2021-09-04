@@ -70,12 +70,12 @@ public class Analyze {
 
 			String defaultList;
 			if (Pin.FACTORY.isInputPin(pin)) {
-				defaultList = Strings.get("defaultInputLabels");
+				defaultList = LC.get("defaultInputLabels");
 				if (defaultList.indexOf(",") < 0) {
 					defaultList = "a,b,c,d,e,f,g,h";
 				}
 			} else {
-				defaultList = Strings.get("defaultOutputLabels");
+				defaultList = LC.get("defaultOutputLabels");
 				if (defaultList.indexOf(",") < 0) {
 					defaultList = "x,y,z,u,v,w,s,t";
 				}

@@ -7,6 +7,7 @@ import com.cburch.LogisimFX.newgui.HexEditorFrame.HexModel;
 import com.cburch.LogisimFX.newgui.HexEditorFrame.HexModelListener;
 import com.cburch.LogisimFX.proj.Action;
 import com.cburch.LogisimFX.proj.Project;
+import com.cburch.LogisimFX.std.LC;
 
 public class RomContentsListener implements HexModelListener {
 
@@ -32,7 +33,7 @@ public class RomContentsListener implements HexModelListener {
 
 		@Override
 		public String getName() {
-			return Strings.get("romChangeAction");
+			return LC.get("romChangeAction");
 		}
 
 		@Override

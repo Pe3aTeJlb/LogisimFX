@@ -3,6 +3,7 @@
 
 package com.cburch.LogisimFX.circuit.appear;
 
+import com.cburch.LogisimFX.circuit.LC;
 import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.draw.model.Handle;
 import com.cburch.LogisimFX.draw.model.HandleGesture;
@@ -56,7 +57,7 @@ public class AppearanceAnchor extends AppearanceElement {
 
 	@Override
 	public String getDisplayName() {
-		return Strings.get("circuitAnchor");
+		return LC.get("circuitAnchor");
 	}
 	
 	@Override

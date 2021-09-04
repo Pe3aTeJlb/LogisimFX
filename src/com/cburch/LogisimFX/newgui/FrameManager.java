@@ -152,6 +152,14 @@ public class FrameManager {
 
     }
 
+    public static void ReloadFrame(Project proj){
+
+        OpenedMainFrames.remove(proj);
+
+        CreateMainFrame(proj);
+
+    }
+
     //Project-depending frames
 
     private static void CreateNewFrame(String resourcePath, Project proj, Modality modality){

@@ -220,7 +220,7 @@ public class ProjectActions {
 				int type = DialogManager.CreateFileReloadDialog(proj);
 
 				if(type == 2){
-
+					FrameManager.ReloadFrame(proj);
 				}else if(type == 1){
 					proj = null;
 				}else if(type == 0){

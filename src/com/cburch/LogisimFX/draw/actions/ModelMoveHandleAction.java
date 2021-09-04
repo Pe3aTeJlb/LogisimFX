@@ -3,6 +3,7 @@
 
 package com.cburch.LogisimFX.draw.actions;
 
+import com.cburch.LogisimFX.draw.LC;
 import com.cburch.LogisimFX.draw.model.CanvasModel;
 import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.draw.model.Handle;
@@ -32,7 +33,7 @@ public class ModelMoveHandleAction extends ModelAction {
 
 	@Override
 	public String getName() {
-		return Strings.get("actionMoveHandle");
+		return LC.get("actionMoveHandle");
 	}
 	
 	@Override

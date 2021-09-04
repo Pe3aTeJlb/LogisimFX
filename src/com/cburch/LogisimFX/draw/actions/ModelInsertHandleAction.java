@@ -3,6 +3,7 @@
 
 package com.cburch.LogisimFX.draw.actions;
 
+import com.cburch.LogisimFX.draw.LC;
 import com.cburch.LogisimFX.draw.model.CanvasModel;
 import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.draw.model.Handle;
@@ -25,7 +26,7 @@ public class ModelInsertHandleAction extends ModelAction {
 
 	@Override
 	public String getName() {
-		return Strings.get("actionInsertHandle");
+		return LC.get("actionInsertHandle");
 	}
 	
 	@Override

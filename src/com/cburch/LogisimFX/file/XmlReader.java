@@ -92,7 +92,7 @@ class XmlReader {
 			for (Element circElt : XmlIterator.forChildElements(elt, "circuit")) {
 				String name = circElt.getAttribute("name");
 				if (name == null || name.equals("")) {
-					addError(Strings.get("circNameMissingError"), "C??");
+					addError(LC.get("circNameMissingError"), "C??");
 				}
 				CircuitData circData = new CircuitData(circElt, new Circuit(name));
 				file.addCircuit(circData.circuit);
@@ -139,12 +139,12 @@ class XmlReader {
 		private Library toLibrary(Element elt) {
 
 			if (!elt.hasAttribute("name")) {
-				loader.showError(Strings.get("libNameMissingError"));
+				loader.showError(LC.get("libNameMissingError"));
 				return null;
 			}
 
 			if (!elt.hasAttribute("desc")) {
-				loader.showError(Strings.get("libDescMissingError"));
+				loader.showError(LC.get("libDescMissingError"));
 				return null;
 			}
 
@@ -158,7 +158,7 @@ class XmlReader {
 
 			for (Element sub_elt : XmlIterator.forChildElements(elt, "tool")) {
 				if (!sub_elt.hasAttribute("name")) {
-					loader.showError(Strings.get("toolNameMissingError"));
+					loader.showError(LC.get("toolNameMissingError"));
 				} else {
 					String tool_str = sub_elt.getAttribute("name");
 					Tool tool = ret.getTool(tool_str);
@@ -206,13 +206,13 @@ class XmlReader {
 				try {
 					AbstractCanvasObject m = AppearanceSvgReader.createShape(sub, pins);
 					if (m == null) {
-						addError(Strings.get("fileAppearanceNotFound", sub.getTagName()),
+						addError(LC.getFormatted("fileAppearanceNotFound", sub.getTagName()),
 								context + "." + sub.getTagName());
 					} else {
 						shapes.add(m);
 					}
 				} catch (RuntimeException e) {
-					addError(Strings.get("fileAppearanceError", sub.getTagName()),
+					addError(LC.getFormatted("fileAppearanceError", sub.getTagName()),
 							context + "." + sub.getTagName());
 				}
 			}
@@ -238,15 +238,14 @@ class XmlReader {
 
 				String mods_str = sub_elt.getAttribute("map");
 				if (mods_str == null || mods_str.equals("")) {
-					loader.showError(Strings.get("mappingMissingError"));
+					loader.showError(LC.get("mappingMissingError"));
 					continue;
 				}
 				int mods;
 				try {
 					mods = InputEventUtil.fromString(mods_str);
 				} catch (NumberFormatException e) {
-					loader.showError(StringUtil.format(
-						Strings.get("mappingBadError"), mods_str));
+					loader.showError(LC.getFormatted("mappingBadError", mods_str));
 					continue;
 				}
 
@@ -299,11 +298,11 @@ class XmlReader {
 			Library lib = findLibrary(elt.getAttribute("lib"));
 			String name = elt.getAttribute("name");
 			if (name == null || name.equals("")) {
-				throw new XmlReaderException(Strings.get("toolNameMissing"));
+				throw new XmlReaderException(LC.get("toolNameMissing"));
 			}
 			Tool tool = lib.getTool(name);
 			if (tool == null) {
-				throw new XmlReaderException(Strings.get("toolNotFound"));
+				throw new XmlReaderException(LC.get("toolNotFound"));
 			}
 			return tool;
 		}
@@ -316,7 +315,7 @@ class XmlReader {
 			for (Element attrElt : XmlIterator.forChildElements(parentElt, "a")) {
 				if (!attrElt.hasAttribute("name")) {
 					if (messages == null) messages = new ArrayList<String>();
-					messages.add(Strings.get("attrNameMissingError"));
+					messages.add(LC.get("attrNameMissingError"));
 				} else {
 					String attrName = attrElt.getAttribute("name");
 					String attrVal;
@@ -357,8 +356,7 @@ class XmlReader {
 						attrs.setValue(attr, val);
 					} catch (NumberFormatException e) {
 						if (messages == null) messages = new ArrayList<String>();
-						messages.add(StringUtil.format(
-							Strings.get("attrValueInvalidError"),
+						messages.add(LC.getFormatted("attrValueInvalidError",
 							attrVal, attrName));
 					}
 				}
@@ -375,8 +373,7 @@ class XmlReader {
 
 			Library ret = libs.get(lib_name);
 			if (ret == null) {
-				throw new XmlReaderException(StringUtil.format(
-					Strings.get("libMissingError"), lib_name));
+				throw new XmlReaderException(LC.getFormatted("libMissingError", lib_name));
 			} else {
 				return ret;
 			}
@@ -513,7 +510,9 @@ class XmlReader {
 			wiringElt = doc.createElement("lib");
 			wiringElt.setAttribute("desc", "#Wiring");
 			wiringElt.setAttribute("name", wiringLabel);
-			root.insertBefore(wiringElt, lastLibElt.getNextSibling());
+			if (lastLibElt != null) {
+				root.insertBefore(wiringElt, lastLibElt.getNextSibling());
+			}
 
 			newBaseLabel = null;
 			newBaseElt = null;

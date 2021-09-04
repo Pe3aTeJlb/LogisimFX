@@ -3,22 +3,22 @@
 
 package com.cburch.LogisimFX.data;
 
-import com.cburch.LogisimFX.util.StringGetter;
+import javafx.beans.binding.StringBinding;
 
 public class Direction implements AttributeOptionInterface {
 
 	public static final Direction EAST
-		= new Direction("east", Strings.getter("directionEastOption"),
-				Strings.getter("directionEastVertical"), 0);
+		= new Direction("east", LC.createStringBinding("directionEastOption"),
+			LC.createStringBinding("directionEastVertical"), 0);
 	public static final Direction WEST
-		= new Direction("west", Strings.getter("directionWestOption"),
-				Strings.getter("directionWestVertical"), 1);
+		= new Direction("west", LC.createStringBinding("directionWestOption"),
+			LC.createStringBinding("directionWestVertical"), 1);
 	public static final Direction NORTH
-		= new Direction("north", Strings.getter("directionNorthOption"),
-				Strings.getter("directionNorthVertical"), 2);
+		= new Direction("north", LC.createStringBinding("directionNorthOption"),
+			LC.createStringBinding("directionNorthVertical"), 2);
 	public static final Direction SOUTH
-		= new Direction("south", Strings.getter("directionSouthOption"),
-				Strings.getter("directionSouthVertical"), 3);
+		= new Direction("south", LC.createStringBinding("directionSouthOption"),
+			LC.createStringBinding("directionSouthVertical"), 3);
 	public static final Direction[] cardinals
 		= { NORTH, EAST, SOUTH, WEST };
 
@@ -31,11 +31,11 @@ public class Direction implements AttributeOptionInterface {
 	}
 
 	private String name;
-	private StringGetter disp;
-	private StringGetter vert;
+	private StringBinding disp;
+	private StringBinding vert;
 	private int id;
 
-	private Direction(String name, StringGetter disp, StringGetter vert, int id) {
+	private Direction(String name, StringBinding disp, StringBinding vert, int id) {
 		this.name = name;
 		this.disp = disp;
 		this.vert = vert;
@@ -51,7 +51,7 @@ public class Direction implements AttributeOptionInterface {
 		return disp.get();
 	}
 	
-	public StringGetter getDisplayGetter() {
+	public StringBinding getDisplayGetter() {
 		return disp;
 	}
 	

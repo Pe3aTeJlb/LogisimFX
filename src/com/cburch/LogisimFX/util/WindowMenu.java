@@ -21,11 +21,11 @@ import javax.swing.KeyStroke;
 public class WindowMenu extends JMenu {
 	private class MyListener implements LocaleListener, ActionListener {
 		public void localeChanged() {
-			WindowMenu.this.setText(Strings.get("windowMenu"));
-			minimize.setText(Strings.get("windowMinimizeItem"));
-			close.setText(Strings.get("windowCloseItem"));
+			WindowMenu.this.setText(LC.get("windowMenu"));
+			minimize.setText(LC.get("windowMinimizeItem"));
+			close.setText(LC.get("windowCloseItem"));
 			zoom.setText(MacCompatibility.isQuitAutomaticallyPresent() ?
-					Strings.get("windowZoomItemMac") : Strings.get("windowZoomItem"));
+					LC.get("windowZoomItemMac") : LC.get("windowZoomItem"));
 		}
 
 		public void actionPerformed(ActionEvent e) {

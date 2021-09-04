@@ -3,6 +3,7 @@
 
 package com.cburch.LogisimFX.draw.actions;
 
+import com.cburch.LogisimFX.draw.LC;
 import com.cburch.LogisimFX.draw.model.CanvasModel;
 import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.draw.util.ZOrder;
@@ -30,7 +31,7 @@ public class ModelRemoveAction extends ModelAction {
 
 	@Override
 	public String getName() {
-		return Strings.get("actionRemove", getShapesName(removed.keySet()));
+		return LC.getFormatted("actionRemove", getShapesName(removed.keySet()));
 	}
 	
 	@Override

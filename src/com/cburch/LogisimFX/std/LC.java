@@ -18,10 +18,6 @@ public class LC {
         return lc.createStringBinding(key, args);
     }
 
-    public static String createComplexString(final String key, String... strings){
-        return lc.createComplexString(key, strings);
-    }
-
     public static StringBinding createComplexStringBinding(final String key, String... strings) {
         return lc.createComplexStringBinding(key, strings);
     }
@@ -30,16 +26,12 @@ public class LC {
         return lc.castToBind(string);
     }
 
-    public static StringBinding createRawStringBinding(final String string){
-        return lc.castToBind(string);
-    }
-
     public static String get(final String key, final Object... args) {
-       return lc.get(key, args);
+        return lc.get(key, args);
     }
 
-    public static String getFormatted(final String key, final String... args) {
-        return lc.getFormatted(key, args);
+    public static String getFormatted(final String key, String... strings) {
+        return lc.getFormatted(key,strings);
     }
 
 }

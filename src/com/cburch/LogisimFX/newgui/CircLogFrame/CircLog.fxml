@@ -7,12 +7,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cburch.LogisimFX.newgui.CircLogFrame.CircLogController">
    <children>
       <TabPane prefHeight="368.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
-          <Tab text="Untitled Tab 1">
+          <Tab fx:id="selectionTab" text="Untitled Tab 1">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -85,7 +84,7 @@
       </TabPane>
       <HBox alignment="CENTER" layoutX="250.0" layoutY="357.0" prefHeight="35.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="250.0">
          <children>
-            <Button fx:id="timelineBtn" mnemonicParsing="false" prefWidth="100.0" text="Button" />
+            <Button fx:id="startLogBtn" mnemonicParsing="false" prefWidth="100.0" text="Button" />
          </children>
       </HBox>
    </children>

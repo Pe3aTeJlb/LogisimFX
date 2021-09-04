@@ -402,7 +402,7 @@ public class GifEncoder {
 
 		try {
 			if (grabber.grabPixels() != true)
-				throw new AWTException(Strings.get("grabberError") + ": "
+				throw new AWTException(LC.get("grabberError") + ": "
 					+ grabber.status());
 		} catch (InterruptedException e) {
 			;
@@ -494,7 +494,7 @@ public class GifEncoder {
 					break;
 				
 				if (search > 255)
-					throw new AWTException(Strings.get("manyColorError"));
+					throw new AWTException(LC.get("manyColorError"));
 
 				pixels_[y * width_ + x] = (byte)search;
 				

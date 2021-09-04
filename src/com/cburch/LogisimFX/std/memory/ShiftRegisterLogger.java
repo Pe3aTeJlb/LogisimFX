@@ -8,6 +8,7 @@ import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.instance.InstanceLogger;
 import com.cburch.LogisimFX.instance.InstanceState;
 import com.cburch.LogisimFX.instance.StdAttr;
+import com.cburch.LogisimFX.std.LC;
 
 public class ShiftRegisterLogger extends InstanceLogger {
 
@@ -29,7 +30,7 @@ public class ShiftRegisterLogger extends InstanceLogger {
 
 		String inName = state.getAttributeValue(StdAttr.LABEL);
 		if (inName == null || inName.equals("")) {
-			inName = Strings.get("shiftRegisterComponent")
+			inName = LC.get("shiftRegisterComponent")
 				+ state.getInstance().getLocation();
 		}
 		if (option instanceof Integer) {

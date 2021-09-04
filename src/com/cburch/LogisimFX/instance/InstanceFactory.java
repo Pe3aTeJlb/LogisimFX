@@ -71,7 +71,7 @@ public abstract class InstanceFactory extends AbstractComponentFactory {
 
 	@Override
 	public StringBinding getDisplayName() {
-		return displayName == null ? LC.createRawStringBinding(getName()) : getDisplayGetter();
+		return displayName == null ? LC.castToBind(getName()) : getDisplayGetter();
 	}
 
 	@Override

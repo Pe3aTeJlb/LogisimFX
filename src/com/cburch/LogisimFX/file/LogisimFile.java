@@ -46,14 +46,12 @@ public class LogisimFile extends Library implements LibraryEventSource {
 			try {
 				file.write(out, file.loader);
 			} catch (IOException e) {
-				file.loader.showError(StringUtil.format(
-					Strings.get("fileDuplicateError"), e.toString()));
+				file.loader.showError(LC.getFormatted("fileDuplicateError", e.toString()));
 			}
 			try {
 				out.close();
 			} catch (IOException e) {
-				file.loader.showError(StringUtil.format(
-					Strings.get("fileDuplicateError"), e.toString()));
+				file.loader.showError(LC.getFormatted("fileDuplicateError", e.toString()));
 			}
 
 		}
@@ -78,7 +76,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 
 		this.loader = loader;
 
-		name = Strings.get("defaultProjectName");
+		name = LC.get("defaultProjectName");
 		if (Projects.windowNamed(name)) {
 			for (int i = 2; true; i++) {
 				if (!Projects.windowNamed(name + " " + i)) {
@@ -297,7 +295,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 		for (Circuit circuit : getCircuits()) {
 			for (Component comp : circuit.getNonWires()) {
 				if (factories.contains(comp.getFactory())) {
-					return StringUtil.format(Strings.get("unloadUsedError"),
+					return LC.getFormatted("unloadUsedError",
 							circuit.getName());
 				}
 			}
@@ -307,10 +305,10 @@ public class LogisimFile extends Library implements LibraryEventSource {
 		MouseMappings mm = options.getMouseMappings();
 		for (Tool t : lib.getTools()) {
 			if (tb.usesToolFromSource(t)) {
-				return Strings.get("unloadToolbarError");
+				return LC.get("unloadToolbarError");
 			}
 			if (mm.usesToolFromSource(t)) {
-				return Strings.get("unloadMappingError");
+				return LC.get("unloadMappingError");
 			}
 		}
 
@@ -353,7 +351,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 			loader.showError("internal error configuring parser");
 		} catch (TransformerException e) {
 			String msg = e.getMessage();
-			String err = Strings.get("xmlConversionError");
+			String err = LC.get("xmlConversionError");
 			if (msg == null) err += ": " + msg;
 			loader.showError(err);
 		}
@@ -366,16 +364,14 @@ public class LogisimFile extends Library implements LibraryEventSource {
 		try {
 			reader.connect(writer);
 		} catch (IOException e) {
-			newloader.showError(StringUtil.format(
-				Strings.get("fileDuplicateError"), e.toString()));
+			newloader.showError(LC.getFormatted("fileDuplicateError", e.toString()));
 			return null;
 		}
 		new WritingThread(writer, this).start();
 		try {
 			return LogisimFile.load(reader, newloader);
 		} catch (IOException e) {
-			newloader.showError(StringUtil.format(
-				Strings.get("fileDuplicateError"), e.toString()));
+			newloader.showError(LC.getFormatted("fileDuplicateError", e.toString()));
 			return null;
 		}
 	}
@@ -448,8 +444,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 				in = new ReaderInputStream(new FileReader(file), "UTF8");
 				return loadSub(in, loader);
 			} catch (Throwable t) {
-				loader.showError(StringUtil.format(
-						Strings.get("xmlFormatError"), firstExcept.toString()));
+				loader.showError(LC.getFormatted("xmlFormatError", firstExcept.toString()));
 			} finally {
 				try {
 					in.close();
@@ -467,8 +462,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 		try {
 			return loadSub(in, loader);
 		} catch (SAXException e) {
-			loader.showError(StringUtil.format(
-				Strings.get("xmlFormatError"), e.toString()));
+			loader.showError(LC.getFormatted("xmlFormatError", e.toString()));
 			return null;
 		}
 

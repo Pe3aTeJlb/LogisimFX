@@ -436,7 +436,7 @@ public class Pin extends InstanceFactory {
 			String ret = attrs.label;
 			if (ret == null || ret.equals("")) {
 				String type = attrs.type == EndData.INPUT_ONLY
-					? Strings.get("pinInputName") : Strings.get("pinOutputName");
+					? LC.get("pinInputName") : LC.get("pinOutputName");
 				return type + state.getInstance().getLocation();
 			} else {
 				return ret;

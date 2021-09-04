@@ -148,7 +148,7 @@ public class Splitter extends ManagedComponent
 		}
 
 		if (end == 0) {
-			return Strings.get("splitterCombinedTip");
+			return LC.get("splitterCombinedTip");
 		} else if (end > 0){
 			int bits = 0;
 			StringBuilder buf = new StringBuilder();
@@ -173,9 +173,9 @@ public class Splitter extends ManagedComponent
 			if (inString) appendBuf(buf, beginString, bit_end.length - 1);
 			String base;
 			switch (bits) {
-			case 0:  base = Strings.get("splitterSplit0Tip"); break;
-			case 1:  base = Strings.get("splitterSplit1Tip"); break;
-			default: base = Strings.get("splitterSplitManyTip"); break;
+			case 0:  base = LC.get("splitterSplit0Tip"); break;
+			case 1:  base = LC.get("splitterSplit1Tip"); break;
+			default: base = LC.get("splitterSplitManyTip"); break;
 			}
 			return StringUtil.format(base, buf.toString());
 		} else {

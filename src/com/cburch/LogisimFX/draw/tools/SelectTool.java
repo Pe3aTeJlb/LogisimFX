@@ -419,8 +419,8 @@ public class SelectTool extends AbstractTool {
 						x += delta.getX();
 						y += delta.getY();
 					}
-					x = (int) Math.round(x);
-					y = (int) Math.round(y);
+					x = Math.round(x);
+					y = Math.round(y);
 					g.c.clearRect(x - offs, y - offs, size, size);
 					g.c.strokeRect(x - offs, y - offs, size, size);
 				}

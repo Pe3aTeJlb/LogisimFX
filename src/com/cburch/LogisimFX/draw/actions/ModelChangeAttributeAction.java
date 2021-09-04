@@ -3,6 +3,7 @@
 
 package com.cburch.LogisimFX.draw.actions;
 
+import com.cburch.LogisimFX.draw.LC;
 import com.cburch.LogisimFX.draw.model.AttributeMapKey;
 import com.cburch.LogisimFX.draw.model.CanvasModel;
 import com.cburch.LogisimFX.draw.model.CanvasObject;
@@ -51,9 +52,9 @@ public class ModelChangeAttributeAction extends ModelAction {
 			attr = a;
 		}
 		if (a == null) {
-			return Strings.get("actionChangeAttributes");
+			return LC.get("actionChangeAttributes");
 		} else {
-			return Strings.get("actionChangeAttribute", a.getDisplayName());
+			return LC.getFormatted("actionChangeAttribute", a.getDisplayName());
 		}
 	}
 	

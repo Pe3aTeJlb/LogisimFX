@@ -3,6 +3,7 @@
 
 package com.cburch.LogisimFX.draw.shapes;
 
+import com.cburch.LogisimFX.draw.LC;
 import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.draw.model.Handle;
 import com.cburch.LogisimFX.draw.model.HandleGesture;
@@ -87,7 +88,7 @@ public class Curve extends FillableCanvasObject {
 	
 	@Override
 	public String getDisplayName() {
-		return Strings.get("shapeCurve");
+		return LC.get("shapeCurve");
 	}
 
 	@Override

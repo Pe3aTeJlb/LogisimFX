@@ -3,6 +3,7 @@
 
 package com.cburch.LogisimFX.draw.actions;
 
+import com.cburch.LogisimFX.draw.LC;
 import com.cburch.LogisimFX.draw.model.CanvasModel;
 import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.draw.shapes.Text;
@@ -29,7 +30,7 @@ public class ModelEditTextAction extends ModelAction {
 
 	@Override
 	public String getName() {
-		return Strings.get("actionEditText");
+		return LC.get("actionEditText");
 	}
 	
 	@Override

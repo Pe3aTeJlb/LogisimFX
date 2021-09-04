@@ -213,13 +213,13 @@ public class Ram extends Mem {
 		boolean separate = busVal == null ? false : busVal.equals(BUS_SEPARATE);
 
 		if (!asynch) painter.drawClock(CLK, Direction.NORTH);
-		painter.drawPort(OE, Strings.get("ramOELabel"), Direction.SOUTH);
-		painter.drawPort(CLR, Strings.get("ramClrLabel"), Direction.SOUTH);
+		painter.drawPort(OE, LC.get("ramOELabel"), Direction.SOUTH);
+		painter.drawPort(CLR, LC.get("ramClrLabel"), Direction.SOUTH);
 
 		if (separate) {
-			painter.drawPort(WE, Strings.get("ramWELabel"), Direction.SOUTH);
+			painter.drawPort(WE, LC.get("ramWELabel"), Direction.SOUTH);
 			painter.getGraphics().setColor(Color.BLACK);
-			painter.drawPort(DIN, Strings.get("ramDataLabel"), Direction.EAST);
+			painter.drawPort(DIN, LC.get("ramDataLabel"), Direction.EAST);
 		}
 
 		painter.getGraphics().toDefault();
@@ -330,7 +330,7 @@ public class Ram extends Mem {
 		public String getLogName(InstanceState state, Object option) {
 
 			if (option instanceof Integer) {
-				String disp = Strings.get("ramComponent");
+				String disp = LC.get("ramComponent");
 				Location loc = state.getInstance().getLocation();
 				return disp + loc + "[" + option + "]";
 			} else {

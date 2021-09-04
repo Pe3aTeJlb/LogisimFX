@@ -6,6 +6,7 @@ package com.cburch.LogisimFX.std.wiring;
 import javax.swing.JTextField;
 
 import com.cburch.LogisimFX.data.Attribute;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.util.StringUtil;
 
 import javafx.beans.binding.StringBinding;
@@ -31,13 +32,13 @@ public class DurationAttribute extends Attribute<Integer> {
 		try {
 			Integer ret = Integer.valueOf(value);
 			if (ret.intValue() < min) {
-				throw new NumberFormatException(StringUtil.format(Strings.get("durationSmallMessage"), "" + min));
+				throw new NumberFormatException(LC.getFormatted("durationSmallMessage", "" + min));
 			} else if (ret.intValue() > max) {
-				throw new NumberFormatException(StringUtil.format(Strings.get("durationLargeMessage"), "" + max));
+				throw new NumberFormatException(LC.getFormatted("durationLargeMessage", "" + max));
 			}
 			return ret;
 		} catch (NumberFormatException e) {
-			throw new NumberFormatException(Strings.get("freqInvalidMessage"));
+			throw new NumberFormatException(LC.get("freqInvalidMessage"));
 		}
 
 	}
@@ -46,10 +47,9 @@ public class DurationAttribute extends Attribute<Integer> {
 	public String toDisplayString(Integer value) {
 
 		if (value.equals(Integer.valueOf(1))) {
-			return Strings.get("clockDurationOneValue");
+			return LC.get("clockDurationOneValue");
 		} else {
-			return StringUtil.format(Strings.get("clockDurationValue"),
-					value.toString());
+			return LC.getFormatted("clockDurationValue", value.toString());
 		}
 
 	}

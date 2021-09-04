@@ -8,19 +8,19 @@ import com.cburch.LogisimFX.util.StringUtil;
 public class AnalyzeException extends Exception {
 	public static class Circular extends AnalyzeException {
 		public Circular() {
-			super(Strings.get("analyzeCircularError"));
+			super(LC.get("analyzeCircularError"));
 		}
 	}
 
 	public static class Conflict extends AnalyzeException {
 		public Conflict() {
-			super(Strings.get("analyzeConflictError"));
+			super(LC.get("analyzeConflictError"));
 		}
 	}
 	
 	public static class CannotHandle extends AnalyzeException {
 		public CannotHandle(String reason) {
-			super(StringUtil.format(Strings.get("analyzeCannotHandleError"), reason));
+			super(LC.getFormatted("analyzeCannotHandleError", reason));
 		}
 	}
 	

@@ -75,7 +75,7 @@ public class FactoryDescription {
 	}
 	
 	public StringBinding getDisplayName() {
-		return displayName == null ? LC.createRawStringBinding(getName()) : displayName;
+		return displayName == null ? LC.castToBind(getName()) : displayName;
 	}
 	
 	public boolean isFactoryLoaded() {

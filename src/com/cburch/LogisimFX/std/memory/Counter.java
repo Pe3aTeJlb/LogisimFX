@@ -182,8 +182,8 @@ public class Counter extends InstanceFactory {
 				b = str.substring(split);
 			}
 		} else {
-			a = Strings.get("counterLabel");
-			b = Strings.get("registerWidthLabel", "" + widthVal.getWidth());
+			a = LC.get("counterLabel");
+			b = LC.getFormatted("registerWidthLabel", "" + widthVal.getWidth());
 		}
 
 		// draw boundary, label
@@ -202,7 +202,7 @@ public class Counter extends InstanceFactory {
 		painter.drawPort(LD);
 		painter.drawPort(CARRY);
 		painter.drawPort(CLR, "0", Direction.SOUTH);
-		painter.drawPort(CT, Strings.get("counterEnableLabel"), Direction.EAST);
+		painter.drawPort(CT, LC.get("counterEnableLabel"), Direction.EAST);
 		g.setColor(Color.BLACK);
 		painter.drawClock(CK, Direction.NORTH);
 

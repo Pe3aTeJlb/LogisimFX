@@ -109,30 +109,30 @@ public abstract class Mem extends InstanceFactory {
 			String label;
 			if (this instanceof Rom) {
 				if (addrBits >= 30) {
-					label = StringUtil.format(Strings.get("romGigabyteLabel"), ""
+					label = LC.getFormatted("romGigabyteLabel", ""
 							+ (bytes >>> 30));
 				} else if (addrBits >= 20) {
-					label = StringUtil.format(Strings.get("romMegabyteLabel"), ""
+					label = LC.getFormatted("romMegabyteLabel", ""
 							+ (bytes >> 20));
 				} else if (addrBits >= 10) {
-					label = StringUtil.format(Strings.get("romKilobyteLabel"), ""
+					label = LC.getFormatted("romKilobyteLabel", ""
 							+ (bytes >> 10));
 				} else {
-					label = StringUtil.format(Strings.get("romByteLabel"), ""
+					label = LC.getFormatted("romByteLabel", ""
 							+ bytes);
 				}
 			} else {
 				if (addrBits >= 30) {
-					label = StringUtil.format(Strings.get("ramGigabyteLabel"), ""
+					label = LC.getFormatted("ramGigabyteLabel", ""
 							+ (bytes >>> 30));
 				} else if (addrBits >= 20) {
-					label = StringUtil.format(Strings.get("ramMegabyteLabel"), ""
+					label = LC.getFormatted("ramMegabyteLabel", ""
 							+ (bytes >> 20));
 				} else if (addrBits >= 10) {
-					label = StringUtil.format(Strings.get("ramKilobyteLabel"), ""
+					label = LC.getFormatted("ramKilobyteLabel", ""
 							+ (bytes >> 10));
 				} else {
-					label = StringUtil.format(Strings.get("ramByteLabel"), ""
+					label = LC.getFormatted("ramByteLabel", ""
 							+ bytes);
 				}
 			}
@@ -141,10 +141,10 @@ public abstract class Mem extends InstanceFactory {
 		}
 
 		// draw input and output ports
-		painter.drawPort(DATA, Strings.get("ramDataLabel"), Direction.WEST);
-		painter.drawPort(ADDR, Strings.get("ramAddrLabel"), Direction.EAST);
+		painter.drawPort(DATA, LC.get("ramDataLabel"), Direction.WEST);
+		painter.drawPort(ADDR, LC.get("ramAddrLabel"), Direction.EAST);
 		g.setColor(Color.GRAY);
-		painter.drawPort(CS, Strings.get("ramCSLabel"), Direction.SOUTH);
+		painter.drawPort(CS, LC.get("ramCSLabel"), Direction.SOUTH);
 
 		g.toDefault();
 

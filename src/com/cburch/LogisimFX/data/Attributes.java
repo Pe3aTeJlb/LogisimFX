@@ -321,8 +321,8 @@ public class Attributes {
 
 		@Override
 		public String toDisplayString(Boolean value) {
-			if (value.booleanValue()) return Strings.get("booleanTrueOption");
-			else return Strings.get("booleanFalseOption");
+			if (value.booleanValue()) return LC.get("booleanTrueOption");
+			else return LC.get("booleanFalseOption");
 		}
 
 		@Override

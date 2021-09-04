@@ -112,7 +112,6 @@ public class OpenRecentMenu extends Menu implements PropertyChangeListener {
 
 
 	public void propertyChange(PropertyChangeEvent event) {
-		//ToDO: remove dis shit
 		if (event.getPropertyName().equals(AppPreferences.RECENT_PROJECTS)) {
 			renewItems();
 		}

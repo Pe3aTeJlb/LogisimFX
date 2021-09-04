@@ -110,8 +110,8 @@ public class Register extends InstanceFactory {
 				b = str.substring(split);
 			}
 		} else {
-			a = Strings.get("registerLabel");
-			b = Strings.get("registerWidthLabel", "" + widthVal.getWidth());
+			a = LC.get("registerLabel");
+			b = LC.getFormatted("registerWidthLabel", "" + widthVal.getWidth());
 		}
 
 		// draw boundary, label
@@ -128,7 +128,7 @@ public class Register extends InstanceFactory {
 		}
 		g.setColor(Color.GRAY);
 		painter.drawPort(CLR, "0", Direction.SOUTH);
-		painter.drawPort(EN, Strings.get("memEnableLabel"), Direction.EAST);
+		painter.drawPort(EN, LC.get("memEnableLabel"), Direction.EAST);
 		g.setColor(Color.BLACK);
 		painter.drawClock(CK, Direction.NORTH);
 

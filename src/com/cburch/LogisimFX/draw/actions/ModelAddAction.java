@@ -3,6 +3,7 @@
 
 package com.cburch.LogisimFX.draw.actions;
 
+import com.cburch.LogisimFX.draw.LC;
 import com.cburch.LogisimFX.draw.model.CanvasModel;
 import com.cburch.LogisimFX.draw.model.CanvasObject;
 
@@ -46,7 +47,7 @@ public class ModelAddAction extends ModelAction {
 
 	@Override
 	public String getName() {
-		return Strings.get("actionAdd", getShapesName(added));
+		return LC.getFormatted("actionAdd", getShapesName(added));
 	}
 	
 	@Override

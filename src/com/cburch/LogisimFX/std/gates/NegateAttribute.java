@@ -6,6 +6,7 @@ package com.cburch.LogisimFX.std.gates;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Attributes;
 import com.cburch.LogisimFX.data.Direction;
+import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.util.StringUtil;
 import javafx.scene.Node;
 
@@ -44,7 +45,7 @@ class NegateAttribute extends Attribute<Boolean> {
 	@Override
 	public String getDisplayName() {
 
-		String ret = StringUtil.format(Strings.get("gateNegateAttr"), "" + (index + 1));
+		String ret = LC.getFormatted("gateNegateAttr", "" + (index + 1));
 		if (side != null) {
 			ret += " (" + side.toVerticalDisplayString() + ")"; 
 		}

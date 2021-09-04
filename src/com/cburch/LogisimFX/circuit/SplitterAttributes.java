@@ -56,7 +56,7 @@ class SplitterAttributes extends AbstractAttributeSet {
 		@Override
 		public String toString() {
 			if (value < 0) {
-				return Strings.get("splitterBitNone");
+				return LC.get("splitterBitNone");
 			} else {
 				String ret = "" + value;
 				Direction noteDir;

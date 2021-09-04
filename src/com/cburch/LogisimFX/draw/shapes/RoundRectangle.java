@@ -3,6 +3,7 @@
 
 package com.cburch.LogisimFX.draw.shapes;
 
+import com.cburch.LogisimFX.draw.LC;
 import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Bounds;
@@ -43,7 +44,7 @@ public class RoundRectangle extends Rectangular {
 	
 	@Override
 	public String getDisplayName() {
-		return Strings.get("shapeRoundRect");
+		return LC.get("shapeRoundRect");
 	}
 	
 	@Override

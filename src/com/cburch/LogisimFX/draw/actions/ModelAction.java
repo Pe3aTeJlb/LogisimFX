@@ -3,6 +3,7 @@
 
 package com.cburch.LogisimFX.draw.actions;
 
+import com.cburch.LogisimFX.draw.LC;
 import com.cburch.LogisimFX.draw.model.CanvasModel;
 import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.draw.undo.Action;
@@ -46,7 +47,7 @@ public abstract class ModelAction extends Action {
 	static String getShapesName(Collection<CanvasObject> coll) {
 
 		if (coll.size() != 1) {
-			return Strings.get("shapeMultiple");
+			return LC.get("shapeMultiple");
 		} else {
 			CanvasObject shape = coll.iterator().next();
 			return shape.getDisplayName();

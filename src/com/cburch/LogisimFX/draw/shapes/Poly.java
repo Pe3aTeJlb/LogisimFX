@@ -3,6 +3,7 @@
 
 package com.cburch.LogisimFX.draw.shapes;
 
+import com.cburch.LogisimFX.draw.LC;
 import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.draw.model.Handle;
 import com.cburch.LogisimFX.draw.model.HandleGesture;
@@ -84,9 +85,9 @@ public class Poly extends FillableCanvasObject {
 	public String getDisplayName() {
 
 		if (closed) {
-			return Strings.get("shapePolygon");
+			return LC.get("shapePolygon");
 		} else {
-			return Strings.get("shapePolyline");
+			return LC.get("shapePolyline");
 		}
 
 	}

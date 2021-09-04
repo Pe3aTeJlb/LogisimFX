@@ -199,8 +199,7 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
             Undo = new MenuItem();
             Undo.setAccelerator(KeyCombination.keyCombination("Ctrl+Z"));
             Undo.textProperty().bind(localizer.createStringBinding("editCantUndoItem"));
-            Undo.setOnAction(event -> {
-            });
+            Undo.setOnAction(event -> proj.undoAction());
 
 
             SeparatorMenuItem sp1 = new SeparatorMenuItem();

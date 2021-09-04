@@ -146,7 +146,7 @@ abstract class AbstractFlipFlop extends InstanceFactory {
 		g.setColor(Color.GRAY);
 		painter.drawPort(n + 3, "0", Direction.SOUTH);
 		painter.drawPort(n + 4, "1", Direction.SOUTH);
-		painter.drawPort(n + 5, Strings.get("memEnableLabel"), Direction.SOUTH);
+		painter.drawPort(n + 5, LC.get("memEnableLabel"), Direction.SOUTH);
 
 		g.setColor(Color.BLACK);
 		for (int i = 0; i < n; i++) {

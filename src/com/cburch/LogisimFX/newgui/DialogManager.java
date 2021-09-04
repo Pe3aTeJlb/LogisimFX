@@ -185,7 +185,7 @@ public class DialogManager {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("LogisimFX");
         alert.setHeaderText(lc.get("confirmCloseTitle"));
-        alert.setContentText(lc.createComplexString("confirmDiscardMessage",  proj.getLogisimFile().getName()));
+        alert.setContentText(lc.getFormatted("confirmDiscardMessage",  proj.getLogisimFile().getName()));
 
         ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().add(IconsManager.LogisimFX);
 
@@ -213,7 +213,7 @@ public class DialogManager {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("LogisimFX");
         alert.setHeaderText(lc.get("openAlreadyTitle"));
-        alert.setContentText(lc.createComplexString("openAlreadyMessage",proj.getLogisimFile().getName()));
+        alert.setContentText(lc.getFormatted("openAlreadyMessage",proj.getLogisimFile().getName()));
 
         ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().add(IconsManager.LogisimFX);
 

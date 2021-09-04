@@ -64,7 +64,7 @@ public class LogisimFileActions {
 
 		@Override
 		public String getName() {
-			return Strings.get("addCircuitAction");
+			return LC.get("addCircuitAction");
 		}
 
 		@Override
@@ -88,7 +88,7 @@ public class LogisimFileActions {
 
 		@Override
 		public String getName() {
-			return Strings.get("removeCircuitAction");
+			return LC.get("removeCircuitAction");
 		}
 
 		@Override
@@ -115,7 +115,7 @@ public class LogisimFileActions {
 
 		@Override
 		public String getName() {
-			return Strings.get("moveCircuitAction");
+			return LC.get("moveCircuitAction");
 		}
 
 		@Override
@@ -153,9 +153,9 @@ public class LogisimFileActions {
 		@Override
 		public String getName() {
 			if (libs.length == 1) {
-				return Strings.get("loadLibraryAction");
+				return LC.get("loadLibraryAction");
 			} else {
-				return Strings.get("loadLibrariesAction");
+				return LC.get("loadLibrariesAction");
 			}
 		}
 
@@ -184,9 +184,9 @@ public class LogisimFileActions {
 		@Override
 		public String getName() {
 			if (libs.length == 1) {
-				return Strings.get("unloadLibraryAction");
+				return LC.get("unloadLibraryAction");
 			} else {
-				return Strings.get("unloadLibrariesAction");
+				return LC.get("unloadLibrariesAction");
 			}
 		}
 
@@ -215,7 +215,7 @@ public class LogisimFileActions {
 
 		@Override
 		public String getName() {
-			return Strings.get("setMainCircuitAction");
+			return LC.get("setMainCircuitAction");
 		}
 
 		@Override
@@ -254,7 +254,7 @@ public class LogisimFileActions {
 
 		@Override
 		public String getName() {
-			return Strings.get("revertDefaultsAction");
+			return LC.get("revertDefaultsAction");
 		}
 
 		@Override

@@ -3,6 +3,7 @@
 
 package com.cburch.LogisimFX.draw.actions;
 
+import com.cburch.LogisimFX.draw.LC;
 import com.cburch.LogisimFX.draw.model.CanvasModel;
 import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.draw.model.ReorderRequest;
@@ -176,11 +177,11 @@ public class ModelReorderAction extends ModelAction {
 	@Override
 	public String getName() {
 		if (type < 0) {
-			return Strings.get("actionRaise", getShapesName(objects));
+			return LC.getFormatted("actionRaise", getShapesName(objects));
 		} else if (type > 0) {
-			return Strings.get("actionLower", getShapesName(objects));
+			return LC.getFormatted("actionLower", getShapesName(objects));
 		} else {
-			return Strings.get("actionReorder", getShapesName(objects));
+			return LC.getFormatted("actionReorder", getShapesName(objects));
 		}
 	}
 	
