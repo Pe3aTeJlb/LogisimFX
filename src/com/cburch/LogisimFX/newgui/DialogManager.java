@@ -11,7 +11,9 @@ import com.cburch.LogisimFX.tools.Library;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import org.controlsfx.dialog.FontSelectorDialog;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -320,6 +322,23 @@ public class DialogManager {
            return  out;
 
        }else {return null;}
+
+    }
+
+    public static Font CreateFontSelectorDialog(Font initFont){
+
+        lc.changeBundle("gui");
+
+        FontSelectorDialog fontSelectorDialog = new FontSelectorDialog(initFont);
+
+        fontSelectorDialog.titleProperty().bind(lc.createStringBinding("fontSelectorTitle"));
+        fontSelectorDialog.headerTextProperty().bind(lc.createStringBinding("fontSelectorHeader"));
+
+        ((Stage) fontSelectorDialog.getDialogPane().getScene().getWindow()).getIcons().add(IconsManager.LogisimFX);
+
+        Optional<Font> response = fontSelectorDialog.showAndWait();
+
+        return response.get();
 
     }
 

@@ -169,7 +169,7 @@ public class TextField {
 		case TextField.V_BOTTOM:    y -= descent; break;
 		default:                    break;
 		}
-		g.c.strokeText(text, x, y);
+		g.c.fillText(text, x, y);
 		g.setFont(old);
 
 	}

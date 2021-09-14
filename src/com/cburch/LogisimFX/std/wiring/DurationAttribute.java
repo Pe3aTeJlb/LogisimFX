@@ -3,11 +3,10 @@
 
 package com.cburch.LogisimFX.std.wiring;
 
-import javax.swing.JTextField;
-
 import com.cburch.LogisimFX.data.Attribute;
+import com.cburch.LogisimFX.newgui.MainFrame.AttrTableSetException;
+import com.cburch.LogisimFX.newgui.MainFrame.AttributeTable;
 import com.cburch.LogisimFX.std.LC;
-import com.cburch.LogisimFX.util.StringUtil;
 
 import javafx.beans.binding.StringBinding;
 import javafx.scene.Node;
@@ -58,7 +57,30 @@ public class DurationAttribute extends Attribute<Integer> {
 	public Node getCell(Integer value){
 
 		TextField field = new TextField();
-		field.setText(value.toString());
+
+		field.setText(toDisplayString(value));
+
+		field.focusedProperty().addListener((observable, oldValue, newValue) -> {
+			if(newValue){
+				field.setText(field.getText().split(" ")[0]);
+			}else{
+				try {
+					AttributeTable.setValueRequested( this, parse(field.getText()));
+				} catch (AttrTableSetException e) {
+					e.printStackTrace();
+				}
+				field.setText(toDisplayString(parse(field.getText())));
+			}
+		});
+
+		field.setOnAction(event -> {
+			try {
+				AttributeTable.setValueRequested( this, parse(field.getText()));
+			} catch (AttrTableSetException e) {
+				e.printStackTrace();
+			}
+		});
+
 		return field;
 
 	}

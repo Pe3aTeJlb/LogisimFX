@@ -204,7 +204,7 @@ public class TextTool extends Tool {
 			if (editable != null) {
 				caret = editable.getTextCaret(event);
 				if (caret != null) {
-					proj.getFrameController().setAttributeTable(comp);
+					proj.getFrameController().setAttributeTable(circ,comp);
 					caretComponent = comp;
 					caretCreatingText = false;
 					break;
@@ -219,7 +219,7 @@ public class TextTool extends Tool {
 				if (editable != null) {
 					caret = editable.getTextCaret(event);
 					if (caret != null) {
-						proj.getFrameController().setAttributeTable(comp);
+						proj.getFrameController().setAttributeTable(circ, comp);
 						caretComponent = comp;
 						caretCreatingText = false;
 						break;
@@ -237,7 +237,7 @@ public class TextTool extends Tool {
 			TextEditable editable = (TextEditable) caretComponent.getFeature(TextEditable.class);
 			if (editable != null) {
 				caret = editable.getTextCaret(event);
-				proj.getFrameController().setAttributeTable(caretComponent);
+				proj.getFrameController().setAttributeTable(circ, caretComponent);
 			}
 		}
 

@@ -3,7 +3,6 @@
 
 package com.cburch.LogisimFX.newgui.MainFrame;
 
-import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.analyze.gui.Analyzer;
 import com.cburch.LogisimFX.analyze.gui.AnalyzerManager;
 import com.cburch.LogisimFX.analyze.model.AnalyzerModel;
@@ -17,7 +16,6 @@ import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.std.wiring.Pin;
 import com.cburch.LogisimFX.tools.AddTool;
-import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.util.StringUtil;
 
 import java.util.ArrayList;

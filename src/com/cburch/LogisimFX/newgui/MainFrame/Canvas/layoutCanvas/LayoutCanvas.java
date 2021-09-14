@@ -1,28 +1,24 @@
 package com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas;
 
-import com.cburch.LogisimFX.circuit.Circuit;
-import com.cburch.LogisimFX.circuit.CircuitState;
-import com.cburch.LogisimFX.circuit.WidthIncompatibilityData;
-import com.cburch.LogisimFX.circuit.WireSet;
+import com.cburch.LogisimFX.circuit.*;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.comp.ComponentDrawContext;
-import com.cburch.LogisimFX.data.BitWidth;
-import com.cburch.LogisimFX.data.Bounds;
-import com.cburch.LogisimFX.data.Location;
-import com.cburch.LogisimFX.data.Value;
+import com.cburch.LogisimFX.data.*;
+import com.cburch.LogisimFX.file.LibraryEvent;
+import com.cburch.LogisimFX.file.LibraryListener;
 import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.newgui.MainFrame.LC;
 import com.cburch.LogisimFX.prefs.AppPreferences;
 import com.cburch.LogisimFX.proj.Project;
-import com.cburch.LogisimFX.tools.MenuTool;
-import com.cburch.LogisimFX.tools.Tool;
+import com.cburch.LogisimFX.proj.ProjectEvent;
+import com.cburch.LogisimFX.proj.ProjectListener;
+import com.cburch.LogisimFX.tools.*;
 
 import com.sun.javafx.tk.FontMetrics;
 import javafx.animation.AnimationTimer;
 import javafx.beans.binding.StringBinding;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -33,6 +29,7 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 public class LayoutCanvas extends Canvas {
@@ -91,6 +88,83 @@ public class LayoutCanvas extends Canvas {
 
     private LayoutEditHandler layoutEditHandler;
 
+    private MyProjectListener myProjectListener = new MyProjectListener();
+
+    private class MyProjectListener
+            implements ProjectListener, LibraryListener, CircuitListener{
+
+        public void projectChanged(ProjectEvent event) {
+
+            int act = event.getAction();
+
+            if (act != ProjectEvent.ACTION_SELECTION
+                    && act != ProjectEvent.ACTION_START
+                    && act != ProjectEvent.UNDO_START) {
+                proj.getSimulator().requestPropagate();
+            }
+
+        }
+
+        public void libraryChanged(LibraryEvent event) {
+            if (event.getAction() == LibraryEvent.REMOVE_TOOL) {
+                Object t = event.getData();
+                Circuit circ = null;
+                if (t instanceof AddTool) {
+                    t = ((AddTool) t).getFactory();
+                    if (t instanceof SubcircuitFactory) {
+                        circ = ((SubcircuitFactory) t).getSubcircuit();
+                    }
+                }
+
+                if (t == proj.getCurrentCircuit() && t != null) {
+                    proj.setCurrentCircuit(proj.getLogisimFile().getMainCircuit());
+                }
+
+                if (proj.getTool() == event.getData()) {
+                    Tool next = findTool(proj.getLogisimFile().getOptions()
+                            .getToolbarData().getContents());
+                    if (next == null) {
+                        for (Library lib : proj.getLogisimFile().getLibraries()) {
+                            next = findTool(lib.getTools());
+                            if (next != null) break;
+                        }
+                    }
+                    proj.setTool(next);
+                }
+
+                if (circ != null) {
+                    CircuitState state = getCircuitState();
+                   CircuitState last = state;
+                    while (state != null && state.getCircuit() != circ) {
+                        last = state;
+                        state = state.getParentState();
+                    }
+                    if (state != null) {
+                        getProject().setCircuitState(last.cloneState());
+                    }
+                }
+            }
+        }
+
+        public void circuitChanged(CircuitEvent event) {
+            int act = event.getAction();
+            if (act == CircuitEvent.ACTION_INVALIDATE) {
+                proj.getSimulator().requestPropagate();
+            }
+        }
+
+        private Tool findTool(List<? extends Tool> opts) {
+           Tool ret = null;
+            for (Tool o : opts) {
+                if (ret == null && o != null) ret = o;
+                else if (o instanceof EditTool) ret = o;
+            }
+            return ret;
+        }
+
+
+    }
+
     public LayoutCanvas(AnchorPane rt, Project project){
 
         super(rt.getWidth(),rt.getHeight());
@@ -98,6 +172,10 @@ public class LayoutCanvas extends Canvas {
         root = rt;
 
         proj = project;
+
+        proj.addProjectListener(myProjectListener);
+        proj.addLibraryListener(myProjectListener);
+        proj.addCircuitListener(myProjectListener);
 
         this.setFocusTraversable(true);
 
@@ -321,7 +399,8 @@ public class LayoutCanvas extends Canvas {
     private void drawErrorMessage(){
 
         if(errorMessage != null) {
-            g.setFont(DEFAULT_ERROR_FONT);
+            Font f = Font.font("serif", FontWeight.BOLD, FontPosture.REGULAR, 14/zoom);
+            g.setFont(f);
             g.setColor(errorColor);
             g.c.fillText(errorMessage.getValue(), inverseTransformX(this.getWidth() / 2),
                    inverseTransformY(3 * this.getHeight() / 4));
@@ -333,7 +412,8 @@ public class LayoutCanvas extends Canvas {
 
     private void drawString(Graphics g, String msg){
 
-        g.setFont(DEFAULT_ERROR_FONT);
+        Font f = Font.font("serif", FontWeight.BOLD, FontPosture.REGULAR, 14/zoom);
+        g.setFont(f);
         FontMetrics fm = g.getFontMetrics();
         int x = inverseTransformX((getWidth() - fm.computeStringWidth(msg)) / 2);
         if (x < 0) x = 0;
@@ -348,8 +428,9 @@ public class LayoutCanvas extends Canvas {
             String hz = tickCounter.getTickRate();
 
             if (hz != null && !hz.equals("")) {
+                Font f = Font.font("serif", FontWeight.BOLD, FontPosture.REGULAR, 12/zoom);
                 g.setColor(TICK_RATE_COLOR);
-                g.setFont(TICK_RATE_FONT);
+                g.setFont(f);
                 FontMetrics fm = g.getFontMetrics();
                 int x = inverseTransformX(getWidth() - fm.computeStringWidth(hz) - 5);
                 int y = inverseTransformY(fm.getAscent() + 5);
@@ -525,6 +606,8 @@ public class LayoutCanvas extends Canvas {
                 tool.mouseMoved(this, getGraphics(), new CME(event));
             }
 
+            proj.getSimulator().requestPropagate();
+
         });
 
         this.setOnMouseEntered(event -> {
@@ -638,6 +721,8 @@ public class LayoutCanvas extends Canvas {
         haloedCircuit = circ;
         haloedComponent = comp;
     }
+
+
 
     public Selection getSelection() {
         return selection;

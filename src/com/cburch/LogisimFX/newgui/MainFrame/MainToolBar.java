@@ -1,10 +1,12 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
+
+import com.cburch.LogisimFX.prefs.AppPreferences;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.file.ToolbarData;
 import com.cburch.LogisimFX.tools.Tool;
-
 import com.cburch.LogisimFX.draw.tools.*;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -18,6 +20,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 public class MainToolBar extends ToolBar {
 
@@ -33,11 +38,29 @@ public class MainToolBar extends ToolBar {
 
     private String currType = null;
 
+    private MyListener myListener = new MyListener();
+
+    private class MyListener
+            implements  PropertyChangeListener {
+
+        //
+        // PropertyChangeListener methods
+        //
+        public void propertyChange(PropertyChangeEvent event) {
+            if (AppPreferences.GATE_SHAPE.isSource(event)) {
+                ToolsRefresh();
+            }
+        }
+
+    }
+
     public MainToolBar(Project project){
 
         super();
 
         proj = project;
+
+        AppPreferences.GATE_SHAPE.addPropertyChangeListener(myListener);
 
         AnchorPane.setLeftAnchor(this,0.0);
         AnchorPane.setTopAnchor(this,25.0);
@@ -75,7 +98,10 @@ public class MainToolBar extends ToolBar {
             } else {
                 RedactCircuitBtnsList.add(new ToolButton(tool));
             }
+
         }
+
+        proj.setTool(data.getFirstTool());
 
     }
 
@@ -121,7 +147,7 @@ public class MainToolBar extends ToolBar {
 
     }
 
-    public void ToolsRefresh(){
+    private void ToolsRefresh(){
 
         SetLayoutTools();
         SetAppearanceTools();

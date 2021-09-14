@@ -40,7 +40,6 @@
                               <Button fx:id="moveUpBtn" mnemonicParsing="false" prefWidth="100.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <Button fx:id="moveDownBtn" mnemonicParsing="false" prefWidth="100.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <Button fx:id="removeBtn" mnemonicParsing="false" prefWidth="100.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <ListView fx:id="selectLst" prefHeight="200.0" prefWidth="200.0" GridPane.rowSpan="8" />
                               <CheckBox fx:id="timeSelectionChckbx" mnemonicParsing="false" text="CheckBox" GridPane.rowIndex="8" />
                               <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="600.0" GridPane.columnSpan="3" GridPane.rowIndex="9">
                                  <children>
@@ -71,6 +70,7 @@
                                     </ComboBox>
                                  </children>
                               </HBox>
+                              <TreeView fx:id="circTrvw" prefHeight="200.0" prefWidth="200.0" GridPane.rowSpan="8" />
                            </children>
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

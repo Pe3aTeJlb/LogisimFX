@@ -6,6 +6,8 @@ package com.cburch.LogisimFX.data;
 
 import javax.swing.JComboBox;
 
+import com.cburch.LogisimFX.newgui.MainFrame.AttrTableSetException;
+import com.cburch.LogisimFX.newgui.MainFrame.AttributeTable;
 import com.cburch.LogisimFX.util.StringGetter;
 import javafx.beans.binding.StringBinding;
 import javafx.event.ActionEvent;
@@ -51,7 +53,11 @@ public class BitWidth implements Comparable<BitWidth> {
 			cell.getItems().addAll(choices);
 			cell.setValue(value);
 			cell.setOnAction(event -> {
-
+				try {
+					AttributeTable.setValueRequested( this, cell.getValue());
+				} catch (AttrTableSetException e) {
+					e.printStackTrace();
+				}
 			});
 			return cell;
 

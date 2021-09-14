@@ -6,9 +6,13 @@ package com.cburch.LogisimFX.std.gates;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.Attributes;
 import com.cburch.LogisimFX.data.Direction;
+import com.cburch.LogisimFX.newgui.MainFrame.AttrTableSetException;
+import com.cburch.LogisimFX.newgui.MainFrame.AttributeTable;
 import com.cburch.LogisimFX.std.LC;
-import com.cburch.LogisimFX.util.StringUtil;
+
 import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
+import javafx.util.StringConverter;
 
 class NegateAttribute extends Attribute<Boolean> {
 
@@ -63,10 +67,38 @@ class NegateAttribute extends Attribute<Boolean> {
 		return BOOLEAN_ATTR.parse(value);
 	}
 
-
 	@Override
 	public Node getCell(Boolean value){
-		return BOOLEAN_ATTR.getCell(value);
+
+		Boolean[] vals = { Boolean.TRUE, Boolean.FALSE };
+
+		StringConverter<Boolean> converter = new StringConverter<Boolean>() {
+
+			@Override
+			public String toString(Boolean object) {
+				return toDisplayString(object);
+			}
+
+			@Override
+			public Boolean fromString(String string) {
+				return parse(string);
+			}
+
+		};
+
+		ComboBox<Boolean> cell = new ComboBox<>();
+		cell.getItems().addAll(vals);
+		cell.setConverter(converter);
+		cell.setValue(value);
+		cell.setOnAction(event -> {
+			try {
+				AttributeTable.setValueRequested( this, cell.getValue());
+			} catch (AttrTableSetException e) {
+				e.printStackTrace();
+			}
+		});
+		return cell;
+
 	}
 
 }

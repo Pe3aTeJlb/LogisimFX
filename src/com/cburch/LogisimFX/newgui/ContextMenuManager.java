@@ -143,10 +143,7 @@ public class ContextMenuManager {
         MenuItem RemoveCirc = new MenuItem();
         RemoveCirc.disableProperty().bind(proj.getLogisimFile().obsPos.isEqualTo("first&last"));
         RemoveCirc.textProperty().bind(lc.createStringBinding("projectRemoveCircuitItem"));
-        RemoveCirc.setOnAction(event -> {
-            ProjectCircuitActions.doRemoveCircuit(proj,circ);
-            proj.getFrameController().manual_Explorer_Update();
-        });
+        RemoveCirc.setOnAction(event -> ProjectCircuitActions.doRemoveCircuit(proj,circ));
 
 
         contextMenu.getItems().addAll(
@@ -189,7 +186,7 @@ public class ContextMenuManager {
         MenuItem attrs = new MenuItem("Menu Item");
         attrs.textProperty().bind(LC_tools.getInstance().createStringBinding("compShowAttrItem"));
         attrs.setOnAction(event -> {
-            proj.getFrameController().setAttributeTable(comp);
+            proj.getFrameController().setAttributeTable(circ, comp);
         });
 
         contextMenu.getItems().addAll(del,attrs);

@@ -1,31 +1,40 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
+import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.data.Attribute;
-import com.cburch.LogisimFX.data.AttributeSet;
+import com.cburch.LogisimFX.draw.tools.AbstractTool;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.SelectionEvent;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.SelectionListener;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.Selection;
+import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.tools.Tool;
 
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 
-public class AttributeTable extends GridPane {
+public class AttributeTable extends GridPane
+        implements Selection.Listener, SelectionListener {
 
     private ColumnConstraints attr,value;
 
-    private static Tool tool = null;
-    private static Component comp = null;
-    private static AttributeSet attributeSet;
+    private Project proj;
 
     private int currRow = 1;
 
-    private Label attrNameLbl, attrValueLbl;
+    private Label selectionLbl, attrNameLbl, attrValueLbl;
 
-    public AttributeTable(){
+    private static AttrTableModel attrModel;
+
+    public AttributeTable(Project proj){
 
         super();
+
+        this.proj = proj;
 
         this.setHgap(5);
         this.setVgap(5);
@@ -40,68 +49,126 @@ public class AttributeTable extends GridPane {
 
         this.getColumnConstraints().addAll(attr,value);
 
-        setTitle();
+        proj.getFrameController().getLayoutCanvas().getSelection().addListener(this);
+        proj.getFrameController().getAppearanceCanvas().getSelection().addSelectionListener(this);
 
     }
 
     private void setTitle(){
 
-        attrNameLbl = new Label();
-        attrNameLbl.textProperty().bind(LC.createStringBinding("attributeNameTitle"));
-        this.add(attrNameLbl,0,0);
+        this.getChildren().clear();
 
-        attrValueLbl = new Label();
-        attrValueLbl.textProperty().bind(LC.createStringBinding("attributeValueTitle"));
-        this.add(attrValueLbl,1,0);
+        if(attrModel != null && attrModel.getTitle().getValue() != null) {
+
+            selectionLbl = new Label();
+            selectionLbl.textProperty().bind(attrModel.getTitle());
+            this.add(selectionLbl,0,0,2,1);
+            GridPane.setHalignment(selectionLbl, HPos.CENTER);
+
+            attrNameLbl = new Label();
+            attrNameLbl.textProperty().bind(LC.createStringBinding("attributeNameTitle"));
+            this.add(attrNameLbl,0,1);
+            GridPane.setHalignment(attrNameLbl, HPos.CENTER);
+
+            attrValueLbl = new Label();
+            attrValueLbl.textProperty().bind(LC.createStringBinding("attributeValueTitle"));
+            this.add(attrValueLbl,1,1);
+            GridPane.setHalignment(attrValueLbl, HPos.CENTER);
+
+        }
 
     }
 
     private void updateTable(){
 
-        this.getChildren().clear();
+        currRow = 2;
 
-        setTitle();
+       // System.out.println("attr size "+attributeSet.getAttributes().size());
 
-        System.out.println("attr size "+attributeSet.getAttributes().size());
-
-        for (Attribute attr: attributeSet.getAttributes()) {
+        for (Attribute attr: attrModel.getAttributeSet().getAttributes()) {
             currRow += 1;
             this.add(new Label(attr.getDisplayName()),0,currRow);
-            this.add(attr.getCell(attributeSet.getValue(attr)), 1,currRow);
+            this.add(attr.getCell(attrModel.getAttributeSet().getValue(attr)), 1,currRow);
 
-            System.out.println("attr "+attr.getName()+" "+attributeSet.getValue(attr).toString());
+            //System.out.println("attr "+attr.getName()+" "+attributeSet.getValue(attr).toString());
 
         }
 
+    }
+
+    public static void setValueRequested(Attribute<?> attr, Object value) throws AttrTableSetException {
+        attrModel.setValueRequested((Attribute<Object>) attr, value);
     }
 
     public static void printShit(){
 
-        for (Attribute attr: attributeSet.getAttributes()) {
-            System.out.println("attr "+attr.getName()+" "+attributeSet.getValue(attr).toString());
+        for (Attribute attr: attrModel.getAttributeSet().getAttributes()) {
+           System.out.println("attr "+attr.getName()+" "+attrModel.getAttributeSet().getValue(attr).toString());
         }
 
     }
 
-    public void setTool(Tool tl){
 
-        if(tool != tl && tl.getAttributeSet() != null) {
-            tool = tl;
-            comp = null;
-            attributeSet = tool.getAttributeSet();
+    //Define table model
+
+    public void setTool(Tool tool){
+
+        if(tool != null && tool.getAttributeSet() != null) {
+            attrModel = new AttrTableToolModel(proj, tool);
+            setTitle();
             updateTable();
         }
 
     }
 
-    public void setComponent(Component cmp){
+    public void setTool(AbstractTool tool){
 
-        if(comp != cmp && cmp.getAttributeSet() != null) {
-            tool = null;
-            comp = cmp;
-            attributeSet = cmp.getAttributeSet();
+        if(tool != null && tool.getAttributes() != null) {
+            attrModel = new AttrTableAbstractToolModel(tool);
+            setTitle();
             updateTable();
         }
+
+    }
+
+    public void setComponent(Circuit circ, Component comp){
+
+        if(comp != null) {
+            attrModel = new AttrTableComponentModel(proj, circ, comp);
+            setTitle();
+            updateTable();
+        }
+
+    }
+
+    public void setCircuit(Circuit circ){
+
+        if(circ != null) {
+            attrModel = new AttrTableCircuitModel(proj, circ);
+            setTitle();
+            updateTable();
+        }
+
+    }
+
+
+    //from layout view
+    @Override
+    public void selectionChanged(Selection.Event event) {
+
+        attrModel = new AttrTableSelectionModel(proj);
+        setTitle();
+        updateTable();
+
+    }
+
+    //from appearance view
+    @Override
+    public void selectionChanged(SelectionEvent e) {
+
+        attrModel = new AttrTableAppearanceSelectionModel(proj);
+        setTitle();
+        updateTable();
 
     }
 

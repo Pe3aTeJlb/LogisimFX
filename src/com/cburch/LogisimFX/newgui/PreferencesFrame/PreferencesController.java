@@ -299,10 +299,7 @@ public class PreferencesController extends AbstractController {
 
         }
 
-        GateShapeCmbx.setOnAction(event -> {
-            AppPreferences.GATE_SHAPE.set(GateShapeCmbx.getValue().getValue().toString());
-            FrameManager.GlobalUIUpdate();
-        });
+        GateShapeCmbx.setOnAction(event -> AppPreferences.GATE_SHAPE.set(GateShapeCmbx.getValue().getValue().toString()));
 
 
         //set locales list

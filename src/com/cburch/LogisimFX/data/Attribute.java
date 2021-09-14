@@ -3,6 +3,9 @@
 
 package com.cburch.LogisimFX.data;
 
+import com.cburch.LogisimFX.newgui.MainFrame.AttrTableSetException;
+import com.cburch.LogisimFX.newgui.MainFrame.AttributeTable;
+
 import javafx.beans.binding.StringBinding;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
@@ -31,7 +34,17 @@ public abstract class Attribute<V> {
 	}
 
 	public Node getCell(V value){
-		return new TextField(toDisplayString(value));
+
+		TextField field = new TextField(toDisplayString(value));
+		field.setOnAction(event -> {
+			try {
+				AttributeTable.setValueRequested(this, field.getText());
+			} catch (AttrTableSetException e) {
+				e.printStackTrace();
+			}
+		});
+		return field;
+
 	}
 
 	public String toDisplayString(V value) {

@@ -187,7 +187,7 @@ public class PokeTool extends Tool {
 						AttributeSet attrs = c.getAttributeSet();
 						if (attrs != null && attrs.getAttributes().size() > 0) {
 							Project proj = canvas.getProject();
-							proj.getFrameController().setAttributeTable(c);
+							proj.getFrameController().setAttributeTable(circ,c);
 						}
 					}
 				}

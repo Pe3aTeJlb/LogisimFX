@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-class SelectionAction extends Action {
+public class SelectionAction extends Action {
 
 	private StringBinding displayName;
 	private AppearanceCanvas canvas;

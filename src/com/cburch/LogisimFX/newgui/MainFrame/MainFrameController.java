@@ -1,16 +1,22 @@
 package com.cburch.LogisimFX.newgui.MainFrame;
 
+import com.cburch.LogisimFX.circuit.CircuitEvent;
+import com.cburch.LogisimFX.circuit.CircuitListener;
 import com.cburch.LogisimFX.comp.Component;
+import com.cburch.LogisimFX.draw.tools.AbstractTool;
+import com.cburch.LogisimFX.file.LibraryEvent;
+import com.cburch.LogisimFX.file.LibraryListener;
 import com.cburch.LogisimFX.newgui.MainFrame.Canvas.EditHandler;
 import com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceCanvas;
 import com.cburch.LogisimFX.newgui.AbstractController;
-import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.ProjectExplorer.AdditionalToolBar;
 import com.cburch.LogisimFX.newgui.MainFrame.ProjectExplorer.ExplorerToolBar;
 import com.cburch.LogisimFX.newgui.MainFrame.ProjectExplorer.TreeExplorerAggregation;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.circuit.Circuit;
+import com.cburch.LogisimFX.proj.ProjectEvent;
+import com.cburch.LogisimFX.proj.ProjectListener;
 import com.cburch.LogisimFX.tools.Tool;
 
 import javafx.geometry.Orientation;
@@ -45,6 +51,32 @@ public class MainFrameController extends AbstractController {
     private LayoutCanvas layoutCanvas;
     private AppearanceCanvas appearanceCanvas;
 
+    class MyProjectListener
+            implements ProjectListener, LibraryListener, CircuitListener {
+
+        public void projectChanged(ProjectEvent event) {
+            int action = event.getAction();
+
+            if (action == ProjectEvent.ACTION_SET_FILE) {
+                computeTitle();
+            } else if (action == ProjectEvent.ACTION_SET_CURRENT) {
+                computeTitle();
+            }
+        }
+
+        public void libraryChanged(LibraryEvent e) {
+            if (e.getAction() == LibraryEvent.SET_NAME) {
+                computeTitle();
+            }
+        }
+
+        public void circuitChanged(CircuitEvent event) {
+            if (event.getAction() == CircuitEvent.ACTION_SET_NAME) {
+                computeTitle();
+            }
+        }
+
+    }
 
 //monolith - strength in unity
     @FXML
@@ -59,10 +91,39 @@ public class MainFrameController extends AbstractController {
         proj = p;
         proj.setFrameController(this);
 
+        MyProjectListener myProjectListener = new MyProjectListener();
+        proj.addProjectListener(myProjectListener);
+        proj.addLibraryListener(myProjectListener);
+        proj.addCircuitListener(myProjectListener);
         computeTitle();
 
         AnchorPane treeRoot = new AnchorPane();
         treeRoot.setMinHeight(0);
+
+        //Canvas
+        canvasRoot = new AnchorPane();
+        canvasRoot.setMinSize(0,0);
+
+        layoutCanvas = new LayoutCanvas(canvasRoot, proj);
+        appearanceCanvas = new AppearanceCanvas(canvasRoot, proj);
+        canvasRoot.getChildren().add(appearanceCanvas);
+
+
+        //Attribute table
+        AnchorPane tableRoot = new AnchorPane();
+        tableRoot.setMinHeight(0);
+
+        ScrollPane scrollPane = new ScrollPane();
+        setAnchor(0,0,0,0, scrollPane);
+
+        attributeTable = new AttributeTable(proj);
+        attributeTable.setFocusTraversable(false);
+
+        scrollPane.setContent(attributeTable);
+        scrollPane.setFitToWidth(true);
+
+
+        tableRoot.getChildren().add(scrollPane);
 
 
         //TreeExplorer
@@ -77,34 +138,8 @@ public class MainFrameController extends AbstractController {
         treeRoot.getChildren().addAll(explorerToolBar,additionalToolBar, treeExplorerAggregation);
 
 
-        //Attribute table
-        AnchorPane tableRoot = new AnchorPane();
-        tableRoot.setMinHeight(0);
-
-        ScrollPane scrollPane = new ScrollPane();
-        setAnchor(0,0,0,0, scrollPane);
-
-        attributeTable = new AttributeTable();
-        attributeTable.setFocusTraversable(false);
-
-        scrollPane.setContent(attributeTable);
-        scrollPane.setFitToWidth(true);
-
-
-        tableRoot.getChildren().add(scrollPane);
-
-
         SplitPane explorerSplitPane = new SplitPane(treeRoot,tableRoot);
         explorerSplitPane.setOrientation(Orientation.VERTICAL);
-
-
-        //Canvas
-        canvasRoot = new AnchorPane();
-        canvasRoot.setMinSize(0,0);
-
-        layoutCanvas = new LayoutCanvas(canvasRoot, proj);
-        appearanceCanvas = new AppearanceCanvas(canvasRoot, proj);
-        canvasRoot.getChildren().add(appearanceCanvas);
 
 
         SplitPane mainSplitPane = new SplitPane(explorerSplitPane,canvasRoot);
@@ -192,15 +227,19 @@ public class MainFrameController extends AbstractController {
 
 
     public void setAttributeTable(Tool tool){
-
         attributeTable.setTool(tool);
-
     }
 
-    public void setAttributeTable(Component comp){
+    public void setAttributeTable(AbstractTool tool){
+        attributeTable.setTool(tool);
+    }
 
-        attributeTable.setComponent(comp);
+    public void setAttributeTable(Circuit circ){
+        attributeTable.setCircuit(circ);
+    }
 
+    public void setAttributeTable(Circuit circ, Component comp){
+        attributeTable.setComponent(circ, comp);
     }
 
 
@@ -211,24 +250,6 @@ public class MainFrameController extends AbstractController {
         AnchorPane.setRightAnchor(n,right);
         AnchorPane.setBottomAnchor(n,bottom);
     }
-
-    //Manual UI Update
-
-    public void manual_UI_Update(){
-
-        manual_ToolBar_Update();
-        manual_Explorer_Update();
-
-    }
-
-    public void manual_ToolBar_Update(){
-        mainToolBar.ToolsRefresh();
-    }
-
-    public void manual_Explorer_Update(){
-        treeExplorerAggregation.updateTree();
-    }
-
 
 
 
@@ -257,6 +278,9 @@ public class MainFrameController extends AbstractController {
         }
 
     }
+
+
+
     /*
     public void savePreferences() {
         AppPreferences.TICK_FREQUENCY.set(Double.valueOf(proj.getSimulator().getTickFrequency()));
@@ -287,6 +311,8 @@ public class MainFrameController extends AbstractController {
     }
 
      */
+
+
 
     @Override
     public void onClose() {

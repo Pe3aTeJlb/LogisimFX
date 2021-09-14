@@ -3,24 +3,18 @@
 
 package com.cburch.LogisimFX.data;
 
+import com.cburch.LogisimFX.newgui.DialogManager;
+import com.cburch.LogisimFX.newgui.MainFrame.AttrTableSetException;
 import com.cburch.LogisimFX.newgui.MainFrame.AttributeTable;
-import com.cburch.LogisimFX.util.JInputComponent;
 import com.cburch.LogisimFX.util.StringGetter;
-import com.connectina.swing.fontchooser.JFontChooser;
 import javafx.beans.binding.StringBinding;
-import javafx.embed.swing.SwingNode;
 import javafx.scene.Node;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ComboBoxBase;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
-
-import javax.swing.*;
-import javax.swing.plaf.basic.BasicComboBoxRenderer;
+import javafx.util.StringConverter;
 
 public class Attributes {
 
@@ -170,32 +164,6 @@ public class Attributes {
 
 	}
 
-	private static class OptionComboRenderer<V> extends BasicComboBoxRenderer {
-
-		Attribute<V> attr;
-
-		OptionComboRenderer(Attribute<V> attr) {
-			this.attr = attr;
-		}
-/*
-		@Override
-		public Component getListCellRendererComponent(JList list,
-				Object value, int index, boolean isSelected,
-				boolean cellHasFocus) {
-			Component ret = super.getListCellRendererComponent(list,
-				value, index, isSelected, cellHasFocus);
-			if (ret instanceof JLabel) {
-				@SuppressWarnings("unchecked")
-				V val = (V) value;
-				((JLabel) ret).setText(value == null ? "" : attr.toDisplayString(val));
-			}
-			return ret;
-		}
-
- */
-
-	}
-
 	public static class OptionAttribute<V> extends Attribute<V> {
 
 		private V[] vals;
@@ -226,25 +194,35 @@ public class Attributes {
 
 		@Override
 		public Node getCell(Object value){
+
+			StringConverter<Object> converter = new StringConverter<Object>() {
+
+				@Override
+				public String toString(Object object) {
+					return toDisplayString((V)object);
+				}
+
+				@Override
+				public Object fromString(String string) {
+					return parse(string);
+				}
+
+			};
+
 			ComboBox<Object> cell = new ComboBox<>();
+			cell.setConverter(converter);
 			cell.getItems().addAll(vals);
 			cell.setValue(value);
-			cell.setOnAction(event -> AttributeTable.printShit());
+			cell.setOnAction(event -> {
+				try {
+					AttributeTable.setValueRequested( this, cell.getValue());
+				} catch (AttrTableSetException e) {
+					e.printStackTrace();
+				}
+			});
 			return cell;
 
 		}
-/*
-		@Override
-		public Component getCellEditor(Object value) {
-			JComboBox combo = new JComboBox(vals);
-			combo.setRenderer(new OptionComboRenderer<V>(this));
-			if (value == null) combo.setSelectedIndex(-1);
-			else combo.setSelectedItem(value);
-			return combo;
-		}
-
-
- */
 
 	}
 
@@ -327,7 +305,7 @@ public class Attributes {
 
 		@Override
 		public Boolean parse(String value) {
-			Boolean b = Boolean.valueOf(value);
+			Boolean b = value.equals(LC.get("booleanTrueOption"));
 			return vals[b.booleanValue() ? 0 : 1];
 		}
 
@@ -355,7 +333,31 @@ public class Attributes {
 		//Todo
 		@Override
 		public Node getCell(Integer value) {
-			return super.getCell(value);
+
+			if (end - start + 1 > 32) {
+				return super.getCell(value);
+			} else {
+				if (options == null) {
+					options = new Integer[end - start + 1];
+					for (int i = start; i <= end; i++) {
+						options[i - start] = i;
+					}
+				}
+				ComboBox<Integer> combo = new ComboBox<>();
+				combo.getItems().addAll(options);
+				if (value == null) combo.setValue(options[-1]);
+				else combo.setValue(value);
+				combo.setOnAction(event -> {
+					AttributeTable.printShit();
+					try {
+						AttributeTable.setValueRequested( this, combo.getValue());
+					} catch (AttrTableSetException e) {
+						e.printStackTrace();
+					}
+				});
+				return combo;
+			}
+
 		}
 
 		/*
@@ -430,7 +432,6 @@ public class Attributes {
 		@Override
 		public Font parse(String value) {
 
-			System.out.println(value);
 			String[] data = value.split(" ");
 
 			FontPosture fp = FontPosture.REGULAR;
@@ -453,31 +454,22 @@ public class Attributes {
 		}
 
 		public Node getCell(Font value){
-			return new TextField();
+
+			Button fontSelector = new Button(value.getName());
+			fontSelector.setOnAction(event -> {
+
+				Font f = DialogManager.CreateFontSelectorDialog(value);
+
+				try {
+					AttributeTable.setValueRequested( this, f);
+				} catch (AttrTableSetException e) {
+					e.printStackTrace();
+				}
+
+			});
+
+			return fontSelector;
 		}
-/*
-		@Override
-		public Component getCellEditor(Font value) {
-			return new FontChooser(value);
-		}
-
- */
-
-	}
-
-	private static class FontChooser {
-
-		//FontChooser(Font initial) {
-		//	super(initial);
-		//}
-
-		//public Object getValue() {
-		//	return getSelectedFont();
-		//}
-
-		//public void setValue(Object value) {
-		//	setSelectedFont((Font) value);
-		//}
 
 	}
 
@@ -532,26 +524,22 @@ public class Attributes {
 
 		@Override
 		public ComboBoxBase<Color> getCell(Color value) {
+
+			System.out.println(value);
 			Color init = value == null ? Color.BLACK : value;
-			return new ColorPicker(init);
+
+			ColorPicker picker = new ColorPicker(init);
+			picker.setOnAction(event -> {
+				Color c = picker.getValue();
+				System.out.println(c.toString());
+				try {
+					AttributeTable.setValueRequested( this,c);
+				} catch (AttrTableSetException e) {
+					e.printStackTrace();
+				}
+			});
+			return picker;
 		}
-
-	}
-	
-	private static class ColorChooser extends ColorPicker {
-
-		ColorChooser(Color initial) {
-			if (initial != null) setValue(initial);
-			//setOpacityVisible(true);
-		}
-
-		//public Color getValue() {
-		//	return this.getValue();
-		//}
-
-		//public void setValue(Object value) {
-		//	setColor((Color) value);
-		//}
 
 	}
 

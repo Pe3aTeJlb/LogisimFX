@@ -1,8 +1,6 @@
 package com.cburch.LogisimFX.newgui.OptionsFrame;
 
-import com.cburch.LogisimFX.file.LogisimFile;
-import com.cburch.LogisimFX.file.Options;
-import com.cburch.LogisimFX.file.ToolbarData;
+import com.cburch.LogisimFX.file.*;
 import com.cburch.LogisimFX.newgui.AbstractController;
 import com.cburch.LogisimFX.newgui.MainFrame.AttributeTable;
 import com.cburch.LogisimFX.proj.Project;
@@ -116,7 +114,18 @@ public class OptionsController extends AbstractController {
 
     private AttributeSet attrs;
 
+    private MyListener myListener = new MyListener();
 
+    private class MyListener
+            implements LibraryListener {
+
+        public void libraryChanged(LibraryEvent event) {
+            if (event.getAction() == LibraryEvent.SET_NAME) {
+                setTitle();
+            }
+        }
+
+    }
 
     @FXML
     public void initialize(){
@@ -129,6 +138,8 @@ public class OptionsController extends AbstractController {
         stage = s;
         proj = project;
 
+        proj.getLogisimFile().addLibraryListener(myListener);
+
         stage.setHeight(450);
         stage.setWidth(500);
 
@@ -136,9 +147,7 @@ public class OptionsController extends AbstractController {
 
         attrs = opts.getAttributeSet();
 
-        String name = proj.getLogisimFile() == null ? "???" : proj.getLogisimFile().getDisplayName().getValue();
-
-        stage.titleProperty().bind(LC.createComplexStringBinding("optionsFrameTitle",name));
+        setTitle();
 
         initSimulationOptionsTab();
         initToolbarOptionsTab();
@@ -146,6 +155,16 @@ public class OptionsController extends AbstractController {
 
         RevertToTemplate.textProperty().bind(LC.createStringBinding("revertButton"));
         RevertToTemplate.setOnAction(event -> {});
+
+    }
+
+    private void setTitle(){
+
+        stage.titleProperty().unbind();
+
+        String name = proj.getLogisimFile() == null ? "???" : proj.getLogisimFile().getDisplayName().getValue();
+
+        stage.titleProperty().bind(LC.createComplexStringBinding("optionsFrameTitle",name));
 
     }
 
@@ -557,7 +576,7 @@ public class OptionsController extends AbstractController {
 
         updateTree(AttrExplorer);
 
-        attrTable = new AttributeTable();
+        attrTable = new AttributeTable(proj);
         AttrTablePane.setContent(attrTable);
 
 
@@ -641,10 +660,8 @@ public class OptionsController extends AbstractController {
 
 
 
-
     @Override
     public void onClose() {
-        proj.getFrameController().manual_ToolBar_Update();
         System.out.println("test options");
     }
 

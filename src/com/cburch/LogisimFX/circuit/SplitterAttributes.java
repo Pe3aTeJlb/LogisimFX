@@ -5,10 +5,13 @@ package com.cburch.LogisimFX.circuit;
 
 import com.cburch.LogisimFX.data.*;
 import com.cburch.LogisimFX.instance.StdAttr;
+import com.cburch.LogisimFX.newgui.MainFrame.AttrTableSetException;
+import com.cburch.LogisimFX.newgui.MainFrame.AttributeTable;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.cell.ComboBoxTableCell;
+import javafx.util.StringConverter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -80,7 +83,7 @@ class SplitterAttributes extends AbstractAttributeSet {
 		BitOutOption[] options;
 
 		private BitOutAttribute(int which, BitOutOption[] options) {
-			super("bit" + which, LC.createStringBinding("splitterBitAttr", "" + which));
+			super("bit" + which, LC.createComplexStringBinding("splitterBitAttr", "" + which));
 			this.which = which;
 			this.options = options;
 		}
@@ -121,23 +124,35 @@ class SplitterAttributes extends AbstractAttributeSet {
 		@Override
 		public Node getCell(Integer value){
 
+			StringConverter<Object> converter = new StringConverter<Object>() {
+
+				@Override
+				public String toString(Object object) {
+					return toDisplayString(((BitOutOption)object).value);
+				}
+
+				@Override
+				public Object fromString(String string) {
+					return parse(string);
+				}
+
+			};
+
 			ComboBox<Object> cell = new ComboBox<>();
 			cell.getItems().addAll(options);
-			cell.setValue(value);
+			cell.getSelectionModel().select(value);
+			//cell.setConverter(converter);
 			cell.setOnAction(event -> {
-
+				try {
+					AttributeTable.setValueRequested( this, cell.getValue());
+				} catch (AttrTableSetException e) {
+					e.printStackTrace();
+				}
 			});
 			return cell;
 
 		}
 
-		@Override
-		public java.awt.Component getCellEditor(Integer value) {
-			int index = value.intValue();
-			javax.swing.JComboBox combo = new javax.swing.JComboBox(options);
-			combo.setSelectedIndex(index);
-			return combo;
-		}
 	}
 
 	private ArrayList<Attribute<?>> attrs = new ArrayList<Attribute<?>>(INIT_ATTRIBUTES);

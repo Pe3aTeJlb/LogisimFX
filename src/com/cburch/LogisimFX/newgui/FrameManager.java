@@ -209,6 +209,10 @@ public class FrameManager {
         CreateNewFrame("LogisimFX/newgui/CircLogFrame/CircLog.fxml", proj, Modality.NONE);
     }
 
+    public static void CreateTimeLineFrame(Project proj){
+        CreateNewFrame("LogisimFX/newgui/CircLogFrame/TimeLine.fxml", proj, Modality.NONE);
+    }
+
     public static void CreatePrintFrame(Project proj){
 
         int i = 0;
@@ -461,15 +465,6 @@ public class FrameManager {
 
     private static void FocusOnFrame(Stage s){
         s.toFront();
-    }
-
-
-    public static void GlobalUIUpdate(){
-
-        for (Project p: OpenedMainFrames.keySet()) {
-            p.getFrameController().manual_UI_Update();
-        }
-
     }
 
 

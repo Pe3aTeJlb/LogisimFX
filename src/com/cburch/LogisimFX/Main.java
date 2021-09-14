@@ -5,7 +5,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application{
 
-    public static final LogisimVersion VERSION = LogisimVersion.get(2, 7, 1);
+    public static final LogisimVersion VERSION = LogisimVersion.get(1, 0, 0);
     public static final String VERSION_NAME = VERSION.toString();
     public static final int COPYRIGHT_YEAR = 2021;
 

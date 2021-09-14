@@ -290,11 +290,9 @@ public class Project {
 
 	public void setTool(Tool value) {
 
-		frameController.setAttributeTable(value);
-
 		if (tool == value) return;
 
-		System.out.println(value.getDisplayName().getValue());
+		frameController.setAttributeTable(value);
 
 		Tool old = tool;
 
@@ -330,7 +328,40 @@ public class Project {
 
 		if (abstractTool == value) return;
 		//Todo attribute table
+
+		frameController.setAttributeTable(value);
+
+		AbstractTool old = abstractTool;
+/*
+		AppearanceCanvas canvas = getFrameController().getAppearanceCanvas();
+		if (old != null) old.toolDeselected(canvas);
+		com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.Selection selection
+				= canvas.getSelection();
+		if (selection != null && !selection.isEmpty()) {
+			Circuit circuit = canvas.getCircuit();
+			CircuitMutation xn = new CircuitMutation(circuit);
+			if (value == null) {
+				Action act = SelectionAction.dropAll(selection);
+				if (act != null) {
+					doAction(act);
+				}
+			} else if (!getOptions().getMouseMappings().containsSelectTool()) {
+				Action act =
+						com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.SelectionAction.dropAll(selection);
+				if (act != null) {
+					doAction(act);
+				}
+			}
+			if (!xn.isEmpty()) doAction(xn.toAction(null));
+		}
+
+
+ */
 		abstractTool = value;
+		if (abstractTool != null) abstractTool.toolSelected(getFrameController().getAppearanceCanvas());
+
+		abstractTool = value;
+		fireEvent(ProjectEvent.ACTION_SET_TOOL, old, abstractTool);
 
 	}
 
