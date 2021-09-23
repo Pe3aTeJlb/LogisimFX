@@ -21,11 +21,11 @@ import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
+import java.util.List;
 
 /*
 FrameManager controls all frames generated during program execution.
@@ -425,6 +425,20 @@ public class FrameManager {
         return OpenedMainFrames.keySet();
     }
 
+
+    //From old project Manager
+
+    public static List<Project> getOpenProjects() {
+        return Collections.unmodifiableList(new ArrayList<>(OpenedMainFrames.keySet()));
+    }
+
+    public static boolean windowNamed(String name) {
+        for (Project proj : OpenedMainFrames.keySet()) {
+            if (proj.getLogisimFile().getName().equals(name)) return true;
+        }
+        return false;
+    }
+
     public static Project FindProjectForFile(File query){
 
         for(Project proj: OpenedMainFrames.keySet()){
@@ -440,6 +454,12 @@ public class FrameManager {
 
     }
 
+    public static Point getLocation(Window win) {
+        Point ret = frameLocations.get(win);
+        return ret == null ? null : (Point) ret.clone();
+    }
+
+    /////////
 
 
     //Tools
@@ -475,6 +495,7 @@ public class FrameManager {
             CloseMemoryEditors(proj);
             CloseProjectAssociatedFrames(proj);
             CloseCircuitStatisticsFrames(proj);
+            proj.getSimulator().shutDown();
             proj.getFrameController().onClose();
 
             OpenedMainFrames.remove(proj);
@@ -485,6 +506,7 @@ public class FrameManager {
             CloseProjectIndependentFrames();
             CloseCircuitStatisticsFrames(proj);
             CloseProjectAssociatedFrames(proj);
+            proj.getSimulator().shutDown();
             proj.getFrameController().onClose();
 
             Platform.exit();

@@ -86,7 +86,9 @@ public class ProjectLibraryActions {
 		Loader loader = proj.getLogisimFile().getLoader();
 
 		FileSelector fs = new FileSelector(proj.getFrameController().getStage());
-		File f = fs.OpenCircFile();
+		File f = fs.OpenJarFile();
+
+		if(f==null)return;
 
 		String className = null;
 

@@ -8,39 +8,69 @@ import com.cburch.LogisimFX.draw.model.AbstractCanvasObject;
 import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.draw.model.Handle;
 import com.cburch.LogisimFX.draw.model.HandleGesture;
-import com.cburch.LogisimFX.draw.util.EditableLabel;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.AttributeOption;
 import com.cburch.LogisimFX.data.Bounds;
 import com.cburch.LogisimFX.data.Location;
+import com.cburch.LogisimFX.draw.util.TextField;
 import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.util.UnmodifiableList;
 
+import com.sun.javafx.tk.FontMetrics;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Text extends AbstractCanvasObject {
 
-	private EditableLabel label;
+	public static final int LEFT = 2;
+	public static final int RIGHT = 4;
+	public static final int CENTER = 3;
+
+	public static final int TOP = 8;
+	public static final int MIDDLE = 9;
+	public static final int BASELINE = 10;
+	public static final int BOTTOM = 11;
+
+	private TextField textField;
+
+	private Color color;
+	private Font font;
+
+	private int x, y;
+	private int horzAlign, vertAlign;
+	private int width;
+	private int ascent;
+	private int descent;
+	private boolean dimsKnown;
+	private int[] charX;
+	private int[] charY;
 	
 	public Text(int x, int y, String text) {
 
-		this(x, y, EditableLabel.LEFT, EditableLabel.BASELINE, text,
+		this(x, y, LEFT, BASELINE, text,
 				DrawAttr.DEFAULT_FONT, Color.BLACK);
+
 
 	}
 
 	private Text(int x, int y, int halign, int valign, String text, Font font,
 		Color color) {
 
-		label = new EditableLabel(x, y, text, font);
-		label.setColor(color);
-		label.setHorizontalAlignment(halign);
-		label.setVerticalAlignment(valign);
+		this.x = x;
+		this.y = y;
+		this.horzAlign = halign;
+		this.vertAlign = valign;
+		this.font = font;
+		this.color = color;
+		this.dimsKnown = false;
+		textField = new TextField(x,y,halign,valign,font);
+		textField.setText(text);
 
 	}
 
@@ -48,8 +78,6 @@ public class Text extends AbstractCanvasObject {
 	public Text clone() {
 
 		Text ret = (Text) super.clone();
-		ret.label = this.label.clone();
-
 		return ret;
 
 	}
@@ -59,7 +87,7 @@ public class Text extends AbstractCanvasObject {
 
 		if (other instanceof Text) {
 			Text that = (Text) other;
-			return this.label.equals(that.label);
+			return this.textField.equals(that.textField);
 		} else {
 			return false;
 		}
@@ -68,7 +96,7 @@ public class Text extends AbstractCanvasObject {
 
 	@Override
 	public int matchesHashCode() {
-		return label.hashCode();
+		return this.hashCode();
 	}
 
 	@Override
@@ -76,20 +104,19 @@ public class Text extends AbstractCanvasObject {
 		return SvgCreator.createText(doc, this);
 	}
 
+	public TextField getTextField(){ return textField; }
+
 	public Location getLocation() {
-		return Location.create(label.getX(), label.getY());
+		return Location.create(textField.getX(),textField.getY());
 	}
 
 	public String getText() {
-		return label.getText();
-	}
-
-	public EditableLabel getLabel() {
-		return label;
+		return textField.getText();
 	}
 
 	public void setText(String value) {
-		label.setText(value);
+		dimsKnown = false;
+		textField.setText(value);
 	}
 
 	@Override
@@ -107,15 +134,17 @@ public class Text extends AbstractCanvasObject {
 	public <V> V getValue(Attribute<V> attr) {
 
 		if (attr == DrawAttr.FONT) {
-			return (V) label.getFont();
+			dimsKnown = false;
+			return (V) font;
 		} else if (attr == DrawAttr.FILL_COLOR) {
-			return (V) label.getColor();
+			return (V) color;
 		} else if (attr == DrawAttr.ALIGNMENT) {
-			int halign = label.getHorizontalAlignment();
+			dimsKnown = false;
+			int halign = horzAlign;
 			AttributeOption h;
-			if (halign == EditableLabel.LEFT) {
+			if (halign == Text.LEFT) {
 				h = DrawAttr.ALIGN_LEFT;
-			} else if (halign == EditableLabel.RIGHT) {
+			} else if (halign == Text.RIGHT) {
 				h = DrawAttr.ALIGN_RIGHT;
 			} else {
 				h = DrawAttr.ALIGN_CENTER;
@@ -131,33 +160,81 @@ public class Text extends AbstractCanvasObject {
 	public void updateValue(Attribute<?> attr, Object value) {
 
 		if (attr == DrawAttr.FONT) {
-			label.setFont((Font) value);
+			font = (Font) value;
 		} else if (attr == DrawAttr.FILL_COLOR) {
-			label.setColor((Color) value);
+			color = (Color) value;
 		} else if (attr == DrawAttr.ALIGNMENT) {
 			Integer intVal = (Integer) ((AttributeOption) value).getValue();
-			label.setHorizontalAlignment(intVal.intValue());
+			horzAlign = intVal;
 		}
 
 	}
-	
+
+	private int getLeftX() {
+		switch (horzAlign) {
+			case LEFT:   return x;
+			case CENTER: return x - width / 2;
+			case RIGHT:  return x - width;
+			default:     return x;
+		}
+	}
+
+	private int getBaseY() {
+		switch (vertAlign) {
+			case TOP:      return y + ascent;
+			case MIDDLE:   return y + (ascent - descent) / 2;
+			case BASELINE: return y;
+			case BOTTOM:   return y - descent;
+			default:       return y;
+		}
+	}
+
 	@Override
 	public Bounds getBounds() {
-		return label.getBounds();
+		int x0 = getLeftX();
+		int y0 = getBaseY() - ascent;
+		int w = width;
+		int h = ascent + descent;
+		return Bounds.create(x0, y0, w, h);
 	}
 	
 	@Override
 	public boolean contains(Location loc, boolean assumeFilled) {
-		return label.contains(loc.getX(), loc.getY());
+		int qx = loc.getX();
+		int qy = loc.getY();
+		int x0 = getLeftX();
+		int y0 = getBaseY();
+		if (qx >= x0 && qx < x0 + width
+				&& qy >= y0 - ascent && qy < y0 + descent) {
+			int[] xs = charX;
+			int[] ys = charY;
+			if (xs == null || ys == null) {
+				return true;
+			} else {
+				int i = Arrays.binarySearch(xs, qx - x0);
+				if (i < 0) i = -(i + 1);
+				if (i >= xs.length) {
+					return false;
+				} else {
+					int asc = (ys[i] >> 16) & 0xFFFF;
+					int desc = ys[i] & 0xFFFF;
+					int dy = y0 - qy;
+					return dy >= -desc && dy <= asc;
+				}
+			}
+		} else {
+			return false;
+		}
 	}
 	
 	@Override
 	public void translate(int dx, int dy) {
-		label.setLocation(label.getX() + dx, label.getY() + dy);
+		x += dx;
+		y += dy;
 	}
 	
 	public List<Handle> getHandles() {
-		Bounds bds = label.getBounds();
+		Bounds bds = getBounds();
 		int x = bds.getX();
 		int y = bds.getY();
 		int w = bds.getWidth();
@@ -176,7 +253,29 @@ public class Text extends AbstractCanvasObject {
 	
 	@Override
 	public void paint(Graphics g, HandleGesture gesture) {
-		label.paint(g);
+
+		g.setFont(font);
+
+		if (!dimsKnown) {
+			computeDimensions(g);
+		}
+
+		g.setColor(color);
+		g.c.fillText(textField.getText(), getLeftX(), getBaseY());
+
+		g.toDefault();
+
+	}
+
+	private void computeDimensions(Graphics g) {
+
+		FontMetrics fm = g.getFontMetrics();
+		width = (int)fm.computeStringWidth(textField.getText());
+		ascent = (int)fm.getAscent();
+		descent = (int)fm.getDescent();
+
+		dimsKnown = true;
+
 	}
 
 }

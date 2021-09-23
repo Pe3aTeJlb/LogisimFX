@@ -7,7 +7,6 @@ import com.cburch.LogisimFX.data.AbstractAttributeSet;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.BitWidth;
 import com.cburch.LogisimFX.newgui.FrameManager;
-import com.cburch.logisim.gui.hex.HexFrame;
 import com.cburch.LogisimFX.proj.Project;
 
 import java.util.Arrays;
@@ -17,13 +16,11 @@ import java.util.WeakHashMap;
 public class RomAttributes extends AbstractAttributeSet {
 
 	private static List<Attribute<?>> ATTRIBUTES = Arrays.asList(new Attribute<?>[] {
-			Mem.ADDR_ATTR, Mem.DATA_ATTR, Rom.CONTENTS_ATTR
+			Mem.ADDR_ATTR, Mem.DATA_ATTR
 		});
 	
 	private static WeakHashMap<MemContents,RomContentsListener> listenerRegistry
 		= new WeakHashMap<MemContents,RomContentsListener>();
-	private static WeakHashMap<MemContents,HexFrame> windowRegistry
-		= new WeakHashMap<MemContents,HexFrame>();
 
 	static void register(MemContents value, Project proj) {
 

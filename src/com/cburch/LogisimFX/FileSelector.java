@@ -2,7 +2,6 @@ package com.cburch.LogisimFX;
 
 import com.cburch.LogisimFX.localization.LC_file;
 import com.cburch.LogisimFX.localization.LC_gui;
-import com.cburch.LogisimFX.localization.Localizer;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
@@ -27,7 +26,6 @@ public class FileSelector {
     private FileChooser.ExtensionFilter gif = new FileChooser.ExtensionFilter(LC_gui.getInstance().get("exportGifFilter"),"*.gif");
 
     private Window ownerWindow;
-
 
 
     public FileSelector(Window owner){

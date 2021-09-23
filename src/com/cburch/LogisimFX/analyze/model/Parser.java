@@ -3,8 +3,6 @@
 
 package com.cburch.LogisimFX.analyze.model;
 
-import com.cburch.LogisimFX.util.StringGetter;
-
 import java.util.ArrayList;
 
 public class Parser {

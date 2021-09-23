@@ -4,6 +4,7 @@
 package com.cburch.LogisimFX.draw.tools;
 
 import com.cburch.LogisimFX.IconsManager;
+import com.cburch.LogisimFX.draw.LC;
 import com.cburch.LogisimFX.draw.actions.ModelAddAction;
 import com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceCanvas;
 import com.cburch.LogisimFX.draw.model.CanvasModel;
@@ -36,7 +37,12 @@ public class LineTool extends AbstractTool {
 		this.attrs = attrs;
 		active = false;
 	}
-	
+
+	@Override
+	public String getName(){
+		return LC.get("shapeLine");
+	}
+
 	@Override
 	public ImageView getIcon() {
 		return IconsManager.getIcon("drawline.gif");

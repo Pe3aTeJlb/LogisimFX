@@ -73,7 +73,7 @@ class XmlWriter {
 		Element ret = doc.createElement("project");
 		doc.appendChild(ret);
 		ret.appendChild(doc.createTextNode("\nThis file is intended to be "
-				+ "loaded by Logisim (http://www.cburch.com/logisim/).\n"));
+				+ "loaded by LogisimFX (https://sites.google.com/view/pplosstudio ) or Logisim (http://www.cburch.com/logisim/).\n"));
 		ret.setAttribute("version", "1.0");
 		ret.setAttribute("source", Main.VERSION_NAME);
 

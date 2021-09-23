@@ -24,8 +24,6 @@ import javax.swing.event.ChangeListener;
 import com.cburch.LogisimFX.analyze.model.AnalyzerModel;
 import com.cburch.LogisimFX.util.LocaleListener;
 import com.cburch.LogisimFX.util.LocaleManager;
-import com.cburch.logisim.gui.generic.LFrame;
-import com.cburch.logisim.gui.menu.LogisimMenuBar;
 
 public class Analyzer extends LFrame {
 	// used by circuit analysis to select the relevant tab automatically.

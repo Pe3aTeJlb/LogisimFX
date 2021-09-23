@@ -3,7 +3,7 @@
 
 package com.cburch.LogisimFX.file;
 
-import com.cburch.LogisimFX.proj.Projects;
+import com.cburch.LogisimFX.newgui.FrameManager;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.circuit.SubcircuitFactory;
 import com.cburch.LogisimFX.comp.Component;
@@ -13,7 +13,6 @@ import com.cburch.LogisimFX.tools.Library;
 import com.cburch.LogisimFX.tools.Tool;
 import com.cburch.LogisimFX.util.EventSourceWeakSupport;
 import com.cburch.LogisimFX.util.ListUtil;
-import com.cburch.LogisimFX.util.StringUtil;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -77,9 +76,9 @@ public class LogisimFile extends Library implements LibraryEventSource {
 		this.loader = loader;
 
 		name = LC.get("defaultProjectName");
-		if (Projects.windowNamed(name)) {
+		if (FrameManager.windowNamed(name)) {
 			for (int i = 2; true; i++) {
-				if (!Projects.windowNamed(name + " " + i)) {
+				if (!FrameManager.windowNamed(name + " " + i)) {
 					name += " " + i;
 					break;
 				}

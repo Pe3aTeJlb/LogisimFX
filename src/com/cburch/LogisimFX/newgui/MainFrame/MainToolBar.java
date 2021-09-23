@@ -113,7 +113,7 @@ public class MainToolBar extends ToolBar {
 
         AbstractTool[] tools = {
                 new SelectTool(),
-                //new TextTool(attrs),
+                new TextTool(attrs),
                 new LineTool(attrs),
                 new CurveTool(attrs),
                 new PolyTool(false, attrs),
@@ -123,7 +123,7 @@ public class MainToolBar extends ToolBar {
                 new PolyTool(true, attrs),
         };
 
-        proj.setAbstractTool(tools[0]);
+        //proj.setAbstractTool(tools[0]);
 
         for (AbstractTool tool: tools) {
             RedactAppearanceBtnsList.add(new ToolButton(tool));

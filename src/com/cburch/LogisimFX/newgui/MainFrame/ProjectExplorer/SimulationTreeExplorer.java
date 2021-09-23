@@ -82,7 +82,6 @@ public class SimulationTreeExplorer extends AbstractTreeExplorer {
 
                         if(treeItem.getValue() instanceof Circuit){
                             project.setCurrentCircuit((Circuit) treeItem.getValue());
-                            //Todo: appearance view
                         }
 
                     }

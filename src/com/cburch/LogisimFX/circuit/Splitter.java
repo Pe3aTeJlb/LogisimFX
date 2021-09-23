@@ -12,6 +12,7 @@ import com.cburch.LogisimFX.tools.ToolTipMaker;
 import com.cburch.LogisimFX.tools.WireRepair;
 import com.cburch.LogisimFX.tools.WireRepairData;
 import com.cburch.LogisimFX.util.StringUtil;
+import javafx.beans.binding.StringBinding;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.SeparatorMenuItem;
 
@@ -138,7 +139,7 @@ public class Splitter extends ManagedComponent
 		return true;
 	}
 
-	public String getToolTip(ComponentUserEvent e) {
+	public StringBinding getToolTip(ComponentUserEvent e) {
 		int end = -1;
 		for (int i = getEnds().size() - 1; i >= 0; i--) {
 			if (getEndLocation(i).manhattanDistanceTo(e.getX(), e.getY()) < 10) {
@@ -148,7 +149,7 @@ public class Splitter extends ManagedComponent
 		}
 
 		if (end == 0) {
-			return LC.get("splitterCombinedTip");
+			return LC.createStringBinding("splitterCombinedTip");
 		} else if (end > 0){
 			int bits = 0;
 			StringBuilder buf = new StringBuilder();
@@ -177,7 +178,7 @@ public class Splitter extends ManagedComponent
 			case 1:  base = LC.get("splitterSplit1Tip"); break;
 			default: base = LC.get("splitterSplitManyTip"); break;
 			}
-			return StringUtil.format(base, buf.toString());
+			return LC.castToBind(StringUtil.format(base, buf.toString()));
 		} else {
 			return null;
 		}

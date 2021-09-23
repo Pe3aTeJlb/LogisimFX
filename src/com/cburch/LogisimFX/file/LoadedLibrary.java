@@ -3,8 +3,8 @@
 
 package com.cburch.LogisimFX.file;
 
+import com.cburch.LogisimFX.newgui.FrameManager;
 import com.cburch.LogisimFX.proj.Project;
-import com.cburch.LogisimFX.proj.Projects;
 import com.cburch.LogisimFX.circuit.Circuit;
 import com.cburch.LogisimFX.circuit.CircuitMutation;
 import com.cburch.LogisimFX.circuit.SubcircuitFactory;
@@ -167,7 +167,7 @@ public class LoadedLibrary extends Library implements LibraryEventSource {
 	
 	private static void replaceAll(Map<ComponentFactory,ComponentFactory> compMap,
 			Map<Tool,Tool> toolMap) {
-		for (Project proj : Projects.getOpenProjects()) {
+		for (Project proj : FrameManager.getOpenProjects()) {
 			Tool oldTool = proj.getTool();
 			Circuit oldCircuit = proj.getCurrentCircuit();
 			if (toolMap.containsKey(oldTool)) {

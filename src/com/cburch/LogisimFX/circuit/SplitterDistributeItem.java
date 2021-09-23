@@ -4,13 +4,10 @@
 package com.cburch.LogisimFX.circuit;
 
 import com.cburch.LogisimFX.proj.Project;
-import com.cburch.LogisimFX.util.StringGetter;
+
 import javafx.beans.binding.StringBinding;
 import javafx.scene.control.MenuItem;
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 class SplitterDistributeItem extends MenuItem {
 

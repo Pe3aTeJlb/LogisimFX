@@ -99,8 +99,8 @@ public class ProjectCircuitActions {
 		Analyzer analyzer = AnalyzerManager.getAnalyzer();
 		analyzer.getModel().setCurrentCircuit(proj, circuit);
 		configureAnalyzer(proj, circuit, analyzer, pinNames, inputNames, outputNames);
-		analyzer.setVisible(true);
-		analyzer.toFront();
+		//analyzer.setVisible(true);
+		//analyzer.toFront();
 	}
 	
 	private static void configureAnalyzer(Project proj, Circuit circuit,

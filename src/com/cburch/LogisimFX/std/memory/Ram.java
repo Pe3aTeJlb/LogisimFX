@@ -8,7 +8,6 @@ import com.cburch.LogisimFX.instance.*;
 import com.cburch.LogisimFX.circuit.CircuitState;
 import com.cburch.LogisimFX.newgui.FrameManager;
 import com.cburch.LogisimFX.std.LC;
-import com.cburch.logisim.gui.hex.HexFrame;
 import com.cburch.LogisimFX.proj.Project;
 import javafx.scene.paint.Color;
 
@@ -231,7 +230,6 @@ public class Ram extends Mem {
 
 		private Instance parent;
 		private MemListener listener;
-		private HexFrame hexFrame = null;
 		private ClockState clockState;
 
 		RamState(Instance parent, MemContents contents, MemListener listener) {

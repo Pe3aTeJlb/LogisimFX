@@ -3,8 +3,6 @@
 
 package com.cburch.LogisimFX.analyze.model;
 
-import com.cburch.LogisimFX.util.StringGetter;
-
 public class Entry {
 	public static final Entry ZERO = new Entry("0");
 	public static final Entry ONE = new Entry("1");

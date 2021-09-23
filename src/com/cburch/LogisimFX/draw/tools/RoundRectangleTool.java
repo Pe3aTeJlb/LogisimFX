@@ -4,6 +4,7 @@
 package com.cburch.LogisimFX.draw.tools;
 
 import com.cburch.LogisimFX.IconsManager;
+import com.cburch.LogisimFX.draw.LC;
 import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.draw.shapes.DrawAttr;
 import com.cburch.LogisimFX.draw.shapes.RoundRectangle;
@@ -21,7 +22,12 @@ public class RoundRectangleTool extends RectangularTool {
 	public RoundRectangleTool(DrawingAttributeSet attrs) {
 		this.attrs = attrs;
 	}
-	
+
+	@Override
+	public String getName(){
+		return  LC.get("shapeRect");
+	}
+
 	@Override
 	public ImageView getIcon() {
 		return IconsManager.getIcon("drawrrct.gif");

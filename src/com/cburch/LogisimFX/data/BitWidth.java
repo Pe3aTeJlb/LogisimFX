@@ -3,19 +3,12 @@
 
 package com.cburch.LogisimFX.data;
 
-
-import javax.swing.JComboBox;
-
 import com.cburch.LogisimFX.newgui.MainFrame.AttrTableSetException;
 import com.cburch.LogisimFX.newgui.MainFrame.AttributeTable;
-import com.cburch.LogisimFX.util.StringGetter;
+
 import javafx.beans.binding.StringBinding;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.cell.ComboBoxTableCell;
 
 public class BitWidth implements Comparable<BitWidth> {
 

@@ -7,74 +7,105 @@ import com.cburch.LogisimFX.IconsManager;
 import com.cburch.LogisimFX.draw.actions.ModelAddAction;
 import com.cburch.LogisimFX.draw.actions.ModelEditTextAction;
 import com.cburch.LogisimFX.draw.actions.ModelRemoveAction;
+import com.cburch.LogisimFX.draw.util.Caret;
+import com.cburch.LogisimFX.draw.util.CaretEvent;
+import com.cburch.LogisimFX.draw.util.CaretListener;
 import com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceCanvas;
 import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.draw.shapes.DrawAttr;
 import com.cburch.LogisimFX.draw.shapes.Text;
-import com.cburch.LogisimFX.draw.util.EditableLabelField;
 import com.cburch.LogisimFX.data.Attribute;
-import com.cburch.LogisimFX.data.AttributeEvent;
-import com.cburch.LogisimFX.data.AttributeListener;
 import com.cburch.LogisimFX.data.Location;
 
 import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 
 import java.util.Collections;
 import java.util.List;
 
 public class TextTool extends AbstractTool {
-
-	private class FieldListener extends AbstractAction implements AttributeListener {
-
-		public void actionPerformed(ActionEvent e) {
-			commitText(curCanvas);
-		}
-
-		public void attributeListChanged(AttributeEvent e) {
-			Text cur = curText;
-			if (cur != null) {
-				double zoom = curCanvas.getZoomFactor();
-				cur.getLabel().configureTextField(field, zoom);
-				curCanvas.repaint();
-			}
-		}
-
-		public void attributeValueChanged(AttributeEvent e) {
-			attributeListChanged(e);
-		}
-
-	}
-	
-	private class CancelListener extends AbstractAction {
-		public void actionPerformed(ActionEvent e) {
-			cancelText(curCanvas);
-		}
-	}
 	
 	private DrawingAttributeSet attrs;
-	private EditableLabelField field;
-	private FieldListener fieldListener;
 
 	private Text curText;
 	private AppearanceCanvas curCanvas;
 	private boolean isTextNew;
+
+	private Caret caret = null;
+	private Text textComponent;
+	private AppearanceCanvas caretCanvas;
+	private boolean caretCreatingText;
+
+	private MyListener listener = new MyListener();
+
+    private class MyListener
+            implements CaretListener {
+
+        public void editingCanceled(CaretEvent e) {
+
+            if (e.getCaret() != caret) {
+                e.getCaret().removeCaretListener(this);
+                return;
+            }
+
+            caret.removeCaretListener(this);
+
+            textComponent = null;
+            caretCreatingText = false;
+            caret = null;
+
+        }
+
+        public void editingStopped(CaretEvent e) {
+
+            if (e.getCaret() != caret) {
+                e.getCaret().removeCaretListener(this);
+                return;
+            }
+
+            caret.removeCaretListener(this);
+
+            String val = caret.getText();
+            boolean isEmpty = (val == null || val.equals(""));
+
+            if (caretCreatingText) {
+
+                if (!isEmpty) {
+					System.out.println("add act");
+					curText.setText(caret.getText());
+                    caretCanvas.doAction(new ModelAddAction(caretCanvas.getModel(), curText));
+                }
+
+            } else {
+
+                if (isEmpty && textComponent != null) {
+					System.out.println("remove act");
+                    caretCanvas.doAction(new ModelRemoveAction(caretCanvas.getModel(), curText));
+                } else {
+					System.out.println("edit act");
+                    caretCanvas.doAction(new ModelEditTextAction(caretCanvas.getModel(), curText, e.getText()));
+                }
+
+            }
+
+            textComponent = null;
+            caretCreatingText = false;
+            caret = null;
+
+        }
+
+    }
 	
 	public TextTool(DrawingAttributeSet attrs) {
 		this.attrs = attrs;
 		curText = null;
 		isTextNew = false;
-		field = new EditableLabelField();
-		
-		fieldListener = new FieldListener();
-		InputMap fieldInput = field.getInputMap();
-		fieldInput.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0),
-				"commit");
-		fieldInput.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
-				"cancel");
-		ActionMap fieldAction = field.getActionMap();
-		fieldAction.put("commit", fieldListener);
-		fieldAction.put("cancel", new CancelListener());
+	}
+
+	@Override
+	public String getName() {
+		return null;
 	}
 	
 	@Override
@@ -91,33 +122,48 @@ public class TextTool extends AbstractTool {
 	public List<Attribute<?>> getAttributes() {
 		return DrawAttr.ATTRS_TEXT_TOOL;
 	}
-	
+
+
 	@Override
 	public void toolSelected(AppearanceCanvas canvas) {
-		cancelText(canvas);
 	}
 	
 	@Override
 	public void toolDeselected(AppearanceCanvas canvas) {
-		commitText(canvas);
+		System.out.println("deselect");
+		if (caret != null) {
+			caret.stopEditing();
+			caret = null;
+			textComponent = null;
+		}
 	}
 	
 	@Override
 	public void mousePressed(AppearanceCanvas canvas, AppearanceCanvas.CME e) {
 
-		if (curText != null) {
-			commitText(canvas);
-		}
-
 		Text clicked = null;
 		boolean found = false;
-		int mx = e.getX();
-		int my = e.getY();
+		int mx = e.localX;
+		int my = e.localY;
+
+        // Maybe user is clicking within the current caret.
+        if (caret != null) {
+            if (caret.getBounds(canvas.getGraphics()).contains(e.localX,e.localY)) { // Yes
+                caret.mousePressed(e);
+                //caretCreatingText = false;
+                return;
+            } else { // No. End the current caret.
+                caret.stopEditing();
+            }
+        }
+
 		Location mloc = Location.create(mx, my);
 		for (CanvasObject o : canvas.getModel().getObjectsFromTop()) {
 			if (o instanceof Text && o.contains(mloc, true)) {
 				clicked = (Text) o;
 				found = true;
+				//caretCreatingText = false;
+				caret = clicked.getTextField().getCaret(canvas.getGraphics(), mx,my);
 				break;
 			}
 		}
@@ -128,78 +174,54 @@ public class TextTool extends AbstractTool {
 		curText = clicked;
 		curCanvas = canvas;
 		isTextNew = !found;
-		clicked.getLabel().configureTextField(field, canvas.getZoomFactor());
-		field.setText(clicked.getText());
-		canvas.add(field);
 
-		Point fieldLoc = field.getLocation();
-		double zoom = canvas.getZoomFactor();
-		fieldLoc.x = (int) Math.round(mx * zoom - fieldLoc.x);
-		fieldLoc.y = (int) Math.round(my * zoom - fieldLoc.y);
-		int caret = field.viewToModel(fieldLoc);
-		if (caret >= 0) {
-			field.setCaretPosition(caret);
-		}
-		field.requestFocus();
-		
-		canvas.getSelection().setSelected(clicked, true);
-		canvas.getSelection().setHidden(Collections.singleton(clicked), true);
-		clicked.addAttributeListener(fieldListener);
+        // if nothing found, create a new label
+        if (caret == null) {
+
+            if (mloc.getX() < 0 || mloc.getY() < 0) return;
+            textComponent = new Text(e.localX, e.localY, "");
+            attrs.applyTo(textComponent);
+            caret = textComponent.getTextField().getCaret(canvas.getGraphics(),mx,my);
+            clicked = textComponent;
+			System.out.println(clicked.getAttributes());
+            caretCreatingText = true;
+
+        }
+
+        if (caret != null) {
+            caretCanvas = canvas;
+            caret.addCaretListener(listener);
+        }
+
+        canvas.getSelection().setSelected(clicked, true);
+        canvas.getSelection().setHidden(Collections.singleton(clicked), true);
 
 	}
-	
+
 	@Override
-	public void zoomFactorChanged(AppearanceCanvas canvas) {
-
-		Text t = curText;
-		if (t != null) {
-			t.getLabel().configureTextField(field, canvas.getZoomFactor());
+	public void keyPressed(AppearanceCanvas canvas, KeyEvent e) {
+		if (caret != null) {
+			caret.keyPressed(e);
 		}
+	}
 
+	@Override
+	public void keyReleased(AppearanceCanvas canvas, KeyEvent e) {
+		if (caret != null) {
+			caret.keyReleased(e);
+		}
+	}
+
+	@Override
+	public void keyTyped(AppearanceCanvas canvas, KeyEvent e) {
+		if (caret != null) {
+			caret.keyTyped(e);
+		}
 	}
 	
 	@Override
 	public void draw(AppearanceCanvas canvas) {
-		; // actually, there's nothing to do here - it's handled by the field
-	}
-
-	private void cancelText(AppearanceCanvas canvas) {
-
-		Text cur = curText;
-		if (cur != null) {
-			curText = null;
-			cur.removeAttributeListener(fieldListener);
-			canvas.remove(field);
-			canvas.getSelection().clearSelected();
-		}
-
-	}
-
-	private void commitText(AppearanceCanvas canvas) {
-
-		Text cur = curText;
-		boolean isNew = isTextNew;
-		String newText = field.getText();
-		if (cur == null) {
-			return;
-		}
-		cancelText(canvas);
-
-		if (isNew) {
-			if (!newText.equals("")) {
-				cur.setText(newText);
-				canvas.doAction(new ModelAddAction(canvas.getModel(), cur));
-			}
-		} else {
-			String oldText = cur.getText();
-			if (newText.equals("")) {
-				canvas.doAction(new ModelRemoveAction(canvas.getModel(), cur));
-			} else if (!oldText.equals(newText)) {
-				canvas.doAction(new ModelEditTextAction(canvas.getModel(), cur,
-						newText));
-			}
-		}
-
+		if (caret != null) caret.draw(canvas.getGraphics());
 	}
 
 }

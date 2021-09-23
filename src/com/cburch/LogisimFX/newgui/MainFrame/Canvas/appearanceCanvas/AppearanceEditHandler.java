@@ -17,7 +17,6 @@ import com.cburch.LogisimFX.data.Location;
 import com.cburch.LogisimFX.newgui.MainFrame.Canvas.EditHandler;
 import com.cburch.LogisimFX.newgui.MainFrame.LC;
 import com.cburch.LogisimFX.proj.Project;
-import com.cburch.logisim.gui.menu.LogisimMenuBar;
 
 import java.util.ArrayList;
 import java.util.Collection;

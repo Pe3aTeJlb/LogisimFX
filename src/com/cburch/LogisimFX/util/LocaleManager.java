@@ -17,23 +17,6 @@ public class LocaleManager {
 	private static final String SETTINGS_NAME = "settings";
 	private static ArrayList<LocaleManager> managers = new ArrayList<LocaleManager>();
 	
-	private static class LocaleGetter implements StringGetter {
-		private LocaleManager source;
-		private String key;
-
-		LocaleGetter(LocaleManager source, String key) {
-			this.source = source;
-			this.key = key;
-		}
-
-		public String get() {
-			return source.get(key);
-		}
-		
-		@Override
-		public String toString() { return get(); }
-	}
-	
 	private static ArrayList<LocaleListener> listeners = new ArrayList<LocaleListener>();
 	private static boolean replaceAccents = false;
 	private static HashMap<Character,String> repl = null;
@@ -196,17 +179,6 @@ public class LocaleManager {
 		return ret;
 	}
 
-	public StringGetter getter(String key) {
-		return new LocaleGetter(this, key);
-	}
-
-	public StringGetter getter(String key, String arg) {
-		return StringUtil.formatter(getter(key), arg);
-	}
-
-	public StringGetter getter(String key, StringGetter arg) {
-		return StringUtil.formatter(getter(key), arg);
-	}
 
 	public Locale[] getLocaleOptions() {
 		String locs = null;
@@ -235,16 +207,6 @@ public class LocaleManager {
 		}
 
 		return retl.toArray(new Locale[retl.size()]);
-	}
-
-	public JComponent createLocaleSelector() {
-		Locale[] locales = getLocaleOptions();
-		if (locales == null || locales.length == 0) {
-			Locale cur = getLocale();
-			if (cur == null) cur = new Locale("en");
-			locales = new Locale[] { cur };
-		}
-		return new JScrollPane(new LocaleSelector(locales));
 	}
 	
 	private static String replaceAccents(String src, HashMap<Character,String> repl) {

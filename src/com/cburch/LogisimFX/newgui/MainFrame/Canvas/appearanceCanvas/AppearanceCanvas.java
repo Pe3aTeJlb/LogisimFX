@@ -179,7 +179,7 @@ public class AppearanceCanvas extends Canvas {
     private void setCanvasEvents(){
 
         this.addEventFilter(MouseEvent.ANY, (e) -> this.requestFocus());
-        this.addEventFilter(KeyEvent.ANY, (e) -> {this.requestFocus();});
+        this.addEventFilter(KeyEvent.ANY, (e) -> this.requestFocus());
 
         this.setOnMousePressed(event -> {
 
@@ -475,7 +475,7 @@ public class AppearanceCanvas extends Canvas {
 
         List<CanvasObject> objects = model.getObjectsFromBottom();
         for (int i = objects.size() - 1; i >= 0; i--) {
-            if (!(objects.get(i) instanceof com.cburch.logisim.circuit.appear.AppearanceElement)) {
+            if (!(objects.get(i) instanceof AppearanceElement)) {
                 return i;
             }
         }

@@ -3,8 +3,8 @@
 
 package com.cburch.LogisimFX.file;
 
+import com.cburch.LogisimFX.newgui.FrameManager;
 import com.cburch.LogisimFX.proj.Project;
-import com.cburch.LogisimFX.proj.Projects;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -36,7 +36,7 @@ class ProjectsDirty {
 				l.proj.removeLibraryListener(l);
 			}
 			listeners.clear();
-			for (Project proj : Projects.getOpenProjects()) {
+			for (Project proj : FrameManager.getOpenProjects()) {
 				DirtyListener l = new DirtyListener(proj);
 				proj.addLibraryListener(l);
 				listeners.add(l);
@@ -50,7 +50,4 @@ class ProjectsDirty {
 	private static ProjectListListener projectListListener = new ProjectListListener();
 	private static ArrayList<DirtyListener> listeners = new ArrayList<DirtyListener>();
 
-	public static void initialize() {
-		Projects.addPropertyChangeListener(Projects.projectListProperty, projectListListener);
-	}
 }

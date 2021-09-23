@@ -9,12 +9,7 @@ import com.cburch.LogisimFX.newgui.FrameManager;
 import com.cburch.LogisimFX.newgui.LoadingFrame.LoadingScreen;
 import com.cburch.LogisimFX.proj.Project;
 import com.cburch.LogisimFX.file.Loader;
-
 import com.cburch.LogisimFX.file.LoadFailedException;
-
-import com.cburch.logisim.gui.menu.LogisimMenuBar;
-import com.cburch.logisim.gui.menu.WindowManagers;
-
 import com.cburch.LogisimFX.prefs.AppPreferences;
 import com.cburch.LogisimFX.proj.ProjectActions;
 import com.cburch.LogisimFX.util.MacCompatibility;
@@ -172,12 +167,12 @@ public class Startup {
             LoadingScreen.nextStep();
             //monitor.setProgress(SplashScreen.GUI_INIT);
         }
-        WindowManagers.initialize();
+       // WindowManagers.initialize();
 
         if (MacCompatibility.isSwingUsingScreenMenuBar()) {
-            MacCompatibility.setFramelessJMenuBar(new LogisimMenuBar(null, null));
+          //  MacCompatibility.setFramelessJMenuBar(new LogisimMenuBar(null, null));
         } else {
-            new LogisimMenuBar(null, null);
+           // new LogisimMenuBar(null, null);
             // most of the time occupied here will be in loading menus, which
             // will occur eventually anyway; we might as well do it when the
             // monitor says we are

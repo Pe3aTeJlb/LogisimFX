@@ -9,14 +9,10 @@ import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.std.Builtin;
 import com.cburch.LogisimFX.tools.Library;
-import com.cburch.LogisimFX.util.JFileChoosers;
 import com.cburch.LogisimFX.util.MacCompatibility;
 import com.cburch.LogisimFX.util.StringUtil;
 import com.cburch.LogisimFX.util.ZipClassLoader;
 
-import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
-import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -31,38 +27,6 @@ public class Loader implements LibraryLoader {
 	private static Localizer lc = LC_file.getInstance();
 
 	public static final String LOGISIM_EXTENSION = ".circ";
-	public static final FileFilter LOGISIM_FILTER = new LogisimFileFilter();
-	public static final FileFilter JAR_FILTER = new JarFileFilter();
-
-	private static class LogisimFileFilter extends FileFilter {
-
-		@Override
-		public boolean accept(File f) {
-			return f.isDirectory()
-				|| f.getName().endsWith(LOGISIM_EXTENSION);
-		}
-
-		@Override
-		public String getDescription() {
-			return LC.get("logisimFileFilter");
-		}
-
-	}
-
-	private static class JarFileFilter extends FileFilter {
-
-		@Override
-		public boolean accept(File f) {
-			return f.isDirectory()
-				|| f.getName().endsWith(".jar");
-		}
-
-		@Override
-		public String getDescription() {
-			return LC.get("jarFileFilter");
-		}
-
-	}
 
 	// fixed
 	private Builtin builtin = new Builtin();
@@ -92,10 +56,6 @@ public class Loader implements LibraryLoader {
 	//
 	public File getMainFile() {
 		return mainFile;
-	}
-
-	public JFileChooser createChooser() {
-		return JFileChoosers.createAt(getCurrentDirectory());
 	}
 
 	// used here and in LibraryManager only
@@ -352,21 +312,6 @@ public class Loader implements LibraryLoader {
 
 		if (description.contains("\n") || description.length() > 60) {
 
-			int lines = 1;
-			for (int pos = description.indexOf('\n'); pos >= 0;
-					pos = description.indexOf('\n', pos + 1)) {
-				lines++;
-			}
-			lines = Math.max(4, Math.min(lines, 7));
-
-			JTextArea textArea = new JTextArea(lines, 60);
-			textArea.setEditable(false);
-			textArea.setText(description);
-			textArea.setCaretPosition(0);
-
-			JScrollPane scrollPane = new JScrollPane(textArea);
-			scrollPane.setPreferredSize(new Dimension(350, 150));
-
 			DialogManager.CreateScrollError(lc.get("fileErrorTitle"),description);
 
 		} else {
@@ -386,7 +331,7 @@ public class Loader implements LibraryLoader {
 	//
 	// helper methods
 	//
-	File getFileFor(String name, FileFilter filter) {
+	File getFileFor(String name, String filter) {
 
 		// Determine the actual file name.
 		File file = new File(name);
@@ -395,7 +340,6 @@ public class Loader implements LibraryLoader {
 		{
 			File currentDirectory = getCurrentDirectory();
 			if (currentDirectory != null) file = new File(currentDirectory, name);
-
 		}
 
 		while (!file.canRead()) {
@@ -404,20 +348,11 @@ public class Loader implements LibraryLoader {
 			DialogManager.CreateInfoDialog("File missing", StringUtil.format(lc.get("fileLibraryMissingError"),
 					file.getName()));
 
-			FileSelector fileSelector = new FileSelector();
-
-
-
-			JFileChooser chooser = createChooser();
-			chooser.setFileFilter(filter);
-			chooser.setDialogTitle(LC.getFormatted("fileLibraryMissingTitle", file.getName()));
-
-			int action = chooser.showDialog(parent, LC.get("fileLibraryMissingButton"));
-
-			if (action != JFileChooser.APPROVE_OPTION) {
-				throw new LoaderException(LC.get("fileLoadCanceledError"));
-			}
-			file = chooser.getSelectedFile();
+			//Todo
+			FileSelector fileSelector = new FileSelector(null);
+			if(filter.equals("circ"))fileSelector.setCircFilter();
+			if(filter.equals("jar"))fileSelector.setJarFilter();
+			file = fileSelector.chooseDirectory(LC.getFormatted("fileLibraryMissingTitle", file.getName()));
 
 		}
 		return file;

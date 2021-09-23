@@ -58,23 +58,24 @@ public class AttributeTable extends GridPane
 
         this.getChildren().clear();
 
-        if(attrModel != null && attrModel.getTitle().getValue() != null) {
+        if(attrModel != null && attrModel.getTitle() != null && attrModel.getTitle().getValue() != null) {
 
             selectionLbl = new Label();
             selectionLbl.textProperty().bind(attrModel.getTitle());
             this.add(selectionLbl,0,0,2,1);
             GridPane.setHalignment(selectionLbl, HPos.CENTER);
 
-            attrNameLbl = new Label();
-            attrNameLbl.textProperty().bind(LC.createStringBinding("attributeNameTitle"));
-            this.add(attrNameLbl,0,1);
-            GridPane.setHalignment(attrNameLbl, HPos.CENTER);
+            if(!attrModel.getAttributeSet().getAttributes().isEmpty()) {
+                attrNameLbl = new Label();
+                attrNameLbl.textProperty().bind(LC.createStringBinding("attributeNameTitle"));
+                this.add(attrNameLbl, 0, 1);
+                GridPane.setHalignment(attrNameLbl, HPos.CENTER);
 
-            attrValueLbl = new Label();
-            attrValueLbl.textProperty().bind(LC.createStringBinding("attributeValueTitle"));
-            this.add(attrValueLbl,1,1);
-            GridPane.setHalignment(attrValueLbl, HPos.CENTER);
-
+                attrValueLbl = new Label();
+                attrValueLbl.textProperty().bind(LC.createStringBinding("attributeValueTitle"));
+                this.add(attrValueLbl, 1, 1);
+                GridPane.setHalignment(attrValueLbl, HPos.CENTER);
+            }
         }
 
     }
@@ -83,14 +84,12 @@ public class AttributeTable extends GridPane
 
         currRow = 2;
 
-       // System.out.println("attr size "+attributeSet.getAttributes().size());
+        if(attrModel instanceof AttrTableAppearanceSelectionModel)((AttrTableAppearanceSelectionModel) attrModel).setAttrs();
 
         for (Attribute attr: attrModel.getAttributeSet().getAttributes()) {
             currRow += 1;
             this.add(new Label(attr.getDisplayName()),0,currRow);
             this.add(attr.getCell(attrModel.getAttributeSet().getValue(attr)), 1,currRow);
-
-            //System.out.println("attr "+attr.getName()+" "+attributeSet.getValue(attr).toString());
 
         }
 
@@ -98,14 +97,6 @@ public class AttributeTable extends GridPane
 
     public static void setValueRequested(Attribute<?> attr, Object value) throws AttrTableSetException {
         attrModel.setValueRequested((Attribute<Object>) attr, value);
-    }
-
-    public static void printShit(){
-
-        for (Attribute attr: attrModel.getAttributeSet().getAttributes()) {
-           System.out.println("attr "+attr.getName()+" "+attrModel.getAttributeSet().getValue(attr).toString());
-        }
-
     }
 
 

@@ -6,7 +6,7 @@ package com.cburch.LogisimFX.data;
 import com.cburch.LogisimFX.newgui.DialogManager;
 import com.cburch.LogisimFX.newgui.MainFrame.AttrTableSetException;
 import com.cburch.LogisimFX.newgui.MainFrame.AttributeTable;
-import com.cburch.LogisimFX.util.StringGetter;
+
 import javafx.beans.binding.StringBinding;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -19,17 +19,6 @@ import javafx.util.StringConverter;
 public class Attributes {
 
 	private Attributes() { }
-	
-	private static class ConstantGetter implements StringGetter {
-
-		private String str;
-		public ConstantGetter(String str) { this.str = str; }
-		public String get() { return str; }
-
-		@Override
-		public String toString() { return get(); }
-
-	}
 
 	private static StringBinding getter(String s) { return new StringBinding() {
 		@Override
@@ -330,7 +319,6 @@ public class Attributes {
 			return Integer.valueOf(v);
 		}
 
-		//Todo
 		@Override
 		public Node getCell(Integer value) {
 
@@ -348,7 +336,6 @@ public class Attributes {
 				if (value == null) combo.setValue(options[-1]);
 				else combo.setValue(value);
 				combo.setOnAction(event -> {
-					AttributeTable.printShit();
 					try {
 						AttributeTable.setValueRequested( this, combo.getValue());
 					} catch (AttrTableSetException e) {
@@ -511,14 +498,13 @@ public class Attributes {
 		@Override
 		public Color parse(String value) {
 			if (value.length() == 9) {
-				int r = Integer.parseInt(value.substring(1, 3), 16);
-				int g = Integer.parseInt(value.substring(3, 5), 16);
-				int b = Integer.parseInt(value.substring(5, 7), 16);
-				int a = Integer.parseInt(value.substring(7, 9), 16);
+				double r = Integer.parseInt(value.substring(1, 3), 16)/255;
+				double g = Integer.parseInt(value.substring(3, 5), 16)/255;
+				double b = Integer.parseInt(value.substring(5, 7), 16)/255;
+				double a = Integer.parseInt(value.substring(7, 9), 16)/255;
 				return new Color(r, g, b, a);
 			} else {
 				return Color.valueOf(value);
-				//return Color.decode(value);
 			}
 		}
 

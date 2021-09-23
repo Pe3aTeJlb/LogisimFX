@@ -4,7 +4,7 @@
 package com.cburch.LogisimFX.circuit;
 
 import com.cburch.LogisimFX.data.*;
-import com.cburch.LogisimFX.util.StringGetter;
+
 import javafx.beans.binding.StringBinding;
 
 public abstract class RadixOption extends AttributeOption {

@@ -4,7 +4,6 @@
 package com.cburch.LogisimFX.draw.shapes;
 
 import com.cburch.LogisimFX.draw.LC;
-import com.cburch.LogisimFX.draw.util.EditableLabel;
 import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.AttributeOption;
 import com.cburch.LogisimFX.data.Attributes;
@@ -23,11 +22,11 @@ public class DrawAttr {
 		= Font.font("SansSerif", FontWeight.NORMAL, FontPosture.REGULAR, 12);
 
 	public static final AttributeOption ALIGN_LEFT
-		= new AttributeOption(Integer.valueOf(EditableLabel.LEFT), LC.createStringBinding("alignStart"));
+		= new AttributeOption(Integer.valueOf(Text.LEFT), LC.createStringBinding("alignStart"));
 	public static final AttributeOption ALIGN_CENTER
-		= new AttributeOption(Integer.valueOf(EditableLabel.CENTER), LC.createStringBinding("alignMiddle"));
+		= new AttributeOption(Integer.valueOf(Text.CENTER), LC.createStringBinding("alignMiddle"));
 	public static final AttributeOption ALIGN_RIGHT
-		= new AttributeOption(Integer.valueOf(EditableLabel.RIGHT), LC.createStringBinding("alignEnd"));
+		= new AttributeOption(Integer.valueOf(Text.RIGHT), LC.createStringBinding("alignEnd"));
 
 	public static final AttributeOption PAINT_STROKE
 		= new AttributeOption("stroke", LC.createStringBinding("paintStroke"));

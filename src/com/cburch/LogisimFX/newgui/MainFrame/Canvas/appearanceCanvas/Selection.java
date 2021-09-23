@@ -48,10 +48,18 @@ public class Selection {
 	
 	private void fireChanged(int action, Collection<CanvasObject> affected) {
 		SelectionEvent e = null;
+		int size = listeners.size();
+		for(int i = 0; i<size; i++ ){
+			if (e == null) e = new SelectionEvent(this, action, affected);
+			listeners.get(i).selectionChanged(e);
+		}
+		/*
 		for (SelectionListener listener : listeners) {
 			if (e == null) e = new SelectionEvent(this, action, affected);
 			listener.selectionChanged(e);
 		}
+
+		 */
 	}
 	
 	public boolean isEmpty() {

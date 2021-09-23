@@ -132,7 +132,7 @@ class SvgCreator {
 			elt.setAttribute("fill-opacity", getOpacityString(fill));
 		}
 		elt.setAttribute("font-family", font.getFamily());
-		elt.setAttribute("font-size", "" + font.getSize());
+		elt.setAttribute("font-size", "" + (int)font.getSize());
 
 		if (font.getStyle().contains("ITALIC")) {
 			elt.setAttribute("font-style", "italic");
@@ -199,7 +199,7 @@ class SvgCreator {
 	
 	private static String getColorString(Color color) {
 		return String.format("#%02x%02x%02x",
-				(int)color.getRed(), (int)color.getGreen(), (int)color.getBlue());
+				(int)(color.getRed()*255), (int)(color.getGreen()*255), (int)(color.getBlue()*255));
 	}
 	
 	private static boolean showOpacity(Color color) {
@@ -207,7 +207,9 @@ class SvgCreator {
 	}
 	
 	private static String getOpacityString(Color color) {
-		return String.format("%5.3f", color.getOpacity());
+		StringBuilder buff = new StringBuilder(String.format("%5.3f", color.getOpacity()));
+		buff.replace(1,2,".");
+		return buff.toString();
 	}
 
 }

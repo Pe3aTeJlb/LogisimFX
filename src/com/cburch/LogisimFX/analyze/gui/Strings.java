@@ -4,7 +4,6 @@
 package com.cburch.LogisimFX.analyze.gui;
 
 import com.cburch.LogisimFX.util.LocaleManager;
-import com.cburch.LogisimFX.util.StringGetter;
 
 class Strings {
 	private static LocaleManager source

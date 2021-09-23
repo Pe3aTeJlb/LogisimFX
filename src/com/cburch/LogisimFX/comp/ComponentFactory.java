@@ -4,7 +4,6 @@
 package com.cburch.LogisimFX.comp;
 
 import com.cburch.LogisimFX.data.*;
-import com.cburch.LogisimFX.util.StringGetter;
 import com.cburch.LogisimFX.LogisimVersion;
 
 import javafx.beans.binding.StringBinding;

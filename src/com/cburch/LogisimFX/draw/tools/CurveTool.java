@@ -4,6 +4,7 @@
 package com.cburch.LogisimFX.draw.tools;
 
 import com.cburch.LogisimFX.IconsManager;
+import com.cburch.LogisimFX.draw.LC;
 import com.cburch.LogisimFX.draw.actions.ModelAddAction;
 import com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceCanvas;
 import com.cburch.LogisimFX.draw.model.CanvasModel;
@@ -44,6 +45,11 @@ public class CurveTool extends AbstractTool {
 		state = BEFORE_CREATION;
 		mouseDown = false;
 
+	}
+
+	@Override
+	public String getName(){
+		return  LC.get("shapeCurve");
 	}
 	
 	@Override

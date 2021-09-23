@@ -24,7 +24,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import com.cburch.LogisimFX.analyze.model.*;
-import com.cburch.LogisimFX.util.StringGetter;
 
 class ExpressionTab extends AnalyzerTab implements TabInterface {
 	private class MyListener extends AbstractAction

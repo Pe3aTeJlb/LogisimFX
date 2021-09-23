@@ -32,7 +32,7 @@ public abstract class AbstractTool extends CanvasTool {
 	
 	public abstract ImageView getIcon();
 	public abstract List<Attribute<?>> getAttributes();
-	public String getDescription() { return null; }
+	public abstract String getName();
 	
 	//
 	// CanvasTool methods

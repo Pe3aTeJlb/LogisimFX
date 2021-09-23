@@ -4,6 +4,7 @@
 package com.cburch.LogisimFX.draw.tools;
 
 import com.cburch.LogisimFX.IconsManager;
+import com.cburch.LogisimFX.draw.LC;
 import com.cburch.LogisimFX.draw.actions.ModelMoveHandleAction;
 import com.cburch.LogisimFX.draw.actions.ModelRemoveAction;
 import com.cburch.LogisimFX.draw.actions.ModelTranslateAction;
@@ -58,6 +59,11 @@ public class SelectTool extends AbstractTool {
 		dragStart = Location.create(0, 0);
 		dragEnd = dragStart;
 		dragEffective = false;
+	}
+
+	@Override
+	public String getName(){
+		return null;
 	}
 	
 	@Override

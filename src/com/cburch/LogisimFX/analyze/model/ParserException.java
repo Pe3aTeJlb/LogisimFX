@@ -3,8 +3,6 @@
 
 package com.cburch.LogisimFX.analyze.model;
 
-import com.cburch.LogisimFX.util.StringGetter;
-
 public  class ParserException extends Exception {
 	private StringGetter message;
 	private int start;

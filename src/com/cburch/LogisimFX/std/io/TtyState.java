@@ -5,9 +5,9 @@ package com.cburch.LogisimFX.std.io;
 
 import java.util.Arrays;
 
+import com.cburch.LogisimFX.TtyInterface;
 import com.cburch.LogisimFX.data.Value;
 import com.cburch.LogisimFX.instance.InstanceData;
-import com.cburch.logisim.gui.start.TtyInterface;
 
 class TtyState implements InstanceData, Cloneable {
 

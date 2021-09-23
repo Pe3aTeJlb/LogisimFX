@@ -11,6 +11,7 @@ import com.cburch.LogisimFX.comp.AbstractComponentFactory;
 import com.cburch.LogisimFX.comp.Component;
 import com.cburch.LogisimFX.comp.ComponentDrawContext;
 import com.cburch.LogisimFX.data.*;
+import com.cburch.LogisimFX.newgui.CircLogFrame.Loggable;
 import com.cburch.LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.cburch.LogisimFX.std.LC;
 import com.cburch.LogisimFX.tools.Pokable;
@@ -18,7 +19,7 @@ import com.cburch.LogisimFX.tools.key.KeyConfigurator;
 import com.cburch.LogisimFX.util.UnmodifiableList;
 import com.cburch.LogisimFX.LogisimVersion;
 import com.cburch.LogisimFX.circuit.CircuitState;
-import com.cburch.logisim.gui.log.Loggable;
+
 
 import javafx.beans.binding.StringBinding;
 import javafx.scene.image.ImageView;

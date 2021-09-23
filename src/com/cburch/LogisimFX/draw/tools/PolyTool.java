@@ -4,6 +4,7 @@
 package com.cburch.LogisimFX.draw.tools;
 
 import com.cburch.LogisimFX.IconsManager;
+import com.cburch.LogisimFX.draw.LC;
 import com.cburch.LogisimFX.draw.actions.ModelAddAction;
 import com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceCanvas;
 import com.cburch.LogisimFX.draw.model.CanvasModel;
@@ -44,7 +45,12 @@ public class PolyTool extends AbstractTool {
 		active = false;
 		locations = new ArrayList<Location>();
 	}
-	
+
+	@Override
+	public String getName(){
+		return  LC.get("shapePolygon");
+	}
+
 	@Override
 	public ImageView getIcon() {
 		if (closed) {

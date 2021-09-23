@@ -102,7 +102,6 @@ public class SubcircuitFactory extends InstanceFactory {
 			pins[i] = pin;
 
 			String label = pin.getAttributeValue(StdAttr.LABEL);
-			//Todo
 			if (label != null && label.length() > 0) {
 				ports[i].setToolTip(new StringBinding() {
 					@Override

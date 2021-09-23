@@ -8,7 +8,7 @@ import com.cburch.LogisimFX.data.Attribute;
 import com.cburch.LogisimFX.data.AttributeSet;
 import com.cburch.LogisimFX.data.BitWidth;
 import com.cburch.LogisimFX.data.Location;
-import com.cburch.LogisimFX.util.StringGetter;
+
 import javafx.beans.binding.StringBinding;
 
 public class Port {

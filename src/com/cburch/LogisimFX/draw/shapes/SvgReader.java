@@ -72,6 +72,7 @@ public class SvgReader {
 				ret.setValue(DrawAttr.STROKE_COLOR, getColor(color, opacity));
 			}
 		}
+
 		if (attrs.contains(DrawAttr.FILL_COLOR)) {
 			String color = elt.getAttribute("fill");
 			if (color.equals("")) color = "#000000";
@@ -164,7 +165,7 @@ public class SvgReader {
 			halign = DrawAttr.ALIGN_CENTER;
 		}
 		ret.setValue(DrawAttr.ALIGNMENT, halign);
-		
+
 		// fill color is handled after we return
 		return ret;
 
@@ -250,23 +251,25 @@ public class SvgReader {
 	
 	private static Color getColor(String hue, String opacity) {
 
-		int r;
-		int g;
-		int b;
+		double r;
+		double g;
+		double b;
 		if (hue == null || hue.equals("")) {
 			r = 0;
 			g = 0;
 			b = 0;
 		} else {
-			r = Integer.parseInt(hue.substring(1, 3), 16);
-			g = Integer.parseInt(hue.substring(3, 5), 16);
-			b = Integer.parseInt(hue.substring(5, 7), 16);
+			r = Integer.parseInt(hue.substring(1, 3), 16)/255;
+			g = Integer.parseInt(hue.substring(3, 5), 16)/255;
+			b = Integer.parseInt(hue.substring(5, 7), 16)/255;
 		}
-		int a;
+		double a;
 		if (opacity == null || opacity.equals("")) {
-			a = 255;
+			a = 1;
 		} else {
-			a = (int) Math.round(Double.parseDouble(opacity) * 255);
+			StringBuilder buff = new StringBuilder(opacity);
+			buff.replace(1,2,".");
+			a = Double.parseDouble(buff.toString());
 		}
 
 		return new Color(r, g, b, a);

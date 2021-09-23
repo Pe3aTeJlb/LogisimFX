@@ -11,6 +11,7 @@ import com.cburch.LogisimFX.draw.model.AttributeMapKey;
 import com.cburch.LogisimFX.draw.model.CanvasObject;
 import com.cburch.LogisimFX.draw.tools.AbstractTool;
 import com.cburch.LogisimFX.draw.tools.DrawingAttributeSet;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.SelectionAttributes;
 import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.Selection;
 import com.cburch.LogisimFX.proj.Project;
@@ -239,7 +240,6 @@ class AttrTableAbstractToolModel extends AttrTableModel{
         this.defaults = new DrawingAttributeSet();
         this.currentTool = tool;
         setAttributeSet(defaults.createSubset(tool));
-
     }
 
     public void setTool(AbstractTool value) {
@@ -249,7 +249,7 @@ class AttrTableAbstractToolModel extends AttrTableModel{
 
     @Override
     public StringBinding getTitle() {
-        return LC.castToBind(currentTool.getDescription());
+        return LC.castToBind(currentTool.getName());
     }
 
     @Override
@@ -262,12 +262,19 @@ class AttrTableAbstractToolModel extends AttrTableModel{
 class AttrTableAppearanceSelectionModel extends AttrTableModel{
 
     private Project proj;
+    private AppearanceCanvas canvas;
     private com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.Selection selection;
 
     public AttrTableAppearanceSelectionModel(Project proj) {
         super(null);
         this.proj = proj;
+        this.canvas = proj.getFrameController().getAppearanceCanvas();
+        setAttributeSet(new SelectionAttributes(canvas.getSelection()));
         selection = proj.getFrameController().getAppearanceCanvas().getSelection();
+    }
+
+    public void setAttrs(){
+        setAttributeSet(new SelectionAttributes(canvas.getSelection()));
     }
 
     @Override

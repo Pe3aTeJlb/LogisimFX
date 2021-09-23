@@ -201,11 +201,12 @@ class XmlReader {
 				}
 			}
 
-			List<AbstractCanvasObject> shapes = new ArrayList<AbstractCanvasObject>();
+			List<AbstractCanvasObject> shapes = new ArrayList<>();
 			for (Element sub : XmlIterator.forChildElements(appearElt)) {
 				try {
 					AbstractCanvasObject m = AppearanceSvgReader.createShape(sub, pins);
 					if (m == null) {
+
 						addError(LC.getFormatted("fileAppearanceNotFound", sub.getTagName()),
 								context + "." + sub.getTagName());
 					} else {

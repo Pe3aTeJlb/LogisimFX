@@ -379,7 +379,6 @@ public class PreferencesController extends AbstractController {
 
         AfterAddingCmbx.setOnAction(event -> AppPreferences.ADD_AFTER.set(AfterAddingCmbx.getValue().getValue().toString()));
 
-        //ToDO:
         //Radix section preparation
         RadixOption[] opts = RadixOption.OPTIONS;
         PrefOption[] items = new PrefOption[opts.length];
@@ -474,7 +473,6 @@ public class PreferencesController extends AbstractController {
 
     @Override
     public void onClose() {
-        System.out.println("Prefs closed");
     }
 
 }

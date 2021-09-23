@@ -6,6 +6,7 @@ package com.cburch.LogisimFX.proj;
 import com.cburch.LogisimFX.draw.tools.AbstractTool;
 import com.cburch.LogisimFX.file.*;
 import com.cburch.LogisimFX.circuit.*;
+import com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
 import com.cburch.LogisimFX.newgui.MainFrame.MainFrameController;
 import com.cburch.LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.Selection;
@@ -327,14 +328,14 @@ public class Project {
 	public void setAbstractTool(AbstractTool value){
 
 		if (abstractTool == value) return;
-		//Todo attribute table
 
 		frameController.setAttributeTable(value);
 
 		AbstractTool old = abstractTool;
-/*
+
 		AppearanceCanvas canvas = getFrameController().getAppearanceCanvas();
 		if (old != null) old.toolDeselected(canvas);
+		/*
 		com.cburch.LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.Selection selection
 				= canvas.getSelection();
 		if (selection != null && !selection.isEmpty()) {
@@ -356,11 +357,11 @@ public class Project {
 		}
 
 
- */
-		abstractTool = value;
-		if (abstractTool != null) abstractTool.toolSelected(getFrameController().getAppearanceCanvas());
+		 */
+
 
 		abstractTool = value;
+
 		fireEvent(ProjectEvent.ACTION_SET_TOOL, old, abstractTool);
 
 	}

@@ -17,13 +17,14 @@ import java.util.prefs.Preferences;
 
 import javax.swing.JFrame;
 
+import com.cburch.LogisimFX.Startup;
 import com.cburch.LogisimFX.data.Direction;
+import com.cburch.LogisimFX.localization.Localizer;
 import com.cburch.LogisimFX.util.LocaleListener;
 import com.cburch.LogisimFX.util.LocaleManager;
 import com.cburch.LogisimFX.util.PropertyChangeWeakSupport;
 import com.cburch.LogisimFX.Main;
 import com.cburch.LogisimFX.circuit.RadixOption;
-import com.cburch.logisim.gui.start.Startup;
 
 public class AppPreferences {
 
@@ -162,7 +163,8 @@ public class AppPreferences {
 			String prop = event.getKey();
 			if (ACCENTS_REPLACE.getIdentifier().equals(prop)) {
 				getPrefs();
-				LocaleManager.setReplaceAccents(ACCENTS_REPLACE.getBoolean());
+				Localizer.setReplaceAccents(ACCENTS_REPLACE.getBoolean());
+				//LocaleManager.setReplaceAccents(ACCENTS_REPLACE.getBoolean());
 			} else if (prop.equals(TEMPLATE_TYPE)) {
 				int oldValue = templateType;
 				int value = prefs.getInt(TEMPLATE_TYPE, TEMPLATE_UNKNOWN);
@@ -186,7 +188,7 @@ public class AppPreferences {
 		}
 
 		public void localeChanged() {
-			Locale loc = LocaleManager.getLocale();
+			Locale loc = Localizer.getLocale();
 			String lang = loc.getLanguage();
 			if (LOCALE != null) {
 				LOCALE.set(lang);
@@ -404,9 +406,11 @@ public class AppPreferences {
 
 			String localeStr = this.get();
 			if (localeStr != null && !localeStr.equals("")) {
-				LocaleManager.setLocale(new Locale(localeStr));
+				Localizer.setLocale(new Locale(localeStr));
+				//LocaleManager.setLocale(new Locale(localeStr));
 			}
-			LocaleManager.addLocaleListener(myListener);
+			Localizer.addLocaleListener(myListener);
+			//LocaleManager.addLocaleListener(myListener);
 			myListener.localeChanged();
 		}
 
