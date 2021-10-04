@@ -44,7 +44,7 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
 
                     //getStylesheets().add("LogisimFX/resources/css/treeview.css");
 
-                    if(empty || item == null) {
+                    if (empty || item == null) {
 
                         setText(null);
                         setGraphic(null);
@@ -53,33 +53,31 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
 
                     } else {
 
-                        if(item instanceof LogisimFile){
+                        if (item instanceof LogisimFile) {
 
                             setText(proj.getLogisimFile().getName());
                             setGraphic(null);
                             setTooltip(null);
                             setContextMenu(ContextMenuManager.ProjectContextMenu(proj));
 
-                        }
-                        else if(item instanceof Library){
+                        } else if (item instanceof Library) {
 
                             textProperty().bind(((Library) item).getDisplayName());
                             setGraphic(null);
                             setTooltip(null);
                             setContextMenu(ContextMenuManager.LibraryContextMenu(proj, (Library) item));
 
-                        }
-                        else if(item instanceof Tool){
+                        } else if (item instanceof Tool) {
 
                             textProperty().bind(((Tool) item).getDisplayName());
 
                             Tooltip tip = new Tooltip();
-                            tip.textProperty().bind(((Tool)item).getDescription());
+                            tip.textProperty().bind(((Tool) item).getDescription());
                             setTooltip(tip);
 
                             setGraphic(((Tool) item).getIcon());
 
-                            if(item instanceof AddTool){
+                            if (item instanceof AddTool) {
 
                                 ComponentFactory fact = ((AddTool) item).getFactory(false);
 
@@ -99,8 +97,7 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
                                 setContextMenu(null);
                             }
 
-                        }
-                        else{
+                        } else {
                             setText("you fucked up2");
                         }
 

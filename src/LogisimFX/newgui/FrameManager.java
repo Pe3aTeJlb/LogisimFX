@@ -207,10 +207,6 @@ public class FrameManager {
         CreateNewFrame("LogisimFX/newgui/CircLogFrame/CircLog.fxml", proj, Modality.NONE);
     }
 
-    public static void CreateTimeLineFrame(Project proj){
-        CreateNewFrame("LogisimFX/newgui/CircLogFrame/TimeLine.fxml", proj, Modality.NONE);
-    }
-
     public static void CreatePrintFrame(Project proj){
 
         int i = 0;

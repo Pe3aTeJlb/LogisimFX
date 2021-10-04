@@ -21,7 +21,7 @@ import java.util.Collection;
 
 public class MenuTool extends Tool {
 
-	private static final ImageView icon = IconsManager.getIcon("drawoval.gif");
+	private static final ImageView icon = IconsManager.getIcon("menu.gif");
 
 	public MenuTool() { }
 	
