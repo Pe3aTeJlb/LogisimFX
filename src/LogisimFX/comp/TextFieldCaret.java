@@ -224,7 +224,6 @@ class TextFieldCaret implements Caret, TextFieldListener {
 				/*e.getCode() != KeyCode.UNDEFINED &&*/
 				!Character.isISOControl(c)) {
 			if (pos < curText.length()) {
-				System.out.println(curText);
 				curText = curText.substring(0, pos) + c
 					+ curText.substring(pos);
 			} else {

@@ -248,7 +248,6 @@ public class AppearanceCanvas extends Canvas {
             // inverse transform = (x-t4)/t0
 
             zoom = newScale;
-            System.out.println("Zoom " + zoom);
 
             transform[4] = width / 2 - cx * newScale;
             transform[5] = height / 2 - cy * newScale;

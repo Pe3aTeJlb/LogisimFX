@@ -155,7 +155,6 @@ public class EditTool extends Tool {
 		wireLoc = NULL_LOCATION;
 		lastX = Integer.MIN_VALUE;
 		if (wire) {
-			System.out.println("iswiring");
 			current = wiring;
 			Selection sel = canvas.getSelection();
 			Circuit circ = canvas.getCircuit();

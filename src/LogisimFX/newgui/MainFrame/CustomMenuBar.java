@@ -526,11 +526,13 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
         private Menu downStateMenu = new Menu();
 
         private SimpleBooleanProperty present = new SimpleBooleanProperty(false);
-        private SimpleBooleanProperty running = new SimpleBooleanProperty(false);
 
         private CircuitState currentState;
         private CircuitState bottomState;
         private Simulator sim;
+
+        private RadioMenuItem EnableSimulation;
+        private RadioMenuItem TicksEnable;
 
         public SimulateMenu(){
 
@@ -545,7 +547,10 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
 
             setCurrentState(proj.getSimulator(),proj.getCircuitState());
 
-            running.set(sim.isRunning());
+            this.setOnShown(event -> {
+                EnableSimulation.setSelected(sim.isRunning().getValue());
+                TicksEnable.setSelected(sim.isTicking());
+            });
 
             init();
 
@@ -553,7 +558,7 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
 
         private void init(){
 
-            RadioMenuItem EnableSimulation = new RadioMenuItem();
+            EnableSimulation = new RadioMenuItem();
             EnableSimulation.setAccelerator(KeyCombination.keyCombination("Ctrl+E"));
             EnableSimulation.textProperty().bind(localizer.createStringBinding("simulateRunItem"));
             EnableSimulation.disableProperty().bind(Bindings.not(present));
@@ -561,10 +566,8 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
             EnableSimulation.setOnAction(event -> {
 
                 if (sim != null) {
-                    sim.setIsRunning(!sim.isRunning());
+                    sim.setIsRunning(!sim.isRunning().getValue());
                 }
-
-                running.set(sim.isRunning());
 
             });
 
@@ -578,7 +581,7 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
             SimStep.setAccelerator(KeyCombination.keyCombination("Ctrl+I"));
             SimStep.textProperty().bind(localizer.createStringBinding("simulateStepItem"));
             SimStep.setOnAction(event -> {if (sim != null) sim.step();});
-            SimStep.disableProperty().bind(Bindings.or(Bindings.not(present),running));
+            SimStep.disableProperty().bind(Bindings.or(Bindings.not(present),sim.isRunning()));
 
 
             SeparatorMenuItem sp1 = new SeparatorMenuItem();
@@ -604,11 +607,11 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
             TickOnce.setOnAction(event -> {if (sim != null) sim.tick();});
             TickOnce.disableProperty().bind(Bindings.not(present));
 
-            RadioMenuItem TicksEnable = new RadioMenuItem();
+            TicksEnable = new RadioMenuItem();
             TicksEnable.setAccelerator(KeyCombination.keyCombination("Ctrl+K"));
             TicksEnable.textProperty().bind(localizer.createStringBinding("simulateTickItem"));
             TicksEnable.setOnAction(event -> {if (sim != null) sim.setIsTicking(!sim.isTicking());});
-            TicksEnable.disableProperty().bind(Bindings.or(Bindings.not(present),Bindings.not(running)));
+            TicksEnable.disableProperty().bind(Bindings.or(Bindings.not(present),Bindings.not(sim.isRunning())));
 
 
 

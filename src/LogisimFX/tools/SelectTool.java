@@ -222,7 +222,6 @@ public class SelectTool extends Tool {
 		// selection is being modified
 		Collection<Component> in_sel = sel.getComponentsContaining(start, g);
 		if (!in_sel.isEmpty()) {
-			System.out.println("clicked1");
 			if (!e.event.isShiftDown()) {
 				setState(canvas, MOVING);
 				return;

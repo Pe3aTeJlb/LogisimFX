@@ -10,22 +10,41 @@ import LogisimFX.file.LibraryListener;
 import LogisimFX.instance.StdAttr;
 import LogisimFX.newgui.AbstractController;
 import LogisimFX.newgui.DialogManager;
-import LogisimFX.newgui.HexEditorFrame.HexEditorController;
 import LogisimFX.proj.Project;
 import LogisimFX.proj.ProjectEvent;
 import LogisimFX.proj.ProjectListener;
 
+import com.sun.javafx.tk.FontMetrics;
+import com.sun.javafx.tk.Toolkit;
+
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
+import javafx.scene.transform.Transform;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
+import javax.imageio.ImageIO;
+import java.awt.image.*;
 import java.io.*;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.*;
 
 
@@ -74,7 +93,35 @@ public class CircLogController extends AbstractController {
     private Tab timelineTab;
 
     @FXML
+    private Button SimPlayOneStepBtn;
+
+    @FXML
+    private Button SimPlayBtn;
+
+    @FXML
+    private Button SimStepBtn;
+
+    @FXML
+    private Button SimStopBtn;
+
+    @FXML
+    private SplitPane splitPane;
+
+    @FXML
+    private AnchorPane canvasAnchor;
+
+    @FXML
+    private TableView<TimelineTableModel> timelineTblvw;
+
+    @FXML
+    private Canvas timelineCnvs;
+
+    @FXML
     private Button exportImageBtn;
+
+    @FXML
+    private Button fileOpenBtn;
+
 
 
     //TableTab
@@ -83,7 +130,7 @@ public class CircLogController extends AbstractController {
     private Tab tableTab;
 
     @FXML
-    private TableView<LogLine> logTrvw;
+    private TableView<LogLine> logTblvw;
 
     @FXML
     private Button loadFileBtn;
@@ -145,10 +192,13 @@ public class CircLogController extends AbstractController {
         @Override
         public void entryAdded(ModelEvent event, Value[] values) {
 
-            logTrvw.getItems().add(new LogLine(values));
-            logTrvw.refresh();
             System.out.println("entry added");
-            System.out.println(Arrays.toString(values));
+            logTblvw.getItems().add(new LogLine(values));
+            logTblvw.refresh();
+
+            timelineTblvw.refresh();
+            updateTimelineData(values);
+
 
         }
 
@@ -183,12 +233,16 @@ public class CircLogController extends AbstractController {
         startTimelineBtn.textProperty().bind(LC.createStringBinding("startLogging"));
         startTimelineBtn.setOnAction(event -> {
 
-            logTrvw.getItems().clear();
-            updateColumnCount();
+            if(!selectedLst.getItems().isEmpty()) {
+                restartCanvas();
+                updateColumnCount(selectedLst.getItems());
+                updateTimelineTable(selectedLst.getItems());
 
-            //if(logger != null)logger.interrupt();
-            logger = new LogThread(curModel);
-            logger.start();
+                logger = new LogThread(curModel);
+                logger.start();
+
+                TabPane.getSelectionModel().select(1);
+            }
 
         });
 
@@ -486,7 +540,7 @@ public class CircLogController extends AbstractController {
 
     private void doMove(int delta) {
 
-        int oldIndex = selectedLst.getEditingIndex();
+        int oldIndex = listSelectionModel.getSelectedIndex();
         int newIndex = oldIndex + delta;
 
         if (oldIndex >= 0 && newIndex >= 0 && newIndex < selectedLst.getItems().size()) {
@@ -494,6 +548,8 @@ public class CircLogController extends AbstractController {
             selectedLst.getItems().set(newIndex, listSelectionModel.getSelectedItem());
             selectedLst.getItems().set(oldIndex, buff);
         }
+
+        listSelectionModel.select(newIndex);
 
     }
 
@@ -541,14 +597,535 @@ public class CircLogController extends AbstractController {
 
 
 
+    private final SimpleDoubleProperty currCursorPos = new SimpleDoubleProperty(0);
+
+    private GraphicsContext gc;
+    private double width, height;
+    private double[] transform;
+
+    NumberFormat formatter = new DecimalFormat("#.####");
+    private static final Font TIMESTEPFONT = Font.font("serif", FontWeight.THIN, FontPosture.REGULAR, 10);
+    private static final FontMetrics fm = Toolkit.getToolkit().getFontLoader().getFontMetrics(TIMESTEPFONT);
+
+    private final Color BACKGROUND = Color.WHITE;
+    private final Color LINE = Color.BLACK;
+    private final Color LINEFILL = Color.LIGHTGRAY;
+    private final Color CURRPOS = Color.RED;
+    private final Color LONGVALUE = Color.PURPLE;
+
+    private int currSelectedRow = 0;
+
+    double yAdjust = 40;
+    double spaceY = 50;
+    double spaceX = 25;
+    double w;
+
+    private double pixelScale = 4;
+
+    /*
+    Поскольку, заснапшотить сплитпейн нормально не представляется возможным, делаем профанацию с canvas
+    Будем отрисовывать таблицу с названием элементов в невидимой для юзера зоне.
+    Для этого определим ширину столбца и сдвинем canvas в отрицательную зону.
+    После взятия снапшота от всего canvas всё будет тип топ.
+    отрисовка мини-таблицы будет в основном цикле отрисовке updateTimeline
+    На своё время, это лучшее решение
+    */
+    TableColumn<TimelineTableModel, String> nameColumn;
+    double hiddenColumnWidth;
+    double hiddenColumnHeight = 21;
+
+    TableColumn<TimelineTableModel, Value> valueColumn;
+
     private void initTimelineTab(){
 
         timelineTab.textProperty().bind(LC.createStringBinding("timelineTab"));
 
+        SimStopBtn.setGraphic(IconsManager.getIcon("simstop.png"));
+        //SimStopBtn.setAccelerator(KeyCombination.keyCombination("Ctrl+E"));
+        SimStopBtn.setTooltip(new ToolTip("simulateEnableStepsTip"));
+        SimStopBtn.setOnAction(event -> {
+            if (curSimulator != null) {
+                curSimulator.setIsRunning(!curSimulator.isRunning().getValue());
+            }
+        });
+
+        SimPlayOneStepBtn.setGraphic(IconsManager.getIcon("simtplay.png"));
+        //SimPlayOneStepBtn.setAccelerator(KeyCombination.keyCombination("Ctrl+I"));
+        SimPlayOneStepBtn.setTooltip(new ToolTip("simulateStepTip"));
+        SimPlayOneStepBtn.disableProperty().bind(curSimulator.isRunning());
+        SimPlayOneStepBtn.setOnAction(event -> {
+            if (curSimulator != null) curSimulator.step();
+        });
+
+        SimPlayBtn.setGraphic(IconsManager.getIcon("simplay.png"));
+        //SimPlayBtn.setAccelerator(KeyCombination.keyCombination("Ctrl+K"));
+        SimPlayBtn.setTooltip(new ToolTip("simulateEnableTicksTip"));
+        SimPlayBtn.setOnAction(event -> {
+            if (curSimulator != null) curSimulator.setIsTicking(!curSimulator.isTicking());
+        });
+
+        SimStepBtn.setGraphic(IconsManager.getIcon("simstep.png"));
+        //SimStepBtn.setAccelerator(KeyCombination.keyCombination("Ctrl+T"));
+        SimStepBtn.setTooltip(new ToolTip("simulateTickTip"));
+        SimStepBtn.setOnAction(event -> {
+            if (curSimulator != null) curSimulator.tick();
+        });
+
+        splitPane.setDividerPositions(0.05);
+
+        canvasAnchor.widthProperty().addListener((observable, oldValue, newValue) -> {
+            //width = canvasAnchor.getWidth()+hiddenColumnWidth;
+            //timelineCnvs.setWidth(width);
+            updateTimeline();
+        });
+
+        timelineTblvw.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+
+        nameColumn = new TableColumn<>("");
+        nameColumn.textProperty().bind(LC.createStringBinding("componentTitle"));
+        nameColumn.setSortable(false);
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("Title"));
+        nameColumn.setCellValueFactory(param -> param.getValue().getTitle());
+        nameColumn.setCellFactory(param -> {
+            TableCell<TimelineTableModel, String> cell = new TableCell<TimelineTableModel, String>() {
+
+                @Override
+                protected void updateItem(String item, boolean empty) {
+
+                    super.updateItem(item, empty);
+
+                    if (item == null) {
+                        super.setText(null);
+                        super.setGraphic(null);
+                    } else {
+                        super.setText(item);
+                        super.setGraphic(null);
+                    }
+
+                }
+
+            };
+
+            cell.setPrefHeight(spaceY);
+            cell.setAlignment(Pos.CENTER_LEFT);
+            cell.setOnMouseEntered(event -> {
+                currSelectedRow = cell.getTableRow().getIndex();
+                updateTimeline();
+            });
+            cell.setOnMouseExited(event -> {
+                currSelectedRow = -1;
+                updateTimeline();
+            });
+
+            return cell;
+
+        });
+
+        valueColumn = new TableColumn<>("");
+        valueColumn.textProperty().bind(LC.createStringBinding("valueTitle"));
+        valueColumn.setSortable(false);
+        valueColumn.setCellValueFactory(param -> param.getValue().getValueAt());
+        valueColumn.setCellFactory(param -> {
+            TableCell<TimelineTableModel, Value> cell = new TableCell<TimelineTableModel, Value>() {
+
+                @Override
+                protected void updateItem(Value item, boolean empty) {
+
+                    super.updateItem(item, empty);
+
+                    if (item == null) {
+                        super.setText(null);
+                        super.setGraphic(null);
+                    } else {
+                        super.setText(item.toString());
+                        super.setGraphic(null);
+                    }
+
+                }
+
+            };
+
+            cell.setPrefHeight(spaceY);
+            cell.setAlignment(Pos.CENTER);
+            cell.setOnMouseEntered(event -> {
+                currSelectedRow = cell.getTableRow().getIndex();
+                updateTimeline();
+            });
+            cell.setOnMouseExited(event -> {
+                currSelectedRow = -1;
+                updateTimeline();
+            });
+
+            return cell;
+        });
+
+        timelineTblvw.getColumns().add(nameColumn);
+        timelineTblvw.getColumns().add(valueColumn);
+
+        restartCanvas();
+        gc = timelineCnvs.getGraphicsContext2D();
+        gc.setFont(TIMESTEPFONT);
+        w = gc.getLineWidth()/2;
+        transform = new double[6];
+        transform[0] = transform[3] = 1;
+        transform[1] = transform[2] = transform[4] = transform[5] = 0;
+        gc.setTransform(transform[0], transform[1], transform[2],
+                transform[3], transform[4], transform[5]
+        );
+
+        timelineCnvs.setOnMousePressed(event -> {
+
+            currCursorPos.set(Math.max(0, Math.min(width-hiddenColumnWidth-1, inverseTransformX(event.getX())-hiddenColumnWidth)));
+
+            timelineTblvw.refresh();
+            updateTimeline();
+
+        });
+
+        timelineCnvs.setOnMouseDragged(event -> {
+
+            currCursorPos.set(Math.max(0, Math.min(width-hiddenColumnWidth-1, inverseTransformX(event.getX())-hiddenColumnWidth)));
+
+            timelineTblvw.refresh();
+            updateTimeline();
+
+        });
+
+        fileOpenBtn.textProperty().bind(LC.createStringBinding("openButton"));
+        fileOpenBtn.setOnAction(event -> importLog());
+
+        exportImageBtn.textProperty().bind(LC.createStringBinding("exportImage"));
+        exportImageBtn.setOnAction(event -> exportImage());
+
     }
 
+    private static class ToolTip extends Tooltip{
+
+        public ToolTip(String text){
+            super();
+            textProperty().bind(LogisimFX.newgui.MainFrame.LC.createStringBinding(text));
+        }
+
+    }
+
+    private class TimelineTableModel{
+
+        private SelectionItem comp;
+        private String title;
+        private ArrayList<Value> values = new ArrayList<>();
+
+        public TimelineTableModel(SelectionItem comp){
+            this.comp = comp;
+        }
+
+        public TimelineTableModel(String title, ArrayList<Value> values){
+            this.title = title;
+            this.values = values;
+        }
+
+        public SimpleStringProperty getTitle(){
+            return comp == null ? new SimpleStringProperty(title):new SimpleStringProperty(comp.toShortString());
+        }
+
+        public SimpleObjectProperty<Value> getValueAt(){
+            int index = (int) Math.floor(currCursorPos.getValue() /spaceX);
+            return values.isEmpty() || index >= values.size() ?  new SimpleObjectProperty<>(Value.NIL) :
+                    new SimpleObjectProperty<>(values.get(index));
+        }
+
+        public ArrayList<Value> getValues(){
+            return values;
+        }
+
+        public void addValue(Value val){
+            values.add(val);
+        }
+
+    }
+
+    private void updateTimelineTable(ObservableList<SelectionItem> items){
+
+        timelineTblvw.getItems().clear();
+        double bufflen = 0;
+
+        for (SelectionItem item: items) {
+            TimelineTableModel model = new TimelineTableModel(item);
+            timelineTblvw.getItems().add(model);
+            if(fm.computeStringWidth(item.toShortString())>bufflen)bufflen = fm.computeStringWidth(item.toShortString());
+        }
+
+        hiddenColumnWidth = bufflen+5;
+        timelineCnvs.setWidth(hiddenColumnWidth);
+        height = (timelineTblvw.getItems().size())*spaceY+hiddenColumnHeight;
+        timelineCnvs.setHeight(height);
+        updateTimeline();
+
+    }
+
+    private void updateTimelineTable(String[] titles, ArrayList<ArrayList<Value>> values){
+
+        timelineTblvw.getItems().clear();
+        double bufflen = 0;
+
+        int i =0;
+        for (String title: titles) {
+            title = title.trim();
+            TimelineTableModel model = new TimelineTableModel(title,values.get(i));
+            timelineTblvw.getItems().add(model);
+            if(fm.computeStringWidth(title)>bufflen)bufflen = fm.computeStringWidth(title);
+            i++;
+        }
+
+        hiddenColumnWidth = bufflen+5;
+        timelineCnvs.setWidth(hiddenColumnWidth+values.get(0).size()*spaceX);
+        height = (timelineTblvw.getItems().size())*spaceY+hiddenColumnHeight;
+        timelineCnvs.setHeight(height);
+        updateTimeline();
+
+    }
+
+    private void updateTimelineData(Value[] values){
+
+        int i = 0;
+        int size = 0;
+        for (TimelineTableModel model : timelineTblvw.getItems()){
+            model.addValue(values[i]);
+            size = model.getValues().size();
+            i++;
+        }
+
+        currCursorPos.setValue(hiddenColumnWidth + size * spaceX - 1);
+
+        timelineTblvw.refresh();
+        updateTimeline();
+
+    }
+
+    private void updateTimeline(){
+
+        clearRect40K();
+
+        gc.setTransform(transform[0], transform[1], transform[2],
+                transform[3], transform[4], transform[5]
+        );
+
+        timelineCnvs.setLayoutX(-hiddenColumnWidth);
+
+        gc.setStroke(LINE);
+        gc.setFill(LINE);
+
+        //hidden table
+        gc.strokeLine(hiddenColumnWidth, 0, hiddenColumnWidth, height);
+        gc.strokeLine(0, 20, hiddenColumnWidth, 20);
+        gc.fillText(LC.get("componentTitle"), (hiddenColumnWidth - fm.computeStringWidth(LC.get("componentTitle"))) / 2, 15);
 
 
+        //time
+        gc.strokeLine(0, 5, width, 5);
+        int counter = 0;
+        String prefix = "";
+        if (curSimulator.getTickFrequency() > 1000) prefix = "m";
+
+        for (double i = hiddenColumnWidth + 2 * spaceX; i < width; i += 2 * spaceX) {
+            gc.strokeLine(i, 5, i, 15);
+            String text = formatter.format(1 / curSimulator.getTickFrequency() * counter) + " " + prefix + "s";
+            gc.fillText(text, i - fm.computeStringWidth(text) - 2, 15);
+            counter++;
+        }
+
+        double currRowY = 70;
+
+        //comp data
+        for (TimelineTableModel model : timelineTblvw.getItems()) {
+
+            ArrayList<Value> vals = model.getValues();
+            int curValueLength = 0;
+
+            double currX = hiddenColumnWidth;
+            double currY = currRowY;
+
+            if(timelineTblvw.getItems().indexOf(model)==currSelectedRow){
+                gc.setLineWidth(2);
+            }else{
+                gc.setLineWidth(1);
+            }
+
+            if (vals != null && !vals.isEmpty()) {
+
+                //ze_ reference :extend extend extend(canvas)
+                if (timelineCnvs.getWidth() - hiddenColumnWidth - vals.size() * spaceX < spaceX) {
+                    width = hiddenColumnWidth + vals.size() * spaceX;
+                    timelineCnvs.setWidth(width);
+                }
+
+                for (int i = 0; i < vals.size(); i++) {
+
+                    gc.setStroke(LINE);
+                    gc.setFill(LINE);
+
+                    //if start value is true
+                    if (i == 0 && vals.get(0).equals(Value.TRUE)) currY -= yAdjust;
+
+                    if (i > 0) {
+
+                        //line up
+                        if (vals.get(i - 1).equals(Value.FALSE) && vals.get(i).equals(Value.TRUE)) {
+
+                            gc.strokeLine(currX + w, currY, currX + w, currY - yAdjust);
+                            currY -= yAdjust;
+
+                        }
+
+                        //line down
+                        if (vals.get(i - 1).equals(Value.TRUE) && vals.get(i).equals(Value.FALSE)) {
+
+                            gc.strokeLine(currX + w, currY, currX + w, currY + yAdjust);
+                            currY += yAdjust;
+
+                        }
+
+                    }
+
+                    if (vals.get(i).equals(Value.TRUE)) {
+
+                        gc.setStroke(LINEFILL);
+                        gc.setFill(LINEFILL);
+
+                        gc.fillRect(currX + 2 * w, currY + w, spaceX, yAdjust);
+
+                        gc.setStroke(LINE);
+                        gc.setFill(LINE);
+
+                    } else if (vals.get(i).equals(Value.UNKNOWN)) {
+                        //Blue grid
+
+                        gc.setStroke(Value.UNKNOWN_COLOR);
+                        gc.setFill(Value.UNKNOWN_COLOR);
+
+                        gc.strokeLine(currX, currRowY-yAdjust,currX + spaceX, currRowY-(yAdjust/2));
+                        gc.strokeLine(currX, currRowY-(yAdjust/2),currX + spaceX,currRowY-yAdjust);
+                        gc.strokeLine(currX, currRowY-(yAdjust/2),currX + spaceX, currRowY);
+                        gc.strokeLine(currX, currRowY,currX + spaceX, currRowY-(yAdjust/2));
+
+                        gc.setStroke(LINE);
+                        gc.setFill(LINE);
+
+                    }else if(!vals.get(i).equals(Value.FALSE)){
+
+                        //hexagon
+                        gc.setStroke(LONGVALUE);
+                        gc.setFill(LONGVALUE);
+
+                        if(curValueLength == 0){
+
+                            gc.strokeLine(currX+w, currRowY-yAdjust/2,currX + spaceX, currRowY-0.75*yAdjust);
+                            gc.strokeLine(currX+w, currRowY-yAdjust/2,currX + spaceX, currRowY-0.25*yAdjust);
+                            curValueLength++;
+
+                        }else {
+
+                            if (i != vals.size()-1 && vals.get(i+1).equals(vals.get(i))) {
+
+                                gc.strokeLine(currX+w, currRowY - 0.75 * yAdjust, currX + spaceX, currRowY - 0.75 * yAdjust);
+                                gc.strokeLine(currX+w, currRowY - 0.25 * yAdjust, currX + spaceX, currRowY - 0.25 * yAdjust);
+                                curValueLength++;
+
+                            }else{
+
+                                gc.strokeLine(currX+w, currRowY-0.75*yAdjust,currX + spaceX, currRowY-yAdjust/2);
+                                gc.strokeLine(currX+w, currRowY-0.25*yAdjust,currX + spaceX, currRowY-yAdjust/2);
+
+                                gc.setStroke(LINE);
+                                gc.setFill(LINE);
+
+                                String text = vals.get(i).toHexString()+"h";
+                                gc.fillText(text, currX-((curValueLength-1)*spaceX+fm.computeStringWidth(text))/2, currY-(yAdjust/2));
+
+                                curValueLength = 0;
+
+                            }
+
+                        }
+
+                        gc.setStroke(LINE);
+                        gc.setFill(LINE);
+
+                    }
+
+                    gc.strokeLine(currX + gc.getLineWidth(), currY, currX + spaceX, currY);
+                    currX += spaceX;
+
+                }
+
+            }
+
+            gc.strokeLine(0, currRowY, hiddenColumnWidth, currRowY);
+            gc.fillText(model.getTitle().getValue(), 0, currRowY - spaceY / 2);
+
+            currRowY += spaceY;
+        }
+
+        gc.setFill(CURRPOS);
+        gc.setStroke(CURRPOS);
+        gc.strokeLine(currCursorPos.doubleValue() + hiddenColumnWidth - 1, 0, currCursorPos.doubleValue() + hiddenColumnWidth - 1, height);
+
+        gc.setLineWidth(1);
+
+    }
+
+    // convert screen coordinates to grid coordinates by inverting circuit transform
+    private double inverseTransformX(double x) {
+        return ((x-transform[4])/transform[0]);
+    }
+
+    private double inverseTransformY(double y) {
+        return (y-transform[5])/transform[3];
+    }
+
+    private void clearRect40K() {
+
+        gc.setFill(BACKGROUND);
+        gc.fillRect(-1,-1,width+1,height+1);
+
+    }
+
+    private void restartCanvas(){
+        currCursorPos.setValue(0);
+        timelineCnvs.setWidth(0);
+        timelineCnvs.setHeight(0);
+    }
+
+    private void exportImage(){
+
+        WritableImage writableImage = new WritableImage((int)(timelineCnvs.getWidth()*pixelScale),
+                (int)(timelineCnvs.getHeight()*pixelScale));
+        SnapshotParameters spa = new SnapshotParameters();
+        spa.setTransform(Transform.scale(pixelScale, pixelScale));
+        ImageView img = new ImageView(timelineCnvs.snapshot(spa, writableImage));
+
+        File dest;
+        FileSelector fileSelector = new FileSelector(stage);
+        dest = fileSelector.showSaveDialog(LogisimFX.newgui.ExportImageFrame.LC.get("exportImageFileSelect"));
+
+        File where;
+        if (dest.isDirectory()) {
+            where = new File(dest, proj.getLogisimFile().getName()+".png");
+        } else {
+            String newName = dest.getName() + ".png";
+            where = new File(dest.getParentFile(), newName);
+        }
+
+        try {
+
+            BufferedImage bImage = SwingFXUtils.fromFXImage(img.getImage(), null);
+            ImageIO.write(bImage, "PNG", where);
+
+        } catch (Exception e) {
+            DialogManager.CreateErrorDialog(LogisimFX.newgui.ExportImageFrame.LC.get("couldNotCreateFile"), LogisimFX.newgui.ExportImageFrame.LC.get("couldNotCreateFile"));
+        }
+
+    }
 
 
 
@@ -556,7 +1133,7 @@ public class CircLogController extends AbstractController {
 
         tableTab.textProperty().bind(LC.createStringBinding("tableTab"));
 
-        logTrvw.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        logTblvw.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         loadFileBtn.textProperty().bind(LC.createStringBinding("openButton"));
         loadFileBtn.setOnAction(event -> importLog());
@@ -566,12 +1143,12 @@ public class CircLogController extends AbstractController {
 
     }
 
-    private void updateColumnCount(){
+    private void updateColumnCount(ObservableList<SelectionItem> items){
 
-        logTrvw.getColumns().clear();
+        logTblvw.getColumns().clear();
 
         int i = 0;
-        for (SelectionItem item: selectedLst.getItems()) {
+        for (SelectionItem item: items) {
 
             TableColumn<LogLine, Value> column = new TableColumn<>(item.toShortString());
             int finalI = i;
@@ -603,9 +1180,54 @@ public class CircLogController extends AbstractController {
             });
             column.setSortable(false);
 
-            logTrvw.getColumns().add(column);
+            logTblvw.getColumns().add(column);
             i++;
         }
+
+    }
+
+    private void updateColumnCount(String[] titles, ArrayList<LogLine> logLines){
+
+        logTblvw.getColumns().clear();
+
+        int i = 0;
+        for (String title: titles) {
+
+            TableColumn<LogLine, Value> column = new TableColumn<>(title.trim());
+            int finalI = i;
+            column.setCellValueFactory(param -> param.getValue().getValue(finalI));
+            column.setCellFactory(param -> {
+                TableCell<LogLine, Value> cell = new TableCell<LogLine, Value>() {
+
+                    @Override
+                    protected void updateItem(Value item, boolean empty) {
+
+                        super.updateItem(item, empty);
+
+                        if (item == null) {
+                            super.setText(null);
+                            super.setGraphic(null);
+                        } else {
+                            super.setText(item.toString());
+                            super.setGraphic(null);
+                        }
+
+                    }
+
+                };
+
+
+                cell.setAlignment(Pos.CENTER);
+
+                return cell;
+            });
+            column.setSortable(false);
+
+            logTblvw.getColumns().add(column);
+            i++;
+        }
+
+        logTblvw.getItems().addAll(logLines);
 
     }
 
@@ -687,6 +1309,7 @@ public class CircLogController extends AbstractController {
 
         File file = fileSelector.showOpenDialog(LC.get("fileHelp"));
 
+        //read
         StringBuilder builder = new StringBuilder();
 
         try {
@@ -708,71 +1331,41 @@ public class CircLogController extends AbstractController {
             System.out.println("Cant read File " + e.getMessage());
         }
 
+        //Parse
         String data = builder.toString();
 
         String[] lines = data.trim().split("\n");
         ArrayList<LogLine> logLines = new ArrayList<>();
 
+        ArrayList<ArrayList<Value>> values = new ArrayList<>();
+        for(int m = 0; m < lines[0].split("\t").length; m++){ values.add(new ArrayList<>()); }
+
         for(int j = 1; j < lines.length; j++){
 
-            System.out.println(lines[j]);
-
             String[] buff = lines[j].split("\t");
-            System.out.println(Arrays.toString(buff));
 
             Value[] vals = new Value[buff.length];
 
             for(int h = 0; h < buff.length; h++){
 
-                if(buff[h].trim().equals("0"))vals[h] = Value.FALSE;
-                else if(buff[h].trim().equals("1"))vals[h] = Value.TRUE;
+                Value val = null;
+                if(buff[h].trim().equals("0"))val = Value.FALSE;
+                else if(buff[h].trim().equals("1"))val = Value.TRUE;
+
+                vals[h] = val;
+                values.get(h).add(val);
 
             }
+
             LogLine l = new LogLine(vals);
             logLines.add(l);
         }
 
-        logTrvw.getColumns().clear();
+        String[] titles =  lines[0].split("\t");
 
-        int i = 0;
-        for (String s: lines[0].split("\t")) {
-
-            TableColumn<LogLine, Value> column = new TableColumn<>(s.trim());
-            int finalI = i;
-            column.setCellValueFactory(param -> param.getValue().getValue(finalI));
-            column.setCellFactory(param -> {
-                TableCell<LogLine, Value> cell = new TableCell<LogLine, Value>() {
-
-                    @Override
-                    protected void updateItem(Value item, boolean empty) {
-
-                        super.updateItem(item, empty);
-
-                        if (item == null) {
-                            super.setText(null);
-                            super.setGraphic(null);
-                        } else {
-                            super.setText(item.toString());
-                            super.setGraphic(null);
-                        }
-
-                    }
-
-                };
-
-
-                cell.setAlignment(Pos.CENTER);
-
-                return cell;
-            });
-            column.setSortable(false);
-
-            logTrvw.getColumns().add(column);
-            i++;
-
-        }
-
-        logTrvw.getItems().addAll(logLines);
+        restartCanvas();
+        updateColumnCount(titles, logLines);
+        updateTimelineTable(titles, values);
 
     }
 

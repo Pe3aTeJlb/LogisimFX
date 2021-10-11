@@ -5,6 +5,7 @@ package LogisimFX.circuit;
 
 import LogisimFX.comp.ComponentDrawContext;
 import LogisimFX.prefs.AppPreferences;
+import javafx.beans.property.SimpleBooleanProperty;
 
 import java.util.ArrayList;
 
@@ -93,13 +94,13 @@ public class Simulator {
 					resetRequested = false;
 					if (propagator != null) propagator.reset();
 					firePropagationCompleted();
-					propagateRequested |= isRunning;
+					propagateRequested |= isRunning.getValue();
 				}
 
 				if (propagateRequested || ticksRequested > 0 || stepsRequested > 0) {
 					boolean ticked = false;
 					propagateRequested = false;
-					if (isRunning) {
+					if (isRunning.getValue()) {
 						stepPoints.clear();
 						stepsRequested = 0;
 						if (propagator == null) {
@@ -158,7 +159,7 @@ public class Simulator {
 		}
 	}
 
-	private boolean isRunning = true;
+	private SimpleBooleanProperty isRunning = new SimpleBooleanProperty(true);
 	private boolean isTicking = false;
 	private boolean exceptionEncountered = false;
 	private double tickFrequency = 1.0;
@@ -221,13 +222,13 @@ public class Simulator {
 		return exceptionEncountered;
 	}
 
-	public boolean isRunning() {
+	public SimpleBooleanProperty isRunning() {
 		return isRunning;
 	}
 
 	public void setIsRunning(boolean value) {
-		if (isRunning != value) {
-			isRunning = value;
+		if (isRunning.getValue() != value) {
+			isRunning.setValue(value);
 			renewTickerAwake();
 			/*DEBUGGING - comment out:
 			if (!value) flushLog(); //*/
@@ -248,7 +249,7 @@ public class Simulator {
 	}
 
 	private void renewTickerAwake() {
-		ticker.setAwake(isRunning && isTicking && tickFrequency > 0);
+		ticker.setAwake(isRunning.getValue() && isTicking && tickFrequency > 0);
 	}
 
 	public double getTickFrequency() {

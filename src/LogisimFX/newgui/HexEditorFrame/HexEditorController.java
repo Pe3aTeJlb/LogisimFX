@@ -265,7 +265,6 @@ public class HexEditorController extends AbstractController {
                             for(int n = 0; n < l; n++){
                                 fByte.insert(0,'0');
                             }
-                            System.out.println(fByte.toString());
 
                             StringBuilder zero = new StringBuilder();
                             for(int n = 0 ; n < diff; n++){
@@ -318,7 +317,6 @@ public class HexEditorController extends AbstractController {
 
             if(event.getCode() == KeyCode.DELETE){
 
-                System.out.println("Delete");
                 for(int i = 0; i< selectionModel.getSelectedCells().size(); i++){
 
                     TablePosition pos = selectionModel.getSelectedCells().get(i);
@@ -338,7 +336,6 @@ public class HexEditorController extends AbstractController {
 
             if(event.getCode() == KeyCode.C && event.isControlDown()){
 
-                System.out.println("Copy");
                 copyBuffer = FXCollections.observableArrayList();
 
                 for (TablePosition pos: selectionModel.getSelectedCells()) {
@@ -352,8 +349,6 @@ public class HexEditorController extends AbstractController {
             }
 
             if(event.getCode() == KeyCode.V && event.isControlDown()){
-
-                System.out.println("Paste");
 
                 int n = 0;
 
@@ -378,8 +373,6 @@ public class HexEditorController extends AbstractController {
             }
 
             if(event.getCode() == KeyCode.X && event.isControlDown()){
-
-                System.out.println("Cut");
 
                 copyBuffer = FXCollections.observableArrayList();
 
@@ -445,26 +438,21 @@ public class HexEditorController extends AbstractController {
 
             scrollBar.valueProperty().addListener(observable -> {
 
-                System.out.println("from scroll" +scrollBar.getValue());
-
                 if (scrollBar.getValue() == scrollBar.getMax() && hexTableVw.getItems().size() < maxAdrValue / columnCount) {
-                    System.out.println("Adding new persons bottom. ");
+
                     calculateChunk(1);
                     float adjust = (float)realBottomAdjust;
                     float size = (float)hexTableVw.getItems().size();
-                    System.out.println(size + " " + adjust + " " + (size - adjust) / size);
-                    System.out.println(hexTableVw.getItems().size()-realBottomAdjust);
+
                     scrollValue = (size - adjust) / size;
                     scrollBar.setValue(scrollValue);
                     hexTableVw.scrollTo(hexTableVw.getItems().size()-realBottomAdjust);
                 }
 
                 if (scrollBar.getValue() == scrollBar.getMin() && currAdr != 0 && !hexTableVw.getItems().isEmpty()) {
-                    System.out.println("Adding new persons up. ");
                     calculateChunk(-1);
                     float adjust = (float)realUpAdjust;
                     float size = (float)hexTableVw.getItems().size();
-                    System.out.println(size + " " + adjust + " " + (adjust) / size);
                     scrollValue = adjust / size;
                     hexTableVw.scrollTo(realUpAdjust);
                     scrollBar.setValue(scrollValue);
@@ -521,7 +509,6 @@ public class HexEditorController extends AbstractController {
 
             if(!hexTableVw.getItems().isEmpty() && hexTableVw.getItems().size() != 1)
                 currAdr = hexTableVw.getItems().get(hexTableVw.getItems().size()-1).getAddress();
-            System.out.println("curr adr "+String.format("%0"+maxAdrLen+"X",currAdr));
             int adr = currAdr;
 
             while (count < ADJUST) {
@@ -541,7 +528,6 @@ public class HexEditorController extends AbstractController {
 
             if(!hexTableVw.getItems().isEmpty() && hexTableVw.getItems().size() != 1)
                 currAdr = hexTableVw.getItems().get(0).getAddress();
-            System.out.println("curr adr "+String.format("%0"+maxAdrLen+"X",currAdr));
             int adr = currAdr;
 
             while (count < ADJUST) {

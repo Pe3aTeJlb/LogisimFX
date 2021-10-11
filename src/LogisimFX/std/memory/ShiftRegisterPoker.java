@@ -30,8 +30,6 @@ public class ShiftRegisterPoker extends InstancePoker {
 	
 	private int computeStage(InstanceState state, LayoutCanvas.CME e) {
 
-		e.print();
-
 		Integer lenObj = state.getAttributeValue(ShiftRegister.ATTR_LENGTH);
 		BitWidth widObj = state.getAttributeValue(StdAttr.WIDTH);
 		Boolean loadObj = state.getAttributeValue(ShiftRegister.ATTR_LOAD);
@@ -46,7 +44,6 @@ public class ShiftRegisterPoker extends InstancePoker {
 		
 		int x = e.localX - (bds.getX() + 15);
 		//int x = e.localX;
-		System.out.println("xy "+x+" "+y+" "+lenObj.intValue() * 10);
 		if (!loadObj.booleanValue() || widObj.getWidth() > 4) return -1;
 		if (x < 0 || x >= lenObj.intValue() * 10) return -1;
 		return x / 10;

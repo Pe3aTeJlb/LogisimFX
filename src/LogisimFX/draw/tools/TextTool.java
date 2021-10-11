@@ -72,7 +72,6 @@ public class TextTool extends AbstractTool {
             if (caretCreatingText) {
 
                 if (!isEmpty) {
-					System.out.println("add act");
 					curText.setText(caret.getText());
                     caretCanvas.doAction(new ModelAddAction(caretCanvas.getModel(), curText));
                 }
@@ -80,10 +79,8 @@ public class TextTool extends AbstractTool {
             } else {
 
                 if (isEmpty && textComponent != null) {
-					System.out.println("remove act");
                     caretCanvas.doAction(new ModelRemoveAction(caretCanvas.getModel(), curText));
                 } else {
-					System.out.println("edit act");
                     caretCanvas.doAction(new ModelEditTextAction(caretCanvas.getModel(), curText, e.getText()));
                 }
 
@@ -130,7 +127,6 @@ public class TextTool extends AbstractTool {
 	
 	@Override
 	public void toolDeselected(AppearanceCanvas canvas) {
-		System.out.println("deselect");
 		if (caret != null) {
 			caret.stopEditing();
 			caret = null;
@@ -183,7 +179,6 @@ public class TextTool extends AbstractTool {
             attrs.applyTo(textComponent);
             caret = textComponent.getTextField().getCaret(canvas.getGraphics(),mx,my);
             clicked = textComponent;
-			System.out.println(clicked.getAttributes());
             caretCreatingText = true;
 
         }

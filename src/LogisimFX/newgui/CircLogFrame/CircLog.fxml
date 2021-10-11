@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.canvas.*?>
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
@@ -9,7 +10,7 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LogisimFX.newgui.CircLogFrame.CircLogController">
    <children>
-      <TabPane fx:id="TabPane" prefHeight="368.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <TabPane fx:id="TabPane" prefHeight="368.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
           <Tab fx:id="selectionTab" text="Untitled Tab 1">
             <content>
@@ -17,9 +18,9 @@
                      <children>
                         <GridPane hgap="5.0" prefHeight="230.0" prefWidth="600.0" vgap="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="200.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="250.0" />
                             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="200.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="250.0" />
                           </columnConstraints>
                           <rowConstraints>
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -30,8 +31,7 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
                               <ListView fx:id="selectedLst" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowSpan="8" />
@@ -40,37 +40,8 @@
                               <Button fx:id="moveUpBtn" mnemonicParsing="false" prefWidth="100.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <Button fx:id="moveDownBtn" mnemonicParsing="false" prefWidth="100.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <Button fx:id="removeBtn" mnemonicParsing="false" prefWidth="100.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <CheckBox fx:id="timeSelectionChckbx" mnemonicParsing="false" text="CheckBox" GridPane.rowIndex="8" />
-                              <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="600.0" GridPane.columnSpan="3" GridPane.rowIndex="9">
-                                 <children>
-                                    <Label fx:id="clockLbl" text="Label">
-                                       <HBox.margin>
-                                          <Insets left="5.0" right="5.0" />
-                                       </HBox.margin>
-                                    </Label>
-                                    <ComboBox fx:id="clockCmbbx" prefHeight="25.0" prefWidth="50.0">
-                                       <HBox.margin>
-                                          <Insets left="5.0" right="5.0" />
-                                       </HBox.margin>
-                                    </ComboBox>
-                                    <Label fx:id="frequencyLbl" text="Label">
-                                       <HBox.margin>
-                                          <Insets left="5.0" right="5.0" />
-                                       </HBox.margin>
-                                    </Label>
-                                    <TextField fx:id="frequencyTxtfld" prefHeight="25.0" prefWidth="73.0">
-                                       <HBox.margin>
-                                          <Insets left="5.0" right="5.0" />
-                                       </HBox.margin>
-                                    </TextField>
-                                    <ComboBox fx:id="hertsCmbbx" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="60.0" promptText="GH">
-                                       <HBox.margin>
-                                          <Insets left="5.0" right="5.0" />
-                                       </HBox.margin>
-                                    </ComboBox>
-                                 </children>
-                              </HBox>
                               <TreeView fx:id="circTrvw" prefHeight="200.0" prefWidth="200.0" GridPane.rowSpan="8" />
+                              <Button fx:id="startTimelineBtn" alignment="CENTER" mnemonicParsing="false" prefHeight="22.0" prefWidth="160.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="8" />
                            </children>
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -84,33 +55,60 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
                           <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="300.0" />
+                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="300.0" />
                           </columnConstraints>
                           <rowConstraints>
-                            <RowConstraints maxHeight="305.0" minHeight="10.0" prefHeight="303.0" vgrow="SOMETIMES" />
-                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="290.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <SplitPane dividerPositions="0.3879598662207358" prefHeight="290.0" prefWidth="600.0">
+                              <SplitPane fx:id="splitPane" dividerPositions="0.3879598662207358" prefHeight="290.0" prefWidth="600.0" GridPane.columnSpan="2">
                                 <items>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                        <children>
-                                          <TableView prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                            <columns>
-                                              <TableColumn prefWidth="75.0" text="C1" />
-                                              <TableColumn prefWidth="75.0" text="C2" />
-                                            </columns>
-                                          </TableView>
+                                          <TableView fx:id="timelineTblvw" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                        </children>
                                     </AnchorPane>
-                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                       <children>
+                                          <ScrollPane fx:id="canvasScrlPn" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <content>
+                                              <AnchorPane fx:id="canvasAnchor" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0">
+                                                   <children>
+                                                      <Canvas fx:id="timelineCnvs" height="200.0" width="200.0" />
+                                                   </children>
+                                                </AnchorPane>
+                                            </content>
+                                          </ScrollPane>
+                                       </children>
+                                    </AnchorPane>
                                 </items>
                               </SplitPane>
-                              <Button fx:id="exportImageBtn" mnemonicParsing="false" prefWidth="75.0" text="Button" GridPane.rowIndex="1" />
+                              <Button fx:id="exportImageBtn" mnemonicParsing="false" prefWidth="150.0" text="Button" GridPane.rowIndex="1">
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin></Button>
+                              <Button fx:id="fileOpenBtn" mnemonicParsing="false" prefWidth="150.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <GridPane.margin>
+                                    <Insets left="10.0" />
+                                 </GridPane.margin>
+                              </Button>
                            </children>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
+                           </padding>
                         </GridPane>
+                        <ToolBar maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <items>
+                              <Button fx:id="SimStopBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="15.0" prefWidth="15.0" />
+                              <Button fx:id="SimPlayOneStepBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="15.0" prefWidth="15.0" />
+                              <Button fx:id="SimPlayBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="15.0" prefWidth="15.0" />
+                              <Button fx:id="SimStepBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="15.0" prefWidth="15.0" />
+                          </items>
+                        </ToolBar>
                      </children>
                   </AnchorPane>
               </content>
@@ -121,12 +119,12 @@
                      <children>
                         <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columnConstraints>
-                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                            <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="300.0" />
+                            <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="300.0" />
                           </columnConstraints>
                           <rowConstraints>
                             <RowConstraints minHeight="10.0" prefHeight="350.0" vgrow="SOMETIMES" />
-                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
                               <Button fx:id="loadFileBtn" mnemonicParsing="false" prefWidth="150.0" text="Button" GridPane.rowIndex="1">
@@ -139,8 +137,11 @@
                                     <Insets left="10.0" />
                                  </GridPane.margin>
                               </Button>
-                              <TableView fx:id="logTrvw" GridPane.columnSpan="2" />
+                              <TableView fx:id="logTblvw" GridPane.columnSpan="2" />
                            </children>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
                         </GridPane>
                      </children>
                   </AnchorPane>
@@ -148,10 +149,5 @@
             </Tab>
         </tabs>
       </TabPane>
-      <HBox alignment="CENTER" layoutX="200.0" layoutY="390.0" prefHeight="30.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-         <children>
-            <Button fx:id="startTimelineBtn" mnemonicParsing="false" prefHeight="22.0" prefWidth="160.0" text="Button" />
-         </children>
-      </HBox>
    </children>
 </AnchorPane>

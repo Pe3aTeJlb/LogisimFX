@@ -9,6 +9,7 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
@@ -114,21 +115,28 @@ public class AdditionalToolBar extends ToolBar {
         CustomButton SimStopBtn = new CustomButton(prefWidth,prefHeight,"simstop.png");
         SimStopBtn.setTooltip(new ToolTip("simulateEnableStepsTip"));
         SimStopBtn.setOnAction(event -> {
+            if (proj.getSimulator() != null) {
+                proj.getSimulator().setIsRunning(!proj.getSimulator().isRunning().getValue());
+            }
         });
 
         CustomButton SimPlayOneStepBtn = new CustomButton(prefWidth,prefHeight,"simtplay.png");
         SimPlayOneStepBtn.setTooltip(new ToolTip("simulateStepTip"));
+        SimPlayOneStepBtn.disableProperty().bind(proj.getSimulator().isRunning());
         SimPlayOneStepBtn.setOnAction(event -> {
+            if (proj.getSimulator() != null) proj.getSimulator().step();
         });
 
         CustomButton SimPlayBtn = new CustomButton(prefWidth,prefHeight,"simplay.png");
         SimPlayBtn.setTooltip(new ToolTip("simulateEnableTicksTip"));
         SimPlayBtn.setOnAction(event -> {
+            if (proj.getSimulator() != null) proj.getSimulator().setIsTicking(!proj.getSimulator().isTicking());
         });
 
         CustomButton SimStepBtn = new CustomButton(prefWidth,prefHeight,"simstep.png");
         SimStepBtn.setTooltip(new ToolTip("simulateTickTip"));
         SimStepBtn.setOnAction(event -> {
+            if (proj.getSimulator() != null) proj.getSimulator().tick();
         });
 
         CircuitTicksControlBtnsList.addAll(

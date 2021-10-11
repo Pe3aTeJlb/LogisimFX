@@ -310,8 +310,6 @@ public class PrintCanvas extends Canvas{
                 transform[3], transform[4], transform[5]
         );
 
-        System.out.println("Zoom " + scale);
-
     }
 
     //Canvas trail cleaner
