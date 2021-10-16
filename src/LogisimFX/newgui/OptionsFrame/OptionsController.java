@@ -154,7 +154,7 @@ public class OptionsController extends AbstractController {
         initMouseOptionsTab();
 
         RevertToTemplate.textProperty().bind(LC.createStringBinding("revertButton"));
-        RevertToTemplate.setOnAction(event -> {});
+        RevertToTemplate.setOnAction(event -> proj.doAction(LogisimFileActions.revertDefaults()));
 
     }
 

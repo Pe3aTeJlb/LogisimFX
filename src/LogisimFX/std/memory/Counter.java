@@ -42,20 +42,20 @@ public class Counter extends InstanceFactory {
 	public Counter() {
 
 		super("Counter", LC.createStringBinding("counterComponent"));
-		setOffsetBounds(Bounds.create(-30, -20, 30, 40));
+		setOffsetBounds(Bounds.create(-30, -30, 30, 60));
 		setIcon("counter.gif");
 		setInstancePoker(RegisterPoker.class);
-		setInstanceLogger(RegisterLogger.class);
-		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
+		setInstanceLogger(Logger.class);
+		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH, 1, Value.MAX_WIDTH_EXTENDED, null));
 		
 		Port[] ps = new Port[7];
-		ps[OUT] = new Port(  0,   0, Port.OUTPUT, StdAttr.WIDTH);
-		ps[IN]  = new Port(-30,   0, Port.INPUT, StdAttr.WIDTH);
-		ps[CK]  = new Port(-20,  20, Port.INPUT, 1);
-		ps[CLR] = new Port(-10,  20, Port.INPUT, 1);
-		ps[LD]  = new Port(-30, -10, Port.INPUT, 1);
-		ps[CT]  = new Port(-30,  10, Port.INPUT, 1);
-		ps[CARRY] = new Port(0,  10, Port.OUTPUT, 1);
+		ps[OUT] = new Port(  0,   10, Port.OUTPUT, StdAttr.WIDTH);
+		ps[IN]  = new Port(-30,   10, Port.INPUT, StdAttr.WIDTH);
+		ps[CK]  = new Port(-20,  30, Port.INPUT, 1);
+		ps[CLR] = new Port(-10,  30, Port.INPUT, 1);
+		ps[LD]  = new Port(-30, 0, Port.INPUT, 1);
+		ps[CT]  = new Port(-30,  20, Port.INPUT, 1);
+		ps[CARRY] = new Port(0,  20, Port.OUTPUT, 1);
 		ps[OUT].setToolTip(LC.createStringBinding("counterQTip"));
 		ps[IN].setToolTip(LC.createStringBinding("counterDataTip"));
 		ps[CK].setToolTip(LC.createStringBinding("counterClockTip"));
@@ -164,34 +164,48 @@ public class Counter extends InstanceFactory {
 
 		Graphics g = painter.getGraphics();
 		Bounds bds = painter.getBounds();
+		// draw boundary, label
+		painter.drawBounds();
+		painter.drawLabel();
+
 		RegisterData state = (RegisterData) painter.getData();
 		BitWidth widthVal = painter.getAttributeValue(StdAttr.WIDTH);
 		int width = widthVal == null ? 8 : widthVal.getWidth();
 
 		// determine text to draw in label
-		String a;
-		String b = null;
+		String[] data = new String[]{"","","",""};
 		if (painter.getShowState()) {
 			int val = state == null ? 0 : state.value;
 			String str = StringUtil.toHexString(width, val);
 			if (str.length() <= 4) {
-				a = str;
+				data[0] = str;
 			} else {
-				int split = str.length() - 4;
-				a = str.substring(0, split);
-				b = str.substring(split);
+
+				int cnt = 0;
+				int i = 0;
+				int q = 0;
+				while(cnt < str.length()){
+
+					if(q == 4){
+						q = 0;
+						i++;
+					}
+
+					data[i] += str.charAt(cnt);
+
+					q++;
+					cnt++;
+
+				}
+
 			}
 		} else {
-			a = LC.get("counterLabel");
-			b = LC.getFormatted("registerWidthLabel", "" + widthVal.getWidth());
+			data[0] = LC.get("counterLabel");
+			data[1] = LC.getFormatted("registerWidthLabel", "" + widthVal.getWidth());
 		}
 
-		// draw boundary, label
-		painter.drawBounds();
-		painter.drawLabel();
-
 		// draw input and output ports
-		if (b == null) {
+		if (data[1] == null) {
 			painter.drawPort(IN,  "D", Direction.EAST);
 			painter.drawPort(OUT, "Q", Direction.WEST);
 		} else {
@@ -206,18 +220,75 @@ public class Counter extends InstanceFactory {
 		g.setColor(Color.BLACK);
 		painter.drawClock(CK, Direction.NORTH);
 
-		// draw contents
-		if (b == null) {
-			GraphicsUtil.drawText(g, a, bds.getX() + 15, bds.getY() + 4,
+		int cnt = 0;
+		for (String datum : data) {
+
+			if(datum != null)
+			GraphicsUtil.drawText(g, datum, bds.getX() + 15, bds.getY() + 3+cnt*10,
 					GraphicsUtil.H_CENTER, GraphicsUtil.V_TOP);
-		} else {
-			GraphicsUtil.drawText(g, a, bds.getX() + 15, bds.getY() + 3,
-					GraphicsUtil.H_CENTER, GraphicsUtil.V_TOP);
-			GraphicsUtil.drawText(g, b, bds.getX() + 15, bds.getY() + 15,
-					GraphicsUtil.H_CENTER, GraphicsUtil.V_TOP);
+
+			cnt++;
 		}
 
 		g.toDefault();
+
+	}
+
+	public static class Logger extends RegisterLogger{
+
+		@Override
+		public Object[] getLogOptions(InstanceState state) {
+
+			int stages = state.getAttributeValue(StdAttr.WIDTH).getWidth();
+			Object[] ret = new Object[stages];
+			stages -= 1;
+			for (int i = 0; i < ret.length; i++) {
+				ret[i] = Integer.valueOf(stages);
+				stages--;
+			}
+
+			return ret;
+
+		}
+
+		@Override
+		public String getLogName(InstanceState state, Object option) {
+
+			String inName = state.getAttributeValue(StdAttr.LABEL);
+			if (inName == null || inName.equals("")) {
+				inName = LC.get("counterComponent")
+						+ state.getInstance().getLocation();
+			}
+			if (option instanceof Integer) {
+				return inName + "[" + option + "]";
+			} else {
+				return inName;
+			}
+
+		}
+
+		@Override
+		public Value getLogValue(InstanceState state, Object option) {
+
+			if(option instanceof Integer){
+				BitWidth dataWidth = state.getAttributeValue(StdAttr.WIDTH);
+				if (dataWidth == null) dataWidth = BitWidth.create(0);
+				RegisterData data = (RegisterData) state.getData();
+				if (data == null) {
+					return Value.createKnown(dataWidth, 0);
+				} else {
+					int index = option == null ? 0 : ((Integer) option).intValue();
+					return data.getByIndex(index, dataWidth.getWidth());
+				}
+			}else {
+				BitWidth dataWidth = state.getAttributeValue(StdAttr.WIDTH);
+				if (dataWidth == null) dataWidth = BitWidth.create(0);
+				RegisterData data = (RegisterData) state.getData();
+				if (data == null) return Value.createKnown(dataWidth, 0);
+				return Value.createKnown(dataWidth, data.value);
+			}
+
+		}
 
 	}
 

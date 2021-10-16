@@ -92,6 +92,17 @@ public class ShiftRegisterData extends ClockState implements InstanceData {
 		return v[i];
 
 	}
+
+	public Integer getAsInt() {
+
+		StringBuilder bin = new StringBuilder();
+		for(int i = 0; i < vs.length; i++){
+			bin.append(vs[i]);
+		}
+
+		return Integer.parseInt(bin.toString(),2);
+
+	}
 	
 	public void set(int index, Value val) {
 

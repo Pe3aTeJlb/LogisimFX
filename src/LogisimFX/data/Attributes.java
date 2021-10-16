@@ -511,13 +511,11 @@ public class Attributes {
 		@Override
 		public ComboBoxBase<Color> getCell(Color value) {
 
-			System.out.println(value);
 			Color init = value == null ? Color.BLACK : value;
 
 			ColorPicker picker = new ColorPicker(init);
 			picker.setOnAction(event -> {
 				Color c = picker.getValue();
-				System.out.println(c.toString());
 				try {
 					AttributeTable.setValueRequested( this,c);
 				} catch (AttrTableSetException e) {

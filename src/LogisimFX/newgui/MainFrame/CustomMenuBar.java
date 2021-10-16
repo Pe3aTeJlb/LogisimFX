@@ -7,6 +7,7 @@ import LogisimFX.newgui.MainFrame.Canvas.EditHandler;
 import LogisimFX.localization.LC_menu;
 import LogisimFX.newgui.FrameManager;
 import LogisimFX.file.LogisimFile;
+import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.RevertAppearanceAction;
 import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.SelectionEvent;
 import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.SelectionListener;
 import LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.Selection;
@@ -445,11 +446,7 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
         MenuItem RevertAppearance = new MenuItem();
 
         RevertAppearance.textProperty().bind(localizer.createStringBinding("projectRevertAppearanceItem"));
-        RevertAppearance.setOnAction(event -> {
-
-            //proj.doAction(new RevertAppearanceAction(cur));
-            //Todo:
-        });
+        RevertAppearance.setOnAction(event -> proj.doAction(new RevertAppearanceAction(proj.getCurrentCircuit())));
 
 
         SeparatorMenuItem sp2 = new SeparatorMenuItem();

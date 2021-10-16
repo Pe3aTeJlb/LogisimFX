@@ -346,7 +346,13 @@ public class Ram extends Mem {
 				return Value.createKnown(BitWidth.create(s.getDataBits()),
 						s.getContents().get(addr));
 			} else {
-				return Value.NIL;
+				BitWidth dataWidth = BitWidth.create(state.getAttributeValue(DATA_ATTR).getWidth()-
+						state.getAttributeValue(ADDR_ATTR).getWidth());
+				if (dataWidth == null) dataWidth = BitWidth.create(0);
+				MemState data = (MemState) state.getData();
+				if (data == null) return Value.createKnown(dataWidth, 0);
+				System.out.println(data.getCurrent()+" " + data.getContents().get(data.getCurrent()));
+				return Value.createKnown(dataWidth, data.getContents().get(data.getCurrent()));
 			}
 
 		}

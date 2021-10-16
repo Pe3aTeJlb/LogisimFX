@@ -18,6 +18,7 @@ public class Value {
 	public static final Value NIL     = new Value(0, 0, 0, 0);
 
 	public static final int MAX_WIDTH = 32;
+	public static final int MAX_WIDTH_EXTENDED = 64;
 
 	public static final Color NIL_COLOR = Color.GRAY;
 	public static final Color FALSE_COLOR = Color.rgb(0, 100, 0);
@@ -32,8 +33,8 @@ public class Value {
 	public static Value create(Value[] values) {
 		if (values.length == 0) return NIL;
 		if (values.length == 1) return values[0];
-		if (values.length > MAX_WIDTH) throw new RuntimeException(
-			"Cannot have more than " + MAX_WIDTH + " bits in a value");
+		if (values.length > MAX_WIDTH_EXTENDED) throw new RuntimeException(
+			"Cannot have more than " + MAX_WIDTH_EXTENDED + " bits in a value");
 
 		int width = values.length;
 		int value = 0;

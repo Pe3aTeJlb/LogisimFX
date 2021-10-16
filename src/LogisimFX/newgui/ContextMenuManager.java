@@ -4,6 +4,7 @@ import LogisimFX.FileSelector;
 import LogisimFX.circuit.CircuitMutation;
 import LogisimFX.circuit.CircuitState;
 import LogisimFX.comp.Component;
+import LogisimFX.newgui.CircLogFrame.CircLogController;
 import LogisimFX.newgui.HexEditorFrame.HexFile;
 import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceCanvas;
 import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceEditHandler;
@@ -24,10 +25,7 @@ import LogisimFX.file.LoadedLibrary;
 import LogisimFX.file.Loader;
 import LogisimFX.tools.MenuExtender;
 
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -465,6 +463,42 @@ public class ContextMenuManager {
 
 
         return menu;
+
+    }
+
+    //Timeline Radix
+
+    public static ContextMenu RadixOptionsContextMenu(CircLogController.TimelineTableModel tableModel, TreeTableView table){
+
+        ContextMenu contextMenu = new ContextMenu();
+
+        MenuItem bin = new MenuItem();
+        bin.setText("Binary");
+        bin.setDisable(tableModel.getRadix() == 2);
+        bin.setOnAction(event -> {
+            tableModel.setRadix(2);
+            table.refresh();
+        });
+
+        MenuItem dec = new MenuItem();
+        dec.setText("Decimal");
+        dec.setDisable(tableModel.getRadix() == 10);
+        dec.setOnAction(event -> {
+            tableModel.setRadix(10);
+            table.refresh();
+        });
+
+        MenuItem hex = new MenuItem();
+        hex.setText("Hexagonal");
+        hex.setDisable(tableModel.getRadix() == 16);
+        hex.setOnAction(event -> {
+            tableModel.setRadix(16);
+            table.refresh();
+        });
+
+        contextMenu.getItems().addAll(bin, dec, hex);
+
+        return contextMenu;
 
     }
 

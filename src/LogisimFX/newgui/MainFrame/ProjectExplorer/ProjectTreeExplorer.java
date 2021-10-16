@@ -127,7 +127,9 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
                                         ((SubcircuitFactory) fact).getSubcircuit()
                                 );
 
-                                cell.setStyle(highlight);
+                                proj.setTool(null);
+
+                               //cell.setStyle(highlight);
 
                             }
 

@@ -89,7 +89,6 @@ public class Model {
 		CircuitState circuitState = getCircuitState();
 		Value[] vals = new Value[components.size()];
 		boolean changed = false;
-		System.out.println("rpopogate");
 		for (int i = components.size() - 1; i >= 0; i--) {
 			SelectionItem item = components.get(i);
 			vals[i] = item.fetchValue(circuitState);

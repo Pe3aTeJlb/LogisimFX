@@ -69,7 +69,7 @@ public class CounterAttributes extends AbstractAttributeSet {
 			}
 			fireAttributeValueChanged(StdAttr.WIDTH, newWidth);
 		} else if (attr == Counter.ATTR_MAX) {
-			int oldVal = ((Integer) value).intValue();
+			int oldVal = Integer.parseInt(value.toString(), 16);
 			BitWidth width = base.getValue(StdAttr.WIDTH);
 			int newVal = oldVal & width.getMask();
 			if (newVal != oldVal) {

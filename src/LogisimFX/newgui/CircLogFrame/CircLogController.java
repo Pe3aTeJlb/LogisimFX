@@ -9,6 +9,7 @@ import LogisimFX.file.LibraryEvent;
 import LogisimFX.file.LibraryListener;
 import LogisimFX.instance.StdAttr;
 import LogisimFX.newgui.AbstractController;
+import LogisimFX.newgui.ContextMenuManager;
 import LogisimFX.newgui.DialogManager;
 import LogisimFX.proj.Project;
 import LogisimFX.proj.ProjectEvent;
@@ -20,6 +21,7 @@ import com.sun.javafx.tk.Toolkit;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
@@ -28,7 +30,6 @@ import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseButton;
@@ -66,7 +67,8 @@ public class CircLogController extends AbstractController {
     private TreeView<Object> circTrvw;
 
     @FXML
-    private ListView<SelectionItem> selectedLst;
+    private TreeView<SelectionItem> selectionTrVw;
+
 
 
 
@@ -108,10 +110,10 @@ public class CircLogController extends AbstractController {
     private SplitPane splitPane;
 
     @FXML
-    private AnchorPane canvasAnchor;
+    private AnchorPane timelineCanvasAnchor;
 
     @FXML
-    private TableView<TimelineTableModel> timelineTblvw;
+    private TreeTableView<TimelineTableModel> timelineTblvw;
 
     @FXML
     private Canvas timelineCnvs;
@@ -147,7 +149,7 @@ public class CircLogController extends AbstractController {
     private Project proj;
 
     private MultipleSelectionModel<TreeItem<Object>> treeSelectionModel;
-    private MultipleSelectionModel<SelectionItem> listSelectionModel;
+    private MultipleSelectionModel<TreeItem<SelectionItem>> selectiontrvwSelectionModel;
 
     private Simulator curSimulator = null;
     private Model curModel;
@@ -192,13 +194,11 @@ public class CircLogController extends AbstractController {
         @Override
         public void entryAdded(ModelEvent event, Value[] values) {
 
-            System.out.println("entry added");
             logTblvw.getItems().add(new LogLine(values));
             logTblvw.refresh();
 
             timelineTblvw.refresh();
             updateTimelineData(values);
-
 
         }
 
@@ -223,25 +223,35 @@ public class CircLogController extends AbstractController {
 
         proj.addProjectListener(myListener);
         proj.addLibraryListener(myListener);
+
+        initSelectionTab();
+
         setSimulator(proj.getSimulator());
         curModel.addModelListener(myListener);
 
-        initSelectionTab();
         initTimelineTab();
         initTableTab();
 
         startTimelineBtn.textProperty().bind(LC.createStringBinding("startLogging"));
         startTimelineBtn.setOnAction(event -> {
 
-            if(!selectedLst.getItems().isEmpty()) {
+            if(!selectionTrVw.getRoot().getChildren().isEmpty()) {
+
+                curModel.bindComponentsList(getItemsToLogPlain(null, selectionTrVw.getRoot()));
+
+                //log tab
+                itemsToLog = getItemsToLogPlain(null, selectionTrVw.getRoot());
+                updateColumns(itemsToLog);
+
+                //timeline tab
                 restartCanvas();
-                updateColumnCount(selectedLst.getItems());
-                updateTimelineTable(selectedLst.getItems());
+                updateTimelineTable(selectionTrVw.getRoot(), itemsToLog);
 
                 logger = new LogThread(curModel);
                 logger.start();
 
                 TabPane.getSelectionModel().select(1);
+
             }
 
         });
@@ -256,6 +266,7 @@ public class CircLogController extends AbstractController {
     }
 
 
+    private ObservableList<SelectionItem> itemsToLog;
 
     private void initSelectionTab(){
 
@@ -312,9 +323,10 @@ public class CircLogController extends AbstractController {
                         event.consume();
 
                         if (cell.getTreeItem() != null) {
-                            List<SelectionItem> array = getSelectedItems();
+                            List<TreeItem<SelectionItem>> array = getSelectedNodes();
                             if(array != null && !array.isEmpty()){
-                                selectedLst.getItems().addAll(array);
+                                selectionTrVw.getRoot().getChildren().addAll(array);
+                                //selectedLst.getItems().addAll(array);
                             }
                         }
 
@@ -335,81 +347,89 @@ public class CircLogController extends AbstractController {
 
         //selectedLst
 
-        selectedLst.setCellFactory(list -> new ListCell<SelectionItem>(){
+        selectionTrVw.setCellFactory(tree -> {
 
-            protected void updateItem(SelectionItem item, boolean empty) {
+            TreeCell<SelectionItem> cell = new TreeCell<SelectionItem>() {
 
-                super.updateItem(item, empty);
-                textProperty().unbind();
+                @Override
+                public void updateItem(SelectionItem item, boolean empty) {
 
-                if (empty) {
+                    super.updateItem(item, empty);
 
-                    setText(null);
-                    setGraphic(null);
+                    textProperty().unbind();
 
-                }else{
+                    if (empty || item == null) {
 
-                    if(item != null){
+                        setText(null);
+                        setGraphic(null);
 
-                        setText(item.toString());
+                    } else {
+
+                        setText(item.toString()+ " - " + item.getRadix());
                         setGraphic(new ImageView(item.getComponent().getFactory().getIcon().getImage()));
 
                     }
 
                 }
 
-            }
+            };
 
+            return cell;
         });
 
-        listSelectionModel = selectedLst.getSelectionModel();
-        listSelectionModel.setSelectionMode(SelectionMode.SINGLE);
-        listSelectionModel.selectedIndexProperty().addListener(
+        selectiontrvwSelectionModel = selectionTrVw.getSelectionModel();
+        selectiontrvwSelectionModel.setSelectionMode(SelectionMode.SINGLE);
+        selectiontrvwSelectionModel.selectedIndexProperty().addListener(
                 (observable, oldValue, newValue) -> {
-                    moveUpBtn.setDisable(listSelectionModel.selectedIndexProperty().getValue()==0);
-                    moveDownBtn.setDisable(listSelectionModel.selectedIndexProperty().getValue()==selectedLst.getItems().size()-1);
+                    if(selectiontrvwSelectionModel.getSelectedItem() != null) {
+                        int localIndex = selectiontrvwSelectionModel.getSelectedItem().getParent().getChildren().indexOf(selectiontrvwSelectionModel.getSelectedItem());
+                        moveUpBtn.setDisable(localIndex == 0);
+                        moveDownBtn.setDisable(
+                                localIndex == selectiontrvwSelectionModel.getSelectedItem().getParent().getChildren().size() - 1);
+                    }
                 }
         );
+
+        TreeItem<SelectionItem> selectedRoot = new TreeItem<>(null);
+        selectionTrVw.setRoot(selectedRoot);
+        selectionTrVw.setShowRoot(false);
 
 
         addBtn.textProperty().bind(LC.createStringBinding("selectionAdd"));
         addBtn.setOnAction(event -> {
-            ArrayList<SelectionItem> array = getSelectedItems();
+            List<TreeItem<SelectionItem>> array = getSelectedNodes();
             if(array != null && !array.isEmpty()){
-                 selectedLst.getItems().addAll(array);
+                selectionTrVw.getRoot().getChildren().addAll(array);
+                //selectedLst.getItems().addAll(array);
             }
         });
 
         changRadixBtn.textProperty().bind(LC.createStringBinding("selectionChangeBase"));
         changRadixBtn.setOnAction(event -> {
-            if(listSelectionModel.getSelectedItem() != null) {
-                int radix = listSelectionModel.getSelectedItem().getRadix();
+            if(selectiontrvwSelectionModel.getSelectedItem() != null) {
+                int radix = selectiontrvwSelectionModel.getSelectedItem().getValue().getRadix();
                 switch (radix) {
                     case 2:
-                        listSelectionModel.getSelectedItem().setRadix(10);
+                        selectiontrvwSelectionModel.getSelectedItem().getValue().setRadix(10);
                         break;
                     case 10:
-                        listSelectionModel.getSelectedItem().setRadix(16);
+                        selectiontrvwSelectionModel.getSelectedItem().getValue().setRadix(16);
                         break;
                     default:
-                        listSelectionModel.getSelectedItem().setRadix(2);
+                        selectiontrvwSelectionModel.getSelectedItem().getValue().setRadix(2);
                 }
-                selectedLst.refresh();
+                selectionTrVw.refresh();
             }
         });
 
         moveUpBtn.textProperty().bind(LC.createStringBinding("selectionMoveUp"));
-        moveUpBtn.setOnAction(event -> {
-            doMove(-1);
-        });
+        moveUpBtn.setOnAction(event -> doMove(-1));
 
         moveDownBtn.textProperty().bind(LC.createStringBinding("selectionMoveDown"));
-        moveDownBtn.setOnAction(event -> {
-            doMove(1);
-        });
+        moveDownBtn.setOnAction(event -> doMove(1));
 
         removeBtn.textProperty().bind(LC.createStringBinding("selectionRemove"));
-        removeBtn.setOnAction(event -> selectedLst.getItems().removeAll(listSelectionModel.getSelectedItem()));
+        removeBtn.setOnAction(event -> selectiontrvwSelectionModel.getSelectedItem().getParent().getChildren().remove(selectiontrvwSelectionModel.getSelectedItem()));
 
     }
 
@@ -497,6 +517,7 @@ public class CircLogController extends AbstractController {
 
             this.parent = parent;
             this.option = option;
+
         }
 
         public String toString() {
@@ -540,36 +561,46 @@ public class CircLogController extends AbstractController {
 
     private void doMove(int delta) {
 
-        int oldIndex = listSelectionModel.getSelectedIndex();
+        TreeItem<SelectionItem> cur = selectiontrvwSelectionModel.getSelectedItem();
+        TreeItem<SelectionItem> subRoot = selectiontrvwSelectionModel.getSelectedItem().getParent();
+        int oldIndex =  subRoot.getChildren().indexOf(cur);
         int newIndex = oldIndex + delta;
 
-        if (oldIndex >= 0 && newIndex >= 0 && newIndex < selectedLst.getItems().size()) {
-            SelectionItem buff = selectedLst.getItems().get(newIndex);
-            selectedLst.getItems().set(newIndex, listSelectionModel.getSelectedItem());
-            selectedLst.getItems().set(oldIndex, buff);
+        if (oldIndex >= 0 && newIndex >= 0 &&
+                newIndex < subRoot.getChildren().size()) {
+            TreeItem<SelectionItem> buff = subRoot.getChildren().get(newIndex);
+            subRoot.getChildren().set(newIndex, cur);
+            subRoot.getChildren().set(oldIndex, buff);
         }
 
-        listSelectionModel.select(newIndex);
+        selectiontrvwSelectionModel.select(cur);
+        //selectiontrvwSelectionModel.select(selectiontrvwSelectionModel.getSelectedIndex()+delta);
+       // selectionTrVw.refresh();
 
     }
 
-    private ArrayList<SelectionItem> getSelectedItems(){
+    private ArrayList<TreeItem<SelectionItem>> getSelectedNodes(){
 
-        ArrayList<SelectionItem> ret = new ArrayList<>();
+        ArrayList<TreeItem<SelectionItem>> ret = new ArrayList<>();
 
-        if(treeSelectionModel.getSelectedItems().isEmpty())return new ArrayList<>();
+        if(treeSelectionModel.getSelectedItems().isEmpty()) return new ArrayList<>();
 
         for (TreeItem<Object> node: treeSelectionModel.getSelectedItems()) {
+
+            boolean fromOptionNode = false;
 
             ComponentNode n = null;
             Object opt = null;
             if (node instanceof OptionNode) {
+                fromOptionNode = true;
                 OptionNode o = (OptionNode) node;
                 n = o.parent;
                 opt = o.option;
+                if(treeSelectionModel.getSelectedItems().contains(node.getParent())) n = null;
             } else if (node instanceof ComponentNode) {
                 n = (ComponentNode) node;
-                if (n.opts != null) n = null;
+                if(n.opts != null && n.opts.length>0) opt = n;
+                //if (n.opts != null) n = null;
             }
 
             if (n != null) {
@@ -585,7 +616,40 @@ public class CircLogController extends AbstractController {
                     cur = cur.parent;
                 }
 
-                ret.add(new SelectionItem(curModel, nPath, n.comp, opt));
+                TreeItem<SelectionItem> newItem = new TreeItem<>(new SelectionItem(curModel, nPath, n.comp, opt));
+                ret.add(newItem);
+
+                if(n.opts != null && n.opts.length > 0 && !fromOptionNode){
+
+                    int index = circTrvw.getRoot().getChildren().indexOf(node);
+                    for (TreeItem<Object> subnode: circTrvw.getRoot().getChildren().get(index).getChildren()) {
+
+                        if(subnode instanceof OptionNode && treeSelectionModel.getSelectedItems().contains(subnode) ||
+                        !treeSelectionModel.getSelectedItems().containsAll(node.getChildren())) {
+
+                            OptionNode o = (OptionNode) subnode;
+                            n = o.parent;
+                            opt = o.option;
+
+                            count = 0;
+                            for (cur = n.parent; cur != null; cur = cur.parent) {
+                                count++;
+                            }
+                            nPath = new Component[count - 1];
+                            cur = n.parent;
+                            for (int j = nPath.length - 1; j >= 0; j--) {
+                                nPath[j] = cur.subcircComp;
+                                cur = cur.parent;
+                            }
+
+
+                            newItem.getChildren().add(new TreeItem<>(new SelectionItem(curModel, nPath, n.comp, opt)));
+
+                        }
+
+                    }
+
+                }
 
             }
 
@@ -595,16 +659,33 @@ public class CircLogController extends AbstractController {
 
     }
 
+    private ObservableList<SelectionItem> getItemsToLogPlain(ObservableList<SelectionItem> ret, TreeItem<SelectionItem> root){
+
+        if(ret == null) ret = FXCollections.observableArrayList();
+
+        for (TreeItem<SelectionItem> node: root.getChildren()) {
+            ret.add(node.getValue());
+            if(!node.getChildren().isEmpty()) getItemsToLogPlain(ret, node);
+        }
+
+        return ret;
+
+    }
 
 
-    private final SimpleDoubleProperty currCursorPos = new SimpleDoubleProperty(0);
+
+    public static final SimpleDoubleProperty currCursorPos = new SimpleDoubleProperty(0);
 
     private GraphicsContext gc;
     private double width, height;
     private double[] transform;
 
+    private static final double MIN_ZOOM = 6.25;
+    private static final double MAX_ZOOM = 250;
+
     NumberFormat formatter = new DecimalFormat("#.####");
     private static final Font TIMESTEPFONT = Font.font("serif", FontWeight.THIN, FontPosture.REGULAR, 10);
+    private final double charlen = 5;
     private static final FontMetrics fm = Toolkit.getToolkit().getFontLoader().getFontMetrics(TIMESTEPFONT);
 
     private final Color BACKGROUND = Color.WHITE;
@@ -618,6 +699,7 @@ public class CircLogController extends AbstractController {
     double yAdjust = 40;
     double spaceY = 50;
     double spaceX = 25;
+    double REFERENCE_SPACE_X = 25;
     double w;
 
     private double pixelScale = 4;
@@ -630,11 +712,13 @@ public class CircLogController extends AbstractController {
     отрисовка мини-таблицы будет в основном цикле отрисовке updateTimeline
     На своё время, это лучшее решение
     */
-    TableColumn<TimelineTableModel, String> nameColumn;
+    TreeTableColumn<TimelineTableModel, String> nameColumn;
     double hiddenColumnWidth;
-    double hiddenColumnHeight = 21;
+    double hiddenColumnHeight = 22;
 
-    TableColumn<TimelineTableModel, Value> valueColumn;
+    TreeTableColumn<TimelineTableModel, String> valueColumn;
+
+    private ObservableList<TreeItem<TimelineTableModel>> logObjects;
 
     private void initTimelineTab(){
 
@@ -673,22 +757,25 @@ public class CircLogController extends AbstractController {
 
         splitPane.setDividerPositions(0.05);
 
-        canvasAnchor.widthProperty().addListener((observable, oldValue, newValue) -> {
+        timelineCanvasAnchor.widthProperty().addListener((observable, oldValue, newValue) -> {
             //width = canvasAnchor.getWidth()+hiddenColumnWidth;
             //timelineCnvs.setWidth(width);
             updateTimeline();
         });
 
-        timelineTblvw.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        timelineTblvw.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
+        timelineTblvw.setRoot(new TreeItem<>(null));
+        timelineTblvw.setShowRoot(false);
+        timelineTblvw.refresh();
 
 
-        nameColumn = new TableColumn<>("");
+        nameColumn = new TreeTableColumn<>("");
         nameColumn.textProperty().bind(LC.createStringBinding("componentTitle"));
         nameColumn.setSortable(false);
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("Title"));
-        nameColumn.setCellValueFactory(param -> param.getValue().getTitle());
+        //nameColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("Title"));
+        nameColumn.setCellValueFactory(param -> param.getValue().getValue().getTitle());
         nameColumn.setCellFactory(param -> {
-            TableCell<TimelineTableModel, String> cell = new TableCell<TimelineTableModel, String>() {
+            TreeTableCell<TimelineTableModel, String> cell = new TreeTableCell<TimelineTableModel, String>() {
 
                 @Override
                 protected void updateItem(String item, boolean empty) {
@@ -710,27 +797,34 @@ public class CircLogController extends AbstractController {
             cell.setPrefHeight(spaceY);
             cell.setAlignment(Pos.CENTER_LEFT);
             cell.setOnMouseEntered(event -> {
-                currSelectedRow = cell.getTableRow().getIndex();
+                if(cell.isVisible()) {
+                    currSelectedRow = cell.getTreeTableRow().getIndex();
+                }else{currSelectedRow = -1;}
                 updateTimeline();
             });
             cell.setOnMouseExited(event -> {
                 currSelectedRow = -1;
                 updateTimeline();
             });
+            cell.setOnMousePressed(event -> {
+                if(event.getButton() == MouseButton.SECONDARY){
+                    cell.setContextMenu(ContextMenuManager.RadixOptionsContextMenu(cell.getTreeTableRow().getItem(), timelineTblvw));
+                }
+            });
 
             return cell;
 
         });
 
-        valueColumn = new TableColumn<>("");
+        valueColumn = new TreeTableColumn<>("");
         valueColumn.textProperty().bind(LC.createStringBinding("valueTitle"));
         valueColumn.setSortable(false);
-        valueColumn.setCellValueFactory(param -> param.getValue().getValueAt());
+        valueColumn.setCellValueFactory(param -> param.getValue().getValue().getValueAt());
         valueColumn.setCellFactory(param -> {
-            TableCell<TimelineTableModel, Value> cell = new TableCell<TimelineTableModel, Value>() {
+            TreeTableCell<TimelineTableModel, String> cell = new TreeTableCell<TimelineTableModel, String>() {
 
                 @Override
-                protected void updateItem(Value item, boolean empty) {
+                protected void updateItem(String item, boolean empty) {
 
                     super.updateItem(item, empty);
 
@@ -738,7 +832,7 @@ public class CircLogController extends AbstractController {
                         super.setText(null);
                         super.setGraphic(null);
                     } else {
-                        super.setText(item.toString());
+                        super.setText(item);
                         super.setGraphic(null);
                     }
 
@@ -749,12 +843,19 @@ public class CircLogController extends AbstractController {
             cell.setPrefHeight(spaceY);
             cell.setAlignment(Pos.CENTER);
             cell.setOnMouseEntered(event -> {
-                currSelectedRow = cell.getTableRow().getIndex();
+                if(cell.isVisible()) {
+                    currSelectedRow = cell.getTreeTableRow().getIndex();
+                }else{currSelectedRow = -1;}
                 updateTimeline();
             });
             cell.setOnMouseExited(event -> {
                 currSelectedRow = -1;
                 updateTimeline();
+            });
+            cell.setOnMousePressed(event -> {
+                if(event.getButton() == MouseButton.SECONDARY){
+                    cell.setContextMenu(ContextMenuManager.RadixOptionsContextMenu(cell.getTreeTableRow().getItem(),timelineTblvw));
+                }
             });
 
             return cell;
@@ -776,7 +877,7 @@ public class CircLogController extends AbstractController {
 
         timelineCnvs.setOnMousePressed(event -> {
 
-            currCursorPos.set(Math.max(0, Math.min(width-hiddenColumnWidth-1, inverseTransformX(event.getX())-hiddenColumnWidth)));
+            currCursorPos.set(Math.max(0, Math.min(width-1, inverseTransformX(event.getX()))));
 
             timelineTblvw.refresh();
             updateTimeline();
@@ -785,9 +886,26 @@ public class CircLogController extends AbstractController {
 
         timelineCnvs.setOnMouseDragged(event -> {
 
-            currCursorPos.set(Math.max(0, Math.min(width-hiddenColumnWidth-1, inverseTransformX(event.getX())-hiddenColumnWidth)));
+            currCursorPos.set(Math.max(0, Math.min(width-1, inverseTransformX(event.getX()))));
 
             timelineTblvw.refresh();
+            updateTimeline();
+
+        });
+
+        timelineCnvs.setOnScroll(event -> {
+
+            clearRect40K();
+
+            double oldSpaceX = spaceX;
+            double cursorPos = currCursorPos.getValue()-hiddenColumnWidth;
+
+            spaceX += event.getDeltaY()*.05;
+            spaceX = Math.max(spaceX, MIN_ZOOM);
+            spaceX = Math.min(spaceX, MAX_ZOOM);
+
+            currCursorPos.setValue((spaceX/oldSpaceX)*cursorPos+hiddenColumnWidth);
+
             updateTimeline();
 
         });
@@ -809,14 +927,16 @@ public class CircLogController extends AbstractController {
 
     }
 
-    private class TimelineTableModel{
+    public class TimelineTableModel{
 
         private SelectionItem comp;
         private String title;
         private ArrayList<Value> values = new ArrayList<>();
+        private int radix = 2;
 
         public TimelineTableModel(SelectionItem comp){
             this.comp = comp;
+            this.radix = comp.getRadix();
         }
 
         public TimelineTableModel(String title, ArrayList<Value> values){
@@ -824,63 +944,73 @@ public class CircLogController extends AbstractController {
             this.values = values;
         }
 
-        public SimpleStringProperty getTitle(){
-            return comp == null ? new SimpleStringProperty(title):new SimpleStringProperty(comp.toShortString());
+        public void addValue(Value val){
+            values.add(val);
         }
 
-        public SimpleObjectProperty<Value> getValueAt(){
-            int index = (int) Math.floor(currCursorPos.getValue() /spaceX);
-            return values.isEmpty() || index >= values.size() ?  new SimpleObjectProperty<>(Value.NIL) :
-                    new SimpleObjectProperty<>(values.get(index));
+        public void setRadix(int radix){
+            this.radix = radix;
+        }
+
+        public SimpleStringProperty getTitle(){
+            return comp == null ? new SimpleStringProperty(title) : new SimpleStringProperty(comp.toShortString());
+        }
+
+        public SimpleObjectProperty<String> getValueAt(){
+
+            int index = (int) Math.floor((currCursorPos.getValue()-hiddenColumnWidth) / spaceX);
+            return values.isEmpty() || index >= values.size() ?  new SimpleObjectProperty<>(Value.NIL.toDisplayString(radix)) :
+                    new SimpleObjectProperty<>(values.get(index).toDisplayString(radix));
+
         }
 
         public ArrayList<Value> getValues(){
             return values;
         }
 
-        public void addValue(Value val){
-            values.add(val);
+        public SelectionItem getSelectionItem(){
+            return comp;
+        }
+
+        public int getRadix(){
+            return radix;
         }
 
     }
 
-    private void updateTimelineTable(ObservableList<SelectionItem> items){
+    private void updateTimelineTable(TreeItem<SelectionItem> selectedItemsRoot, ObservableList<SelectionItem> logItemsPlain){
 
-        timelineTblvw.getItems().clear();
+        timelineTblvw.getRoot().getChildren().clear();
         double bufflen = 0;
 
-        for (SelectionItem item: items) {
-            TimelineTableModel model = new TimelineTableModel(item);
-            timelineTblvw.getItems().add(model);
-            if(fm.computeStringWidth(item.toShortString())>bufflen)bufflen = fm.computeStringWidth(item.toShortString());
+        logObjects = convertToTimelineTableModel(null, selectedItemsRoot, timelineTblvw.getRoot());
+
+        for (SelectionItem item: logItemsPlain) {
+            if(fm.computeStringWidth(item.toShortString())>bufflen) bufflen = fm.computeStringWidth(item.toShortString());
         }
 
         hiddenColumnWidth = bufflen+5;
         timelineCnvs.setWidth(hiddenColumnWidth);
-        height = (timelineTblvw.getItems().size())*spaceY+hiddenColumnHeight;
-        timelineCnvs.setHeight(height);
         updateTimeline();
 
     }
 
     private void updateTimelineTable(String[] titles, ArrayList<ArrayList<Value>> values){
 
-        timelineTblvw.getItems().clear();
+        timelineTblvw.getRoot().getChildren().clear();
         double bufflen = 0;
 
         int i =0;
         for (String title: titles) {
             title = title.trim();
-            TimelineTableModel model = new TimelineTableModel(title,values.get(i));
-            timelineTblvw.getItems().add(model);
+            TreeItem<TimelineTableModel> model = new TreeItem<>(new TimelineTableModel(title,values.get(i)));
+            timelineTblvw.getRoot().getChildren().add(model);
             if(fm.computeStringWidth(title)>bufflen)bufflen = fm.computeStringWidth(title);
             i++;
         }
 
         hiddenColumnWidth = bufflen+5;
         timelineCnvs.setWidth(hiddenColumnWidth+values.get(0).size()*spaceX);
-        height = (timelineTblvw.getItems().size())*spaceY+hiddenColumnHeight;
-        timelineCnvs.setHeight(height);
         updateTimeline();
 
     }
@@ -889,9 +1019,9 @@ public class CircLogController extends AbstractController {
 
         int i = 0;
         int size = 0;
-        for (TimelineTableModel model : timelineTblvw.getItems()){
-            model.addValue(values[i]);
-            size = model.getValues().size();
+        for (TreeItem<TimelineTableModel> model : logObjects){
+            model.getValue().addValue(values[i]);
+            size = model.getValue().getValues().size();
             i++;
         }
 
@@ -899,6 +1029,22 @@ public class CircLogController extends AbstractController {
 
         timelineTblvw.refresh();
         updateTimeline();
+
+    }
+
+    private ObservableList<TreeItem<TimelineTableModel>> convertToTimelineTableModel(
+            ObservableList<TreeItem<TimelineTableModel>> ret, TreeItem<SelectionItem> root, TreeItem<TimelineTableModel> copyDest){
+
+        if(ret == null) ret = FXCollections.observableArrayList();
+
+        for (TreeItem<SelectionItem> node: root.getChildren()) {
+            TreeItem<TimelineTableModel> item = new TreeItem<>(new TimelineTableModel(node.getValue()));
+            copyDest.getChildren().add(item);
+            ret.add(item);
+            if(!node.getChildren().isEmpty()) convertToTimelineTableModel(ret, node, item);
+        }
+
+        return ret;
 
     }
 
@@ -912,6 +1058,18 @@ public class CircLogController extends AbstractController {
 
         timelineCnvs.setLayoutX(-hiddenColumnWidth);
 
+        //compute canvas height
+
+        int hcnt = 0;
+        for (TreeItem<TimelineTableModel> item : logObjects) {
+            if (timelineTblvw.getTreeItemLevel(item) == 1 || item.getParent().isExpanded()) {
+                hcnt++;
+            }
+        }
+
+        height = hcnt * spaceY + hiddenColumnHeight;
+        timelineCnvs.setHeight(height);
+
         gc.setStroke(LINE);
         gc.setFill(LINE);
 
@@ -924,153 +1082,191 @@ public class CircLogController extends AbstractController {
         //time
         gc.strokeLine(0, 5, width, 5);
         int counter = 0;
+        int skip = 1;
         String prefix = "";
         if (curSimulator.getTickFrequency() > 1000) prefix = "m";
 
+
         for (double i = hiddenColumnWidth + 2 * spaceX; i < width; i += 2 * spaceX) {
-            gc.strokeLine(i, 5, i, 15);
+
             String text = formatter.format(1 / curSimulator.getTickFrequency() * counter) + " " + prefix + "s";
-            gc.fillText(text, i - fm.computeStringWidth(text) - 2, 15);
+            if(fm.computeStringWidth(text)+charlen < 2 * spaceX * skip) {
+                gc.strokeLine(i, 5, i, 15);
+                gc.fillText(text, i - fm.computeStringWidth(text) - 2, 15);
+                skip = 1;
+            }else {
+                skip++;
+            }
+
             counter++;
+
         }
 
         double currRowY = 70;
 
         //comp data
-        for (TimelineTableModel model : timelineTblvw.getItems()) {
 
-            ArrayList<Value> vals = model.getValues();
-            int curValueLength = 0;
+        for (TreeItem<TimelineTableModel> item : logObjects) {
 
-            double currX = hiddenColumnWidth;
-            double currY = currRowY;
+            if(timelineTblvw.getTreeItemLevel(item) == 1 || item.getParent().isExpanded()) {
 
-            if(timelineTblvw.getItems().indexOf(model)==currSelectedRow){
-                gc.setLineWidth(2);
-            }else{
-                gc.setLineWidth(1);
-            }
+                TimelineTableModel model = item.getValue();
+                ArrayList<Value> vals = model.getValues();
+                int curValueLength = 0;
 
-            if (vals != null && !vals.isEmpty()) {
+                double currX = hiddenColumnWidth;
+                double currY = currRowY;
 
-                //ze_ reference :extend extend extend(canvas)
-                if (timelineCnvs.getWidth() - hiddenColumnWidth - vals.size() * spaceX < spaceX) {
-                    width = hiddenColumnWidth + vals.size() * spaceX;
-                    timelineCnvs.setWidth(width);
+                if (logObjects.indexOf(item) == currSelectedRow) {
+                    gc.setLineWidth(2);
+                } else {
+                    gc.setLineWidth(1);
                 }
 
-                for (int i = 0; i < vals.size(); i++) {
+                if (vals != null && !vals.isEmpty()) {
 
-                    gc.setStroke(LINE);
-                    gc.setFill(LINE);
-
-                    //if start value is true
-                    if (i == 0 && vals.get(0).equals(Value.TRUE)) currY -= yAdjust;
-
-                    if (i > 0) {
-
-                        //line up
-                        if (vals.get(i - 1).equals(Value.FALSE) && vals.get(i).equals(Value.TRUE)) {
-
-                            gc.strokeLine(currX + w, currY, currX + w, currY - yAdjust);
-                            currY -= yAdjust;
-
-                        }
-
-                        //line down
-                        if (vals.get(i - 1).equals(Value.TRUE) && vals.get(i).equals(Value.FALSE)) {
-
-                            gc.strokeLine(currX + w, currY, currX + w, currY + yAdjust);
-                            currY += yAdjust;
-
-                        }
-
+                    //ze_ reference :extend extend extend(canvas)
+                    if (timelineCnvs.getWidth() - hiddenColumnWidth - vals.size() * spaceX < spaceX) {
+                        width = hiddenColumnWidth + vals.size() * spaceX;
+                        timelineCnvs.setWidth(width);
+                    }else{
+                        timelineCnvs.setWidth(hiddenColumnWidth + vals.size() * spaceX);
                     }
 
-                    if (vals.get(i).equals(Value.TRUE)) {
-
-                        gc.setStroke(LINEFILL);
-                        gc.setFill(LINEFILL);
-
-                        gc.fillRect(currX + 2 * w, currY + w, spaceX, yAdjust);
+                    for (int i = 0; i < vals.size(); i++) {
 
                         gc.setStroke(LINE);
                         gc.setFill(LINE);
 
-                    } else if (vals.get(i).equals(Value.UNKNOWN)) {
-                        //Blue grid
+                        //if start value is true
+                        if (i == 0 && vals.get(0).equals(Value.TRUE)) currY -= yAdjust;
 
-                        gc.setStroke(Value.UNKNOWN_COLOR);
-                        gc.setFill(Value.UNKNOWN_COLOR);
+                        if (i > 0) {
 
-                        gc.strokeLine(currX, currRowY-yAdjust,currX + spaceX, currRowY-(yAdjust/2));
-                        gc.strokeLine(currX, currRowY-(yAdjust/2),currX + spaceX,currRowY-yAdjust);
-                        gc.strokeLine(currX, currRowY-(yAdjust/2),currX + spaceX, currRowY);
-                        gc.strokeLine(currX, currRowY,currX + spaceX, currRowY-(yAdjust/2));
+                            //line up
+                            if (vals.get(i - 1).equals(Value.FALSE) && vals.get(i).equals(Value.TRUE)) {
 
-                        gc.setStroke(LINE);
-                        gc.setFill(LINE);
+                                gc.strokeLine(currX + w, currY, currX + w, currY - yAdjust);
+                                currY -= yAdjust;
 
-                    }else if(!vals.get(i).equals(Value.FALSE)){
+                            }
 
-                        //hexagon
-                        gc.setStroke(LONGVALUE);
-                        gc.setFill(LONGVALUE);
+                            //line down
+                            if (vals.get(i - 1).equals(Value.TRUE) && vals.get(i).equals(Value.FALSE)) {
 
-                        if(curValueLength == 0){
-
-                            gc.strokeLine(currX+w, currRowY-yAdjust/2,currX + spaceX, currRowY-0.75*yAdjust);
-                            gc.strokeLine(currX+w, currRowY-yAdjust/2,currX + spaceX, currRowY-0.25*yAdjust);
-                            curValueLength++;
-
-                        }else {
-
-                            if (i != vals.size()-1 && vals.get(i+1).equals(vals.get(i))) {
-
-                                gc.strokeLine(currX+w, currRowY - 0.75 * yAdjust, currX + spaceX, currRowY - 0.75 * yAdjust);
-                                gc.strokeLine(currX+w, currRowY - 0.25 * yAdjust, currX + spaceX, currRowY - 0.25 * yAdjust);
-                                curValueLength++;
-
-                            }else{
-
-                                gc.strokeLine(currX+w, currRowY-0.75*yAdjust,currX + spaceX, currRowY-yAdjust/2);
-                                gc.strokeLine(currX+w, currRowY-0.25*yAdjust,currX + spaceX, currRowY-yAdjust/2);
-
-                                gc.setStroke(LINE);
-                                gc.setFill(LINE);
-
-                                String text = vals.get(i).toHexString()+"h";
-                                gc.fillText(text, currX-((curValueLength-1)*spaceX+fm.computeStringWidth(text))/2, currY-(yAdjust/2));
-
-                                curValueLength = 0;
+                                gc.strokeLine(currX + w, currY, currX + w, currY + yAdjust);
+                                currY += yAdjust;
 
                             }
 
                         }
 
-                        gc.setStroke(LINE);
-                        gc.setFill(LINE);
+                        if (vals.get(i).equals(Value.TRUE)) {
+
+                            gc.setStroke(LINEFILL);
+                            gc.setFill(LINEFILL);
+
+                            gc.fillRect(currX + 2 * w, currY + w, spaceX, yAdjust);
+
+                            gc.setStroke(LINE);
+                            gc.setFill(LINE);
+
+                        } else if (vals.get(i).equals(Value.UNKNOWN)) {
+                            //Blue grid
+
+                            gc.setStroke(Value.UNKNOWN_COLOR);
+                            gc.setFill(Value.UNKNOWN_COLOR);
+
+                            gc.strokeLine(currX, currRowY - yAdjust, currX + spaceX, currRowY - (yAdjust / 2));
+                            gc.strokeLine(currX, currRowY - (yAdjust / 2), currX + spaceX, currRowY - yAdjust);
+                            gc.strokeLine(currX, currRowY - (yAdjust / 2), currX + spaceX, currRowY);
+                            gc.strokeLine(currX, currRowY, currX + spaceX, currRowY - (yAdjust / 2));
+
+                            gc.setStroke(LINE);
+                            gc.setFill(LINE);
+
+                        } else if (!vals.get(i).equals(Value.FALSE)) {
+
+                            //hexagon
+                            gc.setStroke(LONGVALUE);
+                            gc.setFill(LONGVALUE);
+
+                            if (curValueLength == 0) {
+
+                                gc.strokeLine(currX + w, currRowY - yAdjust / 2, currX + spaceX, currRowY - 0.75 * yAdjust);
+                                gc.strokeLine(currX + w, currRowY - yAdjust / 2, currX + spaceX, currRowY - 0.25 * yAdjust);
+                                curValueLength++;
+
+                            } else {
+
+                                if (i != vals.size() - 1 && vals.get(i + 1).equals(vals.get(i))) {
+
+                                    gc.strokeLine(currX + w, currRowY - 0.75 * yAdjust, currX + spaceX, currRowY - 0.75 * yAdjust);
+                                    gc.strokeLine(currX + w, currRowY - 0.25 * yAdjust, currX + spaceX, currRowY - 0.25 * yAdjust);
+                                    curValueLength++;
+
+                                } else {
+
+                                    gc.strokeLine(currX + w, currRowY - 0.75 * yAdjust, currX + spaceX, currRowY - yAdjust / 2);
+                                    gc.strokeLine(currX + w, currRowY - 0.25 * yAdjust, currX + spaceX, currRowY - yAdjust / 2);
+
+                                    gc.setStroke(LINE);
+                                    gc.setFill(LINE);
+
+                                    //Format value
+                                    int radix = item.getValue().getRadix();
+                                    String text = vals.get(i).toDisplayString(radix);
+                                    double stringlen = fm.computeStringWidth(text);
+
+                                    //(curValueLength - 1) because it takes around half of spaceX at start and end
+                                    // of hexagon, that are bad to display text
+                                    if(stringlen > (curValueLength-1)*spaceX){
+
+                                        int len = (int)(((curValueLength-1)*spaceX)/charlen);
+                                        text = text.substring(0,len).trim();
+
+                                        if(text.length()<=1){ text = "..."; }
+                                        else{ text += "..."; }
+
+                                    }
+                                    if(radix == 2){text += "b";}
+                                    else if(radix == 10){text += "d";}
+                                    else if(radix == 16){text += "h";}
+
+                                    gc.fillText(text, currX - ((curValueLength - 1) * spaceX + fm.computeStringWidth(text)) / 2, currY - ((yAdjust-fm.getAscent()) / 2));
+
+                                    curValueLength = 0;
+
+                                }
+
+                            }
+
+                            gc.setStroke(LINE);
+                            gc.setFill(LINE);
+
+                        }
+
+                        gc.strokeLine(currX + gc.getLineWidth(), currY, currX + spaceX, currY);
+                        currX += spaceX;
 
                     }
 
-                    gc.strokeLine(currX + gc.getLineWidth(), currY, currX + spaceX, currY);
-                    currX += spaceX;
-
                 }
+
+                gc.strokeLine(0, currRowY, hiddenColumnWidth, currRowY);
+                gc.fillText(model.getTitle().getValue(), 0, currRowY - spaceY / 2);
+
+                currRowY += spaceY;
 
             }
 
-            gc.strokeLine(0, currRowY, hiddenColumnWidth, currRowY);
-            gc.fillText(model.getTitle().getValue(), 0, currRowY - spaceY / 2);
-
-            currRowY += spaceY;
         }
+
+        gc.setLineWidth(1);
 
         gc.setFill(CURRPOS);
         gc.setStroke(CURRPOS);
-        gc.strokeLine(currCursorPos.doubleValue() + hiddenColumnWidth - 1, 0, currCursorPos.doubleValue() + hiddenColumnWidth - 1, height);
-
-        gc.setLineWidth(1);
+        gc.strokeLine(currCursorPos.doubleValue() - 1, 0, currCursorPos.doubleValue() - 1, height);
 
     }
 
@@ -1097,6 +1293,15 @@ public class CircLogController extends AbstractController {
     }
 
     private void exportImage(){
+
+        for (TreeItem<TimelineTableModel> item: timelineTblvw.getRoot().getChildren()) {
+            item.setExpanded(true);
+        }
+
+        double curSpaceX = spaceX;
+        spaceX = REFERENCE_SPACE_X;
+
+        updateTimeline();
 
         WritableImage writableImage = new WritableImage((int)(timelineCnvs.getWidth()*pixelScale),
                 (int)(timelineCnvs.getHeight()*pixelScale));
@@ -1125,6 +1330,14 @@ public class CircLogController extends AbstractController {
             DialogManager.CreateErrorDialog(LogisimFX.newgui.ExportImageFrame.LC.get("couldNotCreateFile"), LogisimFX.newgui.ExportImageFrame.LC.get("couldNotCreateFile"));
         }
 
+        for (TreeItem<TimelineTableModel> item: timelineTblvw.getRoot().getChildren()) {
+            item.setExpanded(false);
+        }
+
+        spaceX = curSpaceX;
+
+        updateTimeline();
+
     }
 
 
@@ -1143,7 +1356,7 @@ public class CircLogController extends AbstractController {
 
     }
 
-    private void updateColumnCount(ObservableList<SelectionItem> items){
+    private void updateColumns(ObservableList<SelectionItem> items){
 
         logTblvw.getColumns().clear();
 
@@ -1186,7 +1399,7 @@ public class CircLogController extends AbstractController {
 
     }
 
-    private void updateColumnCount(String[] titles, ArrayList<LogLine> logLines){
+    private void updateColumns(String[] titles, ArrayList<LogLine> logLines){
 
         logTblvw.getColumns().clear();
 
@@ -1364,7 +1577,7 @@ public class CircLogController extends AbstractController {
         String[] titles =  lines[0].split("\t");
 
         restartCanvas();
-        updateColumnCount(titles, logLines);
+        updateColumns(titles, logLines);
         updateTimelineTable(titles, values);
 
     }
@@ -1396,7 +1609,7 @@ public class CircLogController extends AbstractController {
         }
         curSimulator = value;
         curModel = data;
-        curModel.bindComponentsList(selectedLst.getItems());
+        curModel.bindComponentsList(getItemsToLogPlain(null, selectionTrVw.getRoot()));
 
         if (curSimulator != null) curSimulator.addSimulatorListener(myListener);
         computeTitle(curModel);
@@ -1407,7 +1620,13 @@ public class CircLogController extends AbstractController {
 
     @Override
     public void onClose() {
+
         System.out.println("Circ log closed");
+
+        proj.removeProjectListener(myListener);
+        proj.removeLibraryListener(myListener);
+        curModel.removeModelListener(myListener);
+
     }
 
 }

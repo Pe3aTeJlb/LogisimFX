@@ -34,7 +34,6 @@
                               <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <ListView fx:id="selectedLst" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowSpan="8" />
                               <Button fx:id="addBtn" mnemonicParsing="false" prefWidth="100.0" text="Button" GridPane.columnIndex="1" />
                               <Button fx:id="changRadixBtn" mnemonicParsing="false" prefWidth="100.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Button fx:id="moveUpBtn" mnemonicParsing="false" prefWidth="100.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="2" />
@@ -42,6 +41,7 @@
                               <Button fx:id="removeBtn" mnemonicParsing="false" prefWidth="100.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                               <TreeView fx:id="circTrvw" prefHeight="200.0" prefWidth="200.0" GridPane.rowSpan="8" />
                               <Button fx:id="startTimelineBtn" alignment="CENTER" mnemonicParsing="false" prefHeight="22.0" prefWidth="160.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                              <TreeView fx:id="selectionTrVw" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowSpan="8" />
                            </children>
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -69,14 +69,14 @@
                                 <items>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                        <children>
-                                          <TableView fx:id="timelineTblvw" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                          <TreeTableView fx:id="timelineTblvw" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                        </children>
                                     </AnchorPane>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                        <children>
                                           <ScrollPane fx:id="canvasScrlPn" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <content>
-                                              <AnchorPane fx:id="canvasAnchor" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0">
+                                              <AnchorPane fx:id="timelineCanvasAnchor" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0">
                                                    <children>
                                                       <Canvas fx:id="timelineCnvs" height="200.0" width="200.0" />
                                                    </children>
