@@ -25,6 +25,9 @@ public class FileSelector {
             "*.jpg", "*.jpeg", "*.jpe", "*.jfi", "*.jfif", "*.jfi");
     private FileChooser.ExtensionFilter gif = new FileChooser.ExtensionFilter(LC_gui.getInstance().get("exportGifFilter"),"*.gif");
 
+    private FileChooser.ExtensionFilter circlog = new FileChooser.ExtensionFilter(LC_file.getInstance().get("logisimFilter"),"*.circlog");
+
+
     private Window ownerWindow;
 
 
@@ -111,6 +114,20 @@ public class FileSelector {
 
     }
 
+    public File OpenCirclog(){
+
+        UpdateLocale();
+
+        // fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
+
+        setCirclogFilter();
+
+        tempFile = fileChooser.showOpenDialog(ownerWindow);
+
+        return tempFile;
+
+    }
+
     public File SaveCircFile(){
 
         UpdateLocale();
@@ -181,6 +198,19 @@ public class FileSelector {
 
     }
 
+    public File SaveCirclog(){
+
+        UpdateLocale();
+
+        // fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
+
+        setCirclogFilter();
+
+        tempFile = fileChooser.showSaveDialog(ownerWindow);
+
+        return tempFile;
+
+    }
 
 
     public void setCircFilter(){
@@ -225,7 +255,13 @@ public class FileSelector {
 
     public void setFolderFilter(){
 
+    }
 
+    public void setCirclogFilter(){
+
+        fileChooser.getExtensionFilters().clear();
+        fileChooser.getExtensionFilters().add(circlog);
+        fileChooser.setSelectedExtensionFilter(circlog);
 
     }
 

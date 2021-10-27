@@ -215,4 +215,13 @@ public class MainToolBar extends ToolBar {
 
     }
 
+
+
+    public void terminateListeners(){
+
+        AppPreferences.GATE_SHAPE.removePropertyChangeListener(myListener);
+
+
+    }
+
 }

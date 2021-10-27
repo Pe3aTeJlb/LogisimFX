@@ -12,7 +12,6 @@ public class CustomButton extends Button {
         setMinSize(prefWidth,prefHeight);
         setMaxSize(prefWidth,prefHeight);
         graphicProperty().setValue(IconsManager.getIcon(IconName));
-        //getStylesheets().add();
 
     }
 

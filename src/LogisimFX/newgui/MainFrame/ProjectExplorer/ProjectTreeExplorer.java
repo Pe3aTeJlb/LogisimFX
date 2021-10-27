@@ -13,14 +13,9 @@ import LogisimFX.comp.ComponentFactory;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 
-//setStyle("-fx-background-color: yellow");
 public class ProjectTreeExplorer extends AbstractTreeExplorer {
 
     private Project proj;
-    private String highlight = "-fx-background-color: blue";
-    private String defColor = "-fx-background-color: white";
-
-    private TableCell toDefColor;
 
     public ProjectTreeExplorer(Project project){
 
@@ -86,10 +81,6 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
                                     Circuit circ = ((SubcircuitFactory) fact).getSubcircuit();
 
                                     setContextMenu(ContextMenuManager.CircuitContextMenu(proj, circ));
-
-                                    if (proj.getCurrentCircuit().equals(circ)) {
-                                        //setStyle(highlight);
-                                    }
 
                                 }
 

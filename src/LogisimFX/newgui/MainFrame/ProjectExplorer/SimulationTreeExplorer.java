@@ -32,17 +32,6 @@ public class SimulationTreeExplorer extends AbstractTreeExplorer {
 
                     super.updateItem(item, empty) ;
 
-                    setStyle(".tree-cell .tree-disclosure-node .arrow {\n" +
-                            "    -fx-shape: null;\n" +
-                            "    -fx-background-color: null;\n" +
-                            "    -fx-background-image: url(\"plus-arrow.png\");\n" +
-                            "}\n" +
-                            ".tree-cell:expanded .tree-disclosure-node .arrow {\n" +
-                            "    -fx-shape: null;\n" +
-                            "    -fx-background-color: null;\n" +
-                            "    -fx-background-image: url(\"minus-arrow.png\");\n" +
-                            "}");
-
                     if(empty || item == null) {
 
                         setText(null);

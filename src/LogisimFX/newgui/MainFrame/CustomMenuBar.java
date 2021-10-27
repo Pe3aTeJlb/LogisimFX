@@ -90,7 +90,7 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
         MenuItem Open = new MenuItem();
         Open.setAccelerator(KeyCombination.keyCombination("Ctrl+O"));
         Open.textProperty().bind(localizer.createStringBinding("fileOpenItem"));
-        Open.setOnAction(event -> { ProjectActions.doOpen(proj); });
+        Open.setOnAction(event -> ProjectActions.doOpen(proj));
 
         //see gui/menu/OpenRecent
         OpenRecentMenu OpenRecent = new OpenRecentMenu(proj);
@@ -935,6 +935,14 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
     @Override
     public void selectionChanged(Selection.Event event) {
         editMenu.calculateEnabled();
+    }
+
+
+    public void terminateListeners(){
+
+        proj.getFrameController().getAppearanceCanvas().getSelection().removeSelectionListener(this);
+        proj.getFrameController().getLayoutCanvas().getSelection().removeListener(this);
+
     }
 
 

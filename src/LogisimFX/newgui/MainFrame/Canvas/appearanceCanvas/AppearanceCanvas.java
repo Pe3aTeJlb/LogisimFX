@@ -16,6 +16,7 @@ import LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import LogisimFX.proj.Project;
 
 import javafx.animation.AnimationTimer;
+import javafx.scene.CacheHint;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.input.KeyEvent;
@@ -66,12 +67,15 @@ public class AppearanceCanvas extends Canvas {
     public AppearanceCanvas(AnchorPane rt, Project project){
 
         super(rt.getWidth(),rt.getHeight());
+        this.setCache(true);
+        this.setCacheHint(CacheHint.SPEED);
+        this.setFocusTraversable(true);
 
         root = rt;
 
         proj = project;
 
-        this.setFocusTraversable(true);
+
 
         g = new Graphics(this.getGraphicsContext2D());
         g.toDefault();
@@ -208,6 +212,16 @@ public class AppearanceCanvas extends Canvas {
             if(event.getButton() == MouseButton.MIDDLE) {
                 double dx = event.getX() - dragScreenX;
                 double dy = event.getY() - dragScreenY;
+
+                if(transform[4] + dx > 0){
+                    dx = 0;
+                }
+
+                if(transform[5] + dy > 0){
+                    dy = 0;
+                }
+
+
                 if (dx == 0 && dy == 0) {
                     return;
                 }
@@ -251,6 +265,9 @@ public class AppearanceCanvas extends Canvas {
 
             transform[4] = width / 2 - cx * newScale;
             transform[5] = height / 2 - cy * newScale;
+
+            if(transform[4] > 0) transform[4] = 0;
+            if(transform[5] > 0) transform[5] = 0;
 
         });
 
@@ -391,8 +408,8 @@ public class AppearanceCanvas extends Canvas {
     public void toolGestureComplete(CanvasTool tool, CanvasObject created) {
 
         if (tool == this.tool && tool != selectTool) {
-            proj.setAbstractTool(selectTool);
             if (created != null) {
+                proj.setAbstractTool(selectTool);
                 getSelection().clearSelected();
                 getSelection().setSelected(created, true);
             }
@@ -557,6 +574,13 @@ public class AppearanceCanvas extends Canvas {
         }
 
 
+
+    }
+
+
+    public void terminateCanvas(){
+
+        update.stop();
 
     }
 

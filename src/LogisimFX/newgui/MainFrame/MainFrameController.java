@@ -51,6 +51,8 @@ public class MainFrameController extends AbstractController {
     private LayoutCanvas layoutCanvas;
     private AppearanceCanvas appearanceCanvas;
 
+    MyProjectListener myProjectListener = new MyProjectListener();
+
     class MyProjectListener
             implements ProjectListener, LibraryListener, CircuitListener {
 
@@ -91,7 +93,6 @@ public class MainFrameController extends AbstractController {
         proj = p;
         proj.setFrameController(this);
 
-        MyProjectListener myProjectListener = new MyProjectListener();
         proj.addProjectListener(myProjectListener);
         proj.addLibraryListener(myProjectListener);
         proj.addCircuitListener(myProjectListener);
@@ -316,8 +317,19 @@ public class MainFrameController extends AbstractController {
 
     @Override
     public void onClose() {
-        appearanceCanvas.updateStop();
-        layoutCanvas.updateStop();
+
+        appearanceCanvas.terminateCanvas();
+        layoutCanvas.terminateCanvas();
+
+        mainToolBar.terminateListeners();
+        treeExplorerAggregation.terminateListeners();
+        attributeTable.terminateListener();
+        menubar.terminateListeners();
+
+        proj.removeProjectListener(myProjectListener);
+        proj.removeLibraryListener(myProjectListener);
+        proj.removeCircuitListener(myProjectListener);
+
         System.out.println("main close. requested by:" + this);
 
     }

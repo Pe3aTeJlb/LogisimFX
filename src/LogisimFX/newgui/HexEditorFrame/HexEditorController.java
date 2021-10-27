@@ -603,6 +603,8 @@ public class HexEditorController extends AbstractController {
         hexTableVw.setItems(FXCollections.observableArrayList());
         hexTableVw = null;
 
+        hexModel.removeHexModelListener(listener);
+
         stage = null;
 
     }

@@ -4,6 +4,7 @@ import LogisimFX.FileSelector;
 import LogisimFX.IconsManager;
 import LogisimFX.circuit.*;
 import LogisimFX.comp.Component;
+import LogisimFX.data.BitWidth;
 import LogisimFX.data.Value;
 import LogisimFX.file.LibraryEvent;
 import LogisimFX.file.LibraryListener;
@@ -18,18 +19,19 @@ import LogisimFX.proj.ProjectListener;
 import com.sun.javafx.tk.FontMetrics;
 import com.sun.javafx.tk.Toolkit;
 
-import javafx.beans.property.SimpleDoubleProperty;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.CacheHint;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseButton;
@@ -38,11 +40,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
-import javafx.scene.transform.Transform;
 import javafx.stage.Stage;
 
+import javafx.embed.swing.SwingFXUtils;
 import javax.imageio.ImageIO;
 import java.awt.image.*;
+
 import java.io.*;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -119,6 +122,12 @@ public class CircLogController extends AbstractController {
     private Canvas timelineCnvs;
 
     @FXML
+    private ScrollBar canvasVScrlBr;
+
+    @FXML
+    private ScrollBar canvasHScrlBr;
+
+    @FXML
     private Button exportImageBtn;
 
     @FXML
@@ -161,7 +170,6 @@ public class CircLogController extends AbstractController {
             implements ProjectListener, LibraryListener,
             SimulatorListener, ModelListener {
 
-
         public void projectChanged(ProjectEvent event) {
             int action = event.getAction();
             if (action == ProjectEvent.ACTION_SET_STATE) {
@@ -194,11 +202,13 @@ public class CircLogController extends AbstractController {
         @Override
         public void entryAdded(ModelEvent event, Value[] values) {
 
-            logTblvw.getItems().add(new LogLine(values));
-            logTblvw.refresh();
+            if(logObjects != null) {
+                logTblvw.getItems().add(new LogLine(values));
+                logTblvw.refresh();
 
-            timelineTblvw.refresh();
-            updateTimelineData(values);
+                timelineTblvw.refresh();
+                Platform.runLater(() -> updateTimelineData(values));
+            }
 
         }
 
@@ -244,8 +254,9 @@ public class CircLogController extends AbstractController {
                 updateColumns(itemsToLog);
 
                 //timeline tab
-                restartCanvas();
                 updateTimelineTable(selectionTrVw.getRoot(), itemsToLog);
+
+                restartCanvas();
 
                 logger = new LogThread(curModel);
                 logger.start();
@@ -323,11 +334,20 @@ public class CircLogController extends AbstractController {
                         event.consume();
 
                         if (cell.getTreeItem() != null) {
-                            List<TreeItem<SelectionItem>> array = getSelectedNodes();
+
+                            List<TreeItem<SelectionItem>> array;
+                            if(event.isControlDown()){
+                                treeSelectionModel.clearSelection();
+                                treeSelectionModel.select(cell.getTreeItem());
+                                array = getSelectedNodes(true);
+                            }else{
+                                array = getSelectedNodes(false);
+                            }
+
                             if(array != null && !array.isEmpty()){
                                 selectionTrVw.getRoot().getChildren().addAll(array);
-                                //selectedLst.getItems().addAll(array);
                             }
+
                         }
 
                     }
@@ -397,7 +417,7 @@ public class CircLogController extends AbstractController {
 
         addBtn.textProperty().bind(LC.createStringBinding("selectionAdd"));
         addBtn.setOnAction(event -> {
-            List<TreeItem<SelectionItem>> array = getSelectedNodes();
+            List<TreeItem<SelectionItem>> array = getSelectedNodes(false);
             if(array != null && !array.isEmpty()){
                 selectionTrVw.getRoot().getChildren().addAll(array);
                 //selectedLst.getItems().addAll(array);
@@ -579,7 +599,7 @@ public class CircLogController extends AbstractController {
 
     }
 
-    private ArrayList<TreeItem<SelectionItem>> getSelectedNodes(){
+    private ArrayList<TreeItem<SelectionItem>> getSelectedNodes(boolean ctrlDown){
 
         ArrayList<TreeItem<SelectionItem>> ret = new ArrayList<>();
 
@@ -619,7 +639,7 @@ public class CircLogController extends AbstractController {
                 TreeItem<SelectionItem> newItem = new TreeItem<>(new SelectionItem(curModel, nPath, n.comp, opt));
                 ret.add(newItem);
 
-                if(n.opts != null && n.opts.length > 0 && !fromOptionNode){
+                if(n.opts != null && n.opts.length > 0 && !fromOptionNode && !ctrlDown){
 
                     int index = circTrvw.getRoot().getChildren().indexOf(node);
                     for (TreeItem<Object> subnode: circTrvw.getRoot().getChildren().get(index).getChildren()) {
@@ -674,13 +694,16 @@ public class CircLogController extends AbstractController {
 
 
 
-    public static final SimpleDoubleProperty currCursorPos = new SimpleDoubleProperty(0);
+    private double currCursorPos = 0;
 
     private GraphicsContext gc;
     private double width, height;
     private double[] transform;
+    private double dragScreenX, dragScreenY;
 
-    private static final double MIN_ZOOM = 6.25;
+    private ScrollBar timelineTableViewScrollbar;
+
+    private static final double MIN_ZOOM = 12.5;
     private static final double MAX_ZOOM = 250;
 
     NumberFormat formatter = new DecimalFormat("#.####");
@@ -755,13 +778,7 @@ public class CircLogController extends AbstractController {
             if (curSimulator != null) curSimulator.tick();
         });
 
-        splitPane.setDividerPositions(0.05);
 
-        timelineCanvasAnchor.widthProperty().addListener((observable, oldValue, newValue) -> {
-            //width = canvasAnchor.getWidth()+hiddenColumnWidth;
-            //timelineCnvs.setWidth(width);
-            updateTimeline();
-        });
 
         timelineTblvw.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
         timelineTblvw.setRoot(new TreeItem<>(null));
@@ -864,7 +881,14 @@ public class CircLogController extends AbstractController {
         timelineTblvw.getColumns().add(nameColumn);
         timelineTblvw.getColumns().add(valueColumn);
 
-        restartCanvas();
+
+
+        splitPane.setDividerPositions(0.05);
+
+
+        timelineCnvs.setCache(true);
+        timelineCnvs.setCacheHint(CacheHint.SPEED);
+
         gc = timelineCnvs.getGraphicsContext2D();
         gc.setFont(TIMESTEPFONT);
         w = gc.getLineWidth()/2;
@@ -875,40 +899,159 @@ public class CircLogController extends AbstractController {
                 transform[3], transform[4], transform[5]
         );
 
+        restartCanvas();
+
+        canvasHScrlBr.setVisible(false);
+        canvasVScrlBr.setVisible(false);
+
+        //Events
+
+        timelineCanvasAnchor.widthProperty().addListener((observable, oldValue, newValue) -> updateTimeline());
+
+        timelineCanvasAnchor.heightProperty().addListener((observable, oldValue, newValue) -> updateTimeline());
+
         timelineCnvs.setOnMousePressed(event -> {
 
-            currCursorPos.set(Math.max(0, Math.min(width-1, inverseTransformX(event.getX()))));
+            dragScreenX = event.getX();
+            dragScreenY = event.getY();
 
-            timelineTblvw.refresh();
-            updateTimeline();
+            if(event.getButton() == MouseButton.PRIMARY) {
+                currCursorPos = (Math.max(0, Math.min(width - 1, inverseTransformX(event.getX()))));
+
+                timelineTblvw.refresh();
+                updateTimeline();
+            }
 
         });
 
         timelineCnvs.setOnMouseDragged(event -> {
 
-            currCursorPos.set(Math.max(0, Math.min(width-1, inverseTransformX(event.getX()))));
+            if(event.getButton() == MouseButton.PRIMARY) {
+                currCursorPos = (Math.max(0, Math.min(width - 1, inverseTransformX(event.getX()))));
 
-            timelineTblvw.refresh();
-            updateTimeline();
+                timelineTblvw.refresh();
+                updateTimeline();
+            }
+
+            if(event.getButton() == MouseButton.SECONDARY || event.getButton() == MouseButton.MIDDLE){
+
+                //if scrollbars are visible we must adjust transform[] limits to theirs width/height
+                double horizScrollbarHeight = 0;
+                double vertScrollbarWidth = 0;
+
+                if(canvasHScrlBr.isVisible())horizScrollbarHeight = canvasHScrlBr.getHeight();
+                if(canvasVScrlBr.isVisible())vertScrollbarWidth = canvasVScrlBr.getWidth();
+
+                double dx = event.getX() - dragScreenX;
+                double dy = event.getY() - dragScreenY;
+                if (dx == 0 && dy == 0) {
+                    return;
+                }
+
+                if(transform[4] + dx > 0 || transform[4] + dx < -(width-timelineCanvasAnchor.getWidth()-hiddenColumnWidth+vertScrollbarWidth)){
+                    dx = 0;
+                }
+
+                if(transform[5] + dy > 0 || transform[5] + dy < -(height-timelineCanvasAnchor.getHeight()+horizScrollbarHeight)){
+                    dy = 0;
+                }
+
+                clearRect40K(transform[4], transform[5]);
+
+                transform[4] += dx;
+                transform[5] += dy;
+
+                canvasHScrlBr.setValue(-transform[4]);
+                //canvasVScrlBr.setValue(-transform[5]);
+                timelineTableViewScrollbar.setValue(-transform[5]/canvasVScrlBr.getMax());
+
+                dragScreenX = event.getX();
+                dragScreenY = event.getY();
+
+                updateTimeline();
+
+            }
 
         });
 
         timelineCnvs.setOnScroll(event -> {
 
-            clearRect40K();
+            clearRect40K(transform[4], transform[5]);
 
             double oldSpaceX = spaceX;
-            double cursorPos = currCursorPos.getValue()-hiddenColumnWidth;
+            double cursorPos = currCursorPos-hiddenColumnWidth;
+            double oldWidth = width;
 
             spaceX += event.getDeltaY()*.05;
             spaceX = Math.max(spaceX, MIN_ZOOM);
             spaceX = Math.min(spaceX, MAX_ZOOM);
 
-            currCursorPos.setValue((spaceX/oldSpaceX)*cursorPos+hiddenColumnWidth);
+            width = ((width-hiddenColumnWidth)/oldSpaceX)*spaceX+hiddenColumnWidth;
+            if(width < oldWidth){
+                if(transform[4] + (oldWidth - width) < 0){
+                    transform[4] += oldWidth - width;
+                } else {
+                    transform[4] = 0;
+                }
+            }
+
+            currCursorPos = ((spaceX/oldSpaceX)*cursorPos+hiddenColumnWidth);
 
             updateTimeline();
 
         });
+
+        canvasHScrlBr.valueProperty().addListener(event -> {
+
+            clearRect40K(transform[4], transform[5]);
+
+            transform[4] = -canvasHScrlBr.getValue();
+
+            updateTimeline();
+
+        });
+
+        canvasVScrlBr.valueProperty().addListener(event -> {
+
+            clearRect40K(transform[4], transform[5]);
+
+            transform[5] = -canvasVScrlBr.getValue();
+
+            if(timelineTableViewScrollbar.getValue() != canvasVScrlBr.getValue()) {
+                timelineTableViewScrollbar.setValue(canvasVScrlBr.getValue() / canvasVScrlBr.getMax());
+            }
+
+            updateTimeline();
+
+        });
+
+        //Lookup func must be executed after tableview is shown
+        stage.setOnShown(event -> {
+
+            //Find tableview scrollbar and add listener for rows scroll
+            timelineTableViewScrollbar = (ScrollBar) timelineTblvw.lookup(".scroll-bar");
+
+            timelineTableViewScrollbar.visibleProperty().addListener(observable -> recalculateScrollBars());
+
+            timelineTableViewScrollbar.valueProperty().addListener(observable -> {
+
+                clearRect40K(transform[4], transform[5]);
+
+                transform[5] = -timelineTableViewScrollbar.getValue()*(canvasVScrlBr.getMax());
+
+                if(timelineTableViewScrollbar.getValue() != canvasVScrlBr.getValue()) {
+                    canvasVScrlBr.setValue(timelineTableViewScrollbar.getValue() * canvasVScrlBr.getMax());
+                }
+
+                updateTimeline();
+
+            });
+
+        });
+
+
+
+        //Bottom buttons
 
         fileOpenBtn.textProperty().bind(LC.createStringBinding("openButton"));
         fileOpenBtn.setOnAction(event -> importLog());
@@ -958,7 +1101,7 @@ public class CircLogController extends AbstractController {
 
         public SimpleObjectProperty<String> getValueAt(){
 
-            int index = (int) Math.floor((currCursorPos.getValue()-hiddenColumnWidth) / spaceX);
+            int index = (int) Math.floor((currCursorPos-hiddenColumnWidth) / spaceX);
             return values.isEmpty() || index >= values.size() ?  new SimpleObjectProperty<>(Value.NIL.toDisplayString(radix)) :
                     new SimpleObjectProperty<>(values.get(index).toDisplayString(radix));
 
@@ -990,12 +1133,14 @@ public class CircLogController extends AbstractController {
         }
 
         hiddenColumnWidth = bufflen+5;
-        timelineCnvs.setWidth(hiddenColumnWidth);
+
         updateTimeline();
 
     }
 
     private void updateTimelineTable(String[] titles, ArrayList<ArrayList<Value>> values){
+
+        logObjects = FXCollections.observableArrayList();
 
         timelineTblvw.getRoot().getChildren().clear();
         double bufflen = 0;
@@ -1006,11 +1151,14 @@ public class CircLogController extends AbstractController {
             TreeItem<TimelineTableModel> model = new TreeItem<>(new TimelineTableModel(title,values.get(i)));
             timelineTblvw.getRoot().getChildren().add(model);
             if(fm.computeStringWidth(title)>bufflen)bufflen = fm.computeStringWidth(title);
+            logObjects.add(model);
             i++;
         }
 
         hiddenColumnWidth = bufflen+5;
-        timelineCnvs.setWidth(hiddenColumnWidth+values.get(0).size()*spaceX);
+        width = hiddenColumnWidth+values.get(0).size()*spaceX;
+        currCursorPos = hiddenColumnWidth;
+
         updateTimeline();
 
     }
@@ -1020,15 +1168,26 @@ public class CircLogController extends AbstractController {
         int i = 0;
         int size = 0;
         for (TreeItem<TimelineTableModel> model : logObjects){
-            model.getValue().addValue(values[i]);
             size = model.getValue().getValues().size();
-            i++;
+            if(size < 1000) {
+                model.getValue().addValue(values[i]);
+                size = model.getValue().getValues().size();
+                i++;
+            }
         }
 
-        currCursorPos.setValue(hiddenColumnWidth + size * spaceX - 1);
+        System.out.println(size);
+        if(size < 1000) {
 
-        timelineTblvw.refresh();
-        updateTimeline();
+            //ze_ reference :extend extend extend(canvas)
+            width = hiddenColumnWidth + size * spaceX;
+
+            currCursorPos = (hiddenColumnWidth + size * spaceX - 1);
+
+            timelineTblvw.refresh();
+            updateTimeline();
+
+        }
 
     }
 
@@ -1050,223 +1209,377 @@ public class CircLogController extends AbstractController {
 
     private void updateTimeline(){
 
-        clearRect40K();
+        clearRect40K(transform[4], transform[5]);
 
         gc.setTransform(transform[0], transform[1], transform[2],
                 transform[3], transform[4], transform[5]
         );
 
+        timelineCnvs.setWidth(hiddenColumnWidth+timelineCanvasAnchor.getWidth());
+        timelineCnvs.setHeight(timelineCanvasAnchor.getHeight()+hiddenColumnHeight);
+
         timelineCnvs.setLayoutX(-hiddenColumnWidth);
 
-        //compute canvas height
+        if(logObjects != null) {
 
-        int hcnt = 0;
-        for (TreeItem<TimelineTableModel> item : logObjects) {
-            if (timelineTblvw.getTreeItemLevel(item) == 1 || item.getParent().isExpanded()) {
-                hcnt++;
-            }
-        }
+            //compute canvas height
 
-        height = hcnt * spaceY + hiddenColumnHeight;
-        timelineCnvs.setHeight(height);
-
-        gc.setStroke(LINE);
-        gc.setFill(LINE);
-
-        //hidden table
-        gc.strokeLine(hiddenColumnWidth, 0, hiddenColumnWidth, height);
-        gc.strokeLine(0, 20, hiddenColumnWidth, 20);
-        gc.fillText(LC.get("componentTitle"), (hiddenColumnWidth - fm.computeStringWidth(LC.get("componentTitle"))) / 2, 15);
-
-
-        //time
-        gc.strokeLine(0, 5, width, 5);
-        int counter = 0;
-        int skip = 1;
-        String prefix = "";
-        if (curSimulator.getTickFrequency() > 1000) prefix = "m";
-
-
-        for (double i = hiddenColumnWidth + 2 * spaceX; i < width; i += 2 * spaceX) {
-
-            String text = formatter.format(1 / curSimulator.getTickFrequency() * counter) + " " + prefix + "s";
-            if(fm.computeStringWidth(text)+charlen < 2 * spaceX * skip) {
-                gc.strokeLine(i, 5, i, 15);
-                gc.fillText(text, i - fm.computeStringWidth(text) - 2, 15);
-                skip = 1;
-            }else {
-                skip++;
+            int hcnt = 0;
+            for (TreeItem<TimelineTableModel> item : logObjects) {
+                if (timelineTblvw.getTreeItemLevel(item) == 1 || item.getParent().isExpanded()) {
+                    hcnt++;
+                }
             }
 
-            counter++;
+            height = hcnt * spaceY + hiddenColumnHeight;
 
-        }
+            recalculateScrollBars();
 
-        double currRowY = 70;
+            gc.setStroke(LINE);
+            gc.setFill(LINE);
 
-        //comp data
+            //hidden table
+            gc.strokeLine(hiddenColumnWidth, 0, hiddenColumnWidth, height);
+            gc.strokeLine(0, 20, hiddenColumnWidth, 20);
+            gc.fillText(LC.get("componentTitle"), (hiddenColumnWidth - fm.computeStringWidth(LC.get("componentTitle"))) / 2, 15);
 
-        for (TreeItem<TimelineTableModel> item : logObjects) {
 
-            if(timelineTblvw.getTreeItemLevel(item) == 1 || item.getParent().isExpanded()) {
+            //time steps
+            gc.strokeLine(0, 5, width, 5);
+            int counter = 0;
+            int skip = 1;
+            String prefix = "";
+            if (curSimulator.getTickFrequency() > 1000) prefix = "m";
 
-                TimelineTableModel model = item.getValue();
-                ArrayList<Value> vals = model.getValues();
-                int curValueLength = 0;
+            for (double i = hiddenColumnWidth + 2 * spaceX; i < width; i += 2 * spaceX) {
 
-                double currX = hiddenColumnWidth;
-                double currY = currRowY;
+                String text = formatter.format(1 / curSimulator.getTickFrequency() * counter) + " " + prefix + "s";
 
-                if (logObjects.indexOf(item) == currSelectedRow) {
-                    gc.setLineWidth(2);
+                if (fm.computeStringWidth(text) + charlen < 2 * spaceX * skip && computeRender(i,15)) {
+
+                    gc.strokeLine(i, 5, i, 15);
+                    gc.fillText(text, i - fm.computeStringWidth(text) - 2, 15);
+                    skip = 1;
+
                 } else {
-                    gc.setLineWidth(1);
+
+                    skip++;
+
                 }
 
-                if (vals != null && !vals.isEmpty()) {
+                counter++;
 
-                    //ze_ reference :extend extend extend(canvas)
-                    if (timelineCnvs.getWidth() - hiddenColumnWidth - vals.size() * spaceX < spaceX) {
-                        width = hiddenColumnWidth + vals.size() * spaceX;
-                        timelineCnvs.setWidth(width);
-                    }else{
-                        timelineCnvs.setWidth(hiddenColumnWidth + vals.size() * spaceX);
+            }
+
+            //lower line bound of first row
+            double currRowY = 70;
+
+            //comp data
+
+            for (TreeItem<TimelineTableModel> item : logObjects) {
+
+                if ( (timelineTblvw.getTreeItemLevel(item) == 1 || item.getParent().isExpanded())) {
+
+                    TimelineTableModel model = item.getValue();
+                    ArrayList<Value> vals = model.getValues();
+                    int curValueLength = 0;
+
+                    double currX = hiddenColumnWidth;
+                    double currY = currRowY;
+
+                    if (logObjects.indexOf(item) == currSelectedRow) {
+                        gc.setLineWidth(2);
+                    } else {
+                        gc.setLineWidth(1);
                     }
 
-                    for (int i = 0; i < vals.size(); i++) {
+                    if (vals != null && !vals.isEmpty()) {
 
-                        gc.setStroke(LINE);
-                        gc.setFill(LINE);
-
-                        //if start value is true
-                        if (i == 0 && vals.get(0).equals(Value.TRUE)) currY -= yAdjust;
-
-                        if (i > 0) {
-
-                            //line up
-                            if (vals.get(i - 1).equals(Value.FALSE) && vals.get(i).equals(Value.TRUE)) {
-
-                                gc.strokeLine(currX + w, currY, currX + w, currY - yAdjust);
-                                currY -= yAdjust;
-
-                            }
-
-                            //line down
-                            if (vals.get(i - 1).equals(Value.TRUE) && vals.get(i).equals(Value.FALSE)) {
-
-                                gc.strokeLine(currX + w, currY, currX + w, currY + yAdjust);
-                                currY += yAdjust;
-
-                            }
-
-                        }
-
-                        if (vals.get(i).equals(Value.TRUE)) {
-
-                            gc.setStroke(LINEFILL);
-                            gc.setFill(LINEFILL);
-
-                            gc.fillRect(currX + 2 * w, currY + w, spaceX, yAdjust);
+                        for (int i = 0; i < vals.size(); i++) {
 
                             gc.setStroke(LINE);
                             gc.setFill(LINE);
 
-                        } else if (vals.get(i).equals(Value.UNKNOWN)) {
-                            //Blue grid
+                            //if start value is true
+                            if (i == 0 && vals.get(0).equals(Value.TRUE)) currY -= yAdjust;
 
-                            gc.setStroke(Value.UNKNOWN_COLOR);
-                            gc.setFill(Value.UNKNOWN_COLOR);
+                            if (i > 0) {
 
-                            gc.strokeLine(currX, currRowY - yAdjust, currX + spaceX, currRowY - (yAdjust / 2));
-                            gc.strokeLine(currX, currRowY - (yAdjust / 2), currX + spaceX, currRowY - yAdjust);
-                            gc.strokeLine(currX, currRowY - (yAdjust / 2), currX + spaceX, currRowY);
-                            gc.strokeLine(currX, currRowY, currX + spaceX, currRowY - (yAdjust / 2));
+                                //line up
+                                if (vals.get(i - 1).equals(Value.FALSE) && vals.get(i).equals(Value.TRUE)) {
 
-                            gc.setStroke(LINE);
-                            gc.setFill(LINE);
+                                    if(computeRender(currX,currY))gc.strokeLine(currX + w, currY, currX + w, currY - yAdjust);
+                                    currY -= yAdjust;
 
-                        } else if (!vals.get(i).equals(Value.FALSE)) {
+                                }
 
-                            //hexagon
-                            gc.setStroke(LONGVALUE);
-                            gc.setFill(LONGVALUE);
+                                //line down
+                                if (vals.get(i - 1).equals(Value.TRUE) && vals.get(i).equals(Value.FALSE)) {
 
-                            if (curValueLength == 0) {
-
-                                gc.strokeLine(currX + w, currRowY - yAdjust / 2, currX + spaceX, currRowY - 0.75 * yAdjust);
-                                gc.strokeLine(currX + w, currRowY - yAdjust / 2, currX + spaceX, currRowY - 0.25 * yAdjust);
-                                curValueLength++;
-
-                            } else {
-
-                                if (i != vals.size() - 1 && vals.get(i + 1).equals(vals.get(i))) {
-
-                                    gc.strokeLine(currX + w, currRowY - 0.75 * yAdjust, currX + spaceX, currRowY - 0.75 * yAdjust);
-                                    gc.strokeLine(currX + w, currRowY - 0.25 * yAdjust, currX + spaceX, currRowY - 0.25 * yAdjust);
-                                    curValueLength++;
-
-                                } else {
-
-                                    gc.strokeLine(currX + w, currRowY - 0.75 * yAdjust, currX + spaceX, currRowY - yAdjust / 2);
-                                    gc.strokeLine(currX + w, currRowY - 0.25 * yAdjust, currX + spaceX, currRowY - yAdjust / 2);
-
-                                    gc.setStroke(LINE);
-                                    gc.setFill(LINE);
-
-                                    //Format value
-                                    int radix = item.getValue().getRadix();
-                                    String text = vals.get(i).toDisplayString(radix);
-                                    double stringlen = fm.computeStringWidth(text);
-
-                                    //(curValueLength - 1) because it takes around half of spaceX at start and end
-                                    // of hexagon, that are bad to display text
-                                    if(stringlen > (curValueLength-1)*spaceX){
-
-                                        int len = (int)(((curValueLength-1)*spaceX)/charlen);
-                                        text = text.substring(0,len).trim();
-
-                                        if(text.length()<=1){ text = "..."; }
-                                        else{ text += "..."; }
-
-                                    }
-                                    if(radix == 2){text += "b";}
-                                    else if(radix == 10){text += "d";}
-                                    else if(radix == 16){text += "h";}
-
-                                    gc.fillText(text, currX - ((curValueLength - 1) * spaceX + fm.computeStringWidth(text)) / 2, currY - ((yAdjust-fm.getAscent()) / 2));
-
-                                    curValueLength = 0;
+                                    if(computeRender(currX,currY))gc.strokeLine(currX + w, currY, currX + w, currY + yAdjust);
+                                    currY += yAdjust;
 
                                 }
 
                             }
 
-                            gc.setStroke(LINE);
-                            gc.setFill(LINE);
+                            if (vals.get(i).equals(Value.TRUE) && computeRender(currX,currY)) {
+                                //true fill
+                                gc.setStroke(LINEFILL);
+                                gc.setFill(LINEFILL);
+
+                                gc.fillRect(currX + 2 * w, currY + w, spaceX, yAdjust);
+
+                                gc.setStroke(LINE);
+                                gc.setFill(LINE);
+
+                            } else if (vals.get(i).equals(Value.UNKNOWN) && computeRender(currX,currY)) {
+                                //Blue grid of unknown value
+                                gc.setStroke(Value.UNKNOWN_COLOR);
+                                gc.setFill(Value.UNKNOWN_COLOR);
+
+                                gc.strokeLine(currX, currRowY - yAdjust, currX + spaceX, currRowY - (yAdjust / 2));
+                                gc.strokeLine(currX, currRowY - (yAdjust / 2), currX + spaceX, currRowY - yAdjust);
+                                gc.strokeLine(currX, currRowY - (yAdjust / 2), currX + spaceX, currRowY);
+                                gc.strokeLine(currX, currRowY, currX + spaceX, currRowY - (yAdjust / 2));
+
+                                gc.setStroke(LINE);
+                                gc.setFill(LINE);
+
+                            } else if (!vals.get(i).equals(Value.FALSE)) {
+
+                                //hexagon
+                                gc.setStroke(LONGVALUE);
+                                gc.setFill(LONGVALUE);
+
+                                if (curValueLength == 0) {
+                                    //draw first 3 dots of hexagon
+                                    if(computeRender(currX,currY)) {
+                                        gc.strokeLine(currX + w, currRowY - yAdjust / 2, currX + spaceX, currRowY - 0.75 * yAdjust);
+                                        gc.strokeLine(currX + w, currRowY - yAdjust / 2, currX + spaceX, currRowY - 0.25 * yAdjust);
+                                    }
+                                    curValueLength++;
+
+                                } else {
+
+                                    if (i != vals.size() - 1 && vals.get(i + 1).equals(vals.get(i))) {
+                                        //finish hexagon
+                                        if(computeRender(currX,currY)) {
+                                            gc.strokeLine(currX + w, currRowY - 0.75 * yAdjust, currX + spaceX, currRowY - 0.75 * yAdjust);
+                                            gc.strokeLine(currX + w, currRowY - 0.25 * yAdjust, currX + spaceX, currRowY - 0.25 * yAdjust);
+                                        }
+                                        curValueLength++;
+
+                                    } else {
+                                        //hexagon body
+                                        if(computeRender(currX,currY)) {
+                                            gc.strokeLine(currX + w, currRowY - 0.75 * yAdjust, currX + spaceX, currRowY - yAdjust / 2);
+                                            gc.strokeLine(currX + w, currRowY - 0.25 * yAdjust, currX + spaceX, currRowY - yAdjust / 2);
+                                        }
+
+                                        gc.setStroke(LINE);
+                                        gc.setFill(LINE);
+
+                                        //Format value
+                                        int radix = item.getValue().getRadix();
+                                        String text = vals.get(i).toDisplayString(radix);
+                                        double stringlen = fm.computeStringWidth(text);
+
+                                        //(curValueLength - 0.5) because it takes around half of spaceX at start and end
+                                        // of hexagon, that are bad to display text
+                                        if (stringlen > (curValueLength - 0.5) * spaceX) {
+
+                                            int len = (int) (((curValueLength - 0.5) * spaceX) / charlen);
+                                            text = text.substring(0, len).trim();
+
+                                            if (text.length() <= 1) {
+                                                text = "...";
+                                            } else {
+                                                text += "...";
+                                            }
+
+                                        }
+                                        if (radix == 2) {
+                                            text += "b";
+                                        } else if (radix == 10) {
+                                            text += "d";
+                                        } else if (radix == 16) {
+                                            text += "h";
+                                        }
+
+                                        gc.fillText(text, currX - ((curValueLength - 1) * spaceX + fm.computeStringWidth(text)) / 2, currY - ((yAdjust - fm.getAscent()) / 2));
+
+                                        curValueLength = 0;
+
+                                    }
+
+                                }
+
+                                gc.setStroke(LINE);
+                                gc.setFill(LINE);
+
+                            }
+
+                            //lower row bound
+                            if(computeRender(currX,currY))gc.strokeLine(currX + gc.getLineWidth(), currY, currX + spaceX, currY);
+                            currX += spaceX;
 
                         }
 
-                        gc.strokeLine(currX + gc.getLineWidth(), currY, currX + spaceX, currY);
-                        currX += spaceX;
+                    }
+
+                    //fill hidden table data
+                    if(computeRender(0, currRowY - spaceY / 2)) {
+                        gc.strokeLine(0, currRowY, hiddenColumnWidth, currRowY);
+                        gc.fillText(model.getTitle().getValue(), 0, currRowY - spaceY / 2);
+                    }
+
+                    currRowY += spaceY;
+
+                }
+
+            }
+
+            gc.setLineWidth(1);
+
+            //red line
+            gc.setFill(CURRPOS);
+            gc.setStroke(CURRPOS);
+            gc.strokeLine(currCursorPos - 1, 0, currCursorPos - 1, height);
+
+        }
+
+    }
+
+    public boolean computeRender(double currX, double currY){
+
+        return (currX > inverseTransformX(-spaceX) && currX < inverseTransformX(timelineCnvs.getWidth()+spaceX*2)) &&
+                (currY > inverseTransformY(0)-spaceY && currY < inverseTransformY(timelineCnvs.getHeight())+spaceY);
+
+    }
+
+    private void exportImage(){
+
+        File dest;
+        FileSelector fileSelector = new FileSelector(stage);
+        dest = fileSelector.showSaveDialog(LogisimFX.newgui.ExportImageFrame.LC.get("exportImageFileSelect"));
+
+        if(dest != null) {
+
+            for (TreeItem<TimelineTableModel> item: timelineTblvw.getRoot().getChildren()) {
+                item.setExpanded(true);
+            }
+
+            double curSpaceX = spaceX;
+            spaceX = REFERENCE_SPACE_X;
+
+            width = logObjects.get(0).getValue().getValues().size() * spaceX + hiddenColumnWidth;
+
+            clearRect40K(transform[4], transform[5]);
+
+            transform[4] = 0;
+            transform[5] = 0;
+
+            updateTimeline();
+
+            WritableImage writableImage = new WritableImage((int)(width), (int)(height));
+
+            final double tileXStep = timelineCnvs.getWidth();
+            final double tileYStep = timelineCnvs.getHeight();
+
+            final int tilesX = (int)Math.ceil(width / tileXStep);
+            final int tilesY = (int)Math.ceil(height / tileYStep);
+
+            try {
+
+                for (int col = 0; col < tilesX; col++) {
+
+                    for (int row = 0; row < tilesY; row++) {
+
+                        System.out.println("title "+col+" "+row);
+
+                        int x = col * (int)tileXStep;
+                        int tileWidth = (int)tileXStep;
+                        if(tileWidth > width - tileXStep * col) tileWidth = (int)(width - tileXStep * col);
+
+                        int y = row * (int)tileYStep;
+                        int tileHeight = (int)tileYStep;
+                        if(tileHeight > height - tileYStep * row) tileHeight = (int)(height - tileYStep * row);
+
+                        System.out.println("Coords "+x+" "+y + " width "+tileWidth+" "+tileHeight);
+
+                        clearRect40K(transform[4], transform[5]);
+
+                        transform[4] = -x+1;
+                        transform[5] = -y;
+
+                        updateTimeline();
+
+                        final SnapshotParameters params = new SnapshotParameters();
+
+                        Image img = new ImageView(timelineCnvs.snapshot(params, null)).getImage();
+
+                        writableImage.getPixelWriter().setPixels(x, y, tileWidth, tileHeight, img.getPixelReader(), 0, 0);
 
                     }
 
                 }
 
-                gc.strokeLine(0, currRowY, hiddenColumnWidth, currRowY);
-                gc.fillText(model.getTitle().getValue(), 0, currRowY - spaceY / 2);
+                File where;
+                if (dest.isDirectory()) {
+                    where = new File(dest, proj.getLogisimFile().getName() + ".png");
+                } else {
+                    String newName = dest.getName() + ".png";
+                    where = new File(dest.getParentFile(), newName);
+                }
 
-                currRowY += spaceY;
+                try {
 
+                    BufferedImage bImage = SwingFXUtils.fromFXImage(writableImage, null);
+                    ImageIO.write(bImage, "PNG", where);
+                    bImage = null;
+                    writableImage = null;
+
+                } catch (Exception e) {
+                    DialogManager.CreateErrorDialog(LogisimFX.newgui.ExportImageFrame.LC.get("couldNotCreateFile"), LogisimFX.newgui.ExportImageFrame.LC.get("couldNotCreateFile"));
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
+            for (TreeItem<TimelineTableModel> item : timelineTblvw.getRoot().getChildren()) {
+                item.setExpanded(false);
+            }
+
+            spaceX = curSpaceX;
+            width = logObjects.get(0).getValue().getValues().size() * spaceX + hiddenColumnWidth;
+
+            clearRect40K(transform[4], transform[5]);
+
+            transform[4] = 0;
+            transform[5] = 0;
+
+            updateTimeline();
 
         }
 
-        gc.setLineWidth(1);
+    }
 
-        gc.setFill(CURRPOS);
-        gc.setStroke(CURRPOS);
-        gc.strokeLine(currCursorPos.doubleValue() - 1, 0, currCursorPos.doubleValue() - 1, height);
+
+    private void restartCanvas(){
+
+        currCursorPos = hiddenColumnWidth;
+        width = 0;
+
+        timelineCnvs.setWidth(timelineCanvasAnchor.getWidth()+hiddenColumnWidth);
+        timelineCnvs.setHeight(timelineCanvasAnchor.getHeight()+hiddenColumnHeight);
+
+        gc.setTransform(transform[0], transform[1], transform[2],
+                transform[3], transform[4], transform[5]
+        );
+
+        clearRect40K(transform[4], transform[5]);
 
     }
 
@@ -1279,64 +1592,39 @@ public class CircLogController extends AbstractController {
         return (y-transform[5])/transform[3];
     }
 
-    private void clearRect40K() {
+    private void recalculateScrollBars(){
+
+        if(width - hiddenColumnWidth < timelineCanvasAnchor.getWidth()){
+            canvasHScrlBr.setMax(1);
+            canvasHScrlBr.setVisible(false);
+        }else{
+            double vertScrollbarWidth = 0;
+            if(canvasVScrlBr.isVisible())vertScrollbarWidth = canvasVScrlBr.getWidth();
+            canvasHScrlBr.setMin(0);
+            canvasHScrlBr.setMax(width-hiddenColumnWidth-timelineCanvasAnchor.getWidth()+vertScrollbarWidth);
+            canvasHScrlBr.setVisible(true);
+            canvasHScrlBr.setVisibleAmount(canvasHScrlBr.getMax()*(timelineCanvasAnchor.getWidth()/(width)));
+        }
+
+        if(height < timelineCanvasAnchor.getHeight()){
+            canvasVScrlBr.setMax(1);
+            canvasVScrlBr.setVisible(false);
+        }else{
+            double horizScrollbarHeight = 0;
+            if(canvasHScrlBr.isVisible())horizScrollbarHeight = canvasHScrlBr.getHeight();
+            canvasVScrlBr.setMin(0);
+            canvasVScrlBr.setMax(height-timelineCanvasAnchor.getHeight()+horizScrollbarHeight);
+            canvasVScrlBr.setVisibleAmount(timelineTableViewScrollbar.getVisibleAmount()*canvasVScrlBr.getMax());
+            canvasVScrlBr.setVisible(true);
+        }
+
+    }
+
+    private void clearRect40K(double prevX, double prevY) {
 
         gc.setFill(BACKGROUND);
-        gc.fillRect(-1,-1,width+1,height+1);
-
-    }
-
-    private void restartCanvas(){
-        currCursorPos.setValue(0);
-        timelineCnvs.setWidth(0);
-        timelineCnvs.setHeight(0);
-    }
-
-    private void exportImage(){
-
-        for (TreeItem<TimelineTableModel> item: timelineTblvw.getRoot().getChildren()) {
-            item.setExpanded(true);
-        }
-
-        double curSpaceX = spaceX;
-        spaceX = REFERENCE_SPACE_X;
-
-        updateTimeline();
-
-        WritableImage writableImage = new WritableImage((int)(timelineCnvs.getWidth()*pixelScale),
-                (int)(timelineCnvs.getHeight()*pixelScale));
-        SnapshotParameters spa = new SnapshotParameters();
-        spa.setTransform(Transform.scale(pixelScale, pixelScale));
-        ImageView img = new ImageView(timelineCnvs.snapshot(spa, writableImage));
-
-        File dest;
-        FileSelector fileSelector = new FileSelector(stage);
-        dest = fileSelector.showSaveDialog(LogisimFX.newgui.ExportImageFrame.LC.get("exportImageFileSelect"));
-
-        File where;
-        if (dest.isDirectory()) {
-            where = new File(dest, proj.getLogisimFile().getName()+".png");
-        } else {
-            String newName = dest.getName() + ".png";
-            where = new File(dest.getParentFile(), newName);
-        }
-
-        try {
-
-            BufferedImage bImage = SwingFXUtils.fromFXImage(img.getImage(), null);
-            ImageIO.write(bImage, "PNG", where);
-
-        } catch (Exception e) {
-            DialogManager.CreateErrorDialog(LogisimFX.newgui.ExportImageFrame.LC.get("couldNotCreateFile"), LogisimFX.newgui.ExportImageFrame.LC.get("couldNotCreateFile"));
-        }
-
-        for (TreeItem<TimelineTableModel> item: timelineTblvw.getRoot().getChildren()) {
-            item.setExpanded(false);
-        }
-
-        spaceX = curSpaceX;
-
-        updateTimeline();
+        gc.fillRect(-prevX/transform[0],-prevY/transform[0],timelineCnvs.getWidth()/transform[0],
+                timelineCnvs.getHeight()/transform[0]);
 
     }
 
@@ -1358,19 +1646,20 @@ public class CircLogController extends AbstractController {
 
     private void updateColumns(ObservableList<SelectionItem> items){
 
+        logTblvw.getItems().clear();
         logTblvw.getColumns().clear();
 
         int i = 0;
         for (SelectionItem item: items) {
 
-            TableColumn<LogLine, Value> column = new TableColumn<>(item.toShortString());
+            TableColumn<LogLine, String> column = new TableColumn<>(item.toShortString());
             int finalI = i;
-            column.setCellValueFactory(param -> param.getValue().getValue(finalI));
+            column.setCellValueFactory(param -> param.getValue().getValue(finalI,item.getRadix()));
             column.setCellFactory(param -> {
-                TableCell<LogLine, Value> cell = new TableCell<LogLine, Value>() {
+                TableCell<LogLine, String> cell = new TableCell<LogLine, String>() {
 
                     @Override
-                    protected void updateItem(Value item, boolean empty) {
+                    protected void updateItem(String item, boolean empty) {
 
                         super.updateItem(item, empty);
 
@@ -1378,7 +1667,7 @@ public class CircLogController extends AbstractController {
                             super.setText(null);
                             super.setGraphic(null);
                         } else {
-                            super.setText(item.toString());
+                            super.setText(item);
                             super.setGraphic(null);
                         }
 
@@ -1386,21 +1675,29 @@ public class CircLogController extends AbstractController {
 
                 };
 
+                cell.setOnMousePressed(event -> {
+                    if(event.getButton() == MouseButton.SECONDARY){
+                        cell.setContextMenu(ContextMenuManager.RadixOptionsContextMenu(item, logTblvw));
+                    }
+                });
 
                 cell.setAlignment(Pos.CENTER);
 
                 return cell;
             });
+
             column.setSortable(false);
 
             logTblvw.getColumns().add(column);
             i++;
+
         }
 
     }
 
     private void updateColumns(String[] titles, ArrayList<LogLine> logLines){
 
+        logTblvw.getItems().clear();
         logTblvw.getColumns().clear();
 
         int i = 0;
@@ -1456,6 +1753,10 @@ public class CircLogController extends AbstractController {
             return new SimpleObjectProperty<>(values[index]);
         }
 
+        public SimpleStringProperty getValue(int index, int radix){
+            return new SimpleStringProperty(values[index].toDisplayString(radix));
+        }
+
         public Value[] getValues(){
             return values;
         }
@@ -1468,9 +1769,9 @@ public class CircLogController extends AbstractController {
 
         FileSelector fileSelector = new FileSelector(stage);
 
-        File file = fileSelector.showSaveDialog(LC.get("fileHelp"));
+        File file = fileSelector.SaveCirclog();
 
-        if (file.exists() && (!file.canWrite() || file.isDirectory())) {
+        if (file != null && file.exists() && (!file.canWrite() || file.isDirectory())) {
 
             DialogManager.CreateErrorDialog(LC.get("fileCannotWriteTitle"),
                     LC.getFormatted("fileCannotWriteMessage", file.getName()));
@@ -1492,7 +1793,7 @@ public class CircLogController extends AbstractController {
         StringBuilder buff = new StringBuilder();
         for (int i = 0; i < sel.size(); i++) {
             if (i > 0) buff.append("\t");
-            buff.append(sel.get(i).toShortString());
+            buff.append(sel.get(i).toShortString().trim());
         }
         writer.println(buff.toString());
 
@@ -1503,8 +1804,7 @@ public class CircLogController extends AbstractController {
             for (int i = 0; i < values.length; i++) {
                 if (i > 0) buf.append("\t");
                 if (values[i] != null) {
-                    int radix = sel.get(i).getRadix();
-                    buf.append(values[i].toDisplayString(radix));
+                    buf.append(values[i].toDisplayString(2).replace(" ",""));
                 }
             }
             writer.println(buf.toString());
@@ -1520,76 +1820,77 @@ public class CircLogController extends AbstractController {
 
         FileSelector fileSelector = new FileSelector(stage);
 
-        File file = fileSelector.showOpenDialog(LC.get("fileHelp"));
+        File file = fileSelector.OpenCirclog();
 
-        //read
-        StringBuilder builder = new StringBuilder();
+        if(file != null) {
+            //read
+            StringBuilder builder = new StringBuilder();
 
-        try {
+            try {
 
-            FileReader reader = new FileReader(file);
 
-            char[] buf = new char[1024];
-            int numRead;
+                FileReader reader = new FileReader(file);
 
-            while ((numRead=reader.read(buf)) != -1) {
-                String readData = String.valueOf(buf, 0, numRead);
-                builder.append(readData);
+                char[] buf = new char[1024];
+                int numRead;
+
+                while ((numRead = reader.read(buf)) != -1) {
+                    String readData = String.valueOf(buf, 0, numRead);
+                    builder.append(readData);
+                }
+
+                reader.close();
+
+            } catch (IOException e) {
+                System.out.println("Cant read File " + e.getMessage());
             }
 
-            reader.close();
+            //Parse
+            String data = builder.toString();
 
-        }
-        catch(IOException e) {
-            System.out.println("Cant read File " + e.getMessage());
-        }
+            String[] lines = data.trim().split("\n");
+            ArrayList<LogLine> logLines = new ArrayList<>();
 
-        //Parse
-        String data = builder.toString();
-
-        String[] lines = data.trim().split("\n");
-        ArrayList<LogLine> logLines = new ArrayList<>();
-
-        ArrayList<ArrayList<Value>> values = new ArrayList<>();
-        for(int m = 0; m < lines[0].split("\t").length; m++){ values.add(new ArrayList<>()); }
-
-        for(int j = 1; j < lines.length; j++){
-
-            String[] buff = lines[j].split("\t");
-
-            Value[] vals = new Value[buff.length];
-
-            for(int h = 0; h < buff.length; h++){
-
-                Value val = null;
-                if(buff[h].trim().equals("0"))val = Value.FALSE;
-                else if(buff[h].trim().equals("1"))val = Value.TRUE;
-
-                vals[h] = val;
-                values.get(h).add(val);
-
+            ArrayList<ArrayList<Value>> values = new ArrayList<>();
+            for (int m = 0; m < lines[0].split("\t").length; m++) {
+                values.add(new ArrayList<>());
             }
 
-            LogLine l = new LogLine(vals);
-            logLines.add(l);
+            for (int j = 1; j < lines.length; j++) {
+
+                String[] buff = lines[j].split("\t");
+
+                Value[] vals = new Value[buff.length];
+
+                for (int h = 0; h < buff.length; h++) {
+
+                    Value val = null;
+                    if (buff[h].trim().equals("0")) val = Value.FALSE;
+                    else if (buff[h].trim().equals("1")) val = Value.TRUE;
+                    else val = Value.createKnown(BitWidth.create(buff[h].length()), Integer.parseInt(buff[h], 2));
+
+                    vals[h] = val;
+                    values.get(h).add(val);
+
+                }
+
+                LogLine l = new LogLine(vals);
+                logLines.add(l);
+            }
+
+            String[] titles = lines[0].split("\t");
+
+            restartCanvas();
+            if (logger != null) logger.interrupt();
+            recalculateScrollBars();
+
+            updateColumns(titles, logLines);
+            updateTimelineTable(titles, values);
         }
-
-        String[] titles =  lines[0].split("\t");
-
-        restartCanvas();
-        updateColumns(titles, logLines);
-        updateTimelineTable(titles, values);
 
     }
 
 
-
-    public void setCircuit(Circuit circ){
-
-        //setText(StringUtil.format(Strings.get("logFrameMenuItem"), title));
-        stage.titleProperty().bind(LC.createStringBinding("logFrameTitle"));
-
-    }
 
     private void setSimulator(Simulator value) {
 
@@ -1622,6 +1923,13 @@ public class CircLogController extends AbstractController {
     public void onClose() {
 
         System.out.println("Circ log closed");
+
+        if(logger != null)logger.interrupt();
+
+        timelineCnvs = null;
+        gc = null;
+
+        modelMap.clear();
 
         proj.removeProjectListener(myListener);
         proj.removeLibraryListener(myListener);

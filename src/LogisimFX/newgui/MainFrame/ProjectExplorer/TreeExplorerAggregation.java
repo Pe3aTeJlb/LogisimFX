@@ -183,4 +183,14 @@ public class TreeExplorerAggregation extends TreeView {
 
     }
 
+
+
+    public void terminateListeners(){
+
+        proj.removeProjectListener(myListener);
+        proj.removeLibraryListener(myListener);
+        AppPreferences.GATE_SHAPE.removePropertyChangeListener(myListener);
+
+    }
+
 }

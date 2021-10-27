@@ -11,7 +11,7 @@ import LogisimFX.data.Value;
 import LogisimFX.instance.StdAttr;
 
 
-class SelectionItem implements AttributeListener, CircuitListener {
+public class SelectionItem implements AttributeListener, CircuitListener {
 
 	private Model model;
 	private Component[] path;

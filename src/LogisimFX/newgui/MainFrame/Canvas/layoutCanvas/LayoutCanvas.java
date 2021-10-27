@@ -17,6 +17,7 @@ import LogisimFX.tools.*;
 import com.sun.javafx.tk.FontMetrics;
 import javafx.animation.AnimationTimer;
 import javafx.beans.binding.StringBinding;
+import javafx.scene.CacheHint;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.input.KeyEvent;
@@ -162,12 +163,23 @@ public class LayoutCanvas extends Canvas {
             return ret;
         }
 
-
     }
+
+
+    /* framerate debug
+    private final long[] frameTimes = new long[100];
+    private int frameTimeIndex = 0 ;
+    private boolean arrayFilled = false ;
+
+     */
+
 
     public LayoutCanvas(AnchorPane rt, Project project){
 
         super(rt.getWidth(),rt.getHeight());
+        this.setCache(true);
+        this.setCacheHint(CacheHint.SCALE);
+        this.setFocusTraversable(true);
 
         root = rt;
 
@@ -176,8 +188,6 @@ public class LayoutCanvas extends Canvas {
         proj.addProjectListener(myProjectListener);
         proj.addLibraryListener(myProjectListener);
         proj.addCircuitListener(myProjectListener);
-
-        this.setFocusTraversable(true);
 
         g = new Graphics(this.getGraphicsContext2D());
         g.toDefault();
@@ -195,14 +205,34 @@ public class LayoutCanvas extends Canvas {
 
         proj.getSimulator().addSimulatorListener(tickCounter);
 
+
         update = new AnimationTimer() {
+
             @Override
             public void handle(long now) {
                 Update();
+
+                /*
+                long oldFrameTime = frameTimes[frameTimeIndex] ;
+                frameTimes[frameTimeIndex] = now ;
+                frameTimeIndex = (frameTimeIndex + 1) % frameTimes.length ;
+                if (frameTimeIndex == 0) {
+                    arrayFilled = true ;
+                }
+                if (arrayFilled) {
+                    long elapsedNanos = now - oldFrameTime ;
+                    long elapsedNanosPerFrame = elapsedNanos / frameTimes.length ;
+                    double frameRate = 1_000_000_000.0 / elapsedNanosPerFrame ;
+                    System.out.println(String.format("Current frame rate: %.3f", frameRate));
+                }
+
+                 */
+
             }
+
         };
 
-        //update.start();
+        Update();
 
     }
 
@@ -216,8 +246,6 @@ public class LayoutCanvas extends Canvas {
 
     //Unity Hie!
     private void Update(){
-
-        //System.out.println("layout draw");
 
         updateCanvasSize();
 
@@ -345,7 +373,9 @@ public class LayoutCanvas extends Canvas {
         boolean printerView = AppPreferences.PRINTER_VIEW.getBoolean();
         context = new ComponentDrawContext(circ, circState, g, printerView);
         context.setHighlightedWires(highlightedWires);
-        circ.draw(context, hidden);
+        circ.draw(context, hidden, inverseTransformX(0),inverseTransformY(0),
+                inverseTransformX(this.getWidth()),inverseTransformY(this.getHeight()));
+        //circ.draw(context, hidden);
         selection.draw(context, hidden);
 
 
@@ -538,6 +568,17 @@ public class LayoutCanvas extends Canvas {
             if(event.getButton() == MouseButton.MIDDLE) {
                 double dx = event.getX() - dragScreenX;
                 double dy = event.getY() - dragScreenY;
+
+                if(transform[4] + dx > 0){
+                    dx = 0;
+                }
+
+                if(transform[5] + dy > 0){
+                    dy = 0;
+                }
+
+
+
                 if (dx == 0 && dy == 0) {
                     return;
                 }
@@ -581,6 +622,9 @@ public class LayoutCanvas extends Canvas {
 
             transform[4] = width / 2 - cx * newScale;
             transform[5] = height / 2 - cy * newScale;
+
+            if(transform[4] > 0) transform[4] = 0;
+           if(transform[5] > 0) transform[5] = 0;
 
         });
 
@@ -782,6 +826,20 @@ public class LayoutCanvas extends Canvas {
             System.out.println("Snapped " + snappedX + " " + snappedY);
 
         }
+
+    }
+
+
+    public void terminateCanvas(){
+
+        update.stop();
+
+        proj.removeProjectListener(myProjectListener);
+        proj.removeLibraryListener(myProjectListener);
+        proj.removeCircuitListener(myProjectListener);
+
+        proj.getSimulator().removeSimulatorListener(tickCounter);
+
 
     }
 

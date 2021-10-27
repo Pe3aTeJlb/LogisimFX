@@ -431,6 +431,37 @@ public class Circuit {
 	//
 	// Graphics methods
 	//
+	public void draw(ComponentDrawContext context, Collection<Component> hidden,
+					 int upperLeftX, int upperLeftY, int bottomRightX, int bottomRightY) {
+
+		wires.draw(context, hidden);
+
+		if (hidden == null || hidden.size() == 0) {
+			for (Component c : comps) {
+				if( ((c.getBounds().getX() >= upperLeftX && c.getBounds().getX() <= bottomRightX) ||
+						(c.getBounds().getX()+c.getBounds().getWidth() >= upperLeftX && c.getBounds().getX()+c.getBounds().getWidth() <= bottomRightX))
+						&&
+						((c.getBounds().getY() >= upperLeftY && c.getBounds().getY() <= bottomRightY) ||
+								(c.getBounds().getY()+c.getBounds().getHeight() >= upperLeftY && c.getBounds().getY()+c.getBounds().getHeight() <= bottomRightY))
+				){
+					c.draw(context);
+				}
+			}
+		} else {
+			for (Component c : comps) {
+				if (!hidden.contains(c)) {
+					try {
+						c.draw(context);
+					} catch (RuntimeException e) {
+						// this is a JAR developer error - display it and move on
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+
+	}
+
 	public void draw(ComponentDrawContext context, Collection<Component> hidden) {
 
 		wires.draw(context, hidden);

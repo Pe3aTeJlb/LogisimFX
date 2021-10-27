@@ -163,4 +163,12 @@ public class AttributeTable extends GridPane
 
     }
 
+
+    public void terminateListener(){
+
+        proj.getFrameController().getLayoutCanvas().getSelection().removeListener(this);
+        proj.getFrameController().getAppearanceCanvas().getSelection().removeSelectionListener(this);
+
+    }
+
 }
