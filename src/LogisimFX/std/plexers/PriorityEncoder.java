@@ -103,7 +103,7 @@ public class PriorityEncoder extends InstanceFactory {
 		}
 
 		for (int i = 0; i < n; i++) {
-			ps[i].setToolTip(LC.createStringBinding("priorityEncoderInTip", "" + i));
+			ps[i].setToolTip(LC.createComplexStringBinding("priorityEncoderInTip", "" + i));
 		}
 		ps[n + OUT].setToolTip(LC.createStringBinding("priorityEncoderOutTip"));
 		ps[n + EN_IN].setToolTip(LC.createStringBinding("priorityEncoderEnableInTip"));

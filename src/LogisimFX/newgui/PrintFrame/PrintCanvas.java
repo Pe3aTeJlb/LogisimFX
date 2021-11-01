@@ -1,5 +1,6 @@
 package LogisimFX.newgui.PrintFrame;
 
+import LogisimFX.OldFontmetrics;
 import LogisimFX.circuit.Circuit;
 import LogisimFX.comp.Component;
 import LogisimFX.comp.ComponentDrawContext;
@@ -123,7 +124,7 @@ public class PrintCanvas extends Canvas{
 
             FontMetrics fm2 = g.getFontMetrics();
 
-            g.c.strokeText(header,Math.round((imWidth - fm2.computeStringWidth(header)) / 2), fm2.getAscent());
+            g.c.strokeText(header,Math.round((imWidth - OldFontmetrics.computeStringWidth(fm2,header)) / 2), fm2.getAscent());
 
             g.c.translate(0, headHeight);
 

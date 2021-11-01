@@ -1,8 +1,10 @@
 package LogisimFX.newgui.MainFrame.Canvas.layoutCanvas;
 
+import LogisimFX.OldFontmetrics;
 import LogisimFX.circuit.*;
 import LogisimFX.comp.Component;
 import LogisimFX.comp.ComponentDrawContext;
+import LogisimFX.comp.ComponentUserEvent;
 import LogisimFX.data.*;
 import LogisimFX.file.LibraryEvent;
 import LogisimFX.file.LibraryListener;
@@ -16,10 +18,12 @@ import LogisimFX.tools.*;
 
 import com.sun.javafx.tk.FontMetrics;
 import javafx.animation.AnimationTimer;
+import javafx.animation.PauseTransition;
 import javafx.beans.binding.StringBinding;
 import javafx.scene.CacheHint;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -28,6 +32,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
+import javafx.util.Duration;
 
 import java.util.Collections;
 import java.util.List;
@@ -49,6 +54,8 @@ public class LayoutCanvas extends Canvas {
     private double dragScreenX, dragScreenY;
     private static double[] transform;
 
+
+
     private AnimationTimer update;
 
     //Grid
@@ -63,17 +70,21 @@ public class LayoutCanvas extends Canvas {
     // don't bother to update the size if it hasn't changed more than this
     static final double SQRT_2 = Math.sqrt(2.0);
 
+
     //Error string
     private static final Color DEFAULT_ERROR_COLOR = Color.color(0.753, 0, 0);
     private static final Font DEFAULT_ERROR_FONT = Font.font("serif", FontWeight.BOLD, FontPosture.REGULAR, 14);
     private Color errorColor;
     private static StringBinding errorMessage;
 
+
     //Tick rate
     private static final Color TICK_RATE_COLOR = Color.color(0, 0, 0.361, 0.361);
     private static final Font TICK_RATE_FONT = Font.font("serif", FontWeight.BOLD, FontPosture.REGULAR, 12);
     private TickCounter tickCounter;
 
+
+    //Haloed components
     static final Color HALO_COLOR = Color.color(0.753, 1, 1);
     private Component haloedComponent = null;
     private Circuit haloedCircuit = null;
@@ -85,8 +96,13 @@ public class LayoutCanvas extends Canvas {
     private Tool dragTool;
     private Selection selection;
 
+    //Objects of canvas mouse events
     private ContextMenu contextMenu;
 
+    private Tooltip tooltip = new Tooltip();
+    private PauseTransition pauseTransition;
+
+    //
     private LayoutEditHandler layoutEditHandler;
 
     private MyProjectListener myProjectListener = new MyProjectListener();
@@ -176,6 +192,7 @@ public class LayoutCanvas extends Canvas {
 
     public LayoutCanvas(AnchorPane rt, Project project){
 
+        //Super & set cache options & focus traversable
         super(rt.getWidth(),rt.getHeight());
         this.setCache(true);
         this.setCacheHint(CacheHint.SCALE);
@@ -185,10 +202,12 @@ public class LayoutCanvas extends Canvas {
 
         proj = project;
 
+        //set Listeners
         proj.addProjectListener(myProjectListener);
         proj.addLibraryListener(myProjectListener);
         proj.addCircuitListener(myProjectListener);
 
+        //init Graphics shell
         g = new Graphics(this.getGraphicsContext2D());
         g.toDefault();
 
@@ -196,6 +215,7 @@ public class LayoutCanvas extends Canvas {
 
         layoutEditHandler = new LayoutEditHandler(this);
 
+        //set init transforms
         transform = new double[6];
         transform[0] = transform[3] = 1;
         transform[1] = transform[2] = transform[4] = transform[5] = 0;
@@ -205,6 +225,7 @@ public class LayoutCanvas extends Canvas {
 
         proj.getSimulator().addSimulatorListener(tickCounter);
 
+        pauseTransition = new PauseTransition(Duration.millis(750));
 
         update = new AnimationTimer() {
 
@@ -445,7 +466,7 @@ public class LayoutCanvas extends Canvas {
         Font f = Font.font("serif", FontWeight.BOLD, FontPosture.REGULAR, 14/zoom);
         g.setFont(f);
         FontMetrics fm = g.getFontMetrics();
-        int x = inverseTransformX((getWidth() - fm.computeStringWidth(msg)) / 2);
+        int x = inverseTransformX((getWidth() - OldFontmetrics.computeStringWidth(fm,msg)) / 2);
         if (x < 0) x = 0;
         g.c.fillText(msg, x, inverseTransformY(getHeight() - 23));
 
@@ -462,7 +483,7 @@ public class LayoutCanvas extends Canvas {
                 g.setColor(TICK_RATE_COLOR);
                 g.setFont(f);
                 FontMetrics fm = g.getFontMetrics();
-                int x = inverseTransformX(getWidth() - fm.computeStringWidth(hz) - 5);
+                int x = inverseTransformX(getWidth() - OldFontmetrics.computeStringWidth(fm,hz) - 5);
                 int y = inverseTransformY(fm.getAscent() + 5);
                 g.c.fillText(hz, x, y);
             }
@@ -535,10 +556,11 @@ public class LayoutCanvas extends Canvas {
 
         this.setOnMousePressed(event -> {
 
+            pauseTransition.stop();
+            if(tooltip != null && tooltip.isShowing())tooltip.hide();
+
             dragScreenX = event.getX();
             dragScreenY = event.getY();
-
-            //new CME(event).print();
 
             if( ((!(dragTool instanceof MenuTool) && event.getButton() != MouseButton.SECONDARY) ||
                     ((dragTool instanceof MenuTool) && event.getButton() == MouseButton.PRIMARY)) &&
@@ -600,6 +622,10 @@ public class LayoutCanvas extends Canvas {
 
         this.setOnScroll(event -> {
 
+            if(contextMenu != null && contextMenu.isShowing())contextMenu.hide();
+            pauseTransition.stop();
+            if(tooltip != null && tooltip.isShowing())tooltip.hide();
+
             clearRect40K(transform[4], transform[5]);
 
             double newScale;
@@ -635,6 +661,11 @@ public class LayoutCanvas extends Canvas {
                 tool.mouseMoved(this, g, new CME(event));
             }
 
+            pauseTransition.stop();
+            if(tooltip != null && tooltip.isShowing())tooltip.hide();
+
+            computeToolTipe(event);
+
         });
 
         this.setOnMouseReleased(event -> {
@@ -669,6 +700,9 @@ public class LayoutCanvas extends Canvas {
         });
 
         this.setOnMouseExited(event -> {
+
+            pauseTransition.stop();
+            if(tooltip != null && tooltip.isShowing())tooltip.hide();
 
             if (dragTool != null) {
                 dragTool.mouseExited(this, getGraphics(), new CME(event));
@@ -720,6 +754,27 @@ public class LayoutCanvas extends Canvas {
 
     }
 
+    private void computeToolTipe(MouseEvent event){
+
+        if (AppPreferences.COMPONENT_TIPS.getBoolean()) {
+            CME cme = new CME(event);
+            Location loc = Location.create(cme.snappedX, cme.snappedY);
+            ComponentUserEvent e;
+            for (Component comp : getCircuit().getAllContaining(loc)) {
+                Object makerObj = comp.getFeature(ToolTipMaker.class);
+                if (makerObj instanceof ToolTipMaker) {
+                    ToolTipMaker maker = (ToolTipMaker) makerObj;
+                    e = new ComponentUserEvent(this, loc.getX(), loc.getY(), cme);
+                    if(maker.getToolTip(e) != null) {
+                        tooltip.setText(maker.getToolTip(e).getValue());
+                        pauseTransition.setOnFinished(ev -> tooltip.show(this, event.getScreenX()+5, event.getScreenY()+5));
+                        pauseTransition.play();
+                    }
+                }
+            }
+        }
+
+    }
 
 
     //Canvas trail cleaner

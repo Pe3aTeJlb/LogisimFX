@@ -2,6 +2,7 @@ package LogisimFX.newgui.CircLogFrame;
 
 import LogisimFX.FileSelector;
 import LogisimFX.IconsManager;
+import LogisimFX.OldFontmetrics;
 import LogisimFX.circuit.*;
 import LogisimFX.comp.Component;
 import LogisimFX.data.BitWidth;
@@ -1129,7 +1130,7 @@ public class CircLogController extends AbstractController {
         logObjects = convertToTimelineTableModel(null, selectedItemsRoot, timelineTblvw.getRoot());
 
         for (SelectionItem item: logItemsPlain) {
-            if(fm.computeStringWidth(item.toShortString())>bufflen) bufflen = fm.computeStringWidth(item.toShortString());
+            if(OldFontmetrics.computeStringWidth(fm,item.toShortString())>bufflen) bufflen = OldFontmetrics.computeStringWidth(fm,item.toShortString());
         }
 
         hiddenColumnWidth = bufflen+5;
@@ -1150,7 +1151,7 @@ public class CircLogController extends AbstractController {
             title = title.trim();
             TreeItem<TimelineTableModel> model = new TreeItem<>(new TimelineTableModel(title,values.get(i)));
             timelineTblvw.getRoot().getChildren().add(model);
-            if(fm.computeStringWidth(title)>bufflen)bufflen = fm.computeStringWidth(title);
+            if(OldFontmetrics.computeStringWidth(fm,title)>bufflen)bufflen = OldFontmetrics.computeStringWidth(fm,title);
             logObjects.add(model);
             i++;
         }
@@ -1241,7 +1242,7 @@ public class CircLogController extends AbstractController {
             //hidden table
             gc.strokeLine(hiddenColumnWidth, 0, hiddenColumnWidth, height);
             gc.strokeLine(0, 20, hiddenColumnWidth, 20);
-            gc.fillText(LC.get("componentTitle"), (hiddenColumnWidth - fm.computeStringWidth(LC.get("componentTitle"))) / 2, 15);
+            gc.fillText(LC.get("componentTitle"), (hiddenColumnWidth - OldFontmetrics.computeStringWidth(fm,LC.get("componentTitle"))) / 2, 15);
 
 
             //time steps
@@ -1255,10 +1256,10 @@ public class CircLogController extends AbstractController {
 
                 String text = formatter.format(1 / curSimulator.getTickFrequency() * counter) + " " + prefix + "s";
 
-                if (fm.computeStringWidth(text) + charlen < 2 * spaceX * skip && computeRender(i,15)) {
+                if (OldFontmetrics.computeStringWidth(fm,text) + charlen < 2 * spaceX * skip && computeRender(i,15)) {
 
                     gc.strokeLine(i, 5, i, 15);
-                    gc.fillText(text, i - fm.computeStringWidth(text) - 2, 15);
+                    gc.fillText(text, i - OldFontmetrics.computeStringWidth(fm,text) - 2, 15);
                     skip = 1;
 
                 } else {
@@ -1383,7 +1384,7 @@ public class CircLogController extends AbstractController {
                                         //Format value
                                         int radix = item.getValue().getRadix();
                                         String text = vals.get(i).toDisplayString(radix);
-                                        double stringlen = fm.computeStringWidth(text);
+                                        double stringlen = OldFontmetrics.computeStringWidth(fm,text);
 
                                         //(curValueLength - 0.5) because it takes around half of spaceX at start and end
                                         // of hexagon, that are bad to display text
@@ -1407,7 +1408,7 @@ public class CircLogController extends AbstractController {
                                             text += "h";
                                         }
 
-                                        gc.fillText(text, currX - ((curValueLength - 1) * spaceX + fm.computeStringWidth(text)) / 2, currY - ((yAdjust - fm.getAscent()) / 2));
+                                        gc.fillText(text, currX - ((curValueLength - 1) * spaceX + OldFontmetrics.computeStringWidth(fm,text)) / 2, currY - ((yAdjust - fm.getAscent()) / 2));
 
                                         curValueLength = 0;
 

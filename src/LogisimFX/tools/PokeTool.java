@@ -4,6 +4,7 @@
 package LogisimFX.tools;
 
 import LogisimFX.IconsManager;
+import LogisimFX.OldFontmetrics;
 import LogisimFX.comp.Component;
 import LogisimFX.comp.ComponentDrawContext;
 import LogisimFX.comp.ComponentUserEvent;
@@ -31,7 +32,7 @@ import javafx.scene.paint.Color;
 public class PokeTool extends Tool {
 
 	private static final ImageView icon = IconsManager.getIcon("poke.gif");
-	private static final Color caretColor = Color.color(1, 1, 0.588);
+	private static final Color caretColor = Color.color(0.196, 0.196, 0.196,0.4);
 
 	private static class WireCaret extends AbstractCaret {
 		AttributeSet opts;
@@ -61,10 +62,10 @@ public class PokeTool extends Tool {
 			
 			FontMetrics fm = g.getFontMetrics();
 			g.setColor(caretColor);
-			g.c.fillRect(x + 2, y + 2, fm.computeStringWidth(vStr) + 4,
+			g.c.fillRect(x + 2, y + 2, OldFontmetrics.computeStringWidth(fm,vStr) + 4,
 					fm.getAscent() + fm.getDescent() + 4);
 			g.setColor(Color.BLACK);
-			g.c.strokeRect(x + 2, y + 2, fm.computeStringWidth(vStr) + 4,
+			g.c.strokeRect(x + 2, y + 2, OldFontmetrics.computeStringWidth(fm,vStr) + 4,
 					fm.getAscent() + fm.getDescent() + 4);
 			g.c.fillOval(x - 2, y - 2, 5, 5);
 			g.c.strokeText(vStr, x + 4, y + 4 + fm.getAscent());

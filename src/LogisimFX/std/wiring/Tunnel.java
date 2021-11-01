@@ -3,6 +3,7 @@
 
 package LogisimFX.std.wiring;
 
+import LogisimFX.OldFontmetrics;
 import LogisimFX.comp.TextField;
 import LogisimFX.data.*;
 import LogisimFX.instance.*;
@@ -69,7 +70,7 @@ public class Tunnel extends InstanceFactory {
 		Graphics g = painter.getGraphics();
 		g.setFont(attrs.getFont());
 		FontMetrics fm = Toolkit.getToolkit().getFontLoader().getFontMetrics(g.getFont());
-		Bounds bds = computeBounds(attrs, (int)fm.computeStringWidth(label),
+		Bounds bds = computeBounds(attrs, OldFontmetrics.computeStringWidth(fm,label),
 				(int)fm.getAscent() + (int)fm.getDescent(), g, label);
 		if (attrs.setOffsetBounds(bds)) {
 			Instance instance = painter.getInstance();

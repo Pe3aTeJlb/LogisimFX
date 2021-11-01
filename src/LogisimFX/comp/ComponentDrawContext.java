@@ -3,6 +3,7 @@
 
 package LogisimFX.comp;
 
+import LogisimFX.OldFontmetrics;
 import LogisimFX.data.AttributeSet;
 import LogisimFX.data.Bounds;
 import LogisimFX.data.Direction;
@@ -147,7 +148,7 @@ public class ComponentDrawContext {
 		g.c.strokeRect(x, y, width, height);
 		if (label != null && !label.equals("")) {
 			FontMetrics fm = g.getFontMetrics();
-			int lwid = (int)fm.computeStringWidth(label);
+			int lwid = OldFontmetrics.computeStringWidth(fm,label);
 			if (height > 20) { // centered at top edge
 				g.c.fillText(label, x + (width - lwid) / 2,
 					y + 2 + fm.getAscent());
@@ -175,7 +176,7 @@ public class ComponentDrawContext {
 		g.c.strokeRect(x + 1, y + 1, width - 1, height - 1);
 		if (label != null && !label.equals("")) {
 			FontMetrics fm = g.getFontMetrics();
-			int lwid = (int) fm.computeStringWidth(label);
+			int lwid = OldFontmetrics.computeStringWidth(fm,label);
 			if (height > 20) { // centered at top edge
 				g.c.fillText(label, x + (width - lwid) / 2,
 					y + 2 + fm.getAscent());

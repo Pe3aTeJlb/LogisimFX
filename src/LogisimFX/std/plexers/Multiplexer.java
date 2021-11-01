@@ -158,7 +158,7 @@ public class Multiplexer extends InstanceFactory {
 		ps[ps.length - 1] = new Port(0, 0, Port.OUTPUT, data.getWidth());
 
 		for (int i = 0; i < inputs; i++) {
-			ps[i].setToolTip(LC.createStringBinding("multiplexerInTip", "" + i));
+			ps[i].setToolTip(LC.createComplexStringBinding("multiplexerInTip", "" + i));
 		}
 		ps[inputs].setToolTip(LC.createStringBinding("multiplexerSelectTip"));
 		if (enable) {

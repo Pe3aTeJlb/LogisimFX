@@ -6,6 +6,7 @@ package LogisimFX.comp;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import LogisimFX.OldFontmetrics;
 import LogisimFX.data.Bounds;
 import LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
 import LogisimFX.newgui.MainFrame.Canvas.Graphics;
@@ -73,7 +74,7 @@ class TextFieldCaret implements Caret, TextFieldListener {
 		int x = field.getX();
 		int y = field.getY();
 		FontMetrics fm = g.getFontmetricsForFont(field.getFont());
-		int width = (int)fm.computeStringWidth(curText);
+		int width = OldFontmetrics.computeStringWidth(fm,curText);
 		int ascent = (int)fm.getAscent();
 		int descent = (int)fm.getDescent();
 		switch (field.getHAlign()) {
@@ -90,7 +91,7 @@ class TextFieldCaret implements Caret, TextFieldListener {
 		g.c.fillText(curText, x, y);
 
 		// draw cursor
-		if (pos > 0) x += Math.ceil(fm.computeStringWidth(curText.substring(0, pos)));
+		if (pos > 0) x += Math.ceil(OldFontmetrics.computeStringWidth(fm,curText.substring(0, pos)));
 		g.c.strokeLine(x, y, x, y - ascent);
 
 	}
@@ -102,7 +103,7 @@ class TextFieldCaret implements Caret, TextFieldListener {
 		FontMetrics fm;
 		if (font == null)   fm = g.getFontMetrics();
 		else                fm = g.getFontmetricsForFont(font);
-		int width = (int)fm.computeStringWidth(curText);
+		int width = OldFontmetrics.computeStringWidth(fm,curText);
 		int ascent = (int)fm.getAscent();
 		int descent = (int)fm.getDescent();
 		int height = ascent + descent;
@@ -239,7 +240,7 @@ class TextFieldCaret implements Caret, TextFieldListener {
 		x -= bds.getX();
 		int last = 0;
 		for (int i = 0; i < curText.length(); i++) {
-			int cur = (int)fm.computeStringWidth(curText.substring(0, i + 1));
+			int cur = OldFontmetrics.computeStringWidth(fm,curText.substring(0, i + 1));
 			if (x <= (last + cur) / 2) {
 				pos = i;
 				return;

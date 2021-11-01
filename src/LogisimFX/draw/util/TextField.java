@@ -3,6 +3,7 @@
 
 package LogisimFX.draw.util;
 
+import LogisimFX.OldFontmetrics;
 import LogisimFX.data.Bounds;
 import LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import LogisimFX.util.GraphicsUtil;
@@ -128,7 +129,7 @@ public class TextField {
 		FontMetrics fm;
 		if (font == null)   fm = g.getFontMetrics();
 		else                fm = g.getFontmetricsForFont(font);
-		int width = (int)fm.computeStringWidth(text);
+		int width = OldFontmetrics.computeStringWidth(fm,text);
 		int ascent = (int)fm.getAscent();
 		int descent = (int)fm.getDescent();
 		switch (halign) {
@@ -154,7 +155,7 @@ public class TextField {
 		int x = this.x;
 		int y = this.y;
 		FontMetrics fm = g.getFontMetrics();
-		int width = (int)fm.computeStringWidth(text);
+		int width = OldFontmetrics.computeStringWidth(fm,text);
 		int ascent = (int)fm.getAscent();
 		int descent = (int)fm.getDescent();
 		switch (halign) {

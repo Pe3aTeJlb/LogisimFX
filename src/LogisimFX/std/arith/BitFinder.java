@@ -74,17 +74,17 @@ public class BitFinder extends InstanceFactory {
 		
 		Object type = instance.getAttributeValue(TYPE);
 		if (type == HIGH_ZERO) {
-			ps[0].setToolTip(LC.createStringBinding("bitFinderPresentTip", "0"));
-			ps[1].setToolTip(LC.createStringBinding("bitFinderIndexHighTip", "0"));
+			ps[0].setToolTip(LC.createComplexStringBinding("bitFinderPresentTip", "0"));
+			ps[1].setToolTip(LC.createComplexStringBinding("bitFinderIndexHighTip", "0"));
 		} else if (type == LOW_ZERO) {
-			ps[0].setToolTip(LC.createStringBinding("bitFinderPresentTip", "0"));
-			ps[1].setToolTip(LC.createStringBinding("bitFinderIndexLowTip", "0"));
+			ps[0].setToolTip(LC.createComplexStringBinding("bitFinderPresentTip", "0"));
+			ps[1].setToolTip(LC.createComplexStringBinding("bitFinderIndexLowTip", "0"));
 		} else if (type == HIGH_ONE) {
-			ps[0].setToolTip(LC.createStringBinding("bitFinderPresentTip", "1"));
-			ps[1].setToolTip(LC.createStringBinding("bitFinderIndexHighTip", "1"));
+			ps[0].setToolTip(LC.createComplexStringBinding("bitFinderPresentTip", "1"));
+			ps[1].setToolTip(LC.createComplexStringBinding("bitFinderIndexHighTip", "1"));
 		} else {
-			ps[0].setToolTip(LC.createStringBinding("bitFinderPresentTip", "1"));
-			ps[1].setToolTip(LC.createStringBinding("bitFinderIndexLowTip", "1"));
+			ps[0].setToolTip(LC.createComplexStringBinding("bitFinderPresentTip", "1"));
+			ps[1].setToolTip(LC.createComplexStringBinding("bitFinderIndexLowTip", "1"));
 		}
 		ps[2].setToolTip(LC.createStringBinding("bitFinderInputTip"));
 		instance.setPorts(ps);

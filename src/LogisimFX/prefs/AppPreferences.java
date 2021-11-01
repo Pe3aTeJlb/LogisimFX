@@ -15,8 +15,6 @@ import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 
-import javax.swing.JFrame;
-
 import LogisimFX.Startup;
 import LogisimFX.data.Direction;
 import LogisimFX.localization.Localizer;
@@ -137,8 +135,8 @@ public class AppPreferences {
 		= create(new PrefMonitorBoolean("appearanceGrid", true));
 	public static final PrefMonitor<Double> APPEARANCE_ZOOM
 		= create(new PrefMonitorDouble("appearanceZoom", 1.0));
-	public static final PrefMonitor<Integer> WINDOW_STATE
-		= create(new PrefMonitorInt("windowState", JFrame.NORMAL));
+//	public static final PrefMonitor<Integer> WINDOW_STATE
+//		= create(new PrefMonitorInt("windowState", JFrame.NORMAL));
 	public static final PrefMonitor<Integer> WINDOW_WIDTH
 		= create(new PrefMonitorInt("windowWidth", 640));
 	public static final PrefMonitor<Integer> WINDOW_HEIGHT

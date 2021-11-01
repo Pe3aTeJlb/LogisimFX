@@ -3,6 +3,7 @@
 
 package LogisimFX.std.io;
 
+import LogisimFX.OldFontmetrics;
 import LogisimFX.data.Value;
 import LogisimFX.instance.InstanceData;
 import com.sun.javafx.tk.FontMetrics;
@@ -207,15 +208,15 @@ class KeyboardData implements InstanceData, Cloneable {
 		String str = toString();
 		int len = str.length();
 		int max = Keyboard.WIDTH - 8 - 4;
-		if (str.equals("") || fm.computeStringWidth(str) <= max) {
+		if (str.equals("") || OldFontmetrics.computeStringWidth(fm,str) <= max) {
 			i0 = 0;
 			i1 = len;
 		} else {
 			// grow to include end of string if possible
-			int w0 = (int)fm.computeStringWidth(str.charAt(0) + "m");
-			int w1 = (int)fm.computeStringWidth("m");
-			int w = i0 == 0 ? (int)fm.computeStringWidth(str)
-					: w0 + (int)fm.computeStringWidth(str.substring(i0));
+			int w0 = OldFontmetrics.computeStringWidth(fm,str.charAt(0) + "m");
+			int w1 = OldFontmetrics.computeStringWidth(fm,"m");
+			int w = i0 == 0 ? OldFontmetrics.computeStringWidth(fm,str)
+					: w0 + OldFontmetrics.computeStringWidth(fm,str.substring(i0));
 			if (w <= max) i1 = len;
 			
 			// rearrange start/end so as to include cursor
@@ -257,7 +258,7 @@ class KeyboardData implements InstanceData, Cloneable {
 		if (i0 >= i1) return true;
 		int len = str.length();
 		if (i0 < 0 || i1 > len) return false;
-		int w = (int)fm.computeStringWidth(str.substring(i0, i1));
+		int w = OldFontmetrics.computeStringWidth(fm,str.substring(i0, i1));
 		if (i0 > 0) w += w0;
 		if (i1 < str.length()) w += w1;
 		return w <= max;

@@ -1,6 +1,7 @@
 package LogisimFX.newgui.AboutFrame;
 
 import LogisimFX.IconsManager;
+import LogisimFX.OldFontmetrics;
 import LogisimFX.newgui.AbstractController;
 import LogisimFX.Main;
 import LogisimFX.data.Value;
@@ -328,7 +329,7 @@ public class About extends AbstractController {
             }
 
             g.setFont(font[type]);
-            int textWidth = (int)fms[type].computeStringWidth(line.text);
+            int textWidth = OldFontmetrics.computeStringWidth(fms[type],line.text);
 
             g.fillText(line.text, centerX-textWidth/2,  line.y - yPos);
 

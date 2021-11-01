@@ -3,6 +3,7 @@
 
 package LogisimFX.std.io;
 
+import LogisimFX.OldFontmetrics;
 import LogisimFX.data.*;
 import LogisimFX.instance.*;
 import LogisimFX.newgui.MainFrame.Canvas.Graphics;
@@ -136,7 +137,7 @@ public class Keyboard extends InstanceFactory {
 			int len = getBufferLength(painter.getAttributeValue(ATTR_BUFFER));
 			String str = LC.getFormatted("keybDesc", "" + len);
 			FontMetrics fm = g.getFontMetrics();
-			int x = bds.getX() + (WIDTH - (int)fm.computeStringWidth(str)) / 2;
+			int x = bds.getX() + (WIDTH - OldFontmetrics.computeStringWidth(fm,str)) / 2;
 			int y = bds.getY() + (HEIGHT + (int)fm.getAscent()) / 2;
 			g.c.strokeText(str, x, y);
 		}
@@ -166,22 +167,22 @@ public class Keyboard extends InstanceFactory {
 		int asc = (int) fm.getAscent();
 		int x0 = x + 8;
 		int ys = y + (HEIGHT + asc) / 2;
-		int dotsWidth = (int)fm.computeStringWidth("m");
+		int dotsWidth = OldFontmetrics.computeStringWidth(fm,"m");
 		int xs;
 		if (dispStart > 0) {
 			g.c.fillText(str.substring(0, 1), x0, ys);
-			xs = x0 + (int)fm.computeStringWidth(str.charAt(0) + "m");
+			xs = x0 + OldFontmetrics.computeStringWidth(fm,str.charAt(0) + "m");
 			drawDots(g, xs - dotsWidth, ys, dotsWidth, asc);
 			String sub = str.substring(dispStart, dispEnd);
 			g.c.fillText(sub, xs, ys);
 			if (dispEnd < str.length()) {
-				drawDots(g, xs + (int)fm.computeStringWidth(sub), ys, dotsWidth, asc);
+				drawDots(g, xs + OldFontmetrics.computeStringWidth(fm,sub), ys, dotsWidth, asc);
 			}
 		} else if (dispEnd < str.length()) {
 			String sub = str.substring(dispStart, dispEnd);
 			xs = x0;
 			g.c.fillText(sub, xs, ys);
-			drawDots(g, xs + (int)fm.computeStringWidth(sub), ys, dotsWidth, asc);
+			drawDots(g, xs + OldFontmetrics.computeStringWidth(fm,sub), ys, dotsWidth, asc);
 		} else {
 			xs = x0;
 			g.c.fillText(str, xs, ys);
@@ -208,10 +209,10 @@ public class Keyboard extends InstanceFactory {
 			int w1;
 			if (pos == 0) {
 				w0 = x0;
-				w1 = x0 + (int)fm.computeStringWidth(str.substring(0, 1));
+				w1 = x0 + OldFontmetrics.computeStringWidth(fm,str.substring(0, 1));
 			} else if (pos >= dispStart && pos < dispEnd) {
-				w0 = xs + (int)fm.computeStringWidth(str.substring(dispStart, pos));
-				w1 = xs + (int)fm.computeStringWidth(str.substring(dispStart, pos + 1));
+				w0 = xs + OldFontmetrics.computeStringWidth(fm,str.substring(dispStart, pos));
+				w1 = xs + OldFontmetrics.computeStringWidth(fm,str.substring(dispStart, pos + 1));
 			} else {
 				continue; // this character is not in current view
 			}
@@ -333,12 +334,12 @@ public class Keyboard extends InstanceFactory {
 			int asc = (int)fm.getAscent();
 			int x = bds.getX() + 8;
 			if (dispStart > 0) {
-				x += fm.computeStringWidth(str.charAt(0) + "m");
-				x += fm.computeStringWidth(str.substring(dispStart, cursor));
+				x += OldFontmetrics.computeStringWidth(fm,str.charAt(0) + "m");
+				x += OldFontmetrics.computeStringWidth(fm,str.substring(dispStart, cursor));
 			} else if (cursor >= str.length()) {
-				x += fm.computeStringWidth(str);
+				x += OldFontmetrics.computeStringWidth(fm,str);
 			} else {
-				x += fm.computeStringWidth(str.substring(0, cursor));
+				x += OldFontmetrics.computeStringWidth(fm,str.substring(0, cursor));
 			}
 			int y = bds.getY() + (bds.getHeight() + asc) / 2;
 			g.c.strokeLine(x, y - asc, x, y);

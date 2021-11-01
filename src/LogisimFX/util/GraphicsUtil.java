@@ -3,6 +3,7 @@
 
 package LogisimFX.util;
 
+import LogisimFX.OldFontmetrics;
 import LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import com.sun.javafx.tk.FontMetrics;
 import com.sun.javafx.tk.Toolkit;
@@ -46,7 +47,7 @@ public class GraphicsUtil {
 
 		if (g == null) return new Rectangle(x, y, 0, 0);
 		FontMetrics mets = Toolkit.getToolkit().getFontLoader().getFontMetrics(g.getFont());
-		int width = (int)mets.computeStringWidth(text);
+		int width = OldFontmetrics.computeStringWidth(mets,text);
 		int ascent = (int)mets.getAscent();
 		int descent = (int)mets.getDescent();
 		int height = ascent + descent;

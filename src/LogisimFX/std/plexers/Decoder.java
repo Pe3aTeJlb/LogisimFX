@@ -157,7 +157,7 @@ public class Decoder extends InstanceFactory {
 			ps[outputs + 1] = new Port(en.getX(), en.getY(), Port.INPUT, BitWidth.ONE);
 		}
 		for (int i = 0; i < outputs; i++) {
-			ps[i].setToolTip(LC.createStringBinding("decoderOutTip", "" + i));
+			ps[i].setToolTip(LC.createComplexStringBinding("decoderOutTip", "" + i));
 		}
 		ps[outputs].setToolTip(LC.createStringBinding("decoderSelectTip"));
 		if (enable) {

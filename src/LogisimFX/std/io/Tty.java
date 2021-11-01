@@ -3,6 +3,7 @@
 
 package LogisimFX.std.io;
 
+import LogisimFX.OldFontmetrics;
 import LogisimFX.data.*;
 import LogisimFX.instance.*;
 import LogisimFX.newgui.MainFrame.Canvas.Graphics;
@@ -163,7 +164,7 @@ public class Tty extends InstanceFactory {
 			for (int i = 0; i < rows; i++) {
 				g.c.strokeText(rowData[i], x, y);
 				if (i == curRow) {
-					int x0 = x + (int)fm.computeStringWidth(rowData[i].substring(0, curCol));
+					int x0 = x + OldFontmetrics.computeStringWidth(fm,rowData[i].substring(0, curCol));
 					g.c.strokeLine(x0, y - fm.getAscent(), x0, y);
 				}
 				y += ROW_HEIGHT;
@@ -171,10 +172,10 @@ public class Tty extends InstanceFactory {
 		} else {
 			String str = LC.getFormatted("ttyDesc", "" + rows, "" + cols);
 			FontMetrics fm = painter.getFontMetrics();
-			int strWidth = (int)fm.computeStringWidth(str);
+			int strWidth = OldFontmetrics.computeStringWidth(fm,str);
 			if (strWidth + BORDER > bds.getWidth()) {
 				str = LC.get("ttyDescShort");
-				strWidth = (int)fm.computeStringWidth(str);
+				strWidth = OldFontmetrics.computeStringWidth(fm,str);
 			}
 			int x = bds.getX() + (bds.getWidth() - strWidth) / 2;
 			int y = bds.getY() + (bds.getHeight() + (int)fm.getAscent()) / 2;

@@ -3,6 +3,7 @@
 
 package LogisimFX.draw.shapes;
 
+import LogisimFX.OldFontmetrics;
 import LogisimFX.draw.LC;
 import LogisimFX.draw.model.AbstractCanvasObject;
 import LogisimFX.draw.model.CanvasObject;
@@ -270,7 +271,7 @@ public class Text extends AbstractCanvasObject {
 	private void computeDimensions(Graphics g) {
 
 		FontMetrics fm = g.getFontMetrics();
-		width = (int)fm.computeStringWidth(textField.getText());
+		width = OldFontmetrics.computeStringWidth(fm,textField.getText());
 		ascent = (int)fm.getAscent();
 		descent = (int)fm.getDescent();
 

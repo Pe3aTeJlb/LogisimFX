@@ -159,7 +159,7 @@ public class Demultiplexer extends InstanceFactory {
 		ps[ps.length - 1] = new Port(0, 0, Port.INPUT, data.getWidth());
 		
 		for (int i = 0; i < outputs; i++) {
-			ps[i].setToolTip(LC.createStringBinding("demultiplexerOutTip", "" + i));
+			ps[i].setToolTip(LC.createComplexStringBinding("demultiplexerOutTip", "" + i));
 		}
 		ps[outputs].setToolTip(LC.createStringBinding("demultiplexerSelectTip"));
 		if (enable) {
