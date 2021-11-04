@@ -108,6 +108,8 @@ public class LoadingScreen extends AbstractController {
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setResizable(false);
 
+        stage.setTitle("LogisimFX");
+
         updateCanvasSize();
 
         setCreditsLines();
@@ -411,6 +413,9 @@ public class LoadingScreen extends AbstractController {
 
     @Override
     public void onClose() {
+
+        update.stop();
+
     }
 
 

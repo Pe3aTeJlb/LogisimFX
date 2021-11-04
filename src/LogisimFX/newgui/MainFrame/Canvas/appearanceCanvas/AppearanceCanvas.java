@@ -213,17 +213,18 @@ public class AppearanceCanvas extends Canvas {
                 double dx = event.getX() - dragScreenX;
                 double dy = event.getY() - dragScreenY;
 
+                if (dx == 0 && dy == 0) {
+                    return;
+                }
+
                 if(transform[4] + dx > 0){
                     dx = 0;
+                    transform[4] = 0;
                 }
 
                 if(transform[5] + dy > 0){
                     dy = 0;
-                }
-
-
-                if (dx == 0 && dy == 0) {
-                    return;
+                    transform[5] = 0;
                 }
 
                 clearRect40K(transform[4], transform[5]);

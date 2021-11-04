@@ -24,6 +24,7 @@ import javafx.scene.CacheHint;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -102,6 +103,9 @@ public class LayoutCanvas extends Canvas {
     private Tooltip tooltip = new Tooltip();
     private PauseTransition pauseTransition;
 
+    private Circuit circ;
+    private CircuitState circState;
+
     //
     private LayoutEditHandler layoutEditHandler;
 
@@ -113,6 +117,14 @@ public class LayoutCanvas extends Canvas {
         public void projectChanged(ProjectEvent event) {
 
             int act = event.getAction();
+
+            if(act == ProjectEvent.ACTION_SET_CURRENT){
+
+                circ = proj.getCurrentCircuit();
+                circState = proj.getCircuitState();
+                ptContext = new ComponentDrawContext(circ, circState, g);
+
+            }
 
             if (act != ProjectEvent.ACTION_SELECTION
                     && act != ProjectEvent.ACTION_START
@@ -227,6 +239,10 @@ public class LayoutCanvas extends Canvas {
 
         pauseTransition = new PauseTransition(Duration.millis(750));
 
+        circ = proj.getCurrentCircuit();
+        circState = proj.getCircuitState();
+        ptContext = new ComponentDrawContext(circ, circState, g);
+
         update = new AnimationTimer() {
 
             @Override
@@ -278,31 +294,29 @@ public class LayoutCanvas extends Canvas {
 
         drawGrid();
 
-        g.setColor(Color.RED);
-        g.c.fillOval(0,0,10,10);
+        //g.setColor(Color.RED);
+        //g.c.fillOval(0,0,10,10);
 
         drawWithUserState();
 
         drawWidthIncompatibilityData();
 
-        Circuit circ = proj.getCurrentCircuit();
-        CircuitState circState = proj.getCircuitState();
+        //Circuit circ = proj.getCurrentCircuit();
+        //CircuitState circState = proj.getCircuitState();
 
-        ptContext = new ComponentDrawContext(circ, circState, g);
+        //ptContext = new ComponentDrawContext(circ, circState, g);
         ptContext.setHighlightedWires(highlightedWires);
 
         g.setColor(Color.RED);
-
         circState.drawOscillatingPoints(ptContext);
 
         g.setColor(Color.BLUE);
-
         proj.getSimulator().drawStepPoints(ptContext);
 
-        StringBinding message = errorMessage;
-        if (message != null) {
+        //StringBinding message = errorMessage;
+        if (errorMessage != null) {
             g.setColor(errorColor);
-            drawString(g, message.get());
+            drawString(g, errorMessage.get());
             return;
         }
 
@@ -336,30 +350,33 @@ public class LayoutCanvas extends Canvas {
 
     private void drawGrid(){
 
+        if(AppPreferences.APPEARANCE_SHOW_GRID.get()) {
+
             for (int x = inverseSnapXToGrid(0);
-                 x < inverseSnapXToGrid((int)this.getWidth()); x += SPACING_X) {
+                 x < inverseSnapXToGrid((int) this.getWidth()); x += SPACING_X) {
 
                 for (int y = inverseSnapYToGrid(0);
-                     y < inverseSnapYToGrid((int)this.getHeight()); y += SPACING_Y) {
+                     y < inverseSnapYToGrid((int) this.getHeight()); y += SPACING_Y) {
 
-                    if(zoom < 0.8f && (float)x % 50 == 0 && (float)y % 50 == 0){
+                    if (zoom < 0.8f && (float) x % 50 == 0 && (float) y % 50 == 0) {
                         g.c.setFill(GRID_DOT_QUARTER);
-                        g.c.fillRect(x,y,2,2);
-                    }else{
+                        g.c.fillRect(x, y, 2, 2);
+                    } else {
                         g.c.setFill(GRID_DOT);
-                        g.c.fillRect(x,y,1,1);
+                        g.c.fillRect(x, y, 1, 1);
                     }
 
                 }
 
             }
 
+        }
 
     }
 
     private void drawWithUserState() {
 
-        Circuit circ = proj.getCurrentCircuit();
+        circ = proj.getCurrentCircuit();
         Set<Component> hidden = NO_COMPONENTS;
 
         if (dragTool == null) {
@@ -390,7 +407,7 @@ public class LayoutCanvas extends Canvas {
         }
 
         // draw circuit and selection
-        CircuitState circState = proj.getCircuitState();
+        circState = proj.getCircuitState();
         boolean printerView = AppPreferences.PRINTER_VIEW.getBoolean();
         context = new ComponentDrawContext(circ, circState, g, printerView);
         context.setHighlightedWires(highlightedWires);
@@ -591,18 +608,18 @@ public class LayoutCanvas extends Canvas {
                 double dx = event.getX() - dragScreenX;
                 double dy = event.getY() - dragScreenY;
 
+                if (dx == 0 && dy == 0) {
+                    return;
+                }
+
                 if(transform[4] + dx > 0){
                     dx = 0;
+                    transform[4] = 0;
                 }
 
                 if(transform[5] + dy > 0){
                     dy = 0;
-                }
-
-
-
-                if (dx == 0 && dy == 0) {
-                    return;
+                    transform[5] = 0;
                 }
 
                 clearRect40K(transform[4], transform[5]);
@@ -650,7 +667,7 @@ public class LayoutCanvas extends Canvas {
             transform[5] = height / 2 - cy * newScale;
 
             if(transform[4] > 0) transform[4] = 0;
-           if(transform[5] > 0) transform[5] = 0;
+            if(transform[5] > 0) transform[5] = 0;
 
         });
 
@@ -722,6 +739,10 @@ public class LayoutCanvas extends Canvas {
 
             //to avoid focus traversable that binded on arrow keys in javafx
             if(event.getCode().isArrowKey())event.consume();
+
+            if(event.getCode() == KeyCode.Y){
+                AppPreferences.APPEARANCE_SHOW_GRID.set(!AppPreferences.APPEARANCE_SHOW_GRID.get());
+            }
 
         });
 

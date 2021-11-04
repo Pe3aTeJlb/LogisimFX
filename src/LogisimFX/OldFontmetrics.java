@@ -1,6 +1,7 @@
 package LogisimFX;
 
 import com.sun.javafx.tk.FontMetrics;
+import com.sun.javafx.tk.Toolkit;
 import javafx.scene.text.Text;
 
 public class OldFontmetrics {
@@ -14,9 +15,14 @@ public class OldFontmetrics {
     }
 
     public static int computeStringWidth(FontMetrics fm, String txt) {
-        internal.setFont(fm.getFont());
-        internal.setText(txt);
-        return (int) internal.getLayoutBounds().getWidth();
+
+        float width = 0;
+
+        for (char c: txt.toCharArray()){
+            width += fm.getCharWidth(c);
+        }
+
+        return (int) width;
     }
 
 }

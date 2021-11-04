@@ -1780,40 +1780,42 @@ public class CircLogController extends AbstractController {
             return;
         }
 
-        curModel.setFile(file);
+        if(file != null) {
+            curModel.setFile(file);
 
-        try {
-            writer = new PrintWriter(new FileWriter(file, true));
-        } catch (IOException e) {
-            curModel.setFile(null);
-            return;
-        }
-
-        ObservableList<SelectionItem> sel = curModel.getComponents();
-
-        StringBuilder buff = new StringBuilder();
-        for (int i = 0; i < sel.size(); i++) {
-            if (i > 0) buff.append("\t");
-            buff.append(sel.get(i).toShortString().trim());
-        }
-        writer.println(buff.toString());
-
-        for (Value[] values: curModel.getValues()) {
-
-            StringBuilder buf = new StringBuilder();
-
-            for (int i = 0; i < values.length; i++) {
-                if (i > 0) buf.append("\t");
-                if (values[i] != null) {
-                    buf.append(values[i].toDisplayString(2).replace(" ",""));
-                }
+            try {
+                writer = new PrintWriter(new FileWriter(file, true));
+            } catch (IOException e) {
+                curModel.setFile(null);
+                return;
             }
-            writer.println(buf.toString());
 
+            ObservableList<SelectionItem> sel = curModel.getComponents();
+
+            StringBuilder buff = new StringBuilder();
+            for (int i = 0; i < sel.size(); i++) {
+                if (i > 0) buff.append("\t");
+                buff.append(sel.get(i).toShortString().trim());
+            }
+            writer.println(buff.toString());
+
+            for (Value[] values : curModel.getValues()) {
+
+                StringBuilder buf = new StringBuilder();
+
+                for (int i = 0; i < values.length; i++) {
+                    if (i > 0) buf.append("\t");
+                    if (values[i] != null) {
+                        buf.append(values[i].toDisplayString(2).replace(" ", ""));
+                    }
+                }
+                writer.println(buf.toString());
+
+            }
+
+            writer.flush();
+            writer.close();
         }
-
-        writer.flush();
-        writer.close();
 
     }
 

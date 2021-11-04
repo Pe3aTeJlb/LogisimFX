@@ -12,7 +12,9 @@ import LogisimFX.proj.ProjectListener;
 import LogisimFX.tools.AddTool;
 import LogisimFX.tools.Library;
 
+import javafx.application.Platform;
 import javafx.scene.control.TreeView;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -123,7 +125,7 @@ public class TreeExplorerAggregation extends TreeView {
         //
         public void propertyChange(PropertyChangeEvent event) {
             if (AppPreferences.GATE_SHAPE.isSource(event)) {
-                updateTree();
+                Platform.runLater(() -> updateTree());
             }
         }
 

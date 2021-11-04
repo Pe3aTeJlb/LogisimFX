@@ -157,58 +157,69 @@ public class ExportImageController extends AbstractController {
         if (circSelectionModel.getSelectedItems().size() > 1) {
             dest = fileSelector.chooseDirectory(LC.get("exportImageDirectorySelect"));
         } else {
-            dest = fileSelector.showSaveDialog(LC.get("exportImageFileSelect"));
-        }
 
-        for (Circuit circ : circSelectionModel.getSelectedItems()) {
-
-            ImageView img = canvas.getImage(circ, PrintViewChkBx.isSelected());
-
-            File where;
-            if (dest.isDirectory()) {
-                where = new File(dest, circ.getName()+extension);
-           // } else if (filter.accept(dest)) {
-                //where = dest;
-            } else {
-                String newName = dest.getName();
-                where = new File(dest.getParentFile(), newName);
+            if(PngRb.isSelected()){
+                dest = fileSelector.SavePngFile();
+            }else if(GifRb.isSelected()){
+                dest = fileSelector.SaveGifFile();
+            }else if(JpegRb.isSelected()) {
+                dest = fileSelector.SaveJpgFile();
+            }else{
+                dest = null;
             }
 
-            try {
+        }
 
-                BufferedImage bImage = SwingFXUtils.fromFXImage(img.getImage(), null);
+        if(dest != null){
+            for (Circuit circ : circSelectionModel.getSelectedItems()) {
 
-                if(PngRb.isSelected()){
-                    ImageIO.write(bImage, "PNG", where);
-                    //GifEncoder.toFile(img, where);
-                }else if(GifRb.isSelected()){
-                    ImageIO.write(bImage, "GIF", where);
-                }else if(JpegRb.isSelected()){
+                ImageView img = canvas.getImage(circ, PrintViewChkBx.isSelected());
 
-                    int[] RGB_MASKS = {0xFF0000, 0xFF00, 0xFF};
-                    ColorModel RGB_OPAQUE =
-                            new DirectColorModel(32, RGB_MASKS[0], RGB_MASKS[1], RGB_MASKS[2]);
-
-                    PixelGrabber pg = new PixelGrabber(bImage, 0, 0, -1, -1, true);
-                    pg.grabPixels();
-                    int width = pg.getWidth(), height = pg.getHeight();
-
-                    DataBuffer buffer = new DataBufferInt((int[]) pg.getPixels(), pg.getWidth() * pg.getHeight());
-                    WritableRaster raster = Raster.createPackedRaster(buffer, width, height, width, RGB_MASKS, null);
-                    BufferedImage bi = new BufferedImage(RGB_OPAQUE, raster, false, null);
-
-                    ImageIO.write(bi, "JPEG", where);
-
+                File where;
+                if (dest.isDirectory()) {
+                    where = new File(dest, circ.getName()+extension);
+               // } else if (filter.accept(dest)) {
+                    //where = dest;
+                } else {
+                    String newName = dest.getName();
+                    where = new File(dest.getParentFile(), newName);
                 }
 
-            } catch (Exception e) {
-                DialogManager.CreateErrorDialog(LC.get("couldNotCreateFile"), LC.get("couldNotCreateFile"));
-                stage.close();
-                return;
-            }
-        }
+                try {
 
-        stage.close();
+                    BufferedImage bImage = SwingFXUtils.fromFXImage(img.getImage(), null);
+
+                    if(PngRb.isSelected()){
+                        ImageIO.write(bImage, "PNG", where);
+                        //GifEncoder.toFile(img, where);
+                    }else if(GifRb.isSelected()){
+                        ImageIO.write(bImage, "GIF", where);
+                    }else if(JpegRb.isSelected()){
+
+                        int[] RGB_MASKS = {0xFF0000, 0xFF00, 0xFF};
+                        ColorModel RGB_OPAQUE =
+                                new DirectColorModel(32, RGB_MASKS[0], RGB_MASKS[1], RGB_MASKS[2]);
+
+                        PixelGrabber pg = new PixelGrabber(bImage, 0, 0, -1, -1, true);
+                        pg.grabPixels();
+                        int width = pg.getWidth(), height = pg.getHeight();
+
+                        DataBuffer buffer = new DataBufferInt((int[]) pg.getPixels(), pg.getWidth() * pg.getHeight());
+                        WritableRaster raster = Raster.createPackedRaster(buffer, width, height, width, RGB_MASKS, null);
+                        BufferedImage bi = new BufferedImage(RGB_OPAQUE, raster, false, null);
+
+                        ImageIO.write(bi, "JPEG", where);
+
+                    }
+
+                } catch (Exception e) {
+                    DialogManager.CreateErrorDialog(LC.get("couldNotCreateFile"), LC.get("couldNotCreateFile"));
+                    stage.close();
+                    return;
+                }
+            }
+            stage.close();
+        }
 
     }
 

@@ -164,7 +164,7 @@ public class FileSelector {
 
         setPngFilter();
 
-        tempFile = fileChooser.showOpenDialog(ownerWindow);
+        tempFile = fileChooser.showSaveDialog(ownerWindow);
 
         return tempFile;
 
@@ -178,7 +178,7 @@ public class FileSelector {
 
         setJpgFilter();
 
-        tempFile = fileChooser.showOpenDialog(ownerWindow);
+        tempFile = fileChooser.showSaveDialog(ownerWindow);
 
         return tempFile;
 
@@ -192,7 +192,7 @@ public class FileSelector {
 
         setGifFilter();
 
-        tempFile = fileChooser.showOpenDialog(ownerWindow);
+        tempFile = fileChooser.showSaveDialog(ownerWindow);
 
         return tempFile;
 

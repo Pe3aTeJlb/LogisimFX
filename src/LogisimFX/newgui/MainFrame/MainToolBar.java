@@ -7,6 +7,7 @@ import LogisimFX.file.ToolbarData;
 import LogisimFX.tools.Tool;
 import LogisimFX.draw.tools.*;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -48,7 +49,7 @@ public class MainToolBar extends ToolBar {
         //
         public void propertyChange(PropertyChangeEvent event) {
             if (AppPreferences.GATE_SHAPE.isSource(event)) {
-                ToolsRefresh();
+                Platform.runLater(() -> ToolsRefresh());
             }
         }
 

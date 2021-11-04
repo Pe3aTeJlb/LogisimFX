@@ -46,7 +46,7 @@ public class GraphicsUtil {
 			int x, int y, int halign, int valign) {
 
 		if (g == null) return new Rectangle(x, y, 0, 0);
-		FontMetrics mets = Toolkit.getToolkit().getFontLoader().getFontMetrics(g.getFont());
+		FontMetrics mets = g.getFontMetrics();
 		int width = OldFontmetrics.computeStringWidth(mets,text);
 		int ascent = (int)mets.getAscent();
 		int descent = (int)mets.getDescent();

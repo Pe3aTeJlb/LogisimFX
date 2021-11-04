@@ -12,10 +12,6 @@ public class Main extends Application{
     private static String[] arguments;
 
     public static void main(String[] args) {
-        System.setProperty("quantum.multithreading", "false");
-        System.setProperty("javafx.animation.fullspeed", "true");
-        System.setProperty("javafx.animation.pulse", "60");
-        System.setProperty("javafx.animation.framerate", "60");
         arguments = args;
         launch(args);
     }
