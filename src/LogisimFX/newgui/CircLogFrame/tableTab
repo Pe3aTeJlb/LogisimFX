@@ -1,0 +1,274 @@
+private ObservableList<LogLine> logLines = FXCollections.observableArrayList();
+
+    private ScrollBar tableTabTableViewHorizontalScrollbar;
+    private double scrollValue;
+
+    private final int BASE_CHUNK_SIZE = 25;
+    private final int CHUNK_SIZE = 10;
+    private int currLeftVisibleIndex, currRightVisibleIndex;
+    private int minVisibleIndex, maxVisibleIndex;
+    private ObservableList<TableColumn<LogLine, Value>> columns = FXCollections.observableArrayList();
+    private ObservableList<TableColumn<LogLine,?>> visibleColumns = FXCollections.observableArrayList();
+
+
+    private void initTableTab(){
+
+        tableTab.textProperty().bind(LC.createStringBinding("tableTab"));
+
+        logTblvw.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+        logTblvw.setItems(logLines);
+        logTblvw.setCache(true);
+        logTblvw.setCacheHint(CacheHint.SPEED);
+
+        loadFileBtn.textProperty().bind(LC.createStringBinding("openButton"));
+        loadFileBtn.setOnAction(event -> importLog());
+
+        exportFileBtn.textProperty().bind(LC.createStringBinding("saveButton"));
+        exportFileBtn.setOnAction(event -> exportLog());
+
+    }
+
+    private void updateColumns(ObservableList<SelectionItem> items){
+
+        logTblvw.getItems().clear();
+        logTblvw.getColumns().clear();
+        logLines.clear();
+        columns.clear();
+
+        int i = 0;
+        for (SelectionItem item: items) {
+
+            int finalI = i;
+
+            TableColumn<LogLine, Value> column = new TableColumn<>(item.toShortString());
+            column.setCellValueFactory(param -> param.getValue().getValue(finalI));
+            /*
+            column.setCellFactory(param -> {
+                TableCell<LogLine, Value> cell = new TableCell<LogLine, Value>() {
+
+                    @Override
+                    protected void updateItem(Value itm, boolean empty) {
+
+                        super.updateItem(itm, empty);
+
+                        if (itm == null) {
+                            super.setText(null);
+                            super.setGraphic(null);
+                        } else {
+                            super.setText(itm.toDisplayString(item.getRadix()));
+                            super.setGraphic(null);
+                        }
+
+                    }
+
+                };
+
+                cell.setOnMousePressed(event -> {
+                    if(event.getButton() == MouseButton.SECONDARY){
+                        cell.setContextMenu(ContextMenuManager.RadixOptionsContextMenu(item, logTblvw));
+                    }
+                });
+
+                cell.setAlignment(Pos.CENTER);
+                cell.setMinWidth(500);
+
+                return cell;
+            });
+
+             */
+            column.setSortable(false);
+            //column.setResizable(false);
+
+           // column.setVisible(i < BASE_CHUNK_SIZE);
+            columns.add(column);
+
+            i++;
+
+        }
+
+        minVisibleIndex = 0;
+        maxVisibleIndex = BASE_CHUNK_SIZE;
+        scrollValue = BASE_CHUNK_SIZE / columns.size();
+
+        System.out.println("max visible index "+maxVisibleIndex);
+
+        logTblvw.getColumns().setAll(columns);
+
+    }
+
+    private void updateColumns(String[] titles, ArrayList<LogLine> logLines){
+
+        logTblvw.getItems().clear();
+        logTblvw.getColumns().clear();
+        logLines.clear();
+        columns.clear();
+
+        int i = 0;
+        for (String title: titles) {
+
+            TableColumn<LogLine, Value> column = new TableColumn<>(title.trim());
+            int finalI = i;
+            column.setCellValueFactory(param -> param.getValue().getValue(finalI));
+            column.setCellFactory(param -> {
+                TableCell<LogLine, Value> cell = new TableCell<LogLine, Value>() {
+
+                    @Override
+                    protected void updateItem(Value item, boolean empty) {
+
+                        super.updateItem(item, empty);
+
+                        if (item == null) {
+                            super.setText(null);
+                            super.setGraphic(null);
+                        } else {
+                            super.setText(item.toString());
+                            super.setGraphic(null);
+                        }
+
+                    }
+
+                };
+
+
+                cell.setAlignment(Pos.CENTER);
+                cell.setMinWidth(500);
+
+                return cell;
+            });
+            column.setSortable(false);
+            column.setResizable(false);
+
+
+            if(i < BASE_CHUNK_SIZE){
+                column.setVisible(true);
+            }else{
+                column.setVisible(false);
+            }
+            columns.add(column);
+
+            i++;
+
+        }
+
+        minVisibleIndex = 0;
+        maxVisibleIndex = BASE_CHUNK_SIZE;
+        scrollValue = BASE_CHUNK_SIZE / columns.size();
+
+        System.out.println("max visible index "+maxVisibleIndex);
+
+        logTblvw.getColumns().setAll(columns);
+        logTblvw.getItems().setAll(logLines);
+
+    }
+
+    private static class LogLine{
+
+        private final Value[] values;
+
+        public LogLine(Value[] values){
+            this.values = values;
+        }
+
+        public SimpleObjectProperty<Value> getValue(int index){
+            return new SimpleObjectProperty<>(values[index]);
+        }
+
+        /*
+        public SimpleStringProperty getValue(int index, int radix){
+            return new SimpleStringProperty(values[index].toDisplayString(radix));
+        }
+
+         */
+/*
+        public Value[] getValues(){
+            return values;
+        }
+
+ */
+
+    }
+
+    private void updateTableTabData(Value[] values){
+
+        logLines.add(new LogLine(values));
+
+        recalculateTableColumnChunk();
+
+    }
+
+    private void recalculateTableColumnChunk(){
+
+        //Lookup func must be executed after tableview is shown
+        if(tableTabTableViewHorizontalScrollbar == null){
+
+            //Find tableview horizontalScrollbar and add listener for rows scroll
+            Set<Node> scrollBars = logTblvw.lookupAll(".scroll-bar");
+            Optional<Node> horizontalScrollBar = scrollBars.stream()
+                    .filter(node ->
+                            ((ScrollBar) node).getOrientation().equals(Orientation.HORIZONTAL))
+                    .findAny();
+            horizontalScrollBar.ifPresent(node -> {
+                tableTabTableViewHorizontalScrollbar = (ScrollBar) horizontalScrollBar.get();
+                tableTabTableViewHorizontalScrollbar.setValue(scrollValue);
+            });
+/*
+            tableTabTableViewHorizontalScrollbar.valueProperty().addListener(observable -> {
+
+                visibleColumns = logTblvw.getVisibleLeafColumns();
+
+                System.out.println("visible count " + visibleColumns.size());
+
+                currLeftVisibleIndex = logTblvw.getColumns().indexOf(visibleColumns.get(0));
+                currRightVisibleIndex = logTblvw.getColumns().indexOf(visibleColumns.get(visibleColumns.size()-1));
+
+                System.out.println("horiz scroll. curr left "+ currLeftVisibleIndex + " " + "curr right "+currRightVisibleIndex+ " max " + maxVisibleIndex);
+
+                if(currRightVisibleIndex >= maxVisibleIndex - 1){
+
+                    if(maxVisibleIndex < columns.size()-1) {
+
+                        for(int i = 0; i < CHUNK_SIZE; i++){
+
+                            if(maxVisibleIndex + i < columns.size()-1) {
+                                columns.get(maxVisibleIndex + i).setVisible(true);
+                                columns.get(minVisibleIndex + i).setVisible(false);
+                            }
+
+                        }
+
+                        maxVisibleIndex += CHUNK_SIZE;
+                        minVisibleIndex += CHUNK_SIZE;
+
+                        //scrollValue = maxVisibleIndex / columns.size();
+                        //tableTabTableViewHorizontalScrollbar.setValue(scrollValue);
+
+                    }
+
+                }
+
+ */
+/*
+                if(currLeftVisibleIndex <= minVisibleIndex + 1){
+
+                    if(minVisibleIndex - 1 >= 0) {
+
+                        columns.get(maxVisibleIndex).setVisible(false);
+                        columns.get(minVisibleIndex - 1).setVisible(true);
+
+                        maxVisibleIndex -= 1;
+                        minVisibleIndex -= 1;
+
+                        scrollValue = maxVisibleIndex / columns.size();
+                        tableTabTableViewHorizontalScrollbar.setValue(scrollValue);
+
+                    }
+
+                }
+
+ */
+
+            //});
+
+        }
+
+    }

@@ -351,7 +351,6 @@ public class Ram extends Mem {
 				if (dataWidth == null) dataWidth = BitWidth.create(0);
 				MemState data = (MemState) state.getData();
 				if (data == null) return Value.createKnown(dataWidth, 0);
-				System.out.println(data.getCurrent()+" " + data.getContents().get(data.getCurrent()));
 				return Value.createKnown(dataWidth, data.getContents().get(data.getCurrent()));
 			}
 

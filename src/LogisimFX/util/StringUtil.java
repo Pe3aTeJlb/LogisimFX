@@ -76,11 +76,11 @@ public class StringUtil {
 
 	public static String toHexString(int bits, int value) {
 		if (bits < 32) value &= (1 << bits) - 1;
-		String ret = Integer.toHexString(value);
+		StringBuilder ret = new StringBuilder(Integer.toHexString(value));
 		int len = (bits + 3) / 4;
-		while (ret.length() < len) ret = "0" + ret;
-		if (ret.length() > len) ret = ret.substring(ret.length() - len);
-		return ret;
+		while (ret.length() < len) ret.insert(0, "0");
+		if (ret.length() > len) ret = new StringBuilder(ret.substring(ret.length() - len));
+		return ret.toString();
 	}
 
 }

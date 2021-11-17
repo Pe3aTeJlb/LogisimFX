@@ -78,6 +78,43 @@ public class GraphicsUtil {
 
 	}
 
+	static public Double[] getTextCoords(Graphics g, String text,
+										  int x, int y, int halign, int valign) {
+
+		Double[] xy = new Double[]{(double)x,(double)y};
+		if (g == null) return xy;
+
+		FontMetrics mets = g.getFontMetrics();
+		int width = OldFontmetrics.computeStringWidth(mets,text);
+		int ascent = (int)mets.getAscent();
+		int descent = (int)mets.getDescent();
+		int height = ascent + descent;
+
+		switch (halign) {
+			case H_CENTER: xy[0] = (xy[0]-(width / 2)); break;
+			case H_RIGHT:  xy[0] = (xy[0]-width); break;
+			//case H_CENTER: ret.translate(-(width / 2), 0); break;
+			//case H_RIGHT:  ret.translate(-width, 0); break;
+			default: ;
+		}
+
+		switch (valign) {
+			case V_TOP:      break;
+			case V_CENTER:  xy[1]=(xy[1]-(ascent / 2)); break;
+			case V_CENTER_OVERALL:  xy[1]=(xy[1]-(height / 2)); break;
+			case V_BASELINE: xy[1]=(xy[1]-ascent); break;
+			case V_BOTTOM:   xy[1]=(xy[1]-height); break;
+			//case V_CENTER:   ret.translate(0, -(ascent / 2)); break;
+			//case V_CENTER_OVERALL: ret.translate(0, -(height / 2)); break;
+			//case V_BASELINE: ret.translate(0, -ascent); break;
+			//case V_BOTTOM:   ret.translate(0, -height); break;
+			default: ;
+		}
+
+		return xy;
+
+	}
+
 	static public void drawText(Graphics g, Font font,
 			String text, int x, int y, int halign, int valign) {
 
@@ -92,12 +129,15 @@ public class GraphicsUtil {
 			int x, int y, int halign, int valign) {
 
 		if (text.length() == 0) return;
-		Rectangle bd = getTextBounds(g, text, x, y, halign, valign);
+		//Rectangle bd = getTextBounds(g, text, x, y, halign, valign);
+		Double[] xy = getTextCoords(g, text, x, y, halign, valign);
 		double buf = g.getLineWidth();
 		g.setLineWidth(1);
-		g.c.fillText(text, bd.getX(),
-				bd.getY() + g.getFontMetrics().getAscent());
+		//g.c.fillText(text, bd.getX(), bd.getY() + g.getFontMetrics().getAscent());
+		g.c.fillText(text, xy[0], xy[1] + g.getFontMetrics().getAscent());
 		g.setLineWidth(buf);
+
+
 	}
 
 	static public void drawCenteredText(Graphics g, String text,

@@ -413,7 +413,7 @@ class CircuitWires {
 						g.setColor(Value.NIL_COLOR);
 
 					} else{
-						g.setColor(state.getValue(s).getColor());
+						g.setColor(state.getValueColor(s));
 					}
 				} else {
 					g.setColor(Color.BLACK);
@@ -437,7 +437,7 @@ class CircuitWires {
 							if (!isValid) {
 								g.setColor(Value.NIL_COLOR);
 							} else{
-								g.setColor(state.getValue(loc).getColor());
+								g.setColor(state.getValueColor(loc));
 							}
 						} else {
 							g.setColor(Color.BLACK);
@@ -462,7 +462,7 @@ class CircuitWires {
 						if (!isValid) {
 							g.setColor(Value.NIL_COLOR);
 						} else{
-							g.setColor(state.getValue(s).getColor());
+							g.setColor(state.getValueColor(s));
 						}
 					} else {
 						g.setColor(Color.BLACK);
@@ -495,7 +495,7 @@ class CircuitWires {
 								if (!isValid){
 									g.setColor(Value.NIL_COLOR);
 								}else{
-									g.setColor(state.getValue(loc).getColor());
+									g.setColor(state.getValueColor(loc));
 								}
 							} else {
 								g.setColor(Color.BLACK);

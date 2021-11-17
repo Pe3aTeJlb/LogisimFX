@@ -90,6 +90,14 @@ public class MainFrameController extends AbstractController {
 
         stage = s;
 
+        stage.iconifiedProperty().addListener((observable, oldValue, newValue) ->{
+            if(observable.getValue().booleanValue()){
+                stopCanvasRender();
+            }else{
+                resumeCanvasRender();
+            }
+        });
+
         proj = p;
         proj.setFrameController(this);
 
@@ -222,6 +230,29 @@ public class MainFrameController extends AbstractController {
             appearanceCanvas.updateStop();
 
         }
+
+    }
+
+    public void resumeCanvasRender(){
+
+        if(canvasRoot.getChildren().get(0).equals(layoutCanvas)){
+
+            layoutCanvas.updateResume();
+            appearanceCanvas.updateStop();
+
+        }else{
+
+            layoutCanvas.updateStop();
+            appearanceCanvas.updateResume();
+
+        }
+
+    }
+
+    public void stopCanvasRender(){
+
+        layoutCanvas.updateStop();
+        appearanceCanvas.updateStop();
 
     }
 

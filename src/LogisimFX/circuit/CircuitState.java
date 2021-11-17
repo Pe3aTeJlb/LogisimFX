@@ -19,6 +19,8 @@ import LogisimFX.std.wiring.Clock;
 import LogisimFX.std.wiring.Pin;
 import LogisimFX.util.ArraySet;
 import LogisimFX.util.SmallSet;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 
 import java.util.*;
 
@@ -267,6 +269,13 @@ public class CircuitState implements InstanceData {
 
 		BitWidth wid = circuit.getWidth(pt);
 		return Value.createUnknown(wid);
+	}
+
+	public Paint getValueColor(Location pt) {
+		Value ret = values.get(pt);
+		if (ret != null) return ret.getColor();
+
+		return Value.UNKNOWN_COLOR;
 	}
 
 	public void setValue(Location pt, Value val, Component cause, int delay) {

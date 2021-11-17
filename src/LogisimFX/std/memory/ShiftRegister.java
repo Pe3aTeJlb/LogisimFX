@@ -18,13 +18,14 @@ public class ShiftRegister extends InstanceFactory {
 			LC.createStringBinding("shiftRegLengthAttr"), 1, 32);
 	static final Attribute<Boolean> ATTR_LOAD = Attributes.forBoolean("parallel",
 			LC.createStringBinding("shiftRegParallelAttr"));
-	
+
 	private static final int IN  = 0;
 	private static final int SH  = 1;
 	private static final int CK  = 2;
 	private static final int CLR = 3;
 	private static final int OUT = 4;
-	private static final int LD  = 5;
+	private static final int LD  = 6;
+	private static final int DIR  = 5;
 
 	public ShiftRegister() {
 
@@ -52,9 +53,9 @@ public class ShiftRegister extends InstanceFactory {
 		Object parallel = attrs.getValue(ATTR_LOAD);
 		if (parallel == null || ((Boolean) parallel).booleanValue()) {
 			int len = attrs.getValue(ATTR_LENGTH).intValue();
-			return Bounds.create(0, -20, 20 + 10 * len, 40);
+			return Bounds.create(0, -20, 20 + 10 * len, 50);
 		} else {
-			return Bounds.create(0, -20, 30, 40);
+			return Bounds.create(0, -20, 30, 50);
 		}
 
 	}
@@ -87,26 +88,28 @@ public class ShiftRegister extends InstanceFactory {
 		if (parallelObj == null || parallelObj.booleanValue()) {
 			Integer lenObj = instance.getAttributeValue(ATTR_LENGTH);
 			int len = lenObj == null ? 8 : lenObj.intValue();
-			ps = new Port[6 + 2 * len];
+			ps = new Port[7 + 2 * len];
 			ps[LD] = new Port(10, -20, Port.INPUT, 1);
 			ps[LD].setToolTip(LC.createStringBinding("shiftRegLoadTip"));
 			for (int i = 0; i < len; i++) {
-				ps[6 + 2 * i]     = new Port(20 + 10 * i, -20, Port.INPUT, width);
-				ps[6 + 2 * i + 1] = new Port(20 + 10 * i,  20, Port.OUTPUT, width);
+				ps[7 + 2 * i]     = new Port(20 + 10 * i, -20, Port.INPUT, width);
+				ps[7 + 2 * i + 1] = new Port(20 + 10 * i,  30, Port.OUTPUT, width);
 			}
 		} else {
-			ps = new Port[5];
+			ps = new Port[6];
 		}
 		ps[OUT] = new Port(bds.getWidth(), 0, Port.OUTPUT, width);
 		ps[SH]  = new Port( 0, -10, Port.INPUT, 1);
 		ps[IN]  = new Port( 0,   0, Port.INPUT, width);
 		ps[CK]  = new Port( 0,  10, Port.INPUT, 1);
-		ps[CLR] = new Port(10,  20, Port.INPUT, 1);
+		ps[CLR] = new Port(10,  30, Port.INPUT, 1);
+		ps[DIR] = new Port(0,  20, Port.INPUT, 1);
 		ps[OUT].setToolTip(LC.createStringBinding("shiftRegOutTip"));
 		ps[SH].setToolTip(LC.createStringBinding("shiftRegShiftTip"));
 		ps[IN].setToolTip(LC.createStringBinding("shiftRegInTip"));
 		ps[CK].setToolTip(LC.createStringBinding("shiftRegClockTip"));
 		ps[CLR].setToolTip(LC.createStringBinding("shiftRegClearTip"));
+		ps[DIR].setToolTip(LC.createStringBinding("shiftRegDirTip"));
 		instance.setPorts(ps);
 
 		instance.setTextField(StdAttr.LABEL, StdAttr.LABEL_FONT,
@@ -120,13 +123,14 @@ public class ShiftRegister extends InstanceFactory {
 
 		BitWidth width = state.getAttributeValue(StdAttr.WIDTH);
 		Integer lenObj = state.getAttributeValue(ATTR_LENGTH);
+
 		int length = lenObj == null ? 8 : lenObj.intValue();
 		ShiftRegisterData data = (ShiftRegisterData) state.getData();
 		if (data == null) {
-			data = new ShiftRegisterData(width, length);
+			data = new ShiftRegisterData(width, length, state.getPort(DIR));
 			state.setData(data);
 		} else {
-			data.setDimensions(width, length);
+			data.setDimensions(width, length, state.getPort(DIR));
 		}
 		return data;
 
@@ -147,17 +151,22 @@ public class ShiftRegister extends InstanceFactory {
 			if (parallel && state.getPort(LD) == Value.TRUE) {
 				data.clear();
 				for (int i = len - 1; i >= 0; i--) {
-					data.push(state.getPort(6 + 2 * i));
+					data.push(state.getPort(7 + 2 * i));
 				}
 			} else if (state.getPort(SH) != Value.FALSE) {
 				data.push(state.getPort(IN));
 			}
 		}
 
-		state.setPort(OUT, data.get(0), 4);
+		if(state.getPort(DIR) == Value.TRUE) {
+			state.setPort(OUT, data.get(0), 4);
+		}else{
+			state.setPort(OUT, data.get(len-1), 4);
+		}
+
 		if (parallel) {
 			for (int i = 0; i < len; i++) {
-				state.setPort(6 + 2 * i + 1, data.get(len - 1 - i), 4);
+				state.setPort(7 + 2 * i + 1, data.get(i), 4);
 			}
 		}
 
@@ -191,7 +200,7 @@ public class ShiftRegister extends InstanceFactory {
 					}
 					Graphics g = painter.getGraphics();
 					for (int i = 0; i < len; i++) {
-						String s = data.get(len - 1 - i).toHexString();
+						String s = data.get(i).toHexString();
 						GraphicsUtil.drawCenteredText(g, s, x, y);
 						x += 10;
 					}

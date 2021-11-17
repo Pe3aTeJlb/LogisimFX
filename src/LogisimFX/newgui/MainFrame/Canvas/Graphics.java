@@ -41,13 +41,24 @@ public class Graphics{
 
 
     public void setColor(Color color){
+
+        if(c.getFill() == color) return;
+        setColor((Paint)color);
+/*
         c.setStroke(color);
         c.setFill(color);
+
+ */
+
     }
 
     public void setColor(Paint color){
+
+        if(c.getFill() == color) return;
+
         c.setStroke(color);
         c.setFill(color);
+
     }
 
     public Color getColor(){
@@ -59,19 +70,25 @@ public class Graphics{
     }
 
     public void toDefaultColor(){
+
+        if(c.getFill() == DEFAULT_COLOR) return;
+
         c.setStroke(DEFAULT_COLOR);
         c.setFill(DEFAULT_COLOR);
+
     }
 
 
 
     public void setLineWidth(double width){
+        if(c.getLineWidth() == width) return;
         c.setLineWidth(width);
     }
 
     public double getLineWidth(){return c.getLineWidth();}
 
     public void toDefaultLineWidth(){
+        if(c.getLineWidth() == DEFAULT_LINE_SIZE) return;
         c.setLineWidth(DEFAULT_LINE_SIZE);
     }
 
@@ -79,10 +96,9 @@ public class Graphics{
 
     public void setFont(Font font){
 
-        if(!font.equals(c.getFont())){
-            Toolkit.getToolkit().getFontLoader().getFontMetrics(font);
-        }
+        if(c.getFont() == font) return;
 
+        Toolkit.getToolkit().getFontLoader().getFontMetrics(font);
         c.setFont(font);
 
     }
@@ -92,6 +108,7 @@ public class Graphics{
     }
 
     public void toDefaultFont(){
+        if(c.getFont() == DEFAULT_FONT) return;
         c.setFont(DEFAULT_FONT);
     }
 
@@ -104,6 +121,8 @@ public class Graphics{
         return Toolkit.getToolkit().getFontLoader().getFontMetrics(font);
 
     }
+
+
 
     public void rotate(double degrees){
 
@@ -137,6 +156,8 @@ public class Graphics{
         yTranslate = 0;
 
     }
+
+
 
     public void toDefault(){
 

@@ -1,11 +1,13 @@
 package LogisimFX;
 
 import com.sun.javafx.tk.FontMetrics;
-import com.sun.javafx.tk.Toolkit;
 import javafx.scene.text.Text;
+
+import java.util.HashMap;
 
 public class OldFontmetrics {
 
+    private static final HashMap<String, Integer> strings = new HashMap<>();
     private static final Text internal = new Text();
 
     public static float computeStringWidthFloat(FontMetrics fm, String txt) {
@@ -16,13 +18,22 @@ public class OldFontmetrics {
 
     public static int computeStringWidth(FontMetrics fm, String txt) {
 
-        float width = 0;
+        if(strings.containsKey(txt)){
+            return strings.get(txt);
+        }else {
 
-        for (char c: txt.toCharArray()){
-            width += fm.getCharWidth(c);
+            float width = 0;
+
+            for (char c : txt.toCharArray()) {
+                width += fm.getCharWidth(c);
+            }
+
+            strings.put(txt,(int)width);
+
+            return (int) width;
+
         }
 
-        return (int) width;
     }
 
 }

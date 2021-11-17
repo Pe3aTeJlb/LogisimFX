@@ -26,6 +26,7 @@ class SplitterParameters {
 		Object appear = attrs.appear;
 		int fanout = attrs.fanout;
 		Direction facing = attrs.facing;
+		boolean tunnelView = attrs.tunnelView;
 		
 		int justify;
 		if (appear == SplitterAttributes.APPEAR_CENTER || appear == SplitterAttributes.APPEAR_LEGACY) {
@@ -40,13 +41,15 @@ class SplitterParameters {
 		int offs = 6;
 		if (facing == Direction.NORTH || facing == Direction.SOUTH) { // ^ or V
 			int m = facing == Direction.NORTH ? 1 : -1;
-			dxEnd0 = justify == 0 ? 10 * ((fanout + 1) / 2 - 1) : m * justify < 0 ? -10 : 10 * fanout;
+			int baseval;
+			if(tunnelView) baseval = 20; else baseval = 10;
+			dxEnd0 = justify == 0 ? baseval * ((fanout + 1) / 2 - 1) : m * justify < 0 ? -1 * baseval : baseval * fanout;
 			dyEnd0 = -m * width;
-			ddxEnd = -10;
+			if(tunnelView) ddxEnd = -20; else ddxEnd = -10;
 			ddyEnd = 0;
 			dxEndSpine = 0;
 			dyEndSpine = m * (width - offs);
-			dxSpine0 = m * justify * (10 * fanout - 1);
+			dxSpine0 = m * justify * (baseval * fanout - 1);
 			dySpine0 = -m * offs;
 			dxSpine1 = m * justify * offs;
 			dySpine1 = -m * offs;
@@ -56,13 +59,15 @@ class SplitterParameters {
 		} else { // > or <
 			int m = facing == Direction.WEST ? -1 : 1;
 			dxEnd0 = m * width;
-			dyEnd0 = justify == 0 ? -10 * (fanout / 2) : m * justify > 0 ? 10 : -10 * fanout;
+			int baseval;
+			if(tunnelView) baseval = 20; else baseval = 10;
+			dyEnd0 = justify == 0 ? -1 *baseval  * (fanout / 2) : m * justify > 0 ? baseval : -1 * baseval * fanout;
 			ddxEnd = 0;
-			ddyEnd = 10;
+			if(tunnelView) ddyEnd = 20; else ddyEnd = 10;
 			dxEndSpine = -m * (width - offs);
 			dyEndSpine = 0;
 			dxSpine0 = m * offs;
-			dySpine0 = m * justify * (10 * fanout - 1);
+			dySpine0 = m * justify * (baseval * fanout - 1);
 			dxSpine1 = m * offs;
 			dySpine1 = m * justify * offs;
 			textAngle = 0;

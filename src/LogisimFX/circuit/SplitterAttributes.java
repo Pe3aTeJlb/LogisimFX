@@ -36,9 +36,12 @@ class SplitterAttributes extends AbstractAttributeSet {
 	public static final Attribute<Integer> ATTR_FANOUT
 		= Attributes.forIntegerRange("fanout", LC.createStringBinding("splitterFanOutAttr"), 1, 32);
 
+	public static final Attribute<Boolean> ATTR_TUNNELVIEW
+			= Attributes.forBoolean("tunnelview", LC.createStringBinding("splitterTunnelViewAttr"));
+
 	private static final List<Attribute<?>> INIT_ATTRIBUTES
 		= Arrays.asList(new Attribute<?>[] {
-			StdAttr.FACING, ATTR_FANOUT, ATTR_WIDTH, ATTR_APPEARANCE,
+			StdAttr.FACING, ATTR_TUNNELVIEW, ATTR_FANOUT, ATTR_WIDTH, ATTR_APPEARANCE,
 		});
 
 	private static final String unchosen_val = "none";
@@ -157,12 +160,14 @@ class SplitterAttributes extends AbstractAttributeSet {
 	private SplitterParameters parameters;
 	AttributeOption appear = APPEAR_LEFT;
 	Direction facing = Direction.EAST;
+	Boolean tunnelView = false;
 	byte fanout = 2;                 // number of ends this splits into
 	byte[] bit_end = new byte[2];    // how each bit maps to an end (0 if nowhere);
 									 //   other values will be between 1 and fanout
 	BitOutOption[] options = null;
 
 	SplitterAttributes() {
+		setValue(ATTR_TUNNELVIEW, false);
 		configureOptions();
 		configureDefaults();
 		parameters = new SplitterParameters(this);
@@ -184,6 +189,7 @@ class SplitterAttributes extends AbstractAttributeSet {
 		}
 
 		dest.facing = this.facing;
+		dest.tunnelView = this.tunnelView;
 		dest.fanout = this.fanout;
 		dest.appear = this.appear;
 		dest.bit_end = this.bit_end.clone();
@@ -218,6 +224,8 @@ class SplitterAttributes extends AbstractAttributeSet {
 		} else if (attr instanceof BitOutAttribute) {
 			BitOutAttribute bitOut = (BitOutAttribute) attr;
 			return (V) Integer.valueOf(bit_end[bitOut.which]);
+		} else if (attr == ATTR_TUNNELVIEW) {
+			return (V) tunnelView;
 		} else {
 			return null;
 		}
@@ -258,7 +266,11 @@ class SplitterAttributes extends AbstractAttributeSet {
 			if (val >= 0 && val <= fanout) {
 				bit_end[bitOutAttr.which] = (byte) val;
 			}
-		} else {
+		}else if (attr == ATTR_TUNNELVIEW) {
+			tunnelView = (boolean)value;
+			parameters = null;
+		}
+		else {
 			throw new IllegalArgumentException("unknown attribute " + attr);
 		}
 		fireAttributeValueChanged(attr, value);

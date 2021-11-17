@@ -76,7 +76,12 @@ public class Constant extends InstanceFactory {
 				this.value = this.value.extendWidth(width.getWidth(),
 						this.value.get(this.value.getWidth() - 1));
 			} else if (attr == ATTR_VALUE) {
-				int val = ((Integer) value).intValue();
+				int val = 0;
+				if(value instanceof String) {
+					val = Integer.decode((String)value);
+				}else{
+					val = ((Integer) value).intValue();
+				}
 				this.value = Value.createKnown(width, val);
 			} else {
 				throw new IllegalArgumentException("unknown attribute " + attr);

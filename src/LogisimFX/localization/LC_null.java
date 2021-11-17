@@ -3,7 +3,7 @@ package LogisimFX.localization;
 //implement Singleton
 public class LC_null {
 
-    private static final String packageName = null;
+    private static final String packageName = "gui";
 
     private static Localizer lc;
 

@@ -52,7 +52,6 @@ public class ShiftRegisterLogger extends InstanceLogger {
 				return Value.createKnown(dataWidth, 0);
 			} else {
 				int index = option == null ? 0 : ((Integer) option).intValue();
-				System.out.println("datr w "+data.get(index).getBitWidth());
 				return data.get(index);
 			}
 		}else{

@@ -42,9 +42,9 @@ public class Size {
 		return ht;
 	}
 
-	public java.awt.Dimension toAwtDimension() {
-		return new java.awt.Dimension(wid, ht);
-	}
+	//public java.awt.Dimension toAwtDimension() {
+	//	return new java.awt.Dimension(wid, ht);
+	//}
 
 
 	public boolean contains(Location p) {

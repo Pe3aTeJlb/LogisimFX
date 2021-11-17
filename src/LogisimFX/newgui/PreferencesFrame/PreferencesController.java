@@ -1,5 +1,6 @@
 package LogisimFX.newgui.PreferencesFrame;
 
+import LogisimFX.localization.LocaleManager;
 import LogisimFX.newgui.AbstractController;
 import LogisimFX.circuit.RadixOption;
 import LogisimFX.file.Loader;
@@ -267,7 +268,7 @@ public class PreferencesController extends AbstractController {
         LocaleLbl.textProperty().bind(LC.createStringBinding("intlLocale"));
 
         SpecificSymbolsChbx.textProperty().bind(LC.createStringBinding("intlReplaceAccents"));
-        SpecificSymbolsChbx.disableProperty().bind(Localizer.localeProperty().isNotEqualTo(Locale.forLanguageTag("es")));
+        SpecificSymbolsChbx.disableProperty().bind(LocaleManager.localeProperty().isNotEqualTo(Locale.forLanguageTag("es")));
         SpecificSymbolsChbx.setSelected(AppPreferences.ACCENTS_REPLACE.get());
         SpecificSymbolsChbx.setOnAction(event -> AppPreferences.ACCENTS_REPLACE.set(SpecificSymbolsChbx.isSelected()));
 
@@ -308,9 +309,9 @@ public class PreferencesController extends AbstractController {
 
             Label lb = new Label();
 
-            lb.textProperty().bind(Localizer.getComplexTitleForLocale(l));
+            lb.textProperty().bind(LocaleManager.getComplexTitleForLocale(l));
 
-            lb.setOnMouseClicked(event -> Localizer.setLocale(l));
+            lb.setOnMouseClicked(event -> LocaleManager.setLocale(l));
 
             localeLabels.add(lb);
         }

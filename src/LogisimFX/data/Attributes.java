@@ -305,6 +305,7 @@ public class Attributes {
 		Integer[] options = null;
 		int start;
 		int end;
+
 		private IntegerRangeAttribute(String name, StringBinding disp, int start, int end) {
 			super(name, disp);
 			this.start = start;
@@ -313,17 +314,36 @@ public class Attributes {
 
 		@Override
 		public Integer parse(String value) {
-			int v = (int) Long.parseLong(value);
+			int v = Integer.parseInt(value);
 			if (v < start) throw new NumberFormatException("integer too small");
 			if (v > end) throw new NumberFormatException("integer too large");
-			return Integer.valueOf(v);
+			return v;
+		}
+
+		@Override
+		public String toDisplayString(Integer value) {
+			return value.toString();
 		}
 
 		@Override
 		public Node getCell(Integer value) {
 
 			if (end - start + 1 > 32) {
-				return super.getCell(value);
+
+				TextField field = new TextField();
+
+				field.setText(toDisplayString(value));
+
+				field.setOnAction(event -> {
+					try {
+						AttributeTable.setValueRequested( this, parse(field.getText()));
+					} catch (AttrTableSetException e) {
+						e.printStackTrace();
+					}
+				});
+
+				return field;
+
 			} else {
 				if (options == null) {
 					options = new Integer[end - start + 1];

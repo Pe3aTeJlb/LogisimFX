@@ -206,7 +206,7 @@ public class ComponentDrawContext {
 		int y = pt.getY();
 		if (getShowState()) {
 			CircuitState state = getCircuitState();
-			g.setColor(state.getValue(pt).getColor());
+			g.setColor(state.getValueColor(pt));
 		} else {
 			g.setColor(Color.BLACK);
 		}
@@ -235,7 +235,7 @@ public class ComponentDrawContext {
 		Color curColor = g.getColor();
 		if (getShowState()) {
 			CircuitState state = getCircuitState();
-			g.setColor(state.getValue(pt).getColor());
+			g.setColor(state.getValueColor(pt));
 		} else {
 			g.setColor(Color.BLACK);
 		}
@@ -252,7 +252,7 @@ public class ComponentDrawContext {
 			Location pt = e.getLocation();
 			if (getShowState()) {
 				CircuitState state = getCircuitState();
-				g.setColor(state.getValue(pt).getColor());
+				g.setColor(state.getValueColor(pt));
 			} else {
 				g.setColor(Color.BLACK);
 			}

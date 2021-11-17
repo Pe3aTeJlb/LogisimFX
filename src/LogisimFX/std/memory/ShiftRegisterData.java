@@ -6,7 +6,9 @@ package LogisimFX.std.memory;
 import LogisimFX.data.BitWidth;
 import LogisimFX.data.Value;
 import LogisimFX.instance.InstanceData;
+import javafx.geometry.VPos;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ShiftRegisterData extends ClockState implements InstanceData {
@@ -14,13 +16,14 @@ public class ShiftRegisterData extends ClockState implements InstanceData {
 	private BitWidth width;
 	private Value[] vs;
 	private int vsPos;
+	private boolean shiftLeft;
 	
-	public ShiftRegisterData(BitWidth width, int len) {
+	public ShiftRegisterData(BitWidth width, int len, Value shiftDir) {
 
 		this.width = width;
 		this.vs = new Value[len];
 		Arrays.fill(this.vs, Value.createKnown(width, 0));
-		this.vsPos = 0;
+		this.shiftLeft = shiftDir == Value.TRUE;
 
 	}
 	
@@ -37,12 +40,13 @@ public class ShiftRegisterData extends ClockState implements InstanceData {
 		return vs.length;
 	}
 	
-	public void setDimensions(BitWidth newWidth, int newLength) {
+	public void setDimensions(BitWidth newWidth, int newLength, Value shiftDir) {
 
 		Value[] v = vs;
 		BitWidth oldWidth = width;
 		int oldW = oldWidth.getWidth();
 		int newW = newWidth.getWidth();
+
 		if (v.length != newLength) {
 			Value[] newV = new Value[newLength];
 			int j = vsPos;
@@ -57,6 +61,11 @@ public class ShiftRegisterData extends ClockState implements InstanceData {
 			vsPos = 0;
 			vs = newV;
 		}
+
+		if(shiftLeft != (shiftDir == Value.TRUE)) {
+			shiftLeft = (shiftDir == Value.TRUE);
+		}
+
 		if (oldW != newW) {
 			for (int i = 0; i < v.length; i++) {
 				Value vi = v[i];
@@ -72,24 +81,29 @@ public class ShiftRegisterData extends ClockState implements InstanceData {
 	public void clear() {
 
 		Arrays.fill(vs, Value.createKnown(width, 0));
-		vsPos = 0;
 
 	}
 	
 	public void push(Value v) {
 
-		int pos = vsPos;
-		vs[pos] = v;
-		vsPos = pos >= vs.length - 1 ? 0 : pos + 1;
+		if(!shiftLeft) {
+
+			if (vs.length - 1 >= 0) System.arraycopy(vs, 0, vs, 1, vs.length - 1);
+			vs[0] = v;
+
+		}else{
+
+			if (vs.length - 1 >= 0) System.arraycopy(vs, 1, vs, 0, vs.length - 1);
+			vs[vs.length - 1] = v;
+
+		}
 
 	}
 	
 	public Value get(int index) {
 
-		int i = vsPos + index;
 		Value[] v = vs;
-		if (i >= v.length) i -= v.length;
-		return v[i];
+		return v[index];
 
 	}
 
@@ -106,10 +120,8 @@ public class ShiftRegisterData extends ClockState implements InstanceData {
 	
 	public void set(int index, Value val) {
 
-		int i = vsPos + index;
 		Value[] v = vs;
-		if (i >= v.length) i -= v.length;
-		v[i] = val;
+		v[index] = val;
 
 	}
 

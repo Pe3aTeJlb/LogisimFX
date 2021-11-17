@@ -17,6 +17,7 @@ import java.util.prefs.Preferences;
 
 import LogisimFX.Startup;
 import LogisimFX.data.Direction;
+import LogisimFX.localization.LocaleManager;
 import LogisimFX.localization.Localizer;
 import LogisimFX.util.LocaleListener;
 import LogisimFX.util.PropertyChangeWeakSupport;
@@ -160,7 +161,7 @@ public class AppPreferences {
 			String prop = event.getKey();
 			if (ACCENTS_REPLACE.getIdentifier().equals(prop)) {
 				getPrefs();
-				Localizer.setReplaceAccents(ACCENTS_REPLACE.getBoolean());
+				LocaleManager.setReplaceAccents(ACCENTS_REPLACE.getBoolean());
 				//LocaleManager.setReplaceAccents(ACCENTS_REPLACE.getBoolean());
 			} else if (prop.equals(TEMPLATE_TYPE)) {
 				int oldValue = templateType;
@@ -185,7 +186,7 @@ public class AppPreferences {
 		}
 
 		public void localeChanged() {
-			Locale loc = Localizer.getLocale();
+			Locale loc = LocaleManager.getLocale();
 			String lang = loc.getLanguage();
 			if (LOCALE != null) {
 				LOCALE.set(lang);
@@ -403,10 +404,10 @@ public class AppPreferences {
 
 			String localeStr = this.get();
 			if (localeStr != null && !localeStr.equals("")) {
-				Localizer.setLocale(new Locale(localeStr));
+				LocaleManager.setLocale(new Locale(localeStr));
 				//LocaleManager.setLocale(new Locale(localeStr));
 			}
-			Localizer.addLocaleListener(myListener);
+			LocaleManager.addLocaleListener(myListener);
 			//LocaleManager.addLocaleListener(myListener);
 			myListener.localeChanged();
 		}

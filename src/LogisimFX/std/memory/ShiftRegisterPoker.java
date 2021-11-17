@@ -83,10 +83,10 @@ public class ShiftRegisterPoker extends InstancePoker {
 			if (oldLoc == newLoc) {
 				ShiftRegisterData data = (ShiftRegisterData) state.getData();
 				int i = data.getLength() - 1 - loc;
-				Value v = data.get(i);
+				Value v = data.get(loc);
 				if (v == Value.FALSE) v = Value.TRUE;
 				else v = Value.FALSE;
-				data.set(i, v);
+				data.set(loc, v);
 				state.fireInvalidated();
 			}
 		}
@@ -118,8 +118,8 @@ public class ShiftRegisterPoker extends InstancePoker {
 				Value valObj = Value.createKnown(widObj, val);
 				ShiftRegisterData data = (ShiftRegisterData) state.getData();
 				int i = data.getLength() - 1 - loc;
-				if (!data.get(i).equals(valObj)) {
-					data.set(i, valObj);
+				if (!data.get(loc).equals(valObj)) {
+					data.set(loc, valObj);
 					state.fireInvalidated();
 				}
 			} catch (NumberFormatException ex) {

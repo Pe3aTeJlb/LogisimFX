@@ -19,17 +19,20 @@ import LogisimFX.tools.*;
 import com.sun.javafx.tk.FontMetrics;
 import javafx.animation.AnimationTimer;
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.beans.binding.StringBinding;
 import javafx.scene.CacheHint;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.PixelWriter;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
@@ -51,7 +54,7 @@ public class LayoutCanvas extends Canvas {
 
     private static final double MIN_ZOOM = 5;
     private static final double MAX_ZOOM = 0.5;
-    private double zoom;
+    private double zoom = 1;
     private double dragScreenX, dragScreenY;
     private static double[] transform;
 
@@ -75,6 +78,7 @@ public class LayoutCanvas extends Canvas {
     //Error string
     private static final Color DEFAULT_ERROR_COLOR = Color.color(0.753, 0, 0);
     private static final Font DEFAULT_ERROR_FONT = Font.font("serif", FontWeight.BOLD, FontPosture.REGULAR, 14);
+    private static final Font DEBUG_FONT = Font.font("serif", FontWeight.LIGHT, FontPosture.REGULAR, 6);
     private Color errorColor;
     private static StringBinding errorMessage;
 
@@ -194,20 +198,25 @@ public class LayoutCanvas extends Canvas {
     }
 
 
-    /* framerate debug
+    /* framerate debug*/
+    /*
     private final long[] frameTimes = new long[100];
     private int frameTimeIndex = 0 ;
     private boolean arrayFilled = false ;
 
      */
 
+    private int aaa = 6;
+    private boolean requestUpdate = false;
+
+    private  double dx, dy;
 
     public LayoutCanvas(AnchorPane rt, Project project){
 
         //Super & set cache options & focus traversable
         super(rt.getWidth(),rt.getHeight());
         this.setCache(true);
-        this.setCacheHint(CacheHint.SCALE);
+        this.setCacheHint(CacheHint.SPEED);
         this.setFocusTraversable(true);
 
         root = rt;
@@ -245,25 +254,42 @@ public class LayoutCanvas extends Canvas {
 
         update = new AnimationTimer() {
 
+            int frames = 0;
+
             @Override
             public void handle(long now) {
-                Update();
 
-                /*
-                long oldFrameTime = frameTimes[frameTimeIndex] ;
-                frameTimes[frameTimeIndex] = now ;
-                frameTimeIndex = (frameTimeIndex + 1) % frameTimes.length ;
-                if (frameTimeIndex == 0) {
-                    arrayFilled = true ;
-                }
-                if (arrayFilled) {
-                    long elapsedNanos = now - oldFrameTime ;
-                    long elapsedNanosPerFrame = elapsedNanos / frameTimes.length ;
-                    double frameRate = 1_000_000_000.0 / elapsedNanosPerFrame ;
-                    System.out.println(String.format("Current frame rate: %.3f", frameRate));
+
+                //Update();
+
+                if(requestUpdate){
+                    Update();
+                    requestUpdate = false;
                 }
 
-                 */
+                if(frames % aaa == 0) {
+
+                    Update();
+/*
+                    long oldFrameTime = frameTimes[frameTimeIndex] ;
+                    frameTimes[frameTimeIndex] = now ;
+                    frameTimeIndex = (frameTimeIndex + 1) % frameTimes.length ;
+                    if (frameTimeIndex == 0) {
+                        arrayFilled = true ;
+                    }
+                    if (arrayFilled) {
+                        long elapsedNanos = now - oldFrameTime ;
+                        long elapsedNanosPerFrame = elapsedNanos / frameTimes.length ;
+                        double frameRate = 1_000_000_000.0 / elapsedNanosPerFrame ;
+                        System.out.println(String.format("Current frame rate: %.3f", frameRate));
+                    }
+
+ */
+
+                }
+
+                frames++;
+                if(frames == 60) frames = 0;
 
             }
 
@@ -287,6 +313,15 @@ public class LayoutCanvas extends Canvas {
         updateCanvasSize();
 
         clearRect40K(transform[4], transform[5]);
+
+       // transform[4] += dx;
+       // transform[5] += dy;
+
+        //transform[0] = zoom;
+       // transform[3] = zoom;
+
+        //dx = 0;
+        //dy = 0;
 
         g.c.setTransform(transform[0], transform[1], transform[2],
                 transform[3], transform[4], transform[5]
@@ -359,7 +394,7 @@ public class LayoutCanvas extends Canvas {
                      y < inverseSnapYToGrid((int) this.getHeight()); y += SPACING_Y) {
 
                     if (zoom < 0.8f && (float) x % 50 == 0 && (float) y % 50 == 0) {
-                        g.c.setFill(GRID_DOT_QUARTER);
+                         g.c.setFill(GRID_DOT_QUARTER);
                         g.c.fillRect(x, y, 2, 2);
                     } else {
                         g.c.setFill(GRID_DOT);
@@ -524,7 +559,7 @@ public class LayoutCanvas extends Canvas {
 
     public static int inverseSnapXToGrid(int x) {
 
-        x = (int) ((x-transform[4])/transform[0]);;
+        x = (int) ((x-transform[4])/transform[0]);
 
         if (x < 0) {
             return -((-x + 5) / 10) * 10;
@@ -605,8 +640,9 @@ public class LayoutCanvas extends Canvas {
         this.setOnMouseDragged(event -> {
 
             if(event.getButton() == MouseButton.MIDDLE) {
-                double dx = event.getX() - dragScreenX;
-                double dy = event.getY() - dragScreenY;
+
+                 dx = (event.getX() - dragScreenX);
+                 dy = (event.getY() - dragScreenY);
 
                 if (dx == 0 && dy == 0) {
                     return;
@@ -629,6 +665,9 @@ public class LayoutCanvas extends Canvas {
 
                 dragScreenX = event.getX();
                 dragScreenY = event.getY();
+
+                requestUpdate = true;
+
             }
 
             if (dragTool != null) {
@@ -643,7 +682,7 @@ public class LayoutCanvas extends Canvas {
             pauseTransition.stop();
             if(tooltip != null && tooltip.isShowing())tooltip.hide();
 
-            clearRect40K(transform[4], transform[5]);
+            //clearRect40K(transform[4], transform[5]);
 
             double newScale;
             double oldScale = transform[0];
@@ -663,11 +702,17 @@ public class LayoutCanvas extends Canvas {
 
             zoom = newScale;
 
+            dx = width / 2 - cx * newScale;
+            dy = height / 2 - cy * newScale;
+
             transform[4] = width / 2 - cx * newScale;
             transform[5] = height / 2 - cy * newScale;
 
             if(transform[4] > 0) transform[4] = 0;
             if(transform[5] > 0) transform[5] = 0;
+
+            requestUpdate = true;
+
 
         });
 
@@ -732,6 +777,8 @@ public class LayoutCanvas extends Canvas {
 
         });
 
+
+
         this.setOnKeyPressed(event -> {
 
             Tool tool = proj.getTool();
@@ -742,6 +789,12 @@ public class LayoutCanvas extends Canvas {
 
             if(event.getCode() == KeyCode.Y){
                 AppPreferences.APPEARANCE_SHOW_GRID.set(!AppPreferences.APPEARANCE_SHOW_GRID.get());
+            }
+
+            if(event.getCode() == KeyCode.F){
+                aaa++;
+                if(aaa ==16) aaa = 1;
+                System.out.println(aaa);
             }
 
         });

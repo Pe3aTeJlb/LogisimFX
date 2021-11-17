@@ -890,15 +890,15 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
 
         MenuItem Tutorial = new MenuItem();
         Tutorial.textProperty().bind(localizer.createStringBinding("helpTutorialItem"));
-        Tutorial.setOnAction(event -> FrameManager.CreateHelpFrame("tutorial"));
+        Tutorial.setOnAction(event -> FrameManager.CreateHelpFrame("htmlHelpMainUrl"));
 
         MenuItem UserGuide = new MenuItem();
         UserGuide.textProperty().bind(localizer.createStringBinding("helpGuideItem"));
-        UserGuide.setOnAction(event -> FrameManager.CreateHelpFrame("guide"));
+        UserGuide.setOnAction(event -> FrameManager.CreateHelpFrame("htmlHelpGuidUrl"));
 
         MenuItem LibraryReference = new MenuItem();
         LibraryReference.textProperty().bind(localizer.createStringBinding("helpLibraryItem"));
-        LibraryReference.setOnAction(event -> FrameManager.CreateHelpFrame("libs"));
+        LibraryReference.setOnAction(event -> FrameManager.CreateHelpFrame("htmlHelpLibsUrl"));
 
 
         SeparatorMenuItem sp1 = new SeparatorMenuItem();

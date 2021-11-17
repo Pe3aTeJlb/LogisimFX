@@ -134,7 +134,7 @@ class AttrTableToolModel extends AttrTableModel{
 
     @Override
     public StringBinding getTitle() {
-        return LC.createComplexStringBinding("toolAttrTitle",tool.getDisplayName().getValue());
+        return LC.createComplexStringBinding("toolAttrTitle", tool.getDisplayName().getValue());
     }
 
     @Override
