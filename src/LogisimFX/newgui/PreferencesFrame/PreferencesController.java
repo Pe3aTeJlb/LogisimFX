@@ -229,7 +229,7 @@ public class PreferencesController extends AbstractController {
                     AppPreferences.setTemplateFile(f, template);
                     AppPreferences.setTemplateType(AppPreferences.TEMPLATE_CUSTOM);
 
-                    FilePathTextField.setText(AppPreferences.getTemplateFile().toString());
+                    if(AppPreferences.getTemplateFile() != null)FilePathTextField.setText(AppPreferences.getTemplateFile().toString());
                     PlainTemplRB.setSelected(false);
                     EmptyTemplRB.setSelected(false);
                     CustomTemplRB.setSelected(true);
