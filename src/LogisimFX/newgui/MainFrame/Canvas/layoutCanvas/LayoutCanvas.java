@@ -22,10 +22,13 @@ import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.StringBinding;
 import javafx.scene.CacheHint;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
 import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -197,7 +200,6 @@ public class LayoutCanvas extends Canvas {
 
     }
 
-
     /* framerate debug*/
     /*
     private final long[] frameTimes = new long[100];
@@ -207,7 +209,7 @@ public class LayoutCanvas extends Canvas {
      */
 
     private int aaa = 6;
-    private boolean requestUpdate = false;
+    private boolean requestUpdate = true;
 
     private  double dx, dy;
 
@@ -394,7 +396,7 @@ public class LayoutCanvas extends Canvas {
                      y < inverseSnapYToGrid((int) this.getHeight()); y += SPACING_Y) {
 
                     if (zoom < 0.8f && (float) x % 50 == 0 && (float) y % 50 == 0) {
-                         g.c.setFill(GRID_DOT_QUARTER);
+                        g.c.setFill(GRID_DOT_QUARTER);
                         g.c.fillRect(x, y, 2, 2);
                     } else {
                         g.c.setFill(GRID_DOT);

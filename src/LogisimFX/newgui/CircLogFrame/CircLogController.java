@@ -21,6 +21,8 @@ import com.sun.javafx.tk.FontMetrics;
 import com.sun.javafx.tk.Toolkit;
 
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -74,6 +76,9 @@ public class CircLogController extends AbstractController {
 
     @FXML
     private TreeView<SelectionItem> selectionTrVw;
+
+    @FXML
+    private Label logItemsCountLbl;
 
 
 
@@ -155,6 +160,9 @@ public class CircLogController extends AbstractController {
     private Map<CircuitState, Model> modelMap = new HashMap<>();
     private final MyListener myListener = new MyListener();
     private LogThread logger;
+
+    private final int LOG_ITEMS_LIMIT = 257;
+    private SimpleIntegerProperty currLogItemsCount = new SimpleIntegerProperty(0);
 
     private class MyListener
             implements ProjectListener, LibraryListener,
@@ -337,7 +345,8 @@ public class CircLogController extends AbstractController {
                             }
 
                             if(array != null && !array.isEmpty()){
-                                selectionTrVw.getRoot().getChildren().addAll(array);
+                                addLogItem(array);
+                               // selectionTrVw.getRoot().getChildren().addAll(array);
                             }
 
                         }
@@ -355,6 +364,9 @@ public class CircLogController extends AbstractController {
         circTrvw.setRoot(treeRoot);
         circTrvw.setShowRoot(false);
         updateTree(treeRoot, proj.getCircuitState());
+
+        logItemsCountLbl.textProperty().bind(Bindings.concat(currLogItemsCount.asString(),"\\"+LOG_ITEMS_LIMIT));
+
 
 
         //selectedLst
@@ -411,7 +423,8 @@ public class CircLogController extends AbstractController {
         addBtn.setOnAction(event -> {
             List<TreeItem<SelectionItem>> array = getSelectedNodes(false);
             if(array != null && !array.isEmpty()){
-                selectionTrVw.getRoot().getChildren().addAll(array);
+                addLogItem(array);
+                //selectionTrVw.getRoot().getChildren().addAll(array);
                 //selectedLst.getItems().addAll(array);
             }
         });
@@ -441,7 +454,21 @@ public class CircLogController extends AbstractController {
         moveDownBtn.setOnAction(event -> doMove(1));
 
         removeBtn.textProperty().bind(LC.createStringBinding("selectionRemove"));
-        removeBtn.setOnAction(event -> selectiontrvwSelectionModel.getSelectedItem().getParent().getChildren().remove(selectiontrvwSelectionModel.getSelectedItem()));
+        removeBtn.setOnAction(event -> {
+
+            if(!selectiontrvwSelectionModel.getSelectedItems().isEmpty()) {
+                selectiontrvwSelectionModel.getSelectedItem().getParent().getChildren().remove(selectiontrvwSelectionModel.getSelectedItem());
+
+                int c = 0;
+                for (TreeItem<SelectionItem> item : selectionTrVw.getRoot().getChildren()) {
+                    c++;
+                    if (!item.getChildren().isEmpty()) c += item.getChildren().size();
+                }
+
+                currLogItemsCount.set(c);
+            }
+
+        });
 
     }
 
@@ -573,21 +600,61 @@ public class CircLogController extends AbstractController {
 
     private void doMove(int delta) {
 
-        TreeItem<SelectionItem> cur = selectiontrvwSelectionModel.getSelectedItem();
-        TreeItem<SelectionItem> subRoot = selectiontrvwSelectionModel.getSelectedItem().getParent();
-        int oldIndex =  subRoot.getChildren().indexOf(cur);
-        int newIndex = oldIndex + delta;
+        if(!selectiontrvwSelectionModel.getSelectedItems().isEmpty()) {
+            TreeItem<SelectionItem> cur = selectiontrvwSelectionModel.getSelectedItem();
+            TreeItem<SelectionItem> subRoot = selectiontrvwSelectionModel.getSelectedItem().getParent();
+            int oldIndex = subRoot.getChildren().indexOf(cur);
+            int newIndex = oldIndex + delta;
 
-        if (oldIndex >= 0 && newIndex >= 0 &&
-                newIndex < subRoot.getChildren().size()) {
-            TreeItem<SelectionItem> buff = subRoot.getChildren().get(newIndex);
-            subRoot.getChildren().set(newIndex, cur);
-            subRoot.getChildren().set(oldIndex, buff);
+            if (oldIndex >= 0 && newIndex >= 0 &&
+                    newIndex < subRoot.getChildren().size()) {
+                TreeItem<SelectionItem> buff = subRoot.getChildren().get(newIndex);
+                subRoot.getChildren().set(newIndex, cur);
+                subRoot.getChildren().set(oldIndex, buff);
+            }
+
+            selectiontrvwSelectionModel.select(cur);
+            //selectiontrvwSelectionModel.select(selectiontrvwSelectionModel.getSelectedIndex()+delta);
+            // selectionTrVw.refresh();
         }
 
-        selectiontrvwSelectionModel.select(cur);
-        //selectiontrvwSelectionModel.select(selectiontrvwSelectionModel.getSelectedIndex()+delta);
-       // selectionTrVw.refresh();
+    }
+
+    private void addLogItem(List<TreeItem<SelectionItem>> array){
+
+        if(currLogItemsCount.intValue() >= LOG_ITEMS_LIMIT) {
+            return;
+        }
+
+        int c = 0;
+        for (TreeItem<SelectionItem> item : array) {
+
+            c++;
+            if (!item.getChildren().isEmpty()) c += item.getChildren().size();
+
+            if (currLogItemsCount.intValue() + c < LOG_ITEMS_LIMIT) {
+
+                selectionTrVw.getRoot().getChildren().add(item);
+                currLogItemsCount.set(currLogItemsCount.intValue()+c);
+
+            } else {
+
+                int cutoff = LOG_ITEMS_LIMIT - currLogItemsCount.intValue();
+                if(cutoff > item.getChildren().size()) cutoff = item.getChildren().size();
+
+                TreeItem<SelectionItem> itm = new TreeItem<>(item.getValue());
+                List<TreeItem<SelectionItem>> buff = item.getChildren().subList(0, cutoff);
+                itm.getChildren().setAll(buff);
+
+                selectionTrVw.getRoot().getChildren().add(itm);
+                currLogItemsCount.set(257);
+                break;
+
+            }
+
+            c = 0;
+
+        }
 
     }
 
@@ -1162,6 +1229,10 @@ public class CircLogController extends AbstractController {
 
     private void updateTimelineData(Value[] values){
 
+        //because of platform runlater, if u enable ticks on high KHz and spam tick btn and then close
+        //window, timeline will go made with log and fx threads
+        if(logObjects == null)return;
+
         int i = 0;
         int size = 0;
         for (TreeItem<TimelineTableModel> model : logObjects){
@@ -1173,7 +1244,7 @@ public class CircLogController extends AbstractController {
             }
         }
 
-        System.out.println(size);
+       // System.out.println(size);
         if(size < 1000) {
 
             //ze_ reference :extend extend extend(canvas)
@@ -1274,8 +1345,6 @@ public class CircLogController extends AbstractController {
             int maxVisibleValue = (int)Math.ceil(inverseTransformX(timelineCnvs.getWidth())/spaceX)+5;
             if(maxVisibleValue > logObjects.get(0).getValue().getValues().size()) maxVisibleValue = logObjects.get(0).getValue().getValues().size();
 
-            System.out.println("min "+minVisibleValue+" " + "max "+maxVisibleValue);
-
             for (TreeItem<TimelineTableModel> item : logObjects) {
 
                 if ((timelineTblvw.getTreeItemLevel(item) == 1 || item.getParent().isExpanded())) {
@@ -1283,6 +1352,9 @@ public class CircLogController extends AbstractController {
                     TimelineTableModel model = item.getValue();
                     ArrayList<Value> vals = model.getValues();
                     int curValueLength = 0;
+
+                    if(minVisibleValue - 1 > 0 && vals.get(minVisibleValue).equals(vals.get(minVisibleValue-1)))
+                        curValueLength = 1;
 
                     double currX = hiddenColumnWidth + minVisibleValue * spaceX;
                     double currY = currRowY;
@@ -1356,7 +1428,7 @@ public class CircLogController extends AbstractController {
                                 gc.setStroke(LONGVALUE);
                                 gc.setFill(LONGVALUE);
 
-                                if (curValueLength == 0 || (i - 1 > 0 && !vals.get(i).equals(vals.get(i-1)))) {
+                                if (curValueLength == 0) {
                                     //draw first 3 dots of hexagon
                                     gc.strokeLine(currX + w, currRowY - yAdjust / 2, currX + spaceX, currRowY - 0.75 * yAdjust);
                                     gc.strokeLine(currX + w, currRowY - yAdjust / 2, currX + spaceX, currRowY - 0.25 * yAdjust);

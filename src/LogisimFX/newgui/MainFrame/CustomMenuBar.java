@@ -531,6 +531,8 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
         private RadioMenuItem EnableSimulation;
         private RadioMenuItem TicksEnable;
 
+        private TickFrequencyItem lastTickFreqItem;
+
         public SimulateMenu(){
 
             super();
@@ -774,6 +776,10 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
 
                 this.setOnAction(event -> {
                     if (sim != null) sim.setTickFrequency(freq);
+
+                    if(lastTickFreqItem != null)lastTickFreqItem.setSelected(false);
+                    lastTickFreqItem = this;
+
                 });
 
             }
