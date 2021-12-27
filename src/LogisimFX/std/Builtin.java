@@ -6,9 +6,11 @@ package LogisimFX.std;
 import LogisimFX.std.arith.Arithmetic;
 import LogisimFX.std.base.Base;
 import LogisimFX.std.gates.Gates;
+import LogisimFX.std.gray.Components;
 import LogisimFX.std.io.Io;
 import LogisimFX.std.memory.Memory;
 import LogisimFX.std.plexers.Plexers;
+import LogisimFX.std.verifiers.Verifiers;
 import LogisimFX.std.wiring.Wiring;
 import LogisimFX.tools.Library;
 import LogisimFX.tools.Tool;
@@ -32,6 +34,8 @@ public class Builtin extends Library {
 			new Arithmetic(),
 			new Memory(),
 			new Io(),
+			new Components(),
+			new Verifiers()
 		});
 	}
 

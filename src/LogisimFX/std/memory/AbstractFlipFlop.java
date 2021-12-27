@@ -95,6 +95,8 @@ abstract class AbstractFlipFlop extends InstanceFactory {
 		int n = getPorts().size() - STD_PORTS;
 		Object triggerType = state.getAttributeValue(triggerAttribute);
 		boolean triggered = data.updateClock(state.getPort(n), triggerType);
+
+		System.out.println("flipflop " + state.getPort(0));
 		
 		if (state.getPort(n + 3) == Value.TRUE) { // clear requested
 			changed |= data.curValue != Value.FALSE;

@@ -4,6 +4,7 @@ import LogisimFX.circuit.Circuit;
 import LogisimFX.comp.Component;
 import LogisimFX.data.Attribute;
 import LogisimFX.draw.tools.AbstractTool;
+import LogisimFX.instance.StdAttr;
 import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.SelectionEvent;
 import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.SelectionListener;
 import LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.Selection;
@@ -85,6 +86,11 @@ public class AttributeTable extends GridPane
         currRow = 2;
 
         if(attrModel instanceof AttrTableAppearanceSelectionModel)((AttrTableAppearanceSelectionModel) attrModel).setAttrs();
+
+        if(attrModel.getAttributeSet().getAttributes().contains(StdAttr.ACCESS_MODE)){
+            if(attrModel.getAttributeSet().getValue(attrModel.getAttributeSet().getAttribute("accessmode")).equals(StdAttr.PROTECTION_MODE))
+                return;
+        }
 
         for (Attribute attr: attrModel.getAttributeSet().getAttributes()) {
             currRow += 1;

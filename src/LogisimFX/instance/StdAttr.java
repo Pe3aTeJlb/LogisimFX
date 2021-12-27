@@ -33,4 +33,11 @@ public interface StdAttr {
 	Attribute<Font> LABEL_FONT = Attributes.forFont("labelfont", LC.createStringBinding("stdLabelFontAttr"));
 	Font DEFAULT_LABEL_FONT = Font.font("SansSerif", FontWeight.NORMAL, FontPosture.REGULAR, 12);
 
+	AttributeOption EDITING_MODE = new AttributeOption("editingmode", LC.createStringBinding("stdEditingMode"));
+	AttributeOption PROTECTION_MODE = new AttributeOption("protectionmode", LC.createStringBinding("stdProtectionMode"));
+
+	Attribute<AttributeOption> ACCESS_MODE =
+			Attributes.forOption("accessmode", LC.createStringBinding("stdAccessModeAttr"),
+					new AttributeOption[]{EDITING_MODE, PROTECTION_MODE});
+
 }

@@ -167,7 +167,9 @@ public class Attributes {
 			if (value instanceof AttributeOptionInterface) {
 				return ((AttributeOptionInterface) value).toDisplayString();
 			} else {
+				if(value != null)
 				return value.toString();
+				else return "";
 			}
 		}
 

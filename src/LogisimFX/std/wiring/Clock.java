@@ -13,6 +13,7 @@ import LogisimFX.std.LC;
 import LogisimFX.circuit.CircuitState;
 import LogisimFX.circuit.RadixOption;
 
+import javafx.beans.binding.StringBinding;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
@@ -30,10 +31,10 @@ public class Clock extends InstanceFactory {
 
 	private static final ImageView icon = IconsManager.getIcon("clock.gif");
 
-	private static class ClockState implements InstanceData, Cloneable {
+	public static class ClockState implements InstanceData, Cloneable {
 
-		Value sending = Value.FALSE;
-		int clicks = 0;
+		public Value sending = Value.FALSE;
+		public int clicks = 0;
 
 		@Override
 		public ClockState clone() {
@@ -103,6 +104,10 @@ public class Clock extends InstanceFactory {
 		setInstanceLogger(ClockLogger.class);
 		setInstancePoker(ClockPoker.class);
 
+	}
+
+	public Clock(String str, StringBinding stringBinding) {
+		super(str, stringBinding);
 	}
 
 	@Override

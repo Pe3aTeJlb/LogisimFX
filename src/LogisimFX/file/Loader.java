@@ -141,8 +141,8 @@ public class Loader implements LibraryLoader {
 							lc.get("fileSaveErrorTitle"));
 			return false;
 		}
-
-		File backup = determineBackupName(dest);
+		File backup = null;
+		if(dest != null)  backup = determineBackupName(dest);
 		boolean backupCreated = backup != null && dest.renameTo(backup);
 
 		FileOutputStream fwrite = null;
