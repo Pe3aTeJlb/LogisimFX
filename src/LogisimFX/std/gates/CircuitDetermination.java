@@ -5,9 +5,9 @@ package LogisimFX.std.gates;
 
 import java.util.ArrayList;
 
-import LogisimFX.analyze.model.Expression;
-import LogisimFX.analyze.model.ExpressionVisitor;
 import LogisimFX.comp.ComponentFactory;
+import LogisimFX.newgui.AnalyzeFrame.Expression;
+import LogisimFX.newgui.AnalyzeFrame.ExpressionVisitor;
 
 /** This represents the actual gate selection used corresponding
  * to an expression, without any correspondence to how they would

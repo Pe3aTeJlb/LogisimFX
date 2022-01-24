@@ -5,6 +5,7 @@ import LogisimFX.circuit.Circuit;
 import LogisimFX.data.Bounds;
 import LogisimFX.file.Loader;
 import LogisimFX.localization.LC_gui;
+import LogisimFX.newgui.AnalyzeFrame.AnalyzeController;
 import LogisimFX.newgui.CircuitStatisticFrame.CircuitStatisticController;
 import LogisimFX.newgui.HelpFrame.HelpController;
 import LogisimFX.newgui.HexEditorFrame.HexEditorController;
@@ -242,7 +243,12 @@ public class FrameManager {
     }
 
     public static void CreateCircuitAnalysisFrame(Project proj){
-        CreateNewFrame("LogisimFX/newgui/CircuitAnalysisFrame/CircuitAnalysis.fxml", proj, Modality.NONE);
+        CreateNewFrame("LogisimFX/newgui/AnalyzeFrame/Analysis.fxml", proj, Modality.NONE);
+    }
+
+    public static AnalyzeController CreateAndRunCircuitAnalysisFrame(Project proj){
+        CreateNewFrame("LogisimFX/newgui/AnalyzeFrame/Analysis.fxml", proj, Modality.NONE);
+        return (AnalyzeController) curr;
     }
 
 

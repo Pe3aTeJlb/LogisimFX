@@ -5,9 +5,9 @@ package LogisimFX.std.gates;
 
 import java.util.Map;
 
-import LogisimFX.analyze.model.Expression;
 import LogisimFX.data.*;
 import LogisimFX.instance.*;
+import LogisimFX.newgui.AnalyzeFrame.Expression;
 import LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import LogisimFX.std.LC;
 import LogisimFX.tools.key.BitWidthConfigurator;

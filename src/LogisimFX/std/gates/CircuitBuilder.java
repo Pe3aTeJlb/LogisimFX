@@ -8,18 +8,18 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
-import LogisimFX.analyze.model.AnalyzerModel;
-import LogisimFX.analyze.model.Expression;
-import LogisimFX.analyze.model.VariableList;
 import LogisimFX.comp.Component;
 import LogisimFX.comp.ComponentFactory;
 import LogisimFX.data.*;
 import LogisimFX.instance.StdAttr;
+import LogisimFX.newgui.AnalyzeFrame.AnalyzerModel;
+import LogisimFX.newgui.AnalyzeFrame.Expression;
 import LogisimFX.std.wiring.Constant;
 import LogisimFX.std.wiring.Pin;
 import LogisimFX.circuit.Circuit;
 import LogisimFX.circuit.CircuitMutation;
 import LogisimFX.circuit.Wire;
+import javafx.collections.ObservableList;
 
 public class CircuitBuilder {
 	private CircuitBuilder() { }
@@ -251,7 +251,7 @@ public class CircuitBuilder {
 	//
 	private static InputData computeInputData(AnalyzerModel model) {
 		InputData ret = new InputData();
-		VariableList inputs = model.getInputs();
+		ObservableList<String> inputs = model.getInputs();
 		int spineX = 60;
 		ret.names = new String[inputs.size()];
 		for (int i = 0; i < inputs.size(); i++) {

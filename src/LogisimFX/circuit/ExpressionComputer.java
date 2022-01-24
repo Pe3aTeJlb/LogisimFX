@@ -3,8 +3,8 @@
 
 package LogisimFX.circuit;
 
-import LogisimFX.analyze.model.Expression;
 import LogisimFX.data.Location;
+import LogisimFX.newgui.AnalyzeFrame.Expression;
 
 import java.util.Map;
 
@@ -20,5 +20,5 @@ public interface ExpressionComputer {
 	 * If, in fact, no valid expression exists for the component,
 	 * it throws <code>UnsupportedOperationException</code>.
 	 */
-	public void computeExpression(Map<Location,Expression> expressionMap);
+	public void computeExpression(Map<Location, Expression> expressionMap);
 }

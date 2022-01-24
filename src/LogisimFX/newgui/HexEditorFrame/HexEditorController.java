@@ -15,11 +15,13 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 
 public class HexEditorController extends AbstractController {
@@ -99,22 +101,32 @@ public class HexEditorController extends AbstractController {
         });
 
         //scrollToTxtFld.promptTextProperty().bind(LC.createStringBinding("scrollTo"));
-        scrollToTxtFld.setOnKeyPressed(event -> {
 
-            if(event.getText().matches("^[0-9A-Fa-f]") && !event.isControlDown()) {
-
-                if(!scrollToTxtFld.getText().equals("")) {
-                    StringBuilder buff = new StringBuilder(scrollToTxtFld.getText().substring(1) + event.getText());
-                    scrollToTxtFld.setText(String.format("%0" + maxAdrLen + "X", Integer.parseInt(buff.toString(), 16)));
-                }else{
-                    scrollToTxtFld.setText(String.format("%0" + maxAdrLen + "X", Integer.parseInt(event.getText(), 16)));
-                }
-                event.consume();
-
+        final Pattern pattern = Pattern.compile("^[0-9A-Fa-f]*");
+        TextFormatter<?> formatter = new TextFormatter<>(event -> {
+            if (pattern.matcher(event.getControlNewText()).matches()) {
+                return event; // allow this change to happen
+            } else {
+                return null; // prevent change
             }
-
         });
-        scrollToTxtFld.setOnKeyTyped(Event::consume);
+
+        scrollToTxtFld.setTextFormatter(formatter);
+
+        scrollToTxtFld.textProperty().addListener((observable, oldValue, newValue) -> {
+
+            if(!scrollToTxtFld.getText().equals("") && newValue.length() > 1 && oldValue.length() > 1 && oldValue.length() < newValue.length()+1) {
+                StringBuilder buff = new StringBuilder(newValue.substring(1));
+                scrollToTxtFld.setText(String.format("%0" + maxAdrLen + "X", Integer.parseInt(newValue.substring(1), 16)));
+                return;
+            }else{
+                scrollToTxtFld.setText(String.format("%0" + maxAdrLen + "X", Integer.parseInt(newValue, 16)));
+            }
+            scrollToTxtFld.positionCaret(scrollToTxtFld.getText().length());
+        });
+
+        scrollToTxtFld.addEventFilter(KeyEvent.ANY, keyEvent -> scrollToTxtFld.positionCaret(scrollToTxtFld.getText().length()));
+
         scrollToTxtFld.setOnAction(event -> scrollTo());
 
     }
@@ -612,7 +624,7 @@ public class HexEditorController extends AbstractController {
     private class Listener implements HexModelListener {
 
         public void metainfoChanged(HexModel source) {
-            hexTableVw.refresh();
+            if(hexTableVw != null)hexTableVw.refresh();
         }
         public void bytesChanged(HexModel source, long start, long numBytes, int[] oldValues) {
             if(!stage.isFocused())hexTableVw.refresh();

@@ -846,7 +846,8 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
 
             MenuItem CombAnalyse = new MenuItem();
             CombAnalyse.textProperty().bind(localizer.createStringBinding("analyzerWindowTitle"));
-            CombAnalyse.setOnAction(event -> FrameManager.CreateCircuitAnalysisFrame(proj));
+            CombAnalyse.setOnAction(event -> ProjectCircuitActions.doAnalyze(proj, proj.getCurrentCircuit()));
+            //CombAnalyse.setOnAction(event -> FrameManager.CreateCircuitAnalysisFrame(proj));
 
 
             MenuItem Preferences = new MenuItem();

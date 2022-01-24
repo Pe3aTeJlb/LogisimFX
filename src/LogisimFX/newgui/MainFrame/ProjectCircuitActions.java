@@ -3,16 +3,16 @@
 
 package LogisimFX.newgui.MainFrame;
 
-import LogisimFX.analyze.gui.Analyzer;
-import LogisimFX.analyze.gui.AnalyzerManager;
-import LogisimFX.analyze.model.AnalyzerModel;
 import LogisimFX.circuit.Analyze;
 import LogisimFX.circuit.AnalyzeException;
 import LogisimFX.circuit.Circuit;
 import LogisimFX.file.LogisimFileActions;
 import LogisimFX.instance.Instance;
 import LogisimFX.instance.StdAttr;
+import LogisimFX.newgui.AnalyzeFrame.AnalyzeController;
+import LogisimFX.newgui.AnalyzeFrame.AnalyzerModel;
 import LogisimFX.newgui.DialogManager;
+import LogisimFX.newgui.FrameManager;
 import LogisimFX.proj.Project;
 import LogisimFX.std.wiring.Pin;
 import LogisimFX.tools.AddTool;
@@ -95,44 +95,21 @@ public class ProjectCircuitActions {
 					"" + AnalyzerModel.MAX_OUTPUTS));
 			return;
 		}
-		
-		Analyzer analyzer = AnalyzerManager.getAnalyzer();
-		analyzer.getModel().setCurrentCircuit(proj, circuit);
-		configureAnalyzer(proj, circuit, analyzer, pinNames, inputNames, outputNames);
-		//analyzer.setVisible(true);
-		//analyzer.toFront();
-	}
-	
-	private static void configureAnalyzer(Project proj, Circuit circuit,
-			Analyzer analyzer, Map<Instance, String> pinNames,
-			ArrayList<String> inputNames, ArrayList<String> outputNames) {
 
-		analyzer.getModel().setVariables(inputNames, outputNames);
-		
-		// If there are no inputs, we stop with that tab selected
-		if (inputNames.size() == 0) {
-			analyzer.setSelectedTab(Analyzer.INPUTS_TAB);
-			return;
-		}
-		
-		// If there are no outputs, we stop with that tab selected
-		if (outputNames.size() == 0) {
-			analyzer.setSelectedTab(Analyzer.OUTPUTS_TAB);
-			return;
-		}
-		
-		// Attempt to show the corresponding expression
+		AnalyzeController analyzeController = FrameManager.CreateAndRunCircuitAnalysisFrame(proj);
+		AnalyzerModel model = analyzeController.getModel();
+
+		model.setVariables(inputNames, outputNames);
+
 		try {
-			Analyze.computeExpression(analyzer.getModel(), circuit, pinNames);
-			analyzer.setSelectedTab(Analyzer.EXPRESSION_TAB);
+			Analyze.computeExpression(model, circuit, pinNames);
 			return;
 		} catch (AnalyzeException ex) {
 			DialogManager.CreateScrollError(LC.get("analyzeNoExpressionTitle"),ex.getMessage());
 		}
-		
-		// As a backup measure, we compute a truth table.
-		Analyze.computeTable(analyzer.getModel(), proj, circuit, pinNames);
-		analyzer.setSelectedTab(Analyzer.TABLE_TAB);
+
+		Analyze.computeTable(model, proj, circuit, pinNames);
+
 	}
 		
 	private static void analyzeError(Project proj, String message) {

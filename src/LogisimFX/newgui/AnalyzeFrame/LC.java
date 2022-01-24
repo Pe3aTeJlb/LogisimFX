@@ -1,4 +1,4 @@
-package LogisimFX.newgui.CircuitAnalysisFrame;
+package LogisimFX.newgui.AnalyzeFrame;
 
 import LogisimFX.localization.LC_analyze;
 import LogisimFX.localization.Localizer;

@@ -6,11 +6,11 @@ package LogisimFX.std.gates;
 import java.util.Map;
 
 import LogisimFX.IconsManager;
-import LogisimFX.analyze.model.Expression;
-import LogisimFX.analyze.model.Expressions;
 import LogisimFX.comp.TextField;
 import LogisimFX.data.*;
 import LogisimFX.instance.*;
+import LogisimFX.newgui.AnalyzeFrame.Expression;
+import LogisimFX.newgui.AnalyzeFrame.Expressions;
 import LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import LogisimFX.tools.WireRepair;
 import LogisimFX.tools.WireRepairData;

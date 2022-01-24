@@ -3,10 +3,10 @@
 
 package LogisimFX.std.wiring;
 
-import LogisimFX.analyze.model.Expression;
-import LogisimFX.analyze.model.Expressions;
 import LogisimFX.data.*;
 import LogisimFX.instance.*;
+import LogisimFX.newgui.AnalyzeFrame.Expression;
+import LogisimFX.newgui.AnalyzeFrame.Expressions;
 import LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import LogisimFX.std.LC;
 import LogisimFX.tools.key.BitWidthConfigurator;

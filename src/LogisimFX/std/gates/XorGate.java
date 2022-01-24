@@ -3,13 +3,13 @@
 
 package LogisimFX.std.gates;
 
-import LogisimFX.analyze.model.Expression;
-import LogisimFX.analyze.model.Expressions;
 import LogisimFX.data.AttributeSet;
 import LogisimFX.data.Value;
 import LogisimFX.instance.Instance;
 import LogisimFX.instance.InstancePainter;
 import LogisimFX.instance.InstanceState;
+import LogisimFX.newgui.AnalyzeFrame.Expression;
+import LogisimFX.newgui.AnalyzeFrame.Expressions;
 import LogisimFX.std.LC;
 import LogisimFX.tools.WireRepairData;
 

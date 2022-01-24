@@ -3,7 +3,6 @@
 
 package LogisimFX.circuit;
 
-import LogisimFX.analyze.model.*;
 import LogisimFX.comp.Component;
 import LogisimFX.data.Direction;
 import LogisimFX.data.Location;
@@ -11,6 +10,7 @@ import LogisimFX.data.Value;
 import LogisimFX.instance.Instance;
 import LogisimFX.instance.InstanceState;
 import LogisimFX.instance.StdAttr;
+import LogisimFX.newgui.AnalyzeFrame.*;
 import LogisimFX.proj.Project;
 import LogisimFX.std.wiring.Pin;
 
@@ -149,7 +149,7 @@ public class Analyze {
 	 * arise.
 	 */
 	public static void computeExpression(AnalyzerModel model, Circuit circuit,
-			Map<Instance, String> pinNames) throws AnalyzeException {
+										 Map<Instance, String> pinNames) throws AnalyzeException {
 		ExpressionMap expressionMap = new ExpressionMap(circuit);
 
 		ArrayList<String> inputNames = new ArrayList<String>();
