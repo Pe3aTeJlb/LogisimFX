@@ -2,7 +2,9 @@ package LogisimFX.newgui.MainFrame;
 
 import LogisimFX.circuit.Circuit;
 import LogisimFX.circuit.CircuitState;
+import LogisimFX.circuit.Propagator;
 import LogisimFX.circuit.Simulator;
+import LogisimFX.newgui.DialogManager;
 import LogisimFX.newgui.MainFrame.Canvas.EditHandler;
 import LogisimFX.localization.LC_menu;
 import LogisimFX.newgui.FrameManager;
@@ -13,6 +15,7 @@ import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.SelectionListener;
 import LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.Selection;
 import LogisimFX.newgui.MainFrame.ProjectExplorer.ExplorerToolBar;
 import LogisimFX.newgui.MainFrame.ProjectExplorer.TreeExplorerAggregation;
+import LogisimFX.proj.Action;
 import LogisimFX.proj.Project;
 import LogisimFX.proj.ProjectActions;
 import LogisimFX.localization.Localizer;
@@ -38,7 +41,7 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
     private TreeExplorerAggregation treeExplorerAggregation;
 
     private EditMenu editMenu;
-    private EditHandler h;
+    private EditHandler editHandler;
 
     public CustomMenuBar(ExplorerToolBar etb, Project project, TreeExplorerAggregation tea){
 
@@ -50,7 +53,7 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
         proj = project;
         logisimFile = proj.getLogisimFile();
 
-        h = proj.getFrameController().getEditHandler();
+        editHandler = proj.getFrameController().getEditHandler();
 
         prefHeight(prefHeight);
 
@@ -200,7 +203,11 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
             Undo = new MenuItem();
             Undo.setAccelerator(KeyCombination.keyCombination("Ctrl+Z"));
             Undo.textProperty().bind(localizer.createStringBinding("editCantUndoItem"));
-            Undo.setOnAction(event -> proj.undoAction());
+            Undo.setDisable(true);
+            Undo.setOnAction(event -> {
+                proj.undoAction();
+                calculateEnabled();
+            });
 
 
             SeparatorMenuItem sp1 = new SeparatorMenuItem();
@@ -209,27 +216,27 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
             Cut = new MenuItem();
             Cut.setAccelerator(KeyCombination.keyCombination("Ctrl+X"));
             Cut.textProperty().bind(localizer.createStringBinding("editCutItem"));
-            Cut.setDisable(h == null || !h.computeEnabled("CUT"));
+            Cut.setDisable(editHandler == null || !editHandler.computeEnabled("CUT"));
             Cut.setOnAction(event -> {
-                h.cut();
+                editHandler.cut();
                 calculateEnabled();
             });
 
             Copy = new MenuItem();
             Copy.setAccelerator(KeyCombination.keyCombination("Ctrl+C"));
             Copy.textProperty().bind(localizer.createStringBinding("editCopyItem"));
-            Copy.setDisable(h == null || !h.computeEnabled("COPY"));
+            Copy.setDisable(editHandler == null || !editHandler.computeEnabled("COPY"));
             Copy.setOnAction(event -> {
-                h.copy();
+                editHandler.copy();
                 calculateEnabled();
             });
 
             Paste = new MenuItem();
             Paste.setAccelerator(KeyCombination.keyCombination("Ctrl+V"));
             Paste.textProperty().bind(localizer.createStringBinding("editPasteItem"));
-            Paste.setDisable(h == null || !h.computeEnabled("PASTE"));
+            Paste.setDisable(editHandler == null || !editHandler.computeEnabled("PASTE"));
             Paste.setOnAction(event -> {
-                h.paste();
+                editHandler.paste();
                 calculateEnabled();
             });
 
@@ -240,27 +247,27 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
             Delete = new MenuItem();
             Delete.setAccelerator(KeyCombination.keyCombination("Delete"));
             Delete.textProperty().bind(localizer.createStringBinding("editClearItem"));
-            Delete.setDisable(h == null || !h.computeEnabled("DELETE"));
+            Delete.setDisable(editHandler == null || !editHandler.computeEnabled("DELETE"));
             Delete.setOnAction(event -> {
-                h.delete();
+                editHandler.delete();
                 calculateEnabled();
             });
 
             Duplicate = new MenuItem();
             Duplicate.setAccelerator(KeyCombination.keyCombination("Ctrl+D"));
             Duplicate.textProperty().bind(localizer.createStringBinding("editDuplicateItem"));
-            Duplicate.setDisable(h == null || !h.computeEnabled("DUPLICATE"));
+            Duplicate.setDisable(editHandler == null || !editHandler.computeEnabled("DUPLICATE"));
             Duplicate.setOnAction(event -> {
-                h.duplicate();
+                editHandler.duplicate();
                 calculateEnabled();
             });
 
             SelectAll = new MenuItem();
             SelectAll.setAccelerator(KeyCombination.keyCombination("Ctrl+A"));
             SelectAll.textProperty().bind(localizer.createStringBinding("editSelectAllItem"));
-            SelectAll.setDisable(h == null || !h.computeEnabled("SELECT_ALL"));
+            SelectAll.setDisable(editHandler == null || !editHandler.computeEnabled("SELECT_ALL"));
             SelectAll.setOnAction(event -> {
-                h.selectAll();
+                editHandler.selectAll();
                 calculateEnabled();
             });
 
@@ -271,36 +278,36 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
             RaiseSelection = new MenuItem();
             RaiseSelection.setAccelerator(KeyCombination.keyCombination("Ctrl+Up"));
             RaiseSelection.textProperty().bind(localizer.createStringBinding("editLowerItem"));
-            RaiseSelection.setDisable(h == null || !h.computeEnabled("RAISE"));
+            RaiseSelection.setDisable(editHandler == null || !editHandler.computeEnabled("RAISE"));
             RaiseSelection.setOnAction(event -> {
-                h.raise();
+                editHandler.raise();
                 calculateEnabled();
             });
 
             LowerSelection = new MenuItem();
             LowerSelection.setAccelerator(KeyCombination.keyCombination("Ctrl+Down"));
             LowerSelection.textProperty().bind(localizer.createStringBinding("editRaiseItem"));
-            LowerSelection.setDisable(h == null || !h.computeEnabled("LOWER"));
+            LowerSelection.setDisable(editHandler == null || !editHandler.computeEnabled("LOWER"));
             LowerSelection.setOnAction(event -> {
-                h.lower();
+                editHandler.lower();
                 calculateEnabled();
             });
 
             RiseToTop = new MenuItem();
             RiseToTop.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+Up"));
             RiseToTop.textProperty().bind(localizer.createStringBinding("editRaiseTopItem"));
-            RiseToTop.setDisable(h == null || !h.computeEnabled("RAISE_TOP"));
+            RiseToTop.setDisable(editHandler == null || !editHandler.computeEnabled("RAISE_TOP"));
             RiseToTop.setOnAction(event -> {
-                h.raiseTop();
+                editHandler.raiseTop();
                 calculateEnabled();
             });
 
             LowerToBottom = new MenuItem();
             LowerToBottom.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+Down"));
             LowerToBottom.textProperty().bind(localizer.createStringBinding("editLowerBottomItem"));
-            LowerToBottom.setDisable(h == null || !h.computeEnabled("LOWER_BOTTOM"));
+            LowerToBottom.setDisable(editHandler == null || !editHandler.computeEnabled("LOWER_BOTTOM"));
             LowerToBottom.setOnAction(event -> {
-                h.lowerBottom();
+                editHandler.lowerBottom();
                 calculateEnabled();
             });
 
@@ -310,17 +317,17 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
 
             AddVertex = new MenuItem();
             AddVertex.textProperty().bind(localizer.createStringBinding("editAddControlItem"));
-            AddVertex.setDisable(h == null || !h.computeEnabled("ADD_CONTROL"));
+            AddVertex.setDisable(editHandler == null || !editHandler.computeEnabled("ADD_CONTROL"));
             AddVertex.setOnAction(event -> {
-                h.addControlPoint();
+                editHandler.addControlPoint();
                 calculateEnabled();
             });
 
             RemoveVertex = new MenuItem();
             RemoveVertex.textProperty().bind(localizer.createStringBinding("editRemoveControlItem"));
-            RemoveVertex.setDisable(h == null || !h.computeEnabled("REMOVE_CONTROL"));
+            RemoveVertex.setDisable(editHandler == null || !editHandler.computeEnabled("REMOVE_CONTROL"));
             RemoveVertex.setOnAction(event -> {
-                h.removeControlPoint();
+                editHandler.removeControlPoint();
                 calculateEnabled();
             });
 
@@ -348,18 +355,29 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
 
         private void calculateEnabled(){
 
-            Cut.setDisable(h == null || !h.computeEnabled("CUT"));
-            Copy.setDisable(h == null || !h.computeEnabled("COPY"));
-            Paste.setDisable(h == null || !h.computeEnabled("PASTE"));
-            Delete.setDisable(h == null || !h.computeEnabled("DELETE"));
-            Duplicate.setDisable(h == null || !h.computeEnabled("DUPLICATE"));
-            SelectAll.setDisable(h == null || !h.computeEnabled("SELECT_ALL"));
-            RaiseSelection.setDisable(h == null || !h.computeEnabled("RAISE"));
-            LowerSelection.setDisable(h == null || !h.computeEnabled("LOWER"));
-            RiseToTop.setDisable(h == null || !h.computeEnabled("RAISE_TOP"));
-            LowerToBottom.setDisable(h == null || !h.computeEnabled("LOWER_BOTTOM"));
-            AddVertex.setDisable(h == null || !h.computeEnabled("ADD_CONTROL"));
-            RemoveVertex.setDisable(h == null || !h.computeEnabled("REMOVE_CONTROL"));
+            Action last = proj == null ? null : proj.getLastAction();
+            if (last == null && !Undo.isDisable()) {
+                Undo.textProperty().unbind();
+                Undo.textProperty().bind(localizer.createStringBinding("editCantUndoItem"));
+                Undo.setDisable(true);
+            } else if(last != null && Undo.isDisable()){
+                Undo.textProperty().unbind();
+                Undo.textProperty().bind(localizer.createComplexStringBinding("editUndoItem", last.getName()));
+                Undo.setDisable(false);
+            }
+
+            Cut.setDisable(editHandler == null || !editHandler.computeEnabled("CUT"));
+            Copy.setDisable(editHandler == null || !editHandler.computeEnabled("COPY"));
+            Paste.setDisable(editHandler == null || !editHandler.computeEnabled("PASTE"));
+            Delete.setDisable(editHandler == null || !editHandler.computeEnabled("DELETE"));
+            Duplicate.setDisable(editHandler == null || !editHandler.computeEnabled("DUPLICATE"));
+            SelectAll.setDisable(editHandler == null || !editHandler.computeEnabled("SELECT_ALL"));
+            RaiseSelection.setDisable(editHandler == null || !editHandler.computeEnabled("RAISE"));
+            LowerSelection.setDisable(editHandler == null || !editHandler.computeEnabled("LOWER"));
+            RiseToTop.setDisable(editHandler == null || !editHandler.computeEnabled("RAISE_TOP"));
+            LowerToBottom.setDisable(editHandler == null || !editHandler.computeEnabled("LOWER_BOTTOM"));
+            AddVertex.setDisable(editHandler == null || !editHandler.computeEnabled("ADD_CONTROL"));
+            RemoveVertex.setDisable(editHandler == null || !editHandler.computeEnabled("REMOVE_CONTROL"));
 
         }
 
@@ -612,6 +630,30 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
             TicksEnable.setOnAction(event -> {if (sim != null) sim.setIsTicking(!sim.isTicking());});
             TicksEnable.disableProperty().bind(Bindings.or(Bindings.not(present),Bindings.not(sim.isRunning())));
 
+            Menu runNTicks = new Menu();
+            runNTicks.textProperty().bind(localizer.createStringBinding("simulateNTicsTip"));
+            runNTicks.setOnAction(event -> {
+
+
+                if(event.getSource() != event.getTarget()) return;
+
+                String ticks = DialogManager.CreateInputDialog(localizer.get("simulateInputTicksCountHeader"),
+                        localizer.get("simulateInputTicksCountBody"),
+                        "^([1-9]{0,1}[0-9]{0,2}$){0,1}");
+
+                if(ticks == null || ticks.equals(""))return;
+
+                int n = Integer.parseInt(ticks,10);
+
+                if (runNTicks.getItems().size() >= 5) {
+                    runNTicks.getItems().remove(0);
+                }
+                runNTicks.getItems().add(new RunNTicksMenuItem(n));
+
+                sim.runTickNTimes(n);
+
+            });
+            runNTicks.disableProperty().bind(Bindings.not(present));
 
 
             Menu Frequency = new Menu();
@@ -657,6 +699,7 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
                     sp2,
                     TickOnce,
                     TicksEnable,
+                    runNTicks,
                     Frequency,
                     sp3,
                     SimLog
@@ -748,6 +791,7 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
 
                 if(value == sim.getTickFrequency()){
                     this.setSelected(true);
+                    lastTickFreqItem = this;
                 }
 
             }
@@ -800,6 +844,24 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
                 Circuit circuit = circuitState.getCircuit();
                 this.textProperty().setValue(circuit.getName());
                 this.setOnAction(event -> setCurrentState(sim,circuitState));
+            }
+
+        }
+
+        private class RunNTicksMenuItem extends MenuItem{
+
+            public RunNTicksMenuItem(int n){
+
+                super();
+                this.setText(Integer.toString(n));
+                this.setOnAction(event ->{
+
+                    event.consume();
+
+                    sim.runTickNTimes(n);
+
+                });
+
             }
 
         }
@@ -928,7 +990,7 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
 
     //Technical methods
     public void setEditHandler(EditHandler handler){
-        h = handler;
+        editHandler = handler;
         editMenu.calculateEnabled();
     }
 

@@ -314,6 +314,7 @@ public class PreferencesController extends AbstractController {
             lb.setOnMouseClicked(event -> LocaleManager.setLocale(l));
 
             localeLabels.add(lb);
+
         }
 
         LocaleListView.setItems(localeLabels);

@@ -3,6 +3,9 @@
 
 package LogisimFX.util;
 
+import java.util.Locale;
+
 public interface LocaleListener {
 	public void localeChanged();
+	public void localeChanged(Locale locale);
 }

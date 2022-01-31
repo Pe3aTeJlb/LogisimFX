@@ -9,6 +9,7 @@ import LogisimFX.circuit.Circuit;
 import LogisimFX.file.LogisimFileActions;
 import LogisimFX.instance.Instance;
 import LogisimFX.instance.StdAttr;
+import LogisimFX.localization.LC_menu;
 import LogisimFX.newgui.AnalyzeFrame.AnalyzeController;
 import LogisimFX.newgui.AnalyzeFrame.AnalyzerModel;
 import LogisimFX.newgui.DialogManager;
@@ -78,20 +79,20 @@ public class ProjectCircuitActions {
 			}
 			if (pin.getAttributeValue(StdAttr.WIDTH).getWidth() > 1) {
 				if (isInput) {
-					analyzeError(proj, LC.get("analyzeMultibitInputError"));
+					analyzeError(proj, LC_menu.getInstance().get("analyzeMultibitInputError"));
 				} else {
-					analyzeError(proj, LC.get("analyzeMultibitOutputError"));
+					analyzeError(proj, LC_menu.getInstance().get("analyzeMultibitOutputError"));
 				}
 				return;
 			}
 		}
 		if (inputNames.size() > AnalyzerModel.MAX_INPUTS) {
-			analyzeError(proj, StringUtil.format(LC.get("analyzeTooManyInputsError"),
+			analyzeError(proj, StringUtil.format(LC_menu.getInstance().get("analyzeTooManyInputsError"),
 					"" + AnalyzerModel.MAX_INPUTS));
 			return;
 		}
 		if (outputNames.size() > AnalyzerModel.MAX_OUTPUTS) {
-			analyzeError(proj, StringUtil.format(LC.get("analyzeTooManyOutputsError"),
+			analyzeError(proj, StringUtil.format(LC_menu.getInstance().get("analyzeTooManyOutputsError"),
 					"" + AnalyzerModel.MAX_OUTPUTS));
 			return;
 		}
@@ -105,7 +106,7 @@ public class ProjectCircuitActions {
 			Analyze.computeExpression(model, circuit, pinNames);
 			return;
 		} catch (AnalyzeException ex) {
-			DialogManager.CreateScrollError(LC.get("analyzeNoExpressionTitle"),ex.getMessage());
+			DialogManager.CreateScrollError(LC_menu.getInstance().get("analyzeNoExpressionTitle"),ex.getMessage());
 		}
 
 		Analyze.computeTable(model, proj, circuit, pinNames);
@@ -113,7 +114,7 @@ public class ProjectCircuitActions {
 	}
 		
 	private static void analyzeError(Project proj, String message) {
-		DialogManager.CreateErrorDialog(LC.get("analyzeErrorTitle"), message);
+		DialogManager.CreateErrorDialog(LC_menu.getInstance().get("analyzeErrorTitle"), message);
 	}
 
 }

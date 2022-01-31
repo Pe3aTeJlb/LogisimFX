@@ -10,6 +10,7 @@ import LogisimFX.data.Value;
 import LogisimFX.file.LibraryEvent;
 import LogisimFX.file.LibraryListener;
 import LogisimFX.instance.StdAttr;
+import LogisimFX.localization.LC_menu;
 import LogisimFX.newgui.AbstractController;
 import LogisimFX.newgui.ContextMenuManager;
 import LogisimFX.newgui.DialogManager;
@@ -22,6 +23,7 @@ import com.sun.javafx.tk.Toolkit;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringBinding;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -118,6 +120,12 @@ public class CircLogController extends AbstractController {
     private Button SimStopBtn;
 
     @FXML
+    private Button ResetSimulationBtn;
+
+    @FXML
+    private Button ClearTimelineBtn;
+
+    @FXML
     private SplitPane splitPane;
 
     @FXML
@@ -166,7 +174,7 @@ public class CircLogController extends AbstractController {
 
     private class MyListener
             implements ProjectListener, LibraryListener,
-            SimulatorListener, ModelListener {
+            SimulatorListener, ModelListener, CircuitListener {
 
         public void projectChanged(ProjectEvent event) {
             int action = event.getAction();
@@ -175,6 +183,8 @@ public class CircLogController extends AbstractController {
             } else if (action == ProjectEvent.ACTION_SET_FILE) {
                 computeTitle(curModel);
             }
+            circTrvw.getRoot().getChildren().clear();
+            updateTree((CircuitNode)circTrvw.getRoot(), proj.getCircuitState());
         }
 
         public void libraryChanged(LibraryEvent event) {
@@ -213,6 +223,15 @@ public class CircLogController extends AbstractController {
         public void filePropertyChanged(ModelEvent event) {
 
         }
+
+        @Override
+        public void circuitChanged(CircuitEvent event) {
+
+            circTrvw.getRoot().getChildren().clear();
+            updateTree((CircuitNode)circTrvw.getRoot(), proj.getCircuitState());
+
+        }
+
     }
 
 
@@ -232,11 +251,13 @@ public class CircLogController extends AbstractController {
 
         proj.addProjectListener(myListener);
         proj.addLibraryListener(myListener);
+        proj.getCircuitState().getCircuit().addCircuitListener(myListener);
 
         initSelectionTab();
 
         setSimulator(proj.getSimulator());
         curModel.addModelListener(myListener);
+
 
         initTimelineTab();
         //initTableTab();
@@ -838,6 +859,27 @@ public class CircLogController extends AbstractController {
             if (curSimulator != null) curSimulator.tick();
         });
 
+        ResetSimulationBtn.setGraphic(IconsManager.getIcon("simreset.png"));
+        ResetSimulationBtn.setTooltip(new ToolTip("simulateResetItem"));
+        ResetSimulationBtn.setOnAction(event -> {
+            if (curSimulator != null) curSimulator.requestReset();
+        });
+
+        ClearTimelineBtn.setGraphic(IconsManager.getIcon("clear.png"));
+        ClearTimelineBtn.setTooltip(new ToolTip("timelineClear"));
+        ClearTimelineBtn.setOnAction(event -> {
+
+            if(logObjects != null){
+                for (TreeItem<TimelineTableModel> item : logObjects) {
+                    item.getValue().clear();
+                }
+            }
+
+            restartCanvas();
+
+            updateTimeline();
+
+        });
 
 
         timelineTblvw.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
@@ -1128,7 +1170,7 @@ public class CircLogController extends AbstractController {
 
         public ToolTip(String text){
             super();
-            textProperty().bind(LogisimFX.newgui.MainFrame.LC.createStringBinding(text));
+            textProperty().bind(LC.createStringBinding(text));
         }
 
     }
@@ -1145,9 +1187,9 @@ public class CircLogController extends AbstractController {
             radix = cmp.getRadix();
         }
 
-        public TimelineTableModel(String title_, ArrayList<Value> values_){
-            title = title_;
-            values = values_;
+        public TimelineTableModel(String title, ArrayList<Value> values){
+            this.title = title;
+            this.values = values;
         }
 
         public void addValue(Value val){
@@ -1177,6 +1219,10 @@ public class CircLogController extends AbstractController {
 
         public SelectionItem getSelectionItem(){
             return comp;
+        }
+
+        public void clear(){
+            values.clear();
         }
 
         public int getRadix(){

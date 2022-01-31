@@ -156,6 +156,11 @@ public class Simulator {
 				ticksRequested--;
 			}
 			propagator.tick();
+			tickCounter++;
+
+			if(tickCounter >= tickCounterTarget && runNTicks)
+				stopTickNTimes();
+
 		}
 	}
 
@@ -163,6 +168,10 @@ public class Simulator {
 	private boolean isTicking = false;
 	private boolean exceptionEncountered = false;
 	private double tickFrequency = 1.0;
+	private int tickCounter = 0;
+	private int tickCounterTarget = 0;
+	private double freqBuffer = 0;
+	private boolean runNTicks = false;
 
 	private PropagationManager manager;
 	private SimulatorTicker ticker;
@@ -205,6 +214,30 @@ public class Simulator {
 
 	public void tick() {
 		ticker.tickOnce();
+	}
+
+	public void runTickNTimes(int n){
+
+		tickCounter = 0;
+		tickCounterTarget = n;
+		freqBuffer = getTickFrequency();
+
+		runNTicks = true;
+
+		setIsTicking(false);
+		setTickFrequency(4096);
+		setIsTicking(true);
+
+	}
+
+	public void stopTickNTimes(){
+
+		tickCounter = 0;
+		tickCounterTarget = 0;
+		runNTicks = false;
+		setIsTicking(false);
+		setTickFrequency(freqBuffer);
+
 	}
 
 	public void step() {

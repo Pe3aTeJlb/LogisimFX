@@ -12,13 +12,13 @@ import java.util.*;
 public class LocaleManager {
 
     private static final ObjectProperty<Locale> locale;
-    private static ArrayList<LocaleListener> listeners = new ArrayList<LocaleListener>();
+    private static ArrayList<LocaleListener> listeners = new ArrayList<>();
     private static boolean replaceAccents = false;
     private static HashMap<Character,String> repl = null;
 
     static {
         locale = new SimpleObjectProperty<>(getDefaultLocale());
-        locale.addListener((observable, oldValue, newValue) -> setLocale(newValue));
+        //locale.addListener((observable, oldValue, newValue) -> setLocale(newValue));
     }
 
 
@@ -28,8 +28,8 @@ public class LocaleManager {
 
     public static void setLocale(Locale locale) {
         Locale.setDefault(locale);
+        fireLocaleChanged(locale);
         localeProperty().set(locale);
-        fireLocaleChanged();
     }
 
     public static ObjectProperty<Locale> localeProperty() {
@@ -102,6 +102,12 @@ public class LocaleManager {
     private static void fireLocaleChanged() {
         for (LocaleListener l : listeners) {
             l.localeChanged();
+        }
+    }
+
+    private static void fireLocaleChanged(Locale locale) {
+        for (LocaleListener l : listeners) {
+            l.localeChanged(locale);
         }
     }
 

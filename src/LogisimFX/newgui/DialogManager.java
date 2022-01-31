@@ -19,6 +19,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 public class DialogManager {
 
@@ -282,6 +283,38 @@ public class DialogManager {
         inputDialog.setTitle("LogisimFX");
         inputDialog.setHeaderText(title);
         inputDialog.setContentText(body);
+
+        ((Stage) inputDialog.getDialogPane().getScene().getWindow()).getIcons().add(IconsManager.LogisimFX);
+
+        Optional<String> result = inputDialog.showAndWait();
+
+        if (result.isPresent()){
+            return  result.get();
+        }else {
+            return null;
+        }
+
+    }
+
+    public static String CreateInputDialog(String title, String body, String regex){
+
+        //lc.changeBundle("menu");
+
+        TextInputDialog inputDialog = new TextInputDialog();
+        inputDialog.setTitle("LogisimFX");
+        inputDialog.setHeaderText(title);
+        inputDialog.setContentText(body);
+
+        final Pattern pattern = Pattern.compile(regex);
+        TextFormatter<?> formatter = new TextFormatter<>(change -> {
+            if (pattern.matcher(change.getControlNewText()).matches()) {
+                return change; // allow this change to happen
+            } else {
+                return null; // prevent change
+            }
+        });
+
+        inputDialog.getEditor().setTextFormatter(formatter);
 
         ((Stage) inputDialog.getDialogPane().getScene().getWindow()).getIcons().add(IconsManager.LogisimFX);
 

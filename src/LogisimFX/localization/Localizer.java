@@ -26,6 +26,11 @@ public class Localizer implements LocaleListener{
         bundle =  ResourceBundle.getBundle(bundleName, LocaleManager.getLocale());
     }
 
+    @Override
+    public void localeChanged(Locale locale) {
+        bundle =  ResourceBundle.getBundle(bundleName, locale);
+    }
+
     public void changeBundle(String bundlename){
         bundleName = "LogisimFX/resources/localization/"+bundlename;
         bundle =  ResourceBundle.getBundle(bundleName, LocaleManager.getLocale());
@@ -45,8 +50,11 @@ public class Localizer implements LocaleListener{
     }
 
     public String get(final String key, final Object... args) {
+
         //System.out.println("from "+this.hashCode()+" find key " + key + " in " + bundle.getBaseBundleName() + " " + bundleName);
+
         return bundle.getString(key);
+
     }
 
     public String getFormatted(final String key, String... strings) {

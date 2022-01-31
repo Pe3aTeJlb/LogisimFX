@@ -363,14 +363,14 @@ public class HexEditorController extends AbstractController {
             if(event.getCode() == KeyCode.V && event.isControlDown()){
 
                 int n = 0;
-
+                System.out.println(selectionModel.getSelectedCells().size());
                 for(int i = 0; i< selectionModel.getSelectedCells().size(); i++){
 
                     TablePosition pos = selectionModel.getSelectedCells().get(i);
 
                     if(pos.getColumn() != 0 && !copyBuffer.isEmpty()) {
                         memContents.set(
-                                hexTableVw.getItems().get(selectionModel.getSelectedIndex()).
+                                hexTableVw.getItems().get(pos.getRow()).
                                         getAdr(pos.getColumn() - 1),
                                 copyBuffer.get(n).intValue()
                         );
@@ -397,7 +397,7 @@ public class HexEditorController extends AbstractController {
                     if(pos.getColumn() != 0) {
                         copyBuffer.add(cellItem.getValue());
                         memContents.set(
-                                hexTableVw.getItems().get(selectionModel.getSelectedIndex()).getAdr(pos.getColumn()-1),
+                                hexTableVw.getItems().get(pos.getRow()).getAdr(pos.getColumn()-1),
                                 0
                         );
                     }

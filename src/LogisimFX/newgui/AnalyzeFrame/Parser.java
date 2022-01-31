@@ -20,6 +20,8 @@ public class Parser {
 		for (Token token : tokens) {
 			if (token.type == TOKEN_ERROR) {
 				throw token.error(LC.createComplexStringBinding("invalidCharacterError", token.text));
+			} else if(token.type == TOKEN_MULTIPLE_CONSTANT_ERROR){
+				throw token.error(LC.createStringBinding("invalidConstantDefine"));
 			} else if (token.type == TOKEN_IDENT) {
 				int index = model.getInputs().indexOf(token.text);
 				if (index < 0) {
@@ -104,7 +106,8 @@ public class Parser {
 	private static final int TOKEN_CONST = 8;
 	private static final int TOKEN_WHITE = 9;
 	private static final int TOKEN_ERROR = 10;
-	
+	private static final int TOKEN_MULTIPLE_CONSTANT_ERROR = 11;
+
 	private static class Token {
 		int type;
 		int offset;
@@ -152,8 +155,15 @@ public class Parser {
 				switch (startChar) {
 				case '(': tokens.add(new Token(TOKEN_LPAREN, start, "(")); break;
 				case ')': tokens.add(new Token(TOKEN_RPAREN, start, ")")); break;
-				case '0': case '1': tokens.add(new Token(TOKEN_CONST, start, "" + startChar)); break;
-				case '~': tokens.add(new Token(TOKEN_NOT, start, "~")); break;
+				case '0': case '1':
+					if(!tokens.isEmpty() && tokens.get(tokens.size()-1).type == 8){
+						String errorText = in.substring(start, pos);
+						tokens.add(new Token(TOKEN_MULTIPLE_CONSTANT_ERROR, start, errorText));
+					}else {
+						tokens.add(new Token(TOKEN_CONST, start, "" + startChar));
+					}
+						break;
+					case '~': tokens.add(new Token(TOKEN_NOT, start, "~")); break;
 				case '\'': tokens.add(new Token(TOKEN_NOT_POSTFIX, start, "'")); break;
 				case '^': tokens.add(new Token(TOKEN_XOR, start, "^")); break;
 				case '+': tokens.add(new Token(TOKEN_OR, start, "+")); break;

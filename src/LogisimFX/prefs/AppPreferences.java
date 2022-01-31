@@ -192,6 +192,14 @@ public class AppPreferences {
 				LOCALE.set(lang);
 			}
 		}
+
+		@Override
+		public void localeChanged(Locale loc) {
+			String lang = loc.getLanguage();
+			if (LOCALE != null) {
+				LOCALE.set(lang);
+			}
+		}
 	}
 
 	private static <E> PrefMonitor<E> create(PrefMonitor<E> monitor) {

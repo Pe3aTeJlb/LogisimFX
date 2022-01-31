@@ -170,7 +170,7 @@ public class ProjectActions {
 		File selected = fs.OpenCircFile();
 
 		if(selected != null){
-			doOpen(baseProject, selected);
+			doOpen(null, selected);
 		}else{ return;}
 
 		/*

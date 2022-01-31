@@ -41,7 +41,6 @@ public class OpenRecentMenu extends Menu implements PropertyChangeListener {
 
 		}
 
-
 	}
 
 	private List<RecentItem> recentItems;
