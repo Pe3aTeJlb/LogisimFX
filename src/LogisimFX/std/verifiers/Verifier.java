@@ -20,6 +20,9 @@ public class Verifier extends Clock {
     private static final int OUT0  = 1;
     private static final int OUT1  = 2;
 
+    //only for tty
+    private static boolean restrictProp = false;
+
     private Attribute<AttributeOption> triggerAttribute;
     private Attribute<BitWidth> SEQUENCE_WIDTH =
             Attributes.forBitWidth("sequencewidth", LC.createStringBinding("stdSequenceWidthAttr"));
@@ -56,6 +59,14 @@ public class Verifier extends Clock {
 
         setPorts(ps);
 
+    }
+
+    public void setRestrictProp(boolean val){
+        restrictProp = val;
+    }
+
+    public boolean isReadyOutput(InstanceState state){
+        return state.getPort(OUT1) == Value.TRUE;
     }
 
     @Override
@@ -184,7 +195,7 @@ public class Verifier extends Clock {
         private int seqWidth, maxClock;
         private boolean isClockZero = true;
 
-        private final Value[] vals;
+        private Value[] vals;
 
         public VerifierData(int seqWidth, int maxClock) {
             this.seqWidth = seqWidth;
@@ -198,46 +209,28 @@ public class Verifier extends Clock {
             return (VerifierData) super.clone();
         }
 
-
         public Value getClockVal() {
             return clockVal;
         }
 
         public void setClockVal(Value val){
-            clockVal = val;
+            if(!restrictProp)
+                clockVal = val;
+
         }
 
-
         public void setValue(Value value) {
-            vals[clockVal.toIntValue()] = value;
+            if(!restrictProp)
+                vals[clockVal.toIntValue()] = value;
         }
 
         public Value getValue() {
-            return (vals == null || vals[clockVal.toIntValue()] == null) ? Value.FALSE : vals[clockVal.toIntValue()];
+            return (vals == null || vals[clockVal.toIntValue()] == null) ? Value.NIL : vals[clockVal.toIntValue()];
         }
 
-/*
-        public boolean updateClock(Value newClock, Object trigger) {
-
-            Value oldClock = lastClock;
-            lastClock = newClock;
-            if (trigger == null || trigger == StdAttr.TRIG_RISING) {
-                return oldClock == Value.FALSE && newClock == Value.TRUE;
-            } else if (trigger == StdAttr.TRIG_FALLING) {
-                return oldClock == Value.TRUE && newClock == Value.FALSE;
-            } else if (trigger == StdAttr.TRIG_HIGH) {
-                return newClock == Value.TRUE;
-            } else if (trigger == StdAttr.TRIG_LOW) {
-                return newClock == Value.FALSE;
-            } else {
-                return oldClock == Value.FALSE && newClock == Value.TRUE;
-            }
-
+        public void clearValues(){
+            vals = new Value[maxClock];
         }
-
- */
-
-
 
     }
 

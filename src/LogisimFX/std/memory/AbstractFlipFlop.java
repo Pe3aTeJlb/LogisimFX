@@ -13,7 +13,7 @@ import LogisimFX.util.GraphicsUtil;
 import javafx.beans.binding.StringBinding;
 import javafx.scene.paint.Color;
 
-abstract class AbstractFlipFlop extends InstanceFactory {
+public abstract class AbstractFlipFlop extends InstanceFactory {
 
 	private static final int STD_PORTS = 6;
 	
@@ -95,8 +95,6 @@ abstract class AbstractFlipFlop extends InstanceFactory {
 		int n = getPorts().size() - STD_PORTS;
 		Object triggerType = state.getAttributeValue(triggerAttribute);
 		boolean triggered = data.updateClock(state.getPort(n), triggerType);
-
-		System.out.println("flipflop " + state.getPort(0));
 		
 		if (state.getPort(n + 3) == Value.TRUE) { // clear requested
 			changed |= data.curValue != Value.FALSE;

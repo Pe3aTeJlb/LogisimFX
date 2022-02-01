@@ -355,7 +355,7 @@ public class Attributes {
 				}
 				ComboBox<Integer> combo = new ComboBox<>();
 				combo.getItems().addAll(options);
-				if (value == null) combo.setValue(options[-1]);
+				if (value == null) combo.setValue(options[options.length-1]);
 				else combo.setValue(value);
 				combo.setOnAction(event -> {
 					try {

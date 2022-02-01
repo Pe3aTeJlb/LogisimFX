@@ -3,12 +3,11 @@ package LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas;
 import LogisimFX.circuit.Circuit;
 import LogisimFX.circuit.CircuitState;
 import LogisimFX.circuit.appear.AppearanceElement;
+import LogisimFX.circuit.appear.CircuitAppearanceEvent;
 import LogisimFX.data.Location;
 import LogisimFX.draw.actions.ModelAddAction;
 import LogisimFX.draw.actions.ModelReorderAction;
-import LogisimFX.draw.model.CanvasModel;
-import LogisimFX.draw.model.CanvasObject;
-import LogisimFX.draw.model.ReorderRequest;
+import LogisimFX.draw.model.*;
 import LogisimFX.draw.tools.SelectTool;
 import LogisimFX.draw.undo.Action;
 import LogisimFX.newgui.ContextMenuManager;
@@ -64,6 +63,16 @@ public class AppearanceCanvas extends Canvas {
 
     private AppearanceEditHandler appearanceEditHandler;
 
+    private MyListener listener = new MyListener();
+
+    private class MyListener implements CanvasModelListener {
+
+        public void modelChanged(CanvasModelEvent event) {
+            getSelection().modelChanged(event);
+        }
+
+    }
+
     public AppearanceCanvas(AnchorPane rt, Project project){
 
         super(rt.getWidth(),rt.getHeight());
@@ -74,8 +83,6 @@ public class AppearanceCanvas extends Canvas {
         root = rt;
 
         proj = project;
-
-
 
         g = new Graphics(this.getGraphicsContext2D());
         g.toDefault();
@@ -89,6 +96,8 @@ public class AppearanceCanvas extends Canvas {
         transform[1] = transform[2] = transform[4] = transform[5] = 0;
 
         model = proj.getCurrentCircuit().getAppearance();
+        model.addCanvasModelListener(listener);
+
         selection = new Selection();
 
         selectTool = new SelectTool();
@@ -538,7 +547,11 @@ public class AppearanceCanvas extends Canvas {
     }
 
     public void setModel(CanvasModel value) {
-        model = value;
+        model.removeCanvasModelListener(listener);
+        if (value != null) {
+            model = value;
+            model.addCanvasModelListener(listener);
+        }
     }
 
     public double getZoom(){

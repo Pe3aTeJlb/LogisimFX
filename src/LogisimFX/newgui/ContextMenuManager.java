@@ -89,6 +89,8 @@ public class ContextMenuManager {
 
     public static ContextMenu LibraryContextMenu(Project proj,Library lib){
 
+        lc.changeBundle("menu");
+
         ContextMenu contextMenu = new ContextMenu();
 
         MenuItem UnloadLibrary = new MenuItem();
@@ -162,6 +164,8 @@ public class ContextMenuManager {
 
     public static ContextMenu ComponentDefaultContextMenu(Project project, Circuit circuit, Component component){
 
+        lc.changeBundle("tools");
+
         Project proj = project;
         Circuit circ = circuit;
         Component comp = component;
@@ -195,6 +199,8 @@ public class ContextMenuManager {
     }
 
     public static ContextMenu SelectionContextMenu(LayoutCanvas c){
+
+        lc.changeBundle("tools");
 
         Project proj = c.getProject();
         Selection sel = c.getSelection();
@@ -230,6 +236,7 @@ public class ContextMenuManager {
         public CircuitComponentContextMenu(Instance instance) {
 
             this.instance = instance;
+            lc.changeBundle("circuit");
 
         }
 
@@ -273,6 +280,8 @@ public class ContextMenuManager {
         public MemoryComponentContextMenu(Mem factory, Instance instance){
             this.factory = factory;
             this.instance = instance;
+
+            lc.changeBundle("std");
         }
 
         @Override
@@ -375,6 +384,8 @@ public class ContextMenuManager {
     //AppearanceCanvas elements menus
 
     public static ContextMenu AppearanceEditContextMenu(AppearanceCanvas canvas) {
+
+        lc.changeBundle("menu");
 
         ContextMenu menu = new ContextMenu();
         AppearanceEditHandler handler = new AppearanceEditHandler(canvas);
