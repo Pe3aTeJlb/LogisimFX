@@ -83,7 +83,9 @@ public class Pin extends InstanceFactory {
 
 	@Override
 	public ImageView getIcon(){
-		return ICON_OUT;
+
+		return ICON_IN;
+
 	}
 
 	@Override

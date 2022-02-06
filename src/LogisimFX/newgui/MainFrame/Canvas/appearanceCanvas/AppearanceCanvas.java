@@ -3,22 +3,24 @@ package LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas;
 import LogisimFX.circuit.Circuit;
 import LogisimFX.circuit.CircuitState;
 import LogisimFX.circuit.appear.AppearanceElement;
-import LogisimFX.circuit.appear.CircuitAppearanceEvent;
 import LogisimFX.data.Location;
 import LogisimFX.draw.actions.ModelAddAction;
 import LogisimFX.draw.actions.ModelReorderAction;
 import LogisimFX.draw.model.*;
+import LogisimFX.draw.tools.DragTool;
 import LogisimFX.draw.tools.SelectTool;
 import LogisimFX.draw.undo.Action;
 import LogisimFX.newgui.ContextMenuManager;
 import LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import LogisimFX.proj.Project;
+import LogisimFX.proj.ProjectEvent;
+import LogisimFX.proj.ProjectListener;
 
 import javafx.animation.AnimationTimer;
 import javafx.scene.CacheHint;
+import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -41,7 +43,7 @@ public class AppearanceCanvas extends Canvas {
     private static final double MAX_ZOOM = 0.5;
     private double zoom;
     private double dragScreenX, dragScreenY;
-    private static double[] transform;
+    private double[] transform;
 
     private AnimationTimer update;
 
@@ -61,14 +63,34 @@ public class AppearanceCanvas extends Canvas {
 
     private ContextMenu contextMenu;
 
+    private AppearanceCanvas canvas;
     private AppearanceEditHandler appearanceEditHandler;
 
     private MyListener listener = new MyListener();
 
-    private class MyListener implements CanvasModelListener {
+    private class MyListener implements CanvasModelListener, ProjectListener {
 
         public void modelChanged(CanvasModelEvent event) {
             getSelection().modelChanged(event);
+        }
+
+        @Override
+        public void projectChanged(ProjectEvent event) {
+
+            int act = event.getAction();
+
+            if (act == ProjectEvent.ACTION_SET_TOOL) {
+
+                CanvasTool t = event.getAbstractTool();
+
+                if (t != null) {
+                    canvas.setCursor(t.getCursor());
+                } else {
+                    canvas.setCursor(Cursor.DEFAULT);
+                }
+
+            }
+
         }
 
     }
@@ -76,6 +98,9 @@ public class AppearanceCanvas extends Canvas {
     public AppearanceCanvas(AnchorPane rt, Project project){
 
         super(rt.getWidth(),rt.getHeight());
+
+        canvas = this;
+
         this.setCache(true);
         this.setCacheHint(CacheHint.SPEED);
         this.setFocusTraversable(true);
@@ -83,6 +108,7 @@ public class AppearanceCanvas extends Canvas {
         root = rt;
 
         proj = project;
+        proj.addProjectListener(listener);
 
         g = new Graphics(this.getGraphicsContext2D());
         g.toDefault();
@@ -138,9 +164,6 @@ public class AppearanceCanvas extends Canvas {
 
         drawGrid();
 
-        g.setColor(Color.GREEN);
-        g.c.fillOval(0,0,10,10);
-
         setCircuit(proj, proj.getCircuitState());
 
         tool = proj.getAbstractTool();
@@ -191,8 +214,8 @@ public class AppearanceCanvas extends Canvas {
 
     private void setCanvasEvents(){
 
-        this.addEventFilter(MouseEvent.ANY, (e) -> this.requestFocus());
-        this.addEventFilter(KeyEvent.ANY, (e) -> this.requestFocus());
+       // this.addEventFilter(MouseEvent.ANY, (e) -> this.requestFocus());
+      //  this.addEventFilter(KeyEvent.ANY, (e) -> this.requestFocus());
 
         this.setOnMousePressed(event -> {
 
@@ -218,7 +241,7 @@ public class AppearanceCanvas extends Canvas {
 
         this.setOnMouseDragged(event -> {
 
-            if(event.getButton() == MouseButton.MIDDLE) {
+            if(event.getButton() == MouseButton.MIDDLE || (event.getButton() == MouseButton.PRIMARY && tool instanceof DragTool)) {
                 double dx = event.getX() - dragScreenX;
                 double dy = event.getY() - dragScreenY;
 
@@ -430,15 +453,15 @@ public class AppearanceCanvas extends Canvas {
     //Tools
 
     // convert screen coordinates to grid coordinates by inverting circuit transform
-    public static int inverseTransformX(double x) {
+    public int inverseTransformX(double x) {
         return (int) ((x-transform[4])/transform[0]);
     }
 
-    public static int inverseTransformY(double y) {
+    public int inverseTransformY(double y) {
         return (int) ((y-transform[5])/transform[3]);
     }
 
-    public static int inverseSnapXToGrid(int x) {
+    public int inverseSnapXToGrid(int x) {
 
         x = (int) ((x-transform[4])/transform[0]);;
 
@@ -450,7 +473,7 @@ public class AppearanceCanvas extends Canvas {
 
     }
 
-    public static int inverseSnapYToGrid(int y) {
+    public int inverseSnapYToGrid(int y) {
 
         y = (int) ((y-transform[5])/transform[3]);
 
@@ -560,7 +583,7 @@ public class AppearanceCanvas extends Canvas {
 
 
 
-    public static class CME{
+    public class CME{
 
         public int globalX, globalY;
         public int localX, localY;
@@ -586,8 +609,6 @@ public class AppearanceCanvas extends Canvas {
             // System.out.println("Snapped " + snappedX + " " + snappedY);
 
         }
-
-
 
     }
 

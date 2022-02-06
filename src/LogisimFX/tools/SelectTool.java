@@ -298,7 +298,7 @@ public class SelectTool extends Tool {
 					// just before the "if(queued)" statement. In any case, it
 					// doesn't hurt to check to ensure the message belongs.
 					if (gesture.findResult(dx, dy) != null) {
-						LayoutCanvas.clearErrorMessage();
+						canvas.clearErrorMessage();
 					}
 				}
 			}

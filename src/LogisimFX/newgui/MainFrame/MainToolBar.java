@@ -113,6 +113,7 @@ public class MainToolBar extends ToolBar {
         DrawingAttributeSet attrs = new DrawingAttributeSet();
 
         AbstractTool[] tools = {
+                new DragTool(),
                 new SelectTool(),
                 new TextTool(attrs),
                 new LineTool(attrs),

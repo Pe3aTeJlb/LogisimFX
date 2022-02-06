@@ -1,5 +1,6 @@
 package LogisimFX.newgui.MainFrame.ProjectExplorer;
 
+import LogisimFX.IconsManager;
 import LogisimFX.circuit.Circuit;
 import LogisimFX.circuit.CircuitState;
 import LogisimFX.circuit.SubcircuitFactory;
@@ -44,7 +45,12 @@ public class SimulationTreeExplorer extends AbstractTreeExplorer {
                             SubcircuitFactory buff = ((CircuitState) item).getCircuit().getSubcircuitFactory();
 
                             setText(buff.getName());
-                            setGraphic(buff.getIcon());
+
+                            if(proj.getCurrentCircuit() == ((CircuitState) item).getCircuit()){
+                                setGraphic(IconsManager.getIcon("currsubcirc.gif"));
+                            }else {
+                                setGraphic(buff.getIcon());
+                            }
 
                         }
                         else{
@@ -68,8 +74,9 @@ public class SimulationTreeExplorer extends AbstractTreeExplorer {
 
                         event.consume();
 
-                        if(treeItem.getValue() instanceof Circuit){
-                            project.setCurrentCircuit((Circuit) treeItem.getValue());
+                        if(treeItem.getValue() instanceof CircuitState){
+                            project.setCircuitState((CircuitState) treeItem.getValue());
+                           // project.setCurrentCircuit(((CircuitState) treeItem.getValue()).getCircuit());
                         }
 
                     }
@@ -87,7 +94,8 @@ public class SimulationTreeExplorer extends AbstractTreeExplorer {
 
     public void updateTree(){
 
-        superState = proj.getCircuitState(proj.getCurrentCircuit());
+        superState = proj.getSimulator().getCircuitState();
+        //superState = proj.getCircuitState(proj.getCurrentCircuit());
 
         TreeItem<Object> root = new TreeItem<>(superState);
         this.setRoot(root);

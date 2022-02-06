@@ -1,5 +1,6 @@
 package LogisimFX.newgui.MainFrame.ProjectExplorer;
 
+import LogisimFX.IconsManager;
 import LogisimFX.circuit.SubcircuitFactory;
 import LogisimFX.file.LogisimFile;
 import LogisimFX.newgui.ContextMenuManager;
@@ -79,6 +80,10 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
                                 if (fact instanceof SubcircuitFactory) {
 
                                     Circuit circ = ((SubcircuitFactory) fact).getSubcircuit();
+
+                                    if(proj.getCurrentCircuit() == circ){
+                                        setGraphic(IconsManager.getIcon("currsubcirc.gif"));
+                                    }
 
                                     setContextMenu(ContextMenuManager.CircuitContextMenu(proj, circ));
 

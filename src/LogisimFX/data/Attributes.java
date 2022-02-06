@@ -290,13 +290,19 @@ public class Attributes {
 
 		@Override
 		public String toDisplayString(Boolean value) {
+			if(value == null) return LC.get("booleanFalseOption");
 			if (value.booleanValue()) return LC.get("booleanTrueOption");
 			else return LC.get("booleanFalseOption");
 		}
 
 		@Override
 		public Boolean parse(String value) {
-			Boolean b = value.equals(LC.get("booleanTrueOption"));
+			Boolean b = false;
+			if(value.equals(LC.get("booleanTrueOption")) || value.equals(LC.get("booleanFalseOption"))){
+				b = value.equals(LC.get("booleanTrueOption"));
+			}else {
+				b = Boolean.valueOf(value);
+			}
 			return vals[b.booleanValue() ? 0 : 1];
 		}
 

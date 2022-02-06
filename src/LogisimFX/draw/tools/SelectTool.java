@@ -464,8 +464,9 @@ public class SelectTool extends AbstractTool {
 				if (y1 < y0) { int t = y0; y0 = y1; y1 = t; }
 
 				// make the region that's not being selected darker
-				int w = (int)canvas.getWidth();
-				int h = (int)canvas.getHeight();
+
+				int w = canvas.inverseTransformX(canvas.getWidth());
+				int h = canvas.inverseTransformY(canvas.getHeight());
 				g.setColor(RECT_SELECT_BACKGROUND);
 				g.c.fillRect(0, 0, w, y0);
 				g.c.fillRect(0, y0, x0, y1 - y0);

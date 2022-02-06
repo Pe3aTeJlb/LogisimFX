@@ -85,8 +85,8 @@ public class PolyTool extends AbstractTool {
 		lastMouseY = my;
 
 		if (e.event.isControlDown()) {
-			mx = LayoutCanvas.snapXToGrid(mx);
-			my = LayoutCanvas.snapYToGrid(my);
+			mx = AppearanceCanvas.snapXToGrid(mx);
+			my = AppearanceCanvas.snapYToGrid(my);
 		}
 
 		if (active && e.event.getClickCount() > 1) {

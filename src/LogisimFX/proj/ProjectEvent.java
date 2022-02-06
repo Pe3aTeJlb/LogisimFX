@@ -3,8 +3,10 @@
 
 package LogisimFX.proj;
 
+import LogisimFX.draw.tools.AbstractTool;
 import LogisimFX.file.LogisimFile;
 import LogisimFX.circuit.Circuit;
+import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.CanvasTool;
 import LogisimFX.tools.Tool;
 
 public class ProjectEvent {
@@ -73,6 +75,10 @@ public class ProjectEvent {
 
 	public Tool getTool() {
 		return proj.getTool();
+	}
+
+	public AbstractTool getAbstractTool(){
+		return proj.getAbstractTool();
 	}
 
 }

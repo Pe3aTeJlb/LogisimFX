@@ -19,23 +19,17 @@ import LogisimFX.tools.*;
 import com.sun.javafx.tk.FontMetrics;
 import javafx.animation.AnimationTimer;
 import javafx.animation.PauseTransition;
-import javafx.application.Platform;
 import javafx.beans.binding.StringBinding;
 import javafx.scene.CacheHint;
-import javafx.scene.SnapshotParameters;
+import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
@@ -59,7 +53,7 @@ public class LayoutCanvas extends Canvas {
     private static final double MAX_ZOOM = 0.5;
     private double zoom = 1;
     private double dragScreenX, dragScreenY;
-    private static double[] transform;
+    private double[] transform;
 
 
 
@@ -83,7 +77,7 @@ public class LayoutCanvas extends Canvas {
     private static final Font DEFAULT_ERROR_FONT = Font.font("serif", FontWeight.BOLD, FontPosture.REGULAR, 14);
     private static final Font DEBUG_FONT = Font.font("serif", FontWeight.LIGHT, FontPosture.REGULAR, 6);
     private Color errorColor;
-    private static StringBinding errorMessage;
+    private StringBinding errorMessage;
 
 
     //Tick rate
@@ -139,6 +133,13 @@ public class LayoutCanvas extends Canvas {
                 proj.getSimulator().requestPropagate();
             }
 
+            if (act == ProjectEvent.ACTION_SET_TOOL) {
+
+                Tool t = event.getTool();
+                if (t == null)  setCursor(Cursor.DEFAULT);
+                else            setCursor(t.getCursor());
+            }
+
         }
 
         public void libraryChanged(LibraryEvent event) {
@@ -170,7 +171,7 @@ public class LayoutCanvas extends Canvas {
 
                 if (circ != null) {
                     CircuitState state = getCircuitState();
-                   CircuitState last = state;
+                    CircuitState last = state;
                     while (state != null && state.getCircuit() != circ) {
                         last = state;
                         state = state.getParentState();
@@ -551,15 +552,15 @@ public class LayoutCanvas extends Canvas {
     //Tools
 
     // convert screen coordinates to grid coordinates by inverting circuit transform
-    public static int inverseTransformX(double x) {
+    public int inverseTransformX(double x) {
         return (int) ((x-transform[4])/transform[0]);
     }
 
-    public static int inverseTransformY(double y) {
+    public int inverseTransformY(double y) {
         return (int) ((y-transform[5])/transform[3]);
     }
 
-    public static int inverseSnapXToGrid(int x) {
+    public int inverseSnapXToGrid(int x) {
 
         x = (int) ((x-transform[4])/transform[0]);
 
@@ -571,7 +572,7 @@ public class LayoutCanvas extends Canvas {
 
     }
 
-    public static int inverseSnapYToGrid(int y) {
+    public int inverseSnapYToGrid(int y) {
 
         y = (int) ((y-transform[5])/transform[3]);
 
@@ -605,8 +606,8 @@ public class LayoutCanvas extends Canvas {
 
     private void setCanvasEvents(){
 
-        this.addEventFilter(MouseEvent.ANY, (e) -> this.requestFocus());
-        this.addEventFilter(KeyEvent.ANY, (e) -> {this.requestFocus();});
+        //this.addEventFilter(MouseEvent.ANY, (e) -> this.requestFocus());
+        //this.addEventFilter(KeyEvent.ANY, (e) -> {this.requestFocus();});
 
         this.setOnMousePressed(event -> {
 
@@ -641,21 +642,21 @@ public class LayoutCanvas extends Canvas {
 
         this.setOnMouseDragged(event -> {
 
-            if(event.getButton() == MouseButton.MIDDLE) {
+            if (event.getButton() == MouseButton.MIDDLE || (event.getButton() == MouseButton.PRIMARY && dragTool instanceof PokeTool)) {
 
-                 dx = (event.getX() - dragScreenX);
-                 dy = (event.getY() - dragScreenY);
+                dx = (event.getX() - dragScreenX);
+                dy = (event.getY() - dragScreenY);
 
                 if (dx == 0 && dy == 0) {
                     return;
                 }
 
-                if(transform[4] + dx > 0){
+                if (transform[4] + dx > 0) {
                     dx = 0;
                     transform[4] = 0;
                 }
 
-                if(transform[5] + dy > 0){
+                if (transform[5] + dy > 0) {
                     dy = 0;
                     transform[5] = 0;
                 }
@@ -680,17 +681,17 @@ public class LayoutCanvas extends Canvas {
 
         this.setOnScroll(event -> {
 
-            if(contextMenu != null && contextMenu.isShowing())contextMenu.hide();
+            if (contextMenu != null && contextMenu.isShowing()) contextMenu.hide();
             pauseTransition.stop();
-            if(tooltip != null && tooltip.isShowing())tooltip.hide();
+            if (tooltip != null && tooltip.isShowing()) tooltip.hide();
 
             //clearRect40K(transform[4], transform[5]);
 
             double newScale;
             double oldScale = transform[0];
-            double val = event.getDeltaY()*.005;
+            double val = event.getDeltaY() * .005;
 
-            newScale = Math.max(oldScale+val, MAX_ZOOM);
+            newScale = Math.max(oldScale + val, MAX_ZOOM);
             newScale = Math.min(newScale, MIN_ZOOM);
 
             int cx = inverseTransformX(width / 2);
@@ -710,11 +711,10 @@ public class LayoutCanvas extends Canvas {
             transform[4] = width / 2 - cx * newScale;
             transform[5] = height / 2 - cy * newScale;
 
-            if(transform[4] > 0) transform[4] = 0;
-            if(transform[5] > 0) transform[5] = 0;
+            if (transform[4] > 0) transform[4] = 0;
+            if (transform[5] > 0) transform[5] = 0;
 
             requestUpdate = true;
-
 
         });
 
@@ -881,7 +881,7 @@ public class LayoutCanvas extends Canvas {
 
     }
 
-    public static void clearErrorMessage(){
+    public void clearErrorMessage(){
         errorMessage = null;
     }
 
@@ -927,7 +927,7 @@ public class LayoutCanvas extends Canvas {
 
 
     //ReadLike CanvasMouseEvent
-    public static class CME{
+    public class CME{
 
         public int globalX, globalY;
         public int localX, localY;
