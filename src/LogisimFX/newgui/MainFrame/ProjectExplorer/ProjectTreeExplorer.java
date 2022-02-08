@@ -18,6 +18,8 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
 
     private Project proj;
 
+    private Tool prevTool;
+
     public ProjectTreeExplorer(Project project){
 
         super();
@@ -112,8 +114,6 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
                     if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2
                             && !event.isConsumed()) {
 
-                        event.consume();
-
                         if(treeItem.getValue() instanceof AddTool){
 
                             ComponentFactory fact = ((AddTool) treeItem.getValue()).getFactory(false);
@@ -123,22 +123,19 @@ public class ProjectTreeExplorer extends AbstractTreeExplorer {
                                         ((SubcircuitFactory) fact).getSubcircuit()
                                 );
 
-                                proj.setTool(null);
-
-                               //cell.setStyle(highlight);
+                                proj.setTool(prevTool);
 
                             }
 
                         }
 
+                        event.consume();
 
                     }else if (event.getButton().equals(MouseButton.PRIMARY)){
 
-                        if(treeItem.getValue() instanceof AddTool){
-                            proj.setTool((Tool)treeItem.getValue());
-                        }
+                        prevTool = proj.getTool();
 
-                        if(treeItem.getValue() instanceof Tool){
+                        if(treeItem.getValue() instanceof AddTool || treeItem.getValue() instanceof Tool){
                             proj.setTool((Tool)treeItem.getValue());
                         }
 

@@ -125,6 +125,8 @@ public class LayoutCanvas extends Canvas {
                 circState = proj.getCircuitState();
                 ptContext = new ComponentDrawContext(circ, circState, g);
 
+                setErrorMessage(null, null);
+
             }
 
             if (act != ProjectEvent.ACTION_SELECTION
@@ -138,6 +140,9 @@ public class LayoutCanvas extends Canvas {
                 Tool t = event.getTool();
                 if (t == null)  setCursor(Cursor.DEFAULT);
                 else            setCursor(t.getCursor());
+
+                setErrorMessage(null, null);
+
             }
 
         }
@@ -208,7 +213,7 @@ public class LayoutCanvas extends Canvas {
     private boolean arrayFilled = false ;
 
      */
-
+//6
     private int aaa = 6;
     private boolean requestUpdate = true;
 

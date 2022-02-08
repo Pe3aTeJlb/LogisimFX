@@ -63,7 +63,7 @@ public class Circuit {
 
 	private class MyComponentListener implements ComponentListener {
 		public void endChanged(ComponentEvent e) {
-			locker.checkForWritePermission("ends changed");
+			//locker.checkForWritePermission("ends changed");
 			Component comp = e.getSource();
 			HashMap<Location,EndData> toRemove = toMap(e.getOldData());
 			HashMap<Location,EndData> toAdd = toMap(e.getData());
