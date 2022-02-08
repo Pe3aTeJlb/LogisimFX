@@ -1,3 +1,6 @@
+/* Copyright (c) 2022, Pplos Studio
+ *  License information is located in the Launch file */
+
 package LogisimFX.data;
 
 import LogisimFX.localization.LC_data;

@@ -1,3 +1,8 @@
+/*
+ * This file is part of LogisimFX. Copyright (c) 2022, Pplos Studio
+ * License information is located in the Launch file
+ */
+
 package LogisimFX;
 
 import javafx.application.Application;
@@ -7,7 +12,7 @@ public class Main extends Application{
 
     public static final LogisimVersion VERSION = LogisimVersion.get(1, 0, 0);
     public static final String VERSION_NAME = VERSION.toString();
-    public static final int COPYRIGHT_YEAR = 2021;
+    public static final int COPYRIGHT_YEAR = 2022;
 
     private static String[] arguments;
 

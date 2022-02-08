@@ -1,5 +1,6 @@
-/* Copyright (c) 2010, Carl Burch. License information is located in the
- * com.cburch.logisim.Main source code and at www.cburch.com/logisim/. */
+/* Copyright (c) 2010, Carl Burch.
+ *  Copyright (c) 2022, Pplos Studio
+ *  License information is located in the Launch file */
 
 package LogisimFX.circuit;
 

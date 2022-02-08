@@ -1,4 +1,9 @@
-/*by hohonuuli https://gist.github.com/hohonuuli/29dba349e6cf7d55bdb9d17e97392720*/
+/*
+ * This file is part of LogisimFX. Copyright (c) 2022, Pplos Studio
+ * by hohonuuli https://gist.github.com/hohonuuli/29dba349e6cf7d55bdb9d17e97392720
+ * License information is located in the Launch file
+ */
+
 package LogisimFX.newgui.HexEditorFrame;
 
 import java.util.LinkedHashSet;

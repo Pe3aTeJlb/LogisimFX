@@ -1,3 +1,8 @@
+/*
+ * This file is part of LogisimFX. Copyright (c) 2022, Pplos Studio
+ * License information is located in the Launch file
+ */
+
 package LogisimFX.newgui.HelpFrame;
 
 import LogisimFX.newgui.AbstractController;
@@ -11,7 +16,6 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-
 
 public class HelpController extends AbstractController {
 
