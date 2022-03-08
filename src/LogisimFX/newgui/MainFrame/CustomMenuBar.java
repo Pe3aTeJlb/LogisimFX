@@ -499,7 +499,8 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
 
         MenuItem AnalyzeCircuit = new MenuItem();
         AnalyzeCircuit.textProperty().bind(localizer.createStringBinding("projectAnalyzeCircuitItem"));
-        AnalyzeCircuit.setOnAction(event -> FrameManager.CreateCircuitAnalysisFrame(proj));
+        AnalyzeCircuit.setOnAction(event -> ProjectCircuitActions.doAnalyze(proj, proj.getCurrentCircuit()));
+        //AnalyzeCircuit.setOnAction(event -> FrameManager.CreateCircuitAnalysisFrame(proj));
 
         MenuItem GetCircuitStatistics = new MenuItem();
         GetCircuitStatistics.textProperty().bind(localizer.createStringBinding("projectGetCircuitStatisticsItem"));
@@ -913,8 +914,7 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
 
             MenuItem CombAnalyse = new MenuItem();
             CombAnalyse.textProperty().bind(localizer.createStringBinding("analyzerWindowTitle"));
-            CombAnalyse.setOnAction(event -> ProjectCircuitActions.doAnalyze(proj, proj.getCurrentCircuit()));
-            //CombAnalyse.setOnAction(event -> FrameManager.CreateCircuitAnalysisFrame(proj));
+            CombAnalyse.setOnAction(event -> FrameManager.CreateCircuitAnalysisFrame(proj));
 
 
             MenuItem Preferences = new MenuItem();

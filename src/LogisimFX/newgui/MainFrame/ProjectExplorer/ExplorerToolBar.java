@@ -8,6 +8,7 @@ package LogisimFX.newgui.MainFrame.ProjectExplorer;
 import LogisimFX.newgui.MainFrame.LC;
 import LogisimFX.newgui.MainFrame.MainFrameController;
 import LogisimFX.newgui.MainFrame.MainToolBar;
+
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,6 +16,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Separator;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
+import javafx.scene.effect.Lighting;
 import javafx.scene.layout.AnchorPane;
 
 public class ExplorerToolBar extends ToolBar {
@@ -31,10 +33,17 @@ public class ExplorerToolBar extends ToolBar {
     private int prefHeight = 15;
     private ObservableList<Node> ControlBtnsList;
 
+    private Lighting lighting = new Lighting();
+
     public SimpleBooleanProperty ShowProjectExplorer = new SimpleBooleanProperty(true);
     public SimpleBooleanProperty ShowSimulationHierarchy = new SimpleBooleanProperty(false);
     public SimpleBooleanProperty EditCircuitLayout = new SimpleBooleanProperty(true);
     public SimpleBooleanProperty EditCircuitAppearance = new SimpleBooleanProperty(false);
+
+    private CustomButton ShowProjectExplorerBtn;
+    private CustomButton ShowSimulationBtn;
+    private CustomButton EditCircuitBtn;
+    private CustomButton EditAppearanceBtn;
 
     private static class ToolTip extends Tooltip{
 
@@ -72,23 +81,41 @@ public class ExplorerToolBar extends ToolBar {
 
     private void initItems(){
 
-        CustomButton ShowProjectExplorerBtn = new CustomButton(prefWidth,prefHeight,"projtool.gif");
+        ShowProjectExplorerBtn = new CustomButton(prefWidth,prefHeight,"projtool.gif");
         ShowProjectExplorerBtn.setTooltip(new ToolTip("projectViewToolboxTip"));
-        ShowProjectExplorerBtn.setOnAction(event -> ShowProjectExplorer());
+        ShowProjectExplorerBtn.setEffect(lighting);
+        ShowProjectExplorerBtn.setOnAction(event -> {
+            ShowProjectExplorer();
+            ShowProjectExplorerBtn.setEffect(lighting);
+            ShowSimulationBtn.setEffect(null);
+        });
 
-        CustomButton ShowSimulationBtn = new CustomButton(prefWidth,prefHeight,"projsim.gif");
+        ShowSimulationBtn = new CustomButton(prefWidth,prefHeight,"projsim.gif");
         ShowSimulationBtn.setTooltip(new ToolTip("projectViewSimulationTip"));
-        ShowSimulationBtn.setOnAction(event -> ShowSimulation());
+        ShowSimulationBtn.setOnAction(event -> {
+            ShowSimulation();
+            ShowProjectExplorerBtn.setEffect(null);
+            ShowSimulationBtn.setEffect(lighting);
+        });
 
         Separator sep = new Separator();
 
-        CustomButton EditCircuitBtn = new CustomButton(prefWidth,prefHeight,"projlayo.gif");
+        EditCircuitBtn = new CustomButton(prefWidth,prefHeight,"projlayo.gif");
         EditCircuitBtn.setTooltip(new ToolTip("projectEditLayoutTip"));
-        EditCircuitBtn.setOnAction(event -> EditCircuit());
+        EditCircuitBtn.setEffect(lighting);
+        EditCircuitBtn.setOnAction(event -> {
+            EditCircuit();
+            EditCircuitBtn.setEffect(lighting);
+            EditAppearanceBtn.setEffect(null);
+        });
 
-        CustomButton EditAppearanceBtn = new CustomButton(prefWidth,prefHeight,"projapp.gif");
+        EditAppearanceBtn = new CustomButton(prefWidth,prefHeight,"projapp.gif");
         EditAppearanceBtn.setTooltip(new ToolTip("projectEditAppearanceTip"));
-        EditAppearanceBtn.setOnAction(event -> EditAppearance());
+        EditAppearanceBtn.setOnAction(event -> {
+            EditAppearance();
+            EditCircuitBtn.setEffect(null);
+            EditAppearanceBtn.setEffect(lighting);
+        });
 
         ControlBtnsList.addAll(
                 ShowProjectExplorerBtn,

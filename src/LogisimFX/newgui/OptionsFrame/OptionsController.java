@@ -26,7 +26,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 
-
 public class OptionsController extends AbstractController {
 
     private Stage stage;

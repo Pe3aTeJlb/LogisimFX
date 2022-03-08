@@ -101,6 +101,7 @@ public class ProjectCircuitActions {
 		}
 
 		AnalyzeController analyzeController = FrameManager.CreateAndRunCircuitAnalysisFrame(proj);
+		analyzeController.setAnalyzeOnlyMode(true);
 		AnalyzerModel model = analyzeController.getModel();
 
 		model.setVariables(inputNames, outputNames);

@@ -20,6 +20,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
+import javafx.scene.effect.Lighting;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -30,6 +31,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 public class MainToolBar extends ToolBar {
+
+    private ToolButton prevTool;
+    private ToolButton currTool;
 
     private ObservableList<Node> RedactCircuitBtnsList;
     private ObservableList<Node> RedactAppearanceBtnsList;
@@ -43,10 +47,12 @@ public class MainToolBar extends ToolBar {
 
     private String currType = null;
 
+    private Lighting lighting = new Lighting();
+
     private MyListener myListener = new MyListener();
 
     private class MyListener
-            implements  PropertyChangeListener {
+            implements  PropertyChangeListener, ToolbarData.ToolbarListener {
 
         //
         // PropertyChangeListener methods
@@ -55,6 +61,11 @@ public class MainToolBar extends ToolBar {
             if (AppPreferences.GATE_SHAPE.isSource(event)) {
                 Platform.runLater(() -> ToolsRefresh());
             }
+        }
+
+        @Override
+        public void toolbarChanged() {
+            Platform.runLater(() -> ToolsRefresh());
         }
 
     }
@@ -66,6 +77,7 @@ public class MainToolBar extends ToolBar {
         proj = project;
 
         AppPreferences.GATE_SHAPE.addPropertyChangeListener(myListener);
+        proj.getLogisimFile().getOptions().getToolbarData().addToolbarListener(myListener);
 
         AnchorPane.setLeftAnchor(this,0.0);
         AnchorPane.setTopAnchor(this,25.0);
@@ -86,6 +98,7 @@ public class MainToolBar extends ToolBar {
         SetAppearanceTools();
 
         SetMainToolBarItems("RedactCircuit");
+
     }
 
     private void SetLayoutTools(){
@@ -141,14 +154,19 @@ public class MainToolBar extends ToolBar {
 
         currType = ToolBarType;
 
+        prevTool = null;
+        currTool = null;
+
         if(ToolBarType.equals("RedactCircuit")){
             getItems().clear();
             getItems().addAll(RedactCircuitBtnsList);
+            HighlightCurTool(proj.getTool());
         }
 
         if(ToolBarType.equals("RedactAppearance")){
             getItems().clear();
             getItems().addAll(RedactAppearanceBtnsList);
+            HighlightCurTool(proj.getAbstractTool());
         }
 
     }
@@ -161,12 +179,61 @@ public class MainToolBar extends ToolBar {
 
     }
 
+    public void HighlightCurTool(Tool tool){
+
+        if(prevTool != null) {
+            //prevTool.setStyle("-fx-border-color: #B5B5B5;");
+            prevTool.setEffect(null);
+        }
+
+        for(Node node: RedactCircuitBtnsList){
+            if(node instanceof ToolButton){
+                if(((ToolButton) node).tool == tool){
+                    node.setEffect(lighting);
+                    //node.setStyle("-fx-border-color: #00FFFF;");
+                    //init moment, currTool is null
+                    if(currTool == null){
+                        currTool = (ToolButton) node;
+                    }
+                    break;
+                }
+            }
+        }
+
+    }
+
+    public void HighlightCurTool(AbstractTool tool){
+
+        if(prevTool != null) {
+            //prevTool.setStyle("-fx-border-color: #B5B5B5;");
+            prevTool.setEffect(null);
+        }
+
+        for(Node node: RedactAppearanceBtnsList){
+            if(node instanceof ToolButton){
+                if(((ToolButton) node).abstractTool == tool) {
+                    node.setEffect(lighting);
+                    //node.setStyle("-fx-border-color: #00FFFF;");
+                    //init moment, currTool is null
+                    if(currTool == null){
+                        currTool = (ToolButton) node;
+                    }
+                }
+            }
+        }
+
+    }
 
     class ToolButton extends Button {
+
+        Tool tool;
+        AbstractTool abstractTool;
 
         public ToolButton(Tool tool) {
 
             super();
+
+            this.tool = tool;
 
             setPrefSize(prefWidth,prefHeight);
             setMinSize(prefWidth,prefHeight);
@@ -199,13 +266,19 @@ public class MainToolBar extends ToolBar {
             tip.textProperty().bind(tool.getDescription().concat(bindbuff));
             setTooltip(tip);
 
-            this.setOnAction(event -> proj.setTool(tool));
+            this.setOnAction(event -> {
+                prevTool = currTool;
+                currTool = this;
+                proj.setTool(tool);
+            });
 
         }
 
         public ToolButton(AbstractTool tool) {
 
             super();
+
+            this.abstractTool = tool;
 
             setPrefSize(prefWidth,prefHeight);
             setMinSize(prefWidth,prefHeight);
@@ -214,7 +287,12 @@ public class MainToolBar extends ToolBar {
             ImageView buff = new ImageView(tool.getIcon().getImage());
             graphicProperty().setValue(buff);
 
-            this.setOnAction(event -> proj.setAbstractTool(tool));
+            this.setOnAction(event -> {
+                prevTool = currTool;
+                currTool = this;
+                proj.setAbstractTool(tool);
+            });
+
 
         }
 

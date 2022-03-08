@@ -436,6 +436,7 @@ public class CircLogController extends AbstractController {
                         moveUpBtn.setDisable(localIndex == 0);
                         moveDownBtn.setDisable(
                                 localIndex == selectiontrvwSelectionModel.getSelectedItem().getParent().getChildren().size() - 1);
+                        removeBtn.setDisable(currLogItemsCount.intValue() == 0);
                     }
                 }
         );
@@ -482,7 +483,8 @@ public class CircLogController extends AbstractController {
         removeBtn.textProperty().bind(LC.createStringBinding("selectionRemove"));
         removeBtn.setOnAction(event -> {
 
-            if(!selectiontrvwSelectionModel.getSelectedItems().isEmpty()) {
+             if(!selectiontrvwSelectionModel.getSelectedItems().isEmpty()) {
+
                 selectiontrvwSelectionModel.getSelectedItem().getParent().getChildren().remove(selectiontrvwSelectionModel.getSelectedItem());
 
                 int c = 0;
@@ -492,6 +494,8 @@ public class CircLogController extends AbstractController {
                 }
 
                 currLogItemsCount.set(c);
+                removeBtn.setDisable(currLogItemsCount.intValue() == 0);
+
             }
 
         });

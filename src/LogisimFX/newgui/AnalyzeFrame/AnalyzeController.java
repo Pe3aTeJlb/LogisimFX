@@ -7,10 +7,8 @@ package LogisimFX.newgui.AnalyzeFrame;
 
 import LogisimFX.IconsManager;
 import LogisimFX.newgui.AbstractController;
-import LogisimFX.newgui.ListViewDialog;
 import LogisimFX.proj.Project;
 
-import LogisimFX.tools.Library;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
@@ -31,7 +29,6 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 public class AnalyzeController extends AbstractController {
@@ -210,6 +207,7 @@ public class AnalyzeController extends AbstractController {
 
     private ObservableList<Entry> copyBuffer;
 
+    private boolean analyzeOnly = false;
 
 
     @FXML
@@ -242,6 +240,12 @@ public class AnalyzeController extends AbstractController {
 
         });
 
+    }
+
+    public void setAnalyzeOnlyMode(boolean bool){
+        analyzeOnly = bool;
+        BuildCircuitBtn.setDisable(analyzeOnly);
+        calculateEnable();
     }
 
     public AnalyzerModel getModel(){
@@ -314,7 +318,7 @@ public class AnalyzeController extends AbstractController {
 
         InputsTxtFld.textProperty().addListener(
                 (observable, oldValue, newValue) -> {
-                    if(InputsTxtFld.getText() != null) {
+                    if(InputsTxtFld.getText() != null && !analyzeOnly) {
                         InputsAddBtn.setDisable(false);
                         if(!inputsSelectionModel.getSelectedItems().isEmpty())InputsRenameBtn.setDisable(false);
                     }else{
@@ -326,7 +330,7 @@ public class AnalyzeController extends AbstractController {
 
         InputsTxtFld.setOnKeyPressed(event -> {
 
-            if(event.getCode() == KeyCode.ENTER){
+            if(event.getCode() == KeyCode.ENTER && !analyzeOnly){
                 addInputItem();
             }
 
@@ -426,7 +430,7 @@ public class AnalyzeController extends AbstractController {
 
         OutputsTxtFld.textProperty().addListener(
                 (observable, oldValue, newValue) -> {
-                    if(OutputsTxtFld.getText() != null) {
+                    if(OutputsTxtFld.getText() != null && !analyzeOnly) {
                         OutputsAddBtn.setDisable(false);
                         if(!outputsSelectionModel.getSelectedItems().isEmpty())OutputsRenameBtn.setDisable(false);
                     }else{
@@ -438,7 +442,7 @@ public class AnalyzeController extends AbstractController {
 
         OutputsTxtFld.setOnKeyPressed(event -> {
 
-            if(event.getCode() == KeyCode.ENTER){
+            if(event.getCode() == KeyCode.ENTER && !analyzeOnly){
                 addOutputItem();
             }
 
@@ -490,6 +494,8 @@ public class AnalyzeController extends AbstractController {
         copyBuffer = FXCollections.observableArrayList();
 
         TruthTblvw.setOnKeyPressed(event -> {
+
+            if(analyzeOnly) return;
 
             if(event.getCode() == KeyCode.DELETE){
 
@@ -720,6 +726,8 @@ public class AnalyzeController extends AbstractController {
 
                 cell.setOnMouseClicked(event -> {
 
+                    if(analyzeOnly) return;
+
                     if(!event.isShiftDown()) {
 
                         if (cell.getItem() == Entry.DONT_CARE) {
@@ -840,7 +848,7 @@ public class AnalyzeController extends AbstractController {
 
         ExpressionTxtarea.setOnKeyPressed(event -> {
 
-            if(event.getCode() == KeyCode.ENTER && !event.isShiftDown()){
+            if(event.getCode() == KeyCode.ENTER && !event.isShiftDown() && !analyzeOnly){
                 enterExpression();
             }else{
                 calculateEnable();
@@ -900,7 +908,7 @@ public class AnalyzeController extends AbstractController {
 
     private void calculateEnable(){
 
-        if(!ExpressionTxtarea.getText().equals(getCurrentStringInExpression()) && !ExpressionTxtarea.getText().equals("")){
+        if(!ExpressionTxtarea.getText().equals(getCurrentStringInExpression()) && !ExpressionTxtarea.getText().equals("") && !analyzeOnly){
 
             ExpressionClearBtn.setDisable(false);
             ExpressionAddBtn.setDisable(false);
@@ -914,7 +922,7 @@ public class AnalyzeController extends AbstractController {
 
         }
 
-        if(ExpressionTxtarea.getText().equals("")){
+        if(ExpressionTxtarea.getText().equals("") || analyzeOnly){
             ExpressionClearBtn.setDisable(true);
         }
 
@@ -1032,6 +1040,7 @@ public class AnalyzeController extends AbstractController {
 
         MinimisationSetSelectedBtn.setDisable(
                 MinimisationOutputCmbbx.getValue() == null || model.getOutputExpressions().isExpressionMinimal(MinimisationOutputCmbbx.getValue())
+                || analyzeOnly
         );
 
     }
@@ -1136,6 +1145,8 @@ public class AnalyzeController extends AbstractController {
                 };
 
                 cell.setOnMouseClicked(event -> {
+
+                    if(analyzeOnly) return;
 
                     if(!event.isShiftDown()) {
 

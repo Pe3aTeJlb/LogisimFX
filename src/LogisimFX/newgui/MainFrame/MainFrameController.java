@@ -280,6 +280,14 @@ public class MainFrameController extends AbstractController {
     }
 
 
+    public void setMainToolBarHighlight(Tool tool){
+        if(mainToolBar != null)mainToolBar.HighlightCurTool(tool);
+    }
+
+    public void setMainToolBarHighlight(AbstractTool tool){
+        if(mainToolBar != null)mainToolBar.HighlightCurTool(tool);
+    }
+
 
     private void setAnchor(double left,double top, double right, double bottom, Node n){
         AnchorPane.setLeftAnchor(n,left);

@@ -14,6 +14,7 @@ import LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
 import LogisimFX.newgui.MainFrame.MainFrameController;
 import LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.Selection;
 import LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.SelectionActions;
+import LogisimFX.newgui.MainFrame.MainToolBar;
 import LogisimFX.tools.AddTool;
 import LogisimFX.tools.Library;
 import LogisimFX.tools.Tool;
@@ -324,6 +325,8 @@ public class Project {
 		if (tool != null) tool.select(getFrameController().getLayoutCanvas());
 
 		tool = value;
+		frameController.setMainToolBarHighlight(tool);
+
 		fireEvent(ProjectEvent.ACTION_SET_TOOL, old, tool);
 
 	}
@@ -364,6 +367,8 @@ public class Project {
 
 
 		abstractTool = value;
+
+		frameController.setMainToolBarHighlight(abstractTool);
 
 		fireEvent(ProjectEvent.ACTION_SET_TOOL, old, abstractTool);
 
