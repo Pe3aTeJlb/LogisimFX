@@ -15,7 +15,6 @@ import LogisimFX.file.Loader;
 import LogisimFX.file.LoadFailedException;
 import LogisimFX.prefs.AppPreferences;
 import LogisimFX.proj.ProjectActions;
-import LogisimFX.util.MacCompatibility;
 import LogisimFX.util.StringUtil;
 
 import java.io.File;
@@ -117,7 +116,7 @@ public class Startup {
 
         if (isTty) {
             try {
-                TtyInterface.run(this);
+                TtyAnalyzer.run(this);
                 return;
             } catch (Throwable t) {
                 t.printStackTrace();
@@ -172,14 +171,14 @@ public class Startup {
         }
        // WindowManagers.initialize();
 
-        if (MacCompatibility.isSwingUsingScreenMenuBar()) {
+        //if (MacCompatibility.isSwingUsingScreenMenuBar()) {
           //  MacCompatibility.setFramelessJMenuBar(new LogisimMenuBar(null, null));
-        } else {
+        //} else {
            // new LogisimMenuBar(null, null);
             // most of the time occupied here will be in loading menus, which
             // will occur eventually anyway; we might as well do it when the
             // monitor says we are
-        }
+        //}
 
         // if user has double-clicked a file to open, we'll
         // use that as the file to open now.
@@ -304,15 +303,15 @@ public class Startup {
                     for (int j = 0; j < fmts.length; j++) {
                         String fmt = fmts[j].trim();
                         if (fmt.equals("table")) {
-                            ret.ttyFormat |= TtyInterface.FORMAT_TABLE;
+                            ret.ttyFormat |= TtyAnalyzer.FORMAT_TABLE;
                         } else if (fmt.equals("speed")) {
-                            ret.ttyFormat |= TtyInterface.FORMAT_SPEED;
+                            ret.ttyFormat |= TtyAnalyzer.FORMAT_SPEED;
                         } else if (fmt.equals("tty")) {
-                            ret.ttyFormat |= TtyInterface.FORMAT_TTY;
+                            ret.ttyFormat |= TtyAnalyzer.FORMAT_TTY;
                         } else if (fmt.equals("halt")) {
-                            ret.ttyFormat |= TtyInterface.FORMAT_HALT;
+                            ret.ttyFormat |= TtyAnalyzer.FORMAT_HALT;
                         } else if (fmt.equals("stats")) {
-                            ret.ttyFormat |= TtyInterface.FORMAT_STATISTICS;
+                            ret.ttyFormat |= TtyAnalyzer.FORMAT_STATISTICS;
                         } else {
                             System.err.println(lc.get("ttyFormatError")); //OK
                         }
