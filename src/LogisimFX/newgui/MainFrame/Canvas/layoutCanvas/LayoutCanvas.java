@@ -407,10 +407,12 @@ public class LayoutCanvas extends Canvas {
                      y < inverseSnapYToGrid((int) this.getHeight()); y += SPACING_Y) {
 
                     if (zoom < 0.8f && (float) x % 50 == 0 && (float) y % 50 == 0) {
-                        g.c.setFill(GRID_DOT_QUARTER);
+                        //g.c.setFill(GRID_DOT_QUARTER);
+                        g.setColor(GRID_DOT_QUARTER);
                         g.c.fillRect(x, y, 2, 2);
                     } else {
-                        g.c.setFill(GRID_DOT);
+                       // g.c.setFill(GRID_DOT);
+                        g.setColor(GRID_DOT);
                         g.c.fillRect(x, y, 1, 1);
                     }
 

@@ -12,7 +12,6 @@ import LogisimFX.localization.Localizer;
 import LogisimFX.newgui.DialogManager;
 import LogisimFX.std.Builtin;
 import LogisimFX.tools.Library;
-import LogisimFX.util.MacCompatibility;
 import LogisimFX.util.StringUtil;
 import LogisimFX.util.ZipClassLoader;
 
@@ -150,9 +149,6 @@ public class Loader implements LibraryLoader {
 
 		FileOutputStream fwrite = null;
 		try {
-			try {
-				MacCompatibility.setFileCreatorAndType(dest, "LGSM", "circ");
-			} catch (IOException e) { }
 			fwrite = new FileOutputStream(dest);
 			file.write(fwrite, this);
 			file.setName(toProjectName(dest));

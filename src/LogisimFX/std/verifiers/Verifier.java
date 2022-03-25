@@ -92,7 +92,11 @@ public class Verifier extends Clock {
     @Override
     public void propagate(InstanceState state) {
 
-        VerifierData data = (VerifierData) state.getData();
+        VerifierData data = null;
+
+        if(state.getData() instanceof VerifierData)
+            data = (VerifierData) state.getData();
+
         if (data == null) {
 
             int seqWidth = state.getAttributeValue(SEQUENCE_WIDTH).getWidth();
@@ -149,7 +153,10 @@ public class Verifier extends Clock {
         Graphics g = painter.getGraphics();
         Bounds bds = painter.getInstance().getBounds();
 
-        VerifierData state = (VerifierData) painter.getData();
+        VerifierData state = null;
+
+        if(painter.getData() instanceof VerifierData)
+            state = (VerifierData) painter.getData();
 
         // draw boundary, label
         painter.drawBounds();

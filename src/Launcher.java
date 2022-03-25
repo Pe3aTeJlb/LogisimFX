@@ -30,6 +30,8 @@ public class Launcher {
         System.setProperty("javafx.animation.fullspeed", "false");
         System.setProperty("javafx.animation.pulse", "60");
         System.setProperty("javafx.animation.framerate", "60");
+        System.setProperty("sun.java2d.opengl", "False");
+        System.setProperty("sun.java2d.d3d", "False");
 
         Main.main(args);
 
