@@ -270,7 +270,7 @@ class SplitterAttributes extends AbstractAttributeSet {
 				bit_end[bitOutAttr.which] = (byte) val;
 			}
 		}else if (attr == ATTR_TUNNELVIEW) {
-			tunnelView = (boolean)value;
+			tunnelView = (Boolean) value;
 			parameters = null;
 		}
 		else {

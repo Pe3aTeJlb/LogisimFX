@@ -1085,7 +1085,7 @@ public class AnalyzeController extends AbstractController {
 
         TableColumn<String, String> rowHeaderColumn = new TableColumn<>(rowHeader);
         rowHeaderColumn.setResizable(false);
-        rowHeaderColumn.setReorderable(false);
+        //rowHeaderColumn.setReorderable(false);
         rowHeaderColumn.setSortable(false);
 
         rowHeaderColumn.setPrefWidth(45*rows);
@@ -1094,7 +1094,7 @@ public class AnalyzeController extends AbstractController {
 
             TableColumn<String, String> column = new TableColumn<>(label(i, rows));
             column.setResizable(false);
-            column.setReorderable(false);
+           // column.setReorderable(false);
             column.setSortable(false);
 
             column.setPrefWidth(45);
@@ -1109,7 +1109,7 @@ public class AnalyzeController extends AbstractController {
 
         TableColumn<KarnaughMapDataModel, Entry> varHeaderColumn = new TableColumn<>(colHeader);
         varHeaderColumn.setResizable(false);
-        varHeaderColumn.setReorderable(false);
+       // varHeaderColumn.setReorderable(false);
         varHeaderColumn.setSortable(false);
 
         rowHeaderColumn.setPrefWidth(45*cols);
@@ -1196,7 +1196,7 @@ public class AnalyzeController extends AbstractController {
 
 
             column.setResizable(false);
-            column.setReorderable(false);
+           // column.setReorderable(false);
             column.setSortable(false);
 
             column.setPrefWidth(45);
