@@ -5,6 +5,7 @@
 
 package LogisimFX.newgui.MainFrame.Canvas.layoutCanvas;
 
+import LogisimFX.IconsManager;
 import LogisimFX.OldFontmetrics;
 import LogisimFX.circuit.*;
 import LogisimFX.comp.Component;
@@ -30,6 +31,7 @@ import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -219,7 +221,8 @@ public class LayoutCanvas extends Canvas {
 
      */
 //6
-    private int aaa = 6;
+    private int frameCap = 12;
+    private int dragCap = 2;
     private boolean requestUpdate = true;
 
     private  double dx, dy;
@@ -272,15 +275,12 @@ public class LayoutCanvas extends Canvas {
             @Override
             public void handle(long now) {
 
-
-                //Update();
-
                 if(requestUpdate){
                     Update();
                     requestUpdate = false;
                 }
 
-                if(frames % aaa == 0) {
+                if(frames % frameCap == 0) {
 
                     Update();
 /*
@@ -341,9 +341,6 @@ public class LayoutCanvas extends Canvas {
         );
 
         drawGrid();
-
-        //g.setColor(Color.RED);
-        //g.c.fillOval(0,0,10,10);
 
         drawWithUserState();
 
@@ -407,11 +404,9 @@ public class LayoutCanvas extends Canvas {
                      y < inverseSnapYToGrid((int) this.getHeight()); y += SPACING_Y) {
 
                     if (zoom < 0.8f && (float) x % 50 == 0 && (float) y % 50 == 0) {
-                        //g.c.setFill(GRID_DOT_QUARTER);
                         g.setColor(GRID_DOT_QUARTER);
                         g.c.fillRect(x, y, 2, 2);
                     } else {
-                       // g.c.setFill(GRID_DOT);
                         g.setColor(GRID_DOT);
                         g.c.fillRect(x, y, 1, 1);
                     }
@@ -697,7 +692,7 @@ public class LayoutCanvas extends Canvas {
             pauseTransition.stop();
             if (tooltip != null && tooltip.isShowing()) tooltip.hide();
 
-            //clearRect40K(transform[4], transform[5]);
+            clearRect40K(transform[4], transform[5]);
 
             double newScale;
             double oldScale = transform[0];
@@ -806,9 +801,9 @@ public class LayoutCanvas extends Canvas {
             }
 
             if(event.getCode() == KeyCode.F){
-                aaa++;
-                if(aaa ==16) aaa = 1;
-                System.out.println(aaa);
+                frameCap++;
+                if(frameCap ==16) frameCap = 1;
+                System.out.println(frameCap);
             }
 
         });
@@ -869,7 +864,7 @@ public class LayoutCanvas extends Canvas {
 
     private void clearRect40K() {
 
-        g.c.setFill(BACKGROUND);
+        g.setColor(BACKGROUND);
         g.c.fillRect(0,0,(this.getWidth()/transform[0])*2,(this.getHeight()/transform[0])*2);
 
     }
