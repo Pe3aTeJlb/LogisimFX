@@ -8,12 +8,14 @@ import LogisimFX.file.LogisimFile;
 import LogisimFX.proj.Project;
 import LogisimFX.tools.Library;
 
+import javafx.concurrent.Task;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.controlsfx.dialog.FontSelectorDialog;
+import org.controlsfx.dialog.ProgressDialog;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -24,6 +26,7 @@ import java.util.regex.Pattern;
 public class DialogManager {
 
     private static final Localizer lc = LC_null.getInstance();
+
 
     public static void CreateWarningDialog(String header, String content){
 
@@ -181,6 +184,7 @@ public class DialogManager {
 
     }
 
+
     public static int CreateConfirmCloseDialog(Project proj){
 
         lc.changeBundle("gui");
@@ -236,6 +240,7 @@ public class DialogManager {
         }
 
     }
+
 
     public static String CreateInputDialog(LogisimFile file){
 
@@ -328,6 +333,19 @@ public class DialogManager {
 
     }
 
+
+    public static void CreateProgressDialog(Task task){
+
+        ProgressDialog progressDialog = new ProgressDialog(task);
+        progressDialog.setTitle("LogisimFX");
+
+        progressDialog.headerTextProperty().bind(task.messageProperty());
+
+        ((Stage) progressDialog.getDialogPane().getScene().getWindow()).getIcons().add(IconsManager.LogisimFX);
+
+    }
+
+
     public static Library[] CreateLibSelectionDialog(ArrayList<Library> libs){
 
         lc.changeBundle("menu");
@@ -357,6 +375,7 @@ public class DialogManager {
        }else {return null;}
 
     }
+
 
     public static Font CreateFontSelectorDialog(Font initFont){
 

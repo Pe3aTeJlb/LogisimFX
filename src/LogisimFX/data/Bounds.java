@@ -7,6 +7,7 @@
 package LogisimFX.data;
 
 
+import LogisimFX.circuit.Wire;
 import LogisimFX.util.Cache;
 import javafx.scene.shape.Rectangle;
 
@@ -17,7 +18,7 @@ import javafx.scene.shape.Rectangle;
  */
 public class Bounds {
 
-	public static Bounds EMPTY_BOUNDS = new Bounds(0, 0, 0, 0);
+	public static Bounds EMPTY_BOUNDS = new Bounds(0, 0, 0, 0, 0);
 	private static final Cache cache = new Cache();
 
 	public static Bounds create(int x, int y, int wid, int ht) {
@@ -25,9 +26,27 @@ public class Bounds {
 		Object cached = cache.get(hashCode);
 		if (cached != null) {
 			Bounds bds = (Bounds) cached;
-			if (bds.x == x && bds.y == y && bds.wid == wid && bds.ht == ht) return bds;
+			if (bds.x == x && bds.y == y && bds.wid == wid && bds.ht == ht && bds.rot == 0) return bds;
 		}
-		Bounds ret = new Bounds(x, y, wid, ht);
+		Bounds ret = new Bounds(x, y, wid, ht, 0);
+		cache.put(hashCode, ret);
+		return ret;
+	}
+
+	/*
+	* for diagonal wires
+	* normally we have no rotation at all
+	* in case of diagonal wires, rotation equals n*pi/4
+	* then, x - left point, y - bottom point, width - means length of the wire, height can be dropped
+	*/
+	public static Bounds create(int x, int y, int wid, int ht, double rot) {
+		int hashCode = 13 * (13 * (31 * (31 * x + y) + wid) + ht) + (int)rot;
+		Object cached = cache.get(hashCode);
+		if (cached != null) {
+			Bounds bds = (Bounds) cached;
+			if (bds.x == x && bds.y == y && bds.wid == wid && bds.ht == ht && bds.rot == rot) return bds;
+		}
+		Bounds ret = new Bounds(x, y, wid, ht, rot);
 		cache.put(hashCode, ret);
 		return ret;
 	}
@@ -44,12 +63,14 @@ public class Bounds {
 	private final int y;
 	private final int wid;
 	private final int ht;
+	private final double rot;
 
-	private Bounds(int x, int y, int wid, int ht) {
+	private Bounds(int x, int y, int wid, int ht, double rot) {
 		this.x = x;
 		this.y = y;
 		this.wid = wid;
 		this.ht = ht;
+		this.rot = rot;
 		if (wid < 0) { x += wid / 2; wid = 0; }
 		if (ht < 0)  { y += ht  / 2; ht = 0;  }
 	}
@@ -59,7 +80,7 @@ public class Bounds {
 		if (!(other_obj instanceof Bounds)) return false;
 		Bounds other = (Bounds) other_obj;
 		return x == other.x && y == other.y
-			&& wid == other.wid && ht == other.ht;
+			&& wid == other.wid && ht == other.ht && rot == other.rot;
 	}
 
 	@Override
@@ -67,12 +88,13 @@ public class Bounds {
 		int ret = 31 * x + y;
 		ret = 31 * ret + wid;
 		ret = 31 * ret + ht;
+		ret = 31 * ret + (int)rot;
 		return ret;
 	}
 
 	@Override
 	public String toString() {
-		return "(" + x + "," + y + "): " + wid + "x" + ht;
+		return "(" + x + "," + y + "): " + wid + "x" + ht + " rot " + rot + " deg";
 	}
 
 	public int getX() {
@@ -109,18 +131,26 @@ public class Bounds {
 	}
 
 	public boolean contains(int px, int py, int allowedError) {
+
 		return px >= x - allowedError && px < x + wid + allowedError
-			&& py >= y - allowedError && py < y + ht + allowedError;
+				&& py >= y - allowedError && py < y + ht + allowedError;
+
 	}
 
-	public boolean contains(int x, int y, int wid, int ht) {
-		int oth_x = (wid <= 0 ? x : x + wid - 1);
-		int oth_y = (ht <= 0 ? y : y + ht - 1);
+	public boolean contains(int x, int y, int wid, int ht, double rot) {
+		int oth_x, oth_y;
+		if(rot == 0) {
+			oth_x = (wid <= 0 ? x : x + wid - 1);
+			oth_y = (ht <= 0 ? y : y + ht - 1);
+		}else{
+			oth_x = x + (int)(wid * Math.sin(rot));
+			oth_y = y + (int)(wid * -Math.cos(rot));
+		}
 		return contains(x, y) && contains(oth_x, oth_y);
 	}
 
 	public boolean contains(Bounds bd) {
-		return contains(bd.x, bd.y, bd.wid, bd.ht);
+		return contains(bd.x, bd.y, bd.wid, bd.ht, bd.rot);
 	}
 
 	public boolean borderContains(Location p, int fudge) {

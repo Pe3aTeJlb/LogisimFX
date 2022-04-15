@@ -19,6 +19,7 @@ import LogisimFX.localization.LC_menu;
 import LogisimFX.newgui.AbstractController;
 import LogisimFX.newgui.ContextMenuManager;
 import LogisimFX.newgui.DialogManager;
+import LogisimFX.newgui.ExportImageFrame.ExportImageController;
 import LogisimFX.proj.Project;
 import LogisimFX.proj.ProjectEvent;
 import LogisimFX.proj.ProjectListener;
@@ -34,6 +35,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -62,6 +64,7 @@ import java.nio.IntBuffer;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 
 public class CircLogController extends AbstractController {
@@ -372,7 +375,7 @@ public class CircLogController extends AbstractController {
 
                             if(array != null && !array.isEmpty()){
                                 addLogItem(array);
-                               // selectionTrVw.getRoot().getChildren().addAll(array);
+                                // selectionTrVw.getRoot().getChildren().addAll(array);
                             }
 
                         }
@@ -483,7 +486,7 @@ public class CircLogController extends AbstractController {
         removeBtn.textProperty().bind(LC.createStringBinding("selectionRemove"));
         removeBtn.setOnAction(event -> {
 
-             if(!selectiontrvwSelectionModel.getSelectedItems().isEmpty()) {
+            if(!selectiontrvwSelectionModel.getSelectedItems().isEmpty()) {
 
                 selectiontrvwSelectionModel.getSelectedItem().getParent().getChildren().remove(selectiontrvwSelectionModel.getSelectedItem());
 
@@ -734,7 +737,7 @@ public class CircLogController extends AbstractController {
                     for (TreeItem<Object> subnode: circTrvw.getRoot().getChildren().get(index).getChildren()) {
 
                         if(subnode instanceof OptionNode && treeSelectionModel.getSelectedItems().contains(subnode) ||
-                        !treeSelectionModel.getSelectedItems().containsAll(node.getChildren())) {
+                                !treeSelectionModel.getSelectedItems().containsAll(node.getChildren())) {
 
                             OptionNode o = (OptionNode) subnode;
                             n = o.parent;
@@ -815,6 +818,8 @@ public class CircLogController extends AbstractController {
     double spaceX = 25;
     double REFERENCE_SPACE_X = 25;
     double w;
+
+    double currTickFreq;
 
     /*
     Поскольку, заснапшотить сплитпейн нормально не представляется возможным, делаем профанацию с canvas
@@ -1253,6 +1258,8 @@ public class CircLogController extends AbstractController {
 
         hiddenColumnWidth = bufflen+5;
 
+        currTickFreq = curSimulator.getTickFrequency();
+
         updateTimeline();
 
     }
@@ -1261,7 +1268,6 @@ public class CircLogController extends AbstractController {
 
         logObjects = FXCollections.observableArrayList();
 
-        timelineTblvw.getRoot().getChildren().clear();
         double bufflen = 0;
 
         int i =0;
@@ -1285,8 +1291,10 @@ public class CircLogController extends AbstractController {
     private void updateTimelineData(Value[] values){
 
         //because of platform runlater, if u enable ticks on high KHz and spam tick btn and then close
-        //window, timeline will go made with log and fx threads
+        //window, timeline will go mad with log and fx threads
         if(logObjects == null)return;
+
+        currTickFreq = curSimulator.getTickFrequency();
 
         int i = 0;
         int size = 0;
@@ -1299,7 +1307,7 @@ public class CircLogController extends AbstractController {
             }
         }
 
-       // System.out.println(size);
+        // System.out.println(size);
         if(size < 1000) {
 
             //ze_ reference :extend extend extend(canvas)
@@ -1370,7 +1378,7 @@ public class CircLogController extends AbstractController {
             int counter = 0;
             int skip = 1;
             String prefix = "";
-            if (curSimulator.getTickFrequency() > 1000) prefix = "m";
+            if (currTickFreq > 1000) prefix = "m";
 
             for (double i = hiddenColumnWidth + 2 * spaceX; i < width; i += 2 * spaceX) {
 
@@ -1654,9 +1662,38 @@ public class CircLogController extends AbstractController {
 
     private void exportImage(){
 
+        double curSpaceX = spaceX;
+        double finalCurSpaceX = curSpaceX;
+
         File dest;
         FileSelector fileSelector = new FileSelector(stage);
         dest = fileSelector.showSaveDialog(LogisimFX.newgui.ExportImageFrame.LC.get("exportImageFileSelect"));
+
+        ExportImageTask exportPngTask = new ExportImageTask(dest);
+        Thread exportThread = new Thread(exportPngTask);
+        exportPngTask.setOnSucceeded(workerStateEvent ->  {
+
+            exportThread.interrupt();
+
+            for (TreeItem<TimelineTableModel> item : timelineTblvw.getRoot().getChildren()) {
+                item.setExpanded(false);
+            }
+
+            spaceX = finalCurSpaceX;
+            width = logObjects.get(0).getValue().getValues().size() * spaceX + hiddenColumnWidth;
+
+            clearRect40K(transform[4], transform[5]);
+
+            transform[4] = 0;
+            transform[5] = 0;
+
+            updateTimeline();
+
+            System.gc();
+
+        });
+
+        DialogManager.CreateProgressDialog(exportPngTask);
 
         if(dest != null) {
 
@@ -1664,7 +1701,7 @@ public class CircLogController extends AbstractController {
                 item.setExpanded(true);
             }
 
-            double curSpaceX = spaceX;
+            curSpaceX = spaceX;
             spaceX = REFERENCE_SPACE_X;
 
             width = logObjects.get(0).getValue().getValues().size() * spaceX + hiddenColumnWidth;
@@ -1676,84 +1713,105 @@ public class CircLogController extends AbstractController {
 
             updateTimeline();
 
-            BufferedImage bufferedImage = new BufferedImage((int)width, (int)height, BufferedImage.TYPE_INT_ARGB_PRE);
-            WritableRaster raster = bufferedImage.getRaster();
+            exportThread.start();
 
-            final double tileXStep = timelineCnvs.getWidth();
-            final double tileYStep = timelineCnvs.getHeight();
+        }
 
-            final int tilesX = (int)Math.ceil(width / tileXStep);
-            final int tilesY = (int)Math.ceil(height / tileYStep);
+    }
 
-            final SnapshotParameters params = new SnapshotParameters();
+    public class ExportImageTask extends Task<Void> {
 
-            //System.out.println("tiles count "+tilesX + " "+ tilesY);
+        private CountDownLatch latch = new CountDownLatch(1);
+        ImageView img;
+        File dest;
 
-            try {
+        public ExportImageTask(File dest){
+            this.dest = dest;
+        }
 
-                for (int row = 0; row < tilesY; row++) {
+        @Override
+        protected Void call() {
 
-                    for (int col = 0; col < tilesX; col++) {
+            if(dest != null) {
 
-                        //System.out.println("title "+col+" "+row);
+                BufferedImage bufferedImage = new BufferedImage((int)width, (int)height, BufferedImage.TYPE_INT_ARGB_PRE);
+                WritableRaster raster = bufferedImage.getRaster();
 
-                        int x = col * (int)tileXStep;
-                        int y = row * (int)tileYStep;
+                final double tileXStep = timelineCnvs.getWidth();
+                final double tileYStep = timelineCnvs.getHeight();
 
-                        //System.out.println("Coords "+x+" "+y + " width "+tileWidth+" "+tileHeight);
+                final int tilesX = (int)Math.ceil(width / tileXStep);
+                final int tilesY = (int)Math.ceil(height / tileYStep);
+                int currTile = 0;
+                int totalTiles = tilesX * tilesY;
 
-                        clearRect40K(transform[4], transform[5]);
+                final SnapshotParameters params = new SnapshotParameters();
 
-                        transform[4] = -x+1;
-                        transform[5] = -y;
-
-                        updateTimeline();
-
-                        BufferedImage bImg = SwingFXUtils.fromFXImage(timelineCnvs.snapshot(params, null),null);
-
-                        raster.setRect(x,y,bImg.getRaster());
-
-                    }
-
-                }
-
-                File where;
-                if (dest.isDirectory()) {
-                    where = new File(dest, proj.getLogisimFile().getName() + ".png");
-                } else {
-                    String newName = dest.getName() + ".png";
-                    where = new File(dest.getParentFile(), newName);
-                }
+                //System.out.println("tiles count "+tilesX + " "+ tilesY);
 
                 try {
 
-                    ImageIO.write(bufferedImage, "PNG", where);
+                    for (int row = 0; row < tilesY; row++) {
+
+                        for (int col = 0; col < tilesX; col++) {
+
+                            currTile++;
+                            this.updateMessage(LC.getFormatted("exportProgressHeader",  Integer.toString(currTile), Integer.toString(totalTiles)));
+
+                            //System.out.println("title "+col+" "+row);
+
+                            int x = col * (int)tileXStep;
+                            int y = row * (int)tileYStep;
+
+                            //System.out.println("Coords "+x+" "+y + " width "+tileWidth+" "+tileHeight);
+
+                            Platform.runLater(() ->{
+
+                                clearRect40K(transform[4], transform[5]);
+
+                                transform[4] = -x+1;
+                                transform[5] = -y;
+
+                                updateTimeline();
+
+                                img = new ImageView(timelineCnvs.snapshot(params, null));
+
+                                latch.countDown();
+
+                            });
+
+                            latch.await();
+
+                            BufferedImage bImg = SwingFXUtils.fromFXImage(img.getImage(),null);
+                            raster.setRect(x,y,bImg.getRaster());
+
+                            latch = new CountDownLatch(1);
+                        }
+
+                    }
+
+                    File where;
+                    if (dest.isDirectory()) {
+                        where = new File(dest, proj.getLogisimFile().getName() + ".png");
+                    } else {
+                        String newName = dest.getName() + ".png";
+                        where = new File(dest.getParentFile(), newName);
+                    }
+
+                    try {
+
+                        ImageIO.write(bufferedImage, "PNG", where);
+
+                    } catch (Exception e) {
+                        DialogManager.CreateErrorDialog(LogisimFX.newgui.ExportImageFrame.LC.get("couldNotCreateFile"), LogisimFX.newgui.ExportImageFrame.LC.get("couldNotCreateFile"));
+                    }
 
                 } catch (Exception e) {
-                    DialogManager.CreateErrorDialog(LogisimFX.newgui.ExportImageFrame.LC.get("couldNotCreateFile"), LogisimFX.newgui.ExportImageFrame.LC.get("couldNotCreateFile"));
+                    e.printStackTrace();
                 }
-
-            } catch (Exception e) {
-                e.printStackTrace();
             }
 
-
-
-            for (TreeItem<TimelineTableModel> item : timelineTblvw.getRoot().getChildren()) {
-                item.setExpanded(false);
-            }
-
-            spaceX = curSpaceX;
-            width = logObjects.get(0).getValue().getValues().size() * spaceX + hiddenColumnWidth;
-
-            clearRect40K(transform[4], transform[5]);
-
-            transform[4] = 0;
-            transform[5] = 0;
-
-            updateTimeline();
-
-            System.gc();
+            return null;
 
         }
 
@@ -1785,6 +1843,10 @@ public class CircLogController extends AbstractController {
                 return;
             }
 
+            //write curr freq
+            writer.println(currTickFreq);
+
+            //write components names
             ObservableList<SelectionItem> sel = curModel.getComponents();
 
             StringBuilder buff = new StringBuilder();
@@ -1794,6 +1856,7 @@ public class CircLogController extends AbstractController {
             }
             writer.println(buff.toString());
 
+            //write data
             for (Value[] values : curModel.getValues()) {
 
                 StringBuilder buf = new StringBuilder();
@@ -1848,12 +1911,14 @@ public class CircLogController extends AbstractController {
 
             String[] lines = data.trim().split("\n");
 
+            currTickFreq = Double.parseDouble(lines[0]);
+
             ArrayList<ArrayList<Value>> values = new ArrayList<>();
-            for (int m = 0; m < lines[0].split("\t").length; m++) {
+            for (int m = 0; m < lines[1].split("\t").length; m++) {
                 values.add(new ArrayList<>());
             }
 
-            for (int j = 1; j < lines.length; j++) {
+            for (int j = 2; j < lines.length; j++) {
 
                 String line = lines[j];
                 //catch carriage  return
@@ -1890,7 +1955,7 @@ public class CircLogController extends AbstractController {
 
             }
 
-            String[] titles = lines[0].split("\t");
+            String[] titles = lines[1].split("\t");
 
             restartCanvas();
             if (logger != null) logger.interrupt();

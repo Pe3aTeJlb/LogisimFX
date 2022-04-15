@@ -194,64 +194,6 @@ public class PrintCanvas extends Canvas{
 
     }
 
-    public ImageView getImage(Circuit circuit, boolean printerView){
-
-        Circuit circ = circuit;
-
-        transform = new double[6];
-        transform[0] = transform[3] = 1;
-        transform[1] = transform[2] = transform[4] = transform[5] = 0;
-
-        g.c.setTransform(transform[0], transform[1], transform[2],
-                transform[3], transform[4], transform[5]
-        );
-
-        clearRect40K();
-
-        Bounds bds = circ.getBounds(g).expand(BORDER_SIZE);
-        scale = Math.min(imHeight / bds.getWidth(), (imWidth - headHeight) / bds.getHeight());
-        System.out.println("scale "+scale);
-
-        double pow = Math.pow(10, 3);
-        scale = Math.ceil(scale * pow) / pow;
-        if(scale < 0.05) scale = 0.05;
-        System.out.println("final scale "+scale);
-
-
-        // And finally draw the circuit onto the page
-        ComponentDrawContext context = new ComponentDrawContext(circ, proj.getCircuitState(circ), g, printerView);
-        Collection<Component> noComps = Collections.emptySet();
-        circ.draw(context, noComps);
-
-        WritableImage writableImage = new WritableImage((int)(pixelScale*this.getWidth()),
-                (int)(pixelScale*this.getHeight()));
-        SnapshotParameters spa = new SnapshotParameters();
-        spa.setTransform(Transform.scale(1, 1));
-
-        ImageView img = new ImageView(this.snapshot(spa, writableImage));
-
-        if(scale<1) {
-
-            // Creating the Scale transformation
-            Scale s = new Scale();
-
-            // Setting the scaliing factor.
-            s.setX(scale);
-            s.setY(scale);
-
-            // Setting Orgin of new coordinate system
-            s.setPivotX(img.getX());
-            s.setPivotY(img.getY());
-
-            img.getTransforms().addAll(s);
-
-        }
-
-        return img;
-
-    }
-
-
     private void drawGrid(){
 
         for (int x = inverseSnapXToGrid(0);

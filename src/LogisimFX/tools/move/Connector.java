@@ -1,20 +1,12 @@
 /*
-* This file is part of LogisimFX. Copyright (c) 2022, Pplos Studio
-* Original code by Carl Burch (http://www.cburch.com), 2011.
-* License information is located in the Launch file
-*/
+ * This file is part of LogisimFX. Copyright (c) 2022, Pplos Studio
+ * Original code by Carl Burch (http://www.cburch.com), 2011.
+ * License information is located in the Launch file
+ */
 
 package LogisimFX.tools.move;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Set;
+import java.util.*;
 
 import LogisimFX.data.Direction;
 import LogisimFX.data.Location;
@@ -25,13 +17,14 @@ class Connector {
 	private static final int MAX_SECONDS = 10;
 	private static final int MAX_ORDERING_TRIES = 10;
 	private static final int MAX_SEARCH_ITERATIONS = 20000;
-	
+
 	private Connector() { }
-	
+
 	static final String ALLOW_NEITHER = "neither";
 	static final String ALLOW_VERTICAL = "vert";
 	static final String ALLOW_HORIZONTAL = "horz";
-	
+	static final String ALLOW_DIAGONAL = "diag";
+
 	static MoveResult computeWires(MoveRequest req) {
 		MoveGesture gesture = req.getMoveGesture();
 		int dx = req.getDeltaX();
@@ -40,7 +33,6 @@ class Connector {
 		baseConnects = new ArrayList<ConnectionData>(gesture.getConnections());
 		ArrayList<ConnectionData> impossible = pruneImpossible(baseConnects,
 				gesture.getFixedAvoidanceMap(), dx, dy);
-
 		AvoidanceMap selAvoid = AvoidanceMap.create(gesture.getSelected(), dx, dy);
 		HashMap<ConnectionData,Set<Location>> pathLocs;
 		pathLocs = new HashMap<ConnectionData,Set<Location>>();
@@ -58,11 +50,11 @@ class Connector {
 		MoveResult bestResult = null;
 		int tries;
 		switch (baseConnects.size()) {
-		case 0: tries = 0; break;
-		case 1: tries = 1; break;
-		case 2: tries = 2; break;
-		case 3: tries = 8; break;
-		default: tries = MAX_ORDERING_TRIES;
+			case 0: tries = 0; break;
+			case 1: tries = 1; break;
+			case 2: tries = 2; break;
+			case 3: tries = 8; break;
+			default: tries = MAX_ORDERING_TRIES;
 		}
 		long stopTime = System.currentTimeMillis() + MAX_SECONDS * 1000;
 		for (int tryNum = 0; tryNum < tries && stopTime - System.currentTimeMillis() > 0; tryNum++) {
@@ -81,7 +73,7 @@ class Connector {
 			}
 
 			MoveResult candidate = tryList(req, gesture, connects, dx, dy,
-				pathLocs, initNodes, stopTime);
+					pathLocs, initNodes, stopTime);
 			if (candidate == null) {
 				return null;
 			} else if (bestResult == null) {
@@ -105,11 +97,12 @@ class Connector {
 		} else {
 			bestResult.addUnsatisfiedConnections(impossible);
 		}
+
 		return bestResult;
 	}
 
 	private static ArrayList<ConnectionData> pruneImpossible(
-            ArrayList<ConnectionData> connects, AvoidanceMap avoid, int dx, int dy) {
+			ArrayList<ConnectionData> connects, AvoidanceMap avoid, int dx, int dy) {
 		ArrayList<Wire> pathWires = new ArrayList<Wire>();
 		for (ConnectionData conn : connects) {
 			for (Wire w : conn.getWirePath()) {
@@ -146,7 +139,7 @@ class Connector {
 	 * the inputs from the bottom up.
 	 */
 	private static void sortConnects(ArrayList<ConnectionData> connects,
-			final int dx, final int dy) {
+									 final int dx, final int dy) {
 		Collections.sort(connects, new Comparator<ConnectionData>() {
 			public int compare(ConnectionData ac, ConnectionData bc) {
 				Location a = ac.getLocation();
@@ -159,8 +152,8 @@ class Connector {
 	}
 
 	private static void processConnection(ConnectionData conn, int dx, int dy,
-                                          HashSet<Location> connLocs, ArrayList<SearchNode> connNodes,
-                                          AvoidanceMap selAvoid) {
+										  HashSet<Location> connLocs, ArrayList<SearchNode> connNodes,
+										  AvoidanceMap selAvoid) {
 		Location cur = conn.getLocation();
 		Location dest = cur.translate(dx, dy);
 		if (selAvoid.get(cur) == null) {
@@ -202,9 +195,9 @@ class Connector {
 	}
 
 	private static MoveResult tryList(MoveRequest req,
-                                      MoveGesture gesture, ArrayList<ConnectionData> connects,
-                                      int dx, int dy, HashMap<ConnectionData,Set<Location>> pathLocs,
-                                      HashMap<ConnectionData,List<SearchNode>> initNodes, long stopTime) {
+									  MoveGesture gesture, ArrayList<ConnectionData> connects,
+									  int dx, int dy, HashMap<ConnectionData,Set<Location>> pathLocs,
+									  HashMap<ConnectionData,List<SearchNode>> initNodes, long stopTime) {
 		AvoidanceMap avoid = gesture.getFixedAvoidanceMap().cloneMap();
 		avoid.markAll(gesture.getSelected(), dx, dy);
 
@@ -236,7 +229,7 @@ class Connector {
 	}
 
 	private static SearchNode findShortestPath(List<SearchNode> nodes,
-                                               Set<Location> pathLocs, AvoidanceMap avoid) {
+											   Set<Location> pathLocs, AvoidanceMap avoid) {
 		PriorityQueue<SearchNode> q = new PriorityQueue<SearchNode>(nodes);
 		HashSet<SearchNode> visited = new HashSet<SearchNode>();
 		int iters = 0;
@@ -292,17 +285,17 @@ class Connector {
 			for (int i = 0; i < neighbors; i++) {
 				Direction oDir;
 				switch (i) {
-				case 0:
-					oDir = dir;
-					break;
-				case 1:
-					oDir = neighbors == 2 ? dir.reverse() : dir.getLeft();
-					break;
-				case 2:
-					oDir = dir.getRight();
-					break;
-				default: // must be 3
-					oDir = dir.reverse();
+					case 0:
+						oDir = dir;
+						break;
+					case 1:
+						oDir = neighbors == 2 ? dir.reverse() : dir.getLeft();
+						break;
+					case 2:
+						oDir = dir.getRight();
+						break;
+					default: // must be 3
+						oDir = dir.reverse();
 				}
 				SearchNode o = n.next(oDir, allowed != null);
 				if (o != null && !visited.contains(o)) {
@@ -333,7 +326,7 @@ class Connector {
 	}
 
 	private static void processPath(ArrayList<Location> path, ConnectionData conn,
-                                    AvoidanceMap avoid, ReplacementMap repl, Set<Location> unmarkable) {
+									AvoidanceMap avoid, ReplacementMap repl, Set<Location> unmarkable) {
 		Iterator<Location> pathIt = path.iterator();
 		Location loc0 = pathIt.next();
 		if (!loc0.equals(conn.getLocation())) {

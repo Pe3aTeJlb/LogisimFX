@@ -1,8 +1,8 @@
 /*
-* This file is part of LogisimFX. Copyright (c) 2022, Pplos Studio
-* Original code by Carl Burch (http://www.cburch.com), 2011.
-* License information is located in the Launch file
-*/
+ * This file is part of LogisimFX. Copyright (c) 2022, Pplos Studio
+ * Original code by Carl Burch (http://www.cburch.com), 2011.
+ * License information is located in the Launch file
+ */
 
 package LogisimFX.tools.move;
 
@@ -22,19 +22,19 @@ class AvoidanceMap {
 	}
 
 	private final HashMap<Location,String> avoid;
-	
+
 	private AvoidanceMap(HashMap<Location,String> map) {
 		avoid = map;
 	}
-	
+
 	public AvoidanceMap cloneMap() {
 		return new AvoidanceMap(new HashMap<Location,String>(avoid));
 	}
-	
+
 	public Object get(Location loc) {
 		return avoid.get(loc);
 	}
-	
+
 	public void markAll(Collection<Component> elements, int dx, int dy) {
 		// first we go through the components, saying that we should not
 		// intersect with any point that lies within a component
@@ -46,7 +46,7 @@ class AvoidanceMap {
 			}
 		}
 	}
-	
+
 	public void markComponent(Component comp, int dx, int dy) {
 		HashMap<Location,String> avoid = this.avoid;
 		boolean translated = dx != 0 || dy != 0;
@@ -77,7 +77,7 @@ class AvoidanceMap {
 			}
 		}
 	}
-	
+
 	public void markWire(Wire w, int dx, int dy) {
 		HashMap<Location,String> avoid = this.avoid;
 		boolean translated = dx != 0 || dy != 0;
@@ -107,15 +107,22 @@ class AvoidanceMap {
 					avoid.put(loc, Connector.ALLOW_NEITHER);
 				}
 			}
-		} else { // diagonal - shouldn't happen
-			throw new RuntimeException("diagonal wires not supported");
+		} else if (Math.abs(x1 - x0) == Math.abs(y1 - y0)){ // diagonal wire. Looks like sheet while processing. Lets do horiz instead
+			for (Location loc : Wire.create(loc0, loc1)) {
+				Object prev = avoid.put(loc, Connector.ALLOW_VERTICAL);
+				if (prev == Connector.ALLOW_NEITHER || prev == Connector.ALLOW_HORIZONTAL) {
+					avoid.put(loc, Connector.ALLOW_NEITHER);
+				}
+			}
+		}else{ // free wire - shouldn't happen
+			throw new RuntimeException("free wires not supported");
 		}
 	}
-	
+
 	public void unmarkLocation(Location loc) {
 		avoid.remove(loc);
 	}
-	
+
 	public void unmarkWire(Wire w, Location deletedEnd, Set<Location> unmarkable) {
 		Location loc0 = w.getEnd0();
 		Location loc1 = w.getEnd1();
@@ -144,11 +151,20 @@ class AvoidanceMap {
 					}
 				}
 			}
-		} else { // diagonal - shouldn't happen
-			throw new RuntimeException("diagonal wires not supported");
+		} else if(Math.abs(x1 - x0) == Math.abs(y1 - y0)){ // diagonal wire
+			for (Location loc : w) {
+				if (unmarkable == null || unmarkable.contains(deletedEnd)) {
+					Object prev = avoid.remove(loc);
+					if (prev != Connector.ALLOW_VERTICAL && prev != null) {
+						avoid.put(loc, Connector.ALLOW_HORIZONTAL);
+					}
+				}
+			}
+		} else { // free wire - shouldn't happen
+			throw new RuntimeException("free wires not supported");
 		}
 	}
-	
+
 	public void print(PrintStream stream) {
 		ArrayList<Location> list = new ArrayList<Location>(avoid.keySet());
 		Collections.sort(list);

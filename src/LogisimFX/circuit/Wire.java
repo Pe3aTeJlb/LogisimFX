@@ -1,8 +1,8 @@
 /*
-* This file is part of LogisimFX. Copyright (c) 2022, Pplos Studio
-* Original code by Carl Burch (http://www.cburch.com), 2011.
-* License information is located in the Launch file
-*/
+ * This file is part of LogisimFX. Copyright (c) 2022, Pplos Studio
+ * Original code by Carl Burch (http://www.cburch.com), 2011.
+ * License information is located in the Launch file
+ */
 
 package LogisimFX.circuit;
 
@@ -25,23 +25,27 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 	public static final int WIDTH = 3;
 
 	public static final AttributeOption VALUE_HORZ
-		= new AttributeOption("horz", LC.createStringBinding("wireDirectionHorzOption"));
+			= new AttributeOption("horz", LC.createStringBinding("wireDirectionHorzOption"));
 	public static final AttributeOption VALUE_VERT
-		= new AttributeOption("vert", LC.createStringBinding("wireDirectionVertOption"));
+			= new AttributeOption("vert", LC.createStringBinding("wireDirectionVertOption"));
+	public static final AttributeOption VALUE_DIAG
+			= new AttributeOption("diag", LC.createStringBinding("wireDirectionDiagOption"));
 	public static final Attribute<AttributeOption> dir_attr
-		= Attributes.forOption("direction", LC.createStringBinding("wireDirectionAttr"),
-			new AttributeOption[] { VALUE_HORZ, VALUE_VERT });
+			= Attributes.forOption("direction", LC.createStringBinding("wireDirectionAttr"),
+			new AttributeOption[] { VALUE_HORZ, VALUE_VERT, VALUE_DIAG });
 	public static final Attribute<Integer> len_attr
-		= Attributes.forInteger("length", LC.createStringBinding("wireLengthAttr"));
+			= Attributes.forInteger("length", LC.createStringBinding("wireLengthAttr"));
+	public static final Attribute<Double> rot_attr
+			= Attributes.forDouble("rotation", LC.createStringBinding("wireRotationAttr"));
 
 	private static final List<Attribute<?>> ATTRIBUTES
-		= Arrays.asList(new Attribute<?>[] { dir_attr, len_attr });
+			= Arrays.asList(new Attribute<?>[] { dir_attr, len_attr, rot_attr });
 	private static final Cache cache = new Cache();
 
 	public static Wire create(Location e0, Location e1) {
 		return (Wire) cache.get(new Wire(e0, e1));
 	}
-	
+
 	private class EndList extends AbstractList<EndData> {
 		@Override
 		public EndData get(int i) {
@@ -54,6 +58,9 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 	final Location e0;
 	final Location e1;
 	final boolean is_x_equal;
+	final boolean is_diagonal;
+	final double rot;
+	final int deg_rot; // lol
 
 	private Wire(Location e0, Location e1) {
 		this.is_x_equal = e0.getX() == e1.getX();
@@ -65,7 +72,10 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 				this.e0 = e0;
 				this.e1 = e1;
 			}
-		} else {
+			this.rot = 0;
+			this.deg_rot = 0;
+			this.is_diagonal = false;
+		} else if (e0.getY() == e1.getY()) {
 			if (e0.getX() > e1.getX()) {
 				this.e0 = e1;
 				this.e1 = e0;
@@ -73,23 +83,64 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 				this.e0 = e0;
 				this.e1 = e1;
 			}
+			this.deg_rot = 0;
+			this.rot = 0;
+			this.is_diagonal = false;
+		}else{
+			this.is_diagonal = true;
+			this.e0 = e0;
+			this.e1 = e1;
+
+			if(e1.getX() > e0.getX()){
+				if(e1.getY() > e0.getY()){
+					this.rot = Math.toRadians(135);
+					this.deg_rot = 135;
+				}else{
+					this.rot = Math.toRadians(45);
+					this.deg_rot = 45;
+				}
+			}else{
+				if(e0.getY() > e1.getY()){
+					this.rot = Math.toRadians(315);
+					this.deg_rot = 315;
+				}else{
+					this.rot = Math.toRadians(225);
+					this.deg_rot = 225;
+				}
+			}
+
 		}
+
 	}
-	
+
 	@Override
 	public boolean equals(Object other) {
 		if (!(other instanceof Wire)) return false;
 		Wire w = (Wire) other;
-		return w.e0.equals(this.e0) && w.e1.equals(this.e1);
+		return w.e0.equals(this.e0) && w.e1.equals(this.e1) && w.rot == this.rot;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return e0.hashCode() * 31 + e1.hashCode();
 	}
 
 	public int getLength() {
-		return (e1.getY() - e0.getY()) + (e1.getX() - e0.getX());
+		if(is_diagonal){
+			int y = e1.getY() - e0.getY();
+			int x = e1.getX() - e0.getX();
+			return (int) Math.sqrt(x*x+y*y);
+		}else {
+			return (e1.getY() - e0.getY()) + (e1.getX() - e0.getX());
+		}
+	}
+
+	public double getRotation(){
+		return rot;
+	}
+
+	public double toRadians(int deg){
+		return deg * Math.PI / 180;
 	}
 
 	@Override
@@ -118,10 +169,18 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 	}
 
 	public Bounds getBounds() {
+
 		int x0 = e0.getX();
 		int y0 = e0.getY();
-		return Bounds.create(x0 - 2, y0 - 2,
-			e1.getX() - x0 + 5, e1.getY() - y0 + 5);
+
+		if(is_diagonal){
+			return Bounds.create(x0 - 2, y0 - 2,
+					getLength() + 5, 5, rot);
+		}else {
+			return Bounds.create(x0 - 2, y0 - 2,
+					e1.getX() - x0 + 5, e1.getY() - y0 + 5);
+		}
+
 	}
 
 	public Bounds getBounds(Graphics g) {
@@ -129,17 +188,34 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 	}
 
 	public boolean contains(Location q) {
+
 		int qx = q.getX();
 		int qy = q.getY();
-		if (is_x_equal) {
-			int wx = e0.getX();
-			return qx >= wx - 2 && qx <= wx + 2
-				&& e0.getY() <= qy && qy <= e1.getY();
-		} else {
-			int wy = e0.getY();
-			return qy >= wy - 2 && qy <= wy + 2
-				&& e0.getX() <= qx && qx <= e1.getX();
+
+		if(is_diagonal){
+
+			Location left = getLeftPoint();
+			Location right = getRightPoint();
+			Location upper = getUpperPoint();
+			Location bottom = getBottomPoint();
+
+			return qx >= left.getX() - 2 && qx <= right.getX() + 2 && qy >= bottom.getY() - 2 && qy <= upper.getY() + 2
+					&& Math.abs(Math.abs(e0.getX() - qx) - Math.abs(e0.getY() - qy)) < 4;
+
+		}else {
+
+			if (is_x_equal) {
+				int wx = e0.getX();
+				return qx >= wx - 2 && qx <= wx + 2
+						&& e0.getY() <= qy && qy <= e1.getY();
+			} else {
+				int wy = e0.getY();
+				return qy >= wy - 2 && qy <= wy + 2
+						&& e0.getX() <= qx && qx <= e1.getX();
+			}
+
 		}
+
 	}
 
 	public boolean contains(Location pt, Graphics g) {
@@ -175,14 +251,13 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 	//
 
 	public void draw(ComponentDrawContext context) {
-
+		System.out.println("lols");
 		CircuitState state = context.getCircuitState();
 		Graphics g = context.getGraphics();
 
 		g.setLineWidth(WIDTH);
 		g.setColor(state.getValueColor(e0));
-		g.c.strokeLine(e0.getX(), e0.getY(),
-			e1.getX(), e1.getY());
+		g.c.strokeLine(e0.getX(), e0.getY(), e1.getX(), e1.getY());
 
 	}
 
@@ -222,9 +297,12 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 	public <V> V getValue(Attribute<V> attr) {
 
 		if (attr == dir_attr) {
-			return (V) (is_x_equal ? VALUE_VERT : VALUE_HORZ);
+			if(is_diagonal) return (V) VALUE_DIAG;
+			else return (V) (is_x_equal ? VALUE_VERT : VALUE_HORZ);
 		} else if (attr == len_attr) {
 			return (V) Integer.valueOf(getLength());
+		} else if (attr == rot_attr) {
+			return (V) Double.valueOf(getRotation());
 		} else {
 			return null;
 		}
@@ -240,6 +318,8 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 	//
 	public boolean isVertical() { return is_x_equal; }
 
+	public boolean isDiagonal() { return is_diagonal; }
+
 	public Location getEndLocation(int index) { return index == 0 ? e0 : e1; }
 
 	public Location getEnd0() { return e0; }
@@ -250,18 +330,45 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 		return (loc.equals(e0) ? e1 : e0);
 	}
 
+	public Location getLeftPoint(){
+		return e0.getX() < e1.getX() ? e0 : e1;
+	}
+
+	public Location getRightPoint(){
+		return e0.getX() < e1.getX() ? e1 : e0;
+	}
+
+	public Location getUpperPoint(){
+		return e0.getY() < e1.getY() ? e1 : e0;
+	}
+
+	public Location getBottomPoint(){
+		return e0.getY() < e1.getY() ? e0 : e1;
+	}
+
 	public boolean sharesEnd(Wire other) {
 		return this.e0.equals(other.e0) || this.e1.equals(other.e0)
-			|| this.e0.equals(other.e1) || this.e1.equals(other.e1);
+				|| this.e0.equals(other.e1) || this.e1.equals(other.e1);
 	}
 
 	public boolean overlaps(Wire other, boolean includeEnds) {
-		return overlaps(other.e0, other.e1, includeEnds);
+		return overlaps(other.e0, other.e1, other.rot, includeEnds);
 	}
 
-	private boolean overlaps(Location q0, Location q1, boolean includeEnds) {
+	private boolean overlaps(Location q0, Location q1, double rot, boolean includeEnds) {
 
-		if (is_x_equal) {
+		if(is_diagonal){
+			int x0 = q0.getX();
+			if (rot == 0 || !((Math.abs(rot - this.rot) == Math.PI || Math.abs(rot - this.rot) == 0))) return false;
+			if (includeEnds) {
+				return e1.getX() >= q0.getX() && e0.getX() <= q1.getX() || e0.getX() <= q0.getX() && e1.getX() >= q1.getX() ||
+						e1.getX() <= q0.getX() && e0.getX() <= q1.getX() || e0.getX() >= q0.getX() && e1.getX() >= q1.getX();
+			} else {
+				//System.out.println("overlaps diag " + (e1.getX() > q0.getX() && e0.getX() < q1.getX()) + " " +  (e0.getX() < q0.getX() && e1.getX() > q1.getX()));
+				return e1.getX() > q0.getX() && e0.getX() < q1.getX() || e0.getX() < q0.getX() && e1.getX() > q1.getX() ||
+						e1.getX() < q0.getX() && e0.getX() < q1.getX() || e0.getX() > q0.getX() && e1.getX() > q1.getX();
+			}
+		} else if (is_x_equal) {
 			int x0 = q0.getX();
 			if (x0 != q1.getX() || x0 != e0.getX()) return false;
 			if (includeEnds) {
@@ -282,18 +389,22 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 	}
 
 	public boolean isParallel(Wire other) {
-		return this.is_x_equal == other.is_x_equal;
+
+		if(this.is_diagonal && other.is_diagonal){
+			return Math.abs(other.rot - this.rot) == Math.PI || Math.abs(other.rot - this.rot) == 0;
+		}else {
+			return this.is_x_equal == other.is_x_equal && !this.is_diagonal && !other.is_diagonal;
+		}
+
 	}
 
 	public Iterator<Location> iterator() {
 		return new WireIterator(e0, e1);
 	}
-	
-	public void drawHandles(ComponentDrawContext context) {
 
+	public void drawHandles(ComponentDrawContext context) {
 		context.drawHandle(e0);
 		context.drawHandle(e1);
-
 	}
 
 }

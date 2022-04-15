@@ -10,6 +10,8 @@ import com.sun.javafx.tk.Toolkit;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
@@ -27,6 +29,9 @@ public class Graphics{
     public static double DEFAULT_LINE_SIZE = 1;
     public static double NORMAL_LINE_SIZE = 2;
     public static double THICK_LINE_SIZE = 2.5;
+
+    private StrokeLineCap DEFAULT_STROKELINECAP = StrokeLineCap.SQUARE;
+    private StrokeLineJoin DEFAULT_STROKELINEJOIN = StrokeLineJoin.MITER;
 
     private final Font DEFAULT_FONT = Font.font("System", FontWeight.THIN, FontPosture.REGULAR, 12);
     private FontMetrics fm;
@@ -83,6 +88,39 @@ public class Graphics{
 
     }
 
+
+
+    public void setLineExtras(StrokeLineCap lineCap){
+        setLineExtras(lineCap, null);
+    }
+
+    public void setLineExtras(StrokeLineJoin lineJoin){
+        setLineExtras(null, lineJoin);
+    }
+
+    public void setLineExtras(StrokeLineCap lineCap, StrokeLineJoin lineJoin){
+
+        if(lineCap != null && lineCap != DEFAULT_STROKELINECAP) {
+            c.setLineCap(lineCap);
+        }
+
+        if(lineJoin != null && lineJoin != DEFAULT_STROKELINEJOIN) {
+            c.setLineJoin(lineJoin);
+        }
+
+    }
+
+    public void toDefaultLineExtras(){
+
+       if(c.getLineCap() != DEFAULT_STROKELINECAP){
+           c.setLineCap(DEFAULT_STROKELINECAP);
+       }
+
+       if(c.getLineJoin() != DEFAULT_STROKELINEJOIN){
+           c.setLineJoin(DEFAULT_STROKELINEJOIN);
+       }
+
+    }
 
 
     public void setLineWidth(double width){
@@ -167,6 +205,7 @@ public class Graphics{
     public void toDefault(){
 
         toDefaultLineWidth();
+        toDefaultLineExtras();
         toDefaultFont();
         toDefaultColor();
 

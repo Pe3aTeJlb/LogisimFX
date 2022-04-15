@@ -221,7 +221,7 @@ public class LayoutCanvas extends Canvas {
 
      */
 //6
-    private int frameCap = 12;
+    private int frameCap = 6;
     private int dragCap = 2;
     private boolean requestUpdate = true;
 

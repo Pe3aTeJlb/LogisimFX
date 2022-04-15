@@ -92,6 +92,7 @@ class WireRepair extends CircuitTransaction {
 	*/
 
 	private void doMerges(CircuitMutator mutator) {
+
 		MergeSets sets = new MergeSets();
 		for (Location loc : circuit.wires.points.getSplitLocations()) {
 			Collection<?> at = circuit.getComponents(loc);
@@ -130,7 +131,9 @@ class WireRepair extends CircuitTransaction {
 				}
 			}
 		}
+
 		mutator.replace(circuit, repl);
+
 	}
 
 	private void doOverlaps(CircuitMutator mutator) {
@@ -169,6 +172,7 @@ class WireRepair extends CircuitTransaction {
 				doMergeSet(mergeSet, replacements, splitLocs);
 			}
 		}
+
 		mutator.replace(circuit, replacements);
 	}
 

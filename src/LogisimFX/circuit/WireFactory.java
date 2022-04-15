@@ -17,6 +17,7 @@ import LogisimFX.newgui.MainFrame.Canvas.Graphics;
 import javafx.beans.binding.StringBinding;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.StrokeLineCap;
 
 
 class WireFactory extends AbstractComponentFactory {
@@ -48,10 +49,15 @@ class WireFactory extends AbstractComponentFactory {
 
 		Object dir = attrs.getValue(Wire.dir_attr);
 		int len = attrs.getValue(Wire.len_attr).intValue();
+		double rot = attrs.getValue(Wire.rot_attr).doubleValue();
 
 		if (dir == Wire.VALUE_HORZ) {
 			return Wire.create(loc, loc.translate(len, 0));
-		} else {
+		} else if (dir == Wire.VALUE_VERT){
+			return Wire.create(loc, loc.translate(0, len));
+		} else if (dir == Wire.VALUE_DIAG){
+			return  Wire.create(loc, loc.translate((int)Math.round(len * Math.sin(rot)), (int)Math.round(len * -Math.cos(rot))));
+		} else { // meh, vert wire will be default. should not happen
 			return Wire.create(loc, loc.translate(0, len));
 		}
 
@@ -81,13 +87,18 @@ class WireFactory extends AbstractComponentFactory {
 		Graphics g = context.getGraphics();
 		Object dir = attrs.getValue(Wire.dir_attr);
 		int len = attrs.getValue(Wire.len_attr).intValue();
+		double rot = attrs.getValue(Wire.rot_attr).doubleValue();
 
 		g.setColor(color);
 		g.setLineWidth(3);
+		g.setLineExtras(StrokeLineCap.ROUND);
+
 		if (dir == Wire.VALUE_HORZ) {
 			g.c.strokeLine(x, y, x + len, y);
-		} else {
+		} else if(dir == Wire.VALUE_VERT){
 			g.c.strokeLine(x, y, x, y + len);
+		} else if(dir == Wire.VALUE_DIAG){
+			g.c.strokeLine(x, y, x + Math.round(len * Math.sin(rot)), y + Math.round(len * -Math.cos(rot)));
 		}
 
 	}

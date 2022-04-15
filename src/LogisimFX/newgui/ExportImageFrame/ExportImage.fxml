@@ -26,8 +26,8 @@
             <Label fx:id="CircuitsLbl" text="Label" GridPane.valignment="TOP" />
             <Label fx:id="FormatLbl" text="Label" GridPane.rowIndex="1" />
             <RadioButton fx:id="PngRb" mnemonicParsing="false" text="PNG" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <RadioButton fx:id="GifRb" mnemonicParsing="false" text="GIF" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <RadioButton fx:id="JpegRb" mnemonicParsing="false" text="JPEG" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <RadioButton fx:id="GifRb" mnemonicParsing="false" text="Animated GIF" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <RadioButton fx:id="JpegRb" mnemonicParsing="false" text="JPEG" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <Label fx:id="PrintViewLbl" text="Label" GridPane.rowIndex="4" />
             <CheckBox fx:id="PrintViewChkBx" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <Button fx:id="OkBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Ok" GridPane.halignment="RIGHT" GridPane.rowIndex="5" GridPane.valignment="BOTTOM">
@@ -41,6 +41,11 @@
                </GridPane.margin>
             </Button>
             <ListView fx:id="CircuitsLstVw" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" />
+            <TextField fx:id="TicksTxtFld" alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="22.0" prefWidth="50.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="3">
+               <GridPane.margin>
+                  <Insets left="100.0" />
+               </GridPane.margin>
+            </TextField>
          </children>
       </GridPane>
    </children>

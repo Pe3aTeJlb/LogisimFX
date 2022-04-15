@@ -19,6 +19,8 @@ import LogisimFX.util.IteratorUtil;
 import LogisimFX.util.SmallSet;
 
 import javafx.scene.paint.Color;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 
 import java.util.List;
 import java.util.*;
@@ -398,6 +400,7 @@ class CircuitWires {
 		Graphics g = context.getGraphics();
 		g.setColor(Color.BLACK);
 		g.setLineWidth(Wire.WIDTH);
+		g.setLineExtras(StrokeLineCap.ROUND);
 
 		WireSet highlighted = context.getHighlightedWires();
 
