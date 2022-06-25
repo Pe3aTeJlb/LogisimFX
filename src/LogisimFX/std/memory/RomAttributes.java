@@ -19,7 +19,7 @@ import java.util.WeakHashMap;
 public class RomAttributes extends AbstractAttributeSet {
 
 	private static List<Attribute<?>> ATTRIBUTES = Arrays.asList(new Attribute<?>[] {
-			Mem.ADDR_ATTR, Mem.DATA_ATTR
+			Mem.ADDR_ATTR, Mem.DATA_ATTR, Rom.CONTENTS_ATTR
 		});
 	
 	private static WeakHashMap<MemContents,RomContentsListener> listenerRegistry

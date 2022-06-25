@@ -47,15 +47,11 @@ public class DrawTask extends Task<ImageView> {
 
     private static final Font HEADER_FONT = Font.font("monospace", FontWeight.NORMAL, FontPosture.REGULAR, 14);
 
-    private static final int BORDER_SIZE = 5;
+    private static final int BORDER_SIZE = 50;
 
     //Correction data
-    private double headHeight;
-    private double imWidth;
-    private double imHeight;
     private double scale;
     private double pixelScale = 1;
-    private double rotation;
 
     public ImageView img;
 
@@ -114,6 +110,7 @@ public class DrawTask extends Task<ImageView> {
     public ImageView call() {
 
         Circuit circ = circuit;
+        proj.getSimulator().setCircuitState(proj.getCircuitState(circ));
 
         transform = new double[6];
         transform[0] = transform[3] = 1;
@@ -126,43 +123,26 @@ public class DrawTask extends Task<ImageView> {
         clearRect40K();
 
         Bounds bds = circ.getBounds(g).expand(BORDER_SIZE);
-        scale = Math.min(imHeight / bds.getWidth(), (imWidth - headHeight) / bds.getHeight());
-        System.out.println("scale "+scale);
 
-        double pow = Math.pow(10, 3);
-        scale = Math.ceil(scale * pow) / pow;
-        if(scale < 0.05) scale = 0.05;
-        System.out.println("final scale "+scale);
+        canvas.setWidth(bds.getWidth());
+        canvas.setHeight(bds.getHeight());
 
+        if(canvas.getWidth() < 200 || canvas.getHeight() < 200){
+            canvas.setWidth(200);
+            canvas.setHeight(200);
+        }
 
         // And finally draw the circuit onto the page
         ComponentDrawContext context = new ComponentDrawContext(circ, proj.getCircuitState(circ), g, printerView);
         Collection<Component> noComps = Collections.emptySet();
         circ.draw(context, noComps);
 
-        WritableImage writableImage = new WritableImage((int)(pixelScale*canvas.getWidth()),
-                (int)(pixelScale*canvas.getHeight()));
+        WritableImage writableImage = new WritableImage((int)(pixelScale * canvas.getWidth()),
+                (int)(pixelScale * canvas.getHeight()));
         SnapshotParameters spa = new SnapshotParameters();
         spa.setTransform(Transform.scale(1, 1));
 
         img = new ImageView(canvas.snapshot(spa, writableImage));
-
-        if(scale<1) {
-
-            // Creating the Scale transformation
-            Scale s = new Scale();
-
-            // Setting the scaliing factor.
-            s.setX(scale);
-            s.setY(scale);
-
-            // Setting Orgin of new coordinate system
-            s.setPivotX(img.getX());
-            s.setPivotY(img.getY());
-
-            img.getTransforms().addAll(s);
-
-        }
 
         this.latch.countDown();
 

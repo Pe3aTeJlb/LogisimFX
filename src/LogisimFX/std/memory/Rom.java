@@ -10,13 +10,20 @@ import LogisimFX.data.Attribute;
 import LogisimFX.data.AttributeSet;
 import LogisimFX.data.BitWidth;
 import LogisimFX.data.Value;
+import LogisimFX.newgui.FrameManager;
 import LogisimFX.newgui.HexEditorFrame.HexFile;
 import LogisimFX.instance.Instance;
 import LogisimFX.instance.InstanceState;
 import LogisimFX.instance.Port;
 import LogisimFX.circuit.CircuitState;
+import LogisimFX.newgui.MainFrame.AttrTableSetException;
+import LogisimFX.newgui.MainFrame.AttributeTable;
 import LogisimFX.std.LC;
 import LogisimFX.proj.Project;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -142,6 +149,15 @@ public class Rom extends Mem {
 		@Override
 		public String toDisplayString(MemContents value) {
 			return LC.get("romContentsValue");
+		}
+
+		@Override
+		public Text getCell(MemContents value){
+
+			Text button = new Text("");
+
+			return button;
+
 		}
 
 		@Override

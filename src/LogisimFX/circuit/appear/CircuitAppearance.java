@@ -194,10 +194,11 @@ public class CircuitAppearance extends Drawing {
 			}
 		}
 
-		g.translate(offset.getX(), offset.getY());
-		if (rotate != 0.0) {
-			g.rotate(-rotate);
-		}
+		g.toDefault();
+		//g.translate(offset.getX(), offset.getY());
+		//if (rotate != 0.0) {
+		//	g.rotate(-rotate);
+		//}
 
 	}
 

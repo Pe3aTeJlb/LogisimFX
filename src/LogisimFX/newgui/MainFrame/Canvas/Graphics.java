@@ -141,7 +141,7 @@ public class Graphics{
 
         if(c.getFont() == font) return;
 
-        Toolkit.getToolkit().getFontLoader().getFontMetrics(font);
+        fm = Toolkit.getToolkit().getFontLoader().getFontMetrics(font);
         c.setFont(font);
 
     }

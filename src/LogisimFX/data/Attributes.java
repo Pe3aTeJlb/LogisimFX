@@ -517,8 +517,10 @@ public class Attributes {
 
 		@Override
 		public String toStandardString(Color c) {
-			String ret = "#" + hex(c.getRed()) + hex(c.getGreen()) + hex(c.getBlue());
-			return c.getOpacity() == 255 ? ret : ret + hex(c.getOpacity());
+			//String ret = "#" + hex(c.getRed()) + hex(c.getGreen()) + hex(c.getBlue());
+			String ret = "#" + c.toString().substring(2);
+			//return c.getOpacity() == 255 ? ret : ret + hex(c.getOpacity());
+			return ret;
 		}
 
 		private String hex(double value) {

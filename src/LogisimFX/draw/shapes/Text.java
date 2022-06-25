@@ -176,9 +176,9 @@ public class Text extends AbstractCanvasObject {
 
 	private int getLeftX() {
 		switch (horzAlign) {
-			case LEFT:   return x;
-			case CENTER: return x - width / 2;
-			case RIGHT:  return x - width;
+			case LEFT:   return x - width;
+			case CENTER: return x - (width / 2);
+			case RIGHT:  return x;
 			default:     return x;
 		}
 	}
@@ -267,7 +267,7 @@ public class Text extends AbstractCanvasObject {
 		g.setColor(color);
 		g.c.fillText(textField.getText(), getLeftX(), getBaseY());
 
-		g.toDefault();
+		//g.toDefault();
 
 	}
 

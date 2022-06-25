@@ -45,13 +45,15 @@ public class Counter extends InstanceFactory {
 	public Counter() {
 
 		super("Counter", LC.createStringBinding("counterComponent"));
-		setOffsetBounds(Bounds.create(-30, -30, 30, 60));
+		//setOffsetBounds(Bounds.create(-30, -30, 30, 60));
+		setOffsetBounds(Bounds.create(-30, -20, 30, 40));
 		setIcon("counter.gif");
 		setInstancePoker(RegisterPoker.class);
 		setInstanceLogger(Logger.class);
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH, 1, Value.MAX_WIDTH_EXTENDED, null));
 		
 		Port[] ps = new Port[7];
+		/* new version. dab back compability
 		ps[OUT] = new Port(  0,   10, Port.OUTPUT, StdAttr.WIDTH);
 		ps[IN]  = new Port(-30,   10, Port.INPUT, StdAttr.WIDTH);
 		ps[CK]  = new Port(-20,  30, Port.INPUT, 1);
@@ -59,6 +61,14 @@ public class Counter extends InstanceFactory {
 		ps[LD]  = new Port(-30, 0, Port.INPUT, 1);
 		ps[CT]  = new Port(-30,  20, Port.INPUT, 1);
 		ps[CARRY] = new Port(0,  20, Port.OUTPUT, 1);
+		 */
+		ps[OUT] = new Port(  0,   0, Port.OUTPUT, StdAttr.WIDTH);
+		ps[IN]  = new Port(-30,   0, Port.INPUT, StdAttr.WIDTH);
+		ps[CK]  = new Port(-20,  20, Port.INPUT, 1);
+		ps[CLR] = new Port(-10,  20, Port.INPUT, 1);
+		ps[LD]  = new Port(-30, -10, Port.INPUT, 1);
+		ps[CT]  = new Port(-30,  10, Port.INPUT, 1);
+		ps[CARRY] = new Port(0,  10, Port.OUTPUT, 1);
 		ps[OUT].setToolTip(LC.createStringBinding("counterQTip"));
 		ps[IN].setToolTip(LC.createStringBinding("counterDataTip"));
 		ps[CK].setToolTip(LC.createStringBinding("counterClockTip"));
