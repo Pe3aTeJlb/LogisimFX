@@ -1,8 +1,11 @@
 
-# LogisimFX
+# LogisimFX <img src="https://github.com/Pe3aTeJlb/Pe3aTeJlb/blob/main/ReadmeResources/LogisimFX/logisimfx_128_.png" width="50" height="50" />
 
 LogisimFX is a rethinking of [Logisim](http://cburch.com/logisim/) by Carl Burch with several featured inspired by [Logisim-evolution](https://github.com/logisim-evolution/logisim-evolution) ([credits](https://github.com/logisim-evolution/logisim-evolution/blob/master/docs/credits.md))
 UI moved from Swing to JavaFX
+
+# Showcase
+<img src="https://github.com/Pe3aTeJlb/Pe3aTeJlb/blob/main/ReadmeResources/LogisimFX/logisimfx1.png" width="450" height="350" /> <img src="https://github.com/Pe3aTeJlb/Pe3aTeJlb/blob/main/ReadmeResources/LogisimFX/logisimfx2.png" width="683" height="350" /> <img src="https://github.com/Pe3aTeJlb/Pe3aTeJlb/blob/main/ReadmeResources/LogisimFX/logisimfx5.gif" width="900" height="450" />
 
 # Project Features
 * Multi-paltform
