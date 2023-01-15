@@ -3,10 +3,9 @@
  * License information is located in the Launch file
  */
 
-package LogisimFX.newgui.MainFrame.ProjectExplorer;
+package LogisimFX.newgui.MainFrame.ProjectExplorer_deprecated;
 
 import LogisimFX.IconsManager;
-import LogisimFX.circuit.Circuit;
 import LogisimFX.circuit.CircuitState;
 import LogisimFX.circuit.SubcircuitFactory;
 import LogisimFX.comp.Component;

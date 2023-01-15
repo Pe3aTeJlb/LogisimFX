@@ -14,7 +14,6 @@ import LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
 import LogisimFX.newgui.MainFrame.MainFrameController;
 import LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.Selection;
 import LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.SelectionActions;
-import LogisimFX.newgui.MainFrame.MainToolBar;
 import LogisimFX.tools.AddTool;
 import LogisimFX.tools.Library;
 import LogisimFX.tools.Tool;
@@ -289,8 +288,6 @@ public class Project {
 
 		getLogisimFile().setCurrent(circuit);
 
-		if(frameController!=null)frameController.computeTitle();
-
 	}
 
 	public void setTool(Tool value) {
@@ -303,29 +300,30 @@ public class Project {
 
 		LayoutCanvas canvas = getFrameController().getLayoutCanvas();
 		if (old != null) old.deselect(canvas);
-		Selection selection = canvas.getSelection();
-		if (selection != null && !selection.isEmpty()) {
-			Circuit circuit = canvas.getCircuit();
-			CircuitMutation xn = new CircuitMutation(circuit);
-			if (value == null) {
-				Action act = SelectionActions.dropAll(selection);
-				if (act != null) {
-					doAction(act);
+		if (canvas != null){
+			Selection selection = canvas.getSelection();
+			if (selection != null && !selection.isEmpty()) {
+				Circuit circuit = canvas.getCircuit();
+				CircuitMutation xn = new CircuitMutation(circuit);
+				if (value == null) {
+					Action act = SelectionActions.dropAll(selection);
+					if (act != null) {
+						doAction(act);
+					}
+				} else if (!getOptions().getMouseMappings().containsSelectTool()) {
+					Action act = SelectionActions.dropAll(selection);
+					if (act != null) {
+						doAction(act);
+					}
 				}
-			} else if (!getOptions().getMouseMappings().containsSelectTool()) {
-				Action act = SelectionActions.dropAll(selection);
-				if (act != null) {
-					doAction(act);
-				}
+				if (!xn.isEmpty()) doAction(xn.toAction(null));
 			}
-			if (!xn.isEmpty()) doAction(xn.toAction(null));
 		}
 
 		tool = value;
 		if (tool != null) tool.select(getFrameController().getLayoutCanvas());
 
 		tool = value;
-		frameController.setMainToolBarHighlight(tool);
 
 		fireEvent(ProjectEvent.ACTION_SET_TOOL, old, tool);
 
@@ -367,8 +365,6 @@ public class Project {
 
 
 		abstractTool = value;
-
-		frameController.setMainToolBarHighlight(abstractTool);
 
 		fireEvent(ProjectEvent.ACTION_SET_TOOL, old, abstractTool);
 

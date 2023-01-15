@@ -3,7 +3,7 @@
  * License information is located in the Launch file
  */
 
-package LogisimFX.newgui.MainFrame.ProjectExplorer;
+package LogisimFX.newgui.MainFrame.ProjectExplorer_deprecated;
 
 import LogisimFX.proj.Project;
 import javafx.scene.control.TreeView;

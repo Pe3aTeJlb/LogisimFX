@@ -3,11 +3,11 @@
  * License information is located in the Launch file
  */
 
-package LogisimFX.newgui.MainFrame.ProjectExplorer;
+package LogisimFX.newgui.MainFrame.ProjectExplorer_deprecated;
 
 import LogisimFX.newgui.MainFrame.LC;
 import LogisimFX.newgui.MainFrame.MainFrameController;
-import LogisimFX.newgui.MainFrame.MainToolBar;
+import LogisimFX.newgui.MainFrame.deprecated.MainToolBar;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -25,9 +25,9 @@ public class ExplorerToolBar extends ToolBar {
 
     private MainFrameController FrameController;
 
-    private LogisimFX.newgui.MainFrame.ProjectExplorer.AdditionalToolBar AdditionalToolBar;
-    private LogisimFX.newgui.MainFrame.MainToolBar MainToolBar;
-    private LogisimFX.newgui.MainFrame.ProjectExplorer.TreeExplorerAggregation TreeExplorerAggregation;
+    private LogisimFX.newgui.MainFrame.ProjectExplorer_deprecated.AdditionalToolBar AdditionalToolBar;
+    private LogisimFX.newgui.MainFrame.deprecated.MainToolBar MainToolBar;
+    private LogisimFX.newgui.MainFrame.ProjectExplorer_deprecated.TreeExplorerAggregation TreeExplorerAggregation;
 
     private int prefWidth = 15;
     private int prefHeight = 15;

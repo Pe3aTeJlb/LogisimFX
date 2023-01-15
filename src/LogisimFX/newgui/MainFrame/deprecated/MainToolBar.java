@@ -3,7 +3,7 @@
  * License information is located in the Launch file
  */
 
-package LogisimFX.newgui.MainFrame;
+package LogisimFX.newgui.MainFrame.deprecated;
 
 import LogisimFX.prefs.AppPreferences;
 import LogisimFX.proj.Project;

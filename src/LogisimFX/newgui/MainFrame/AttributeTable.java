@@ -55,8 +55,8 @@ public class AttributeTable extends GridPane
 
         this.getColumnConstraints().addAll(attr,value);
 
-        proj.getFrameController().getLayoutCanvas().getSelection().addListener(this);
-        proj.getFrameController().getAppearanceCanvas().getSelection().addSelectionListener(this);
+   //     proj.getFrameController().getLayoutCanvas().getSelection().addListener(this);
+   //     proj.getFrameController().getAppearanceCanvas().getSelection().addSelectionListener(this);
 
     }
 

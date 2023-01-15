@@ -7,7 +7,6 @@ package LogisimFX.newgui.MainFrame;
 
 import LogisimFX.circuit.Circuit;
 import LogisimFX.circuit.CircuitState;
-import LogisimFX.circuit.Propagator;
 import LogisimFX.circuit.Simulator;
 import LogisimFX.newgui.DialogManager;
 import LogisimFX.newgui.MainFrame.Canvas.EditHandler;
@@ -18,8 +17,6 @@ import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.RevertAppearanceAction
 import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.SelectionEvent;
 import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.SelectionListener;
 import LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.Selection;
-import LogisimFX.newgui.MainFrame.ProjectExplorer.ExplorerToolBar;
-import LogisimFX.newgui.MainFrame.ProjectExplorer.TreeExplorerAggregation;
 import LogisimFX.proj.Action;
 import LogisimFX.proj.Project;
 import LogisimFX.proj.ProjectActions;
@@ -42,18 +39,13 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
     private Project proj;
     private LogisimFile logisimFile;
 
-    private ExplorerToolBar explorerToolBar;
-    private TreeExplorerAggregation treeExplorerAggregation;
 
     private EditMenu editMenu;
     private EditHandler editHandler;
 
-    public CustomMenuBar(ExplorerToolBar etb, Project project, TreeExplorerAggregation tea){
+    public CustomMenuBar(Project project){
 
         super();
-
-        explorerToolBar = etb;
-        treeExplorerAggregation = tea;
 
         proj = project;
         logisimFile = proj.getLogisimFile();
@@ -66,8 +58,9 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
         AnchorPane.setTopAnchor(this,0.0);
         AnchorPane.setRightAnchor(this,0.0);
 
-        proj.getFrameController().getAppearanceCanvas().getSelection().addSelectionListener(this);
-        proj.getFrameController().getLayoutCanvas().getSelection().addListener(this);
+        //TODO
+//        proj.getFrameController().getAppearanceCanvas().getSelection().addSelectionListener(this);
+  //      proj.getFrameController().getLayoutCanvas().getSelection().addListener(this);
 
 
         initMenus();
@@ -397,7 +390,6 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
         AddCircuit.textProperty().bind(localizer.createStringBinding("projectAddCircuitItem"));
         AddCircuit.setOnAction(event -> {
             ProjectCircuitActions.doAddCircuit(proj);
-            treeExplorerAggregation.updateTree();
         });
 
 
@@ -440,7 +432,6 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
         MoveCircuitUp.textProperty().bind(localizer.createStringBinding("projectMoveCircuitUpItem"));
         MoveCircuitUp.setOnAction(event -> {
             ProjectCircuitActions.doMoveCircuit(proj,proj.getCurrentCircuit(),-1);
-            treeExplorerAggregation.updateTree();
         });
 
         MenuItem MoveCircuitDown = new MenuItem();
@@ -450,7 +441,6 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
         MoveCircuitDown.textProperty().bind(localizer.createStringBinding("projectMoveCircuitDownItem"));
         MoveCircuitDown.setOnAction(event -> {
             ProjectCircuitActions.doMoveCircuit(proj,proj.getCurrentCircuit(),1);
-            treeExplorerAggregation.updateTree();
         });
 
         MenuItem SetAsMain = new MenuItem();
@@ -463,7 +453,6 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
         RemoveCirc.textProperty().bind(localizer.createStringBinding("projectRemoveCircuitItem"));
         RemoveCirc.setOnAction(event -> {
             ProjectCircuitActions.doRemoveCircuit(proj,proj.getCurrentCircuit());
-            treeExplorerAggregation.updateTree();
         });
 
         MenuItem RevertAppearance = new MenuItem();
@@ -471,7 +460,7 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
         RevertAppearance.textProperty().bind(localizer.createStringBinding("projectRevertAppearanceItem"));
         RevertAppearance.setOnAction(event -> proj.doAction(new RevertAppearanceAction(proj.getCurrentCircuit())));
 
-
+/*
         SeparatorMenuItem sp2 = new SeparatorMenuItem();
 
         MenuItem ShowTools = new MenuItem();
@@ -493,7 +482,7 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
         EditCircuitAppearance.disableProperty().bind(explorerToolBar.EditCircuitAppearance);
         EditCircuitAppearance.textProperty().bind(localizer.createStringBinding("projectEditCircuitAppearanceItem"));
         EditCircuitAppearance.setOnAction(event -> explorerToolBar.EditAppearance());
-
+*/
 
         SeparatorMenuItem sp3 = new SeparatorMenuItem();
 
@@ -522,11 +511,12 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
                 SetAsMain,
                 RemoveCirc,
                 RevertAppearance,
+                /*
                 sp2,
                 ShowTools,
                 ViewSimulationTree,
                 EditCircuitLayout,
-                EditCircuitAppearance,
+                EditCircuitAppearance,*/
                 sp3,
                 AnalyzeCircuit,
                 GetCircuitStatistics,
@@ -923,6 +913,34 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
 
             SeparatorMenuItem sp2 = new SeparatorMenuItem();
 
+            Menu tabMenu = new Menu();
+            tabMenu.textProperty().bind(localizer.createStringBinding("windowToolsWindow"));
+
+            MenuItem addToolsTab = new MenuItem();
+            addToolsTab.textProperty().bind(localizer.createStringBinding("windowToolsTab"));
+            addToolsTab.setOnAction(event -> proj.getFrameController().createToolsTab());
+
+            MenuItem addSimulationTab = new MenuItem();
+            addSimulationTab.textProperty().bind(localizer.createStringBinding("windowSimTab"));
+            addSimulationTab.setOnAction(event -> proj.getFrameController().createSimulationTab());
+
+            MenuItem addAttributesTab = new MenuItem();
+            addAttributesTab.textProperty().bind(localizer.createStringBinding("windowAttrTab"));
+            addAttributesTab.setOnAction(event -> proj.getFrameController().createAttributesTab());
+
+            MenuItem addTimelineTab = new MenuItem();
+            addTimelineTab.textProperty().bind(localizer.createStringBinding("windowTimelineTab"));
+            addTimelineTab.setOnAction(event -> proj.getFrameController().createTimelineTab());
+
+            tabMenu.getItems().addAll(
+                    addToolsTab,
+                    addSimulationTab,
+                    addAttributesTab,
+                    addTimelineTab
+            );
+
+            SeparatorMenuItem sp3 = new SeparatorMenuItem();
+
             defaultWindowMenuItems.addAll(
                     Maximize,
                     Minimize,
@@ -930,7 +948,9 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
                     sp1,
                     CombAnalyse,
                     Preferences,
-                    sp2
+                    sp2,
+                    tabMenu,
+                    sp3
             );
 
             this.getItems().addAll(defaultWindowMenuItems);

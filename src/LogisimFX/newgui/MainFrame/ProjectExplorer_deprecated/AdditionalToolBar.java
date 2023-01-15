@@ -3,7 +3,7 @@
  * License information is located in the Launch file
  */
 
-package LogisimFX.newgui.MainFrame.ProjectExplorer;
+package LogisimFX.newgui.MainFrame.ProjectExplorer_deprecated;
 
 import LogisimFX.file.LogisimFile;
 import LogisimFX.newgui.MainFrame.LC;
@@ -14,7 +14,6 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;

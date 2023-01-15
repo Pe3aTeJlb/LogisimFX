@@ -127,13 +127,13 @@ public class LayoutCanvas extends Canvas {
             int act = event.getAction();
 
             if(act == ProjectEvent.ACTION_SET_CURRENT){
-
+/*
                 circ = proj.getCurrentCircuit();
                 circState = proj.getCircuitState();
                 ptContext = new ComponentDrawContext(circ, circState, g);
 
                 setErrorMessage(null, null);
-
+*/
             }
 
             if (act != ProjectEvent.ACTION_SELECTION
