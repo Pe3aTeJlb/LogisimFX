@@ -10,7 +10,7 @@ import LogisimFX.data.Attribute;
 import LogisimFX.data.Bounds;
 import LogisimFX.data.Value;
 import LogisimFX.instance.*;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.std.LC;
 
 import javafx.scene.paint.Color;

@@ -9,14 +9,14 @@ import LogisimFX.circuit.Circuit;
 import LogisimFX.circuit.CircuitState;
 import LogisimFX.circuit.Simulator;
 import LogisimFX.newgui.DialogManager;
-import LogisimFX.newgui.MainFrame.Canvas.EditHandler;
+import LogisimFX.newgui.MainFrame.EditorTabs.EditHandler;
 import LogisimFX.localization.LC_menu;
 import LogisimFX.newgui.FrameManager;
 import LogisimFX.file.LogisimFile;
-import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.RevertAppearanceAction;
-import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.SelectionEvent;
-import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.SelectionListener;
-import LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.Selection;
+import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.RevertAppearanceAction;
+import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.SelectionEvent;
+import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.SelectionListener;
+import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.Selection;
 import LogisimFX.proj.Action;
 import LogisimFX.proj.Project;
 import LogisimFX.proj.ProjectActions;
@@ -57,11 +57,6 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
         AnchorPane.setLeftAnchor(this,0.0);
         AnchorPane.setTopAnchor(this,0.0);
         AnchorPane.setRightAnchor(this,0.0);
-
-        //TODO
-//        proj.getFrameController().getAppearanceCanvas().getSelection().addSelectionListener(this);
-  //      proj.getFrameController().getLayoutCanvas().getSelection().addListener(this);
-
 
         initMenus();
 
@@ -1030,15 +1025,6 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
     public void selectionChanged(Selection.Event event) {
         editMenu.calculateEnabled();
     }
-
-
-    public void terminateListeners(){
-
-        proj.getFrameController().getAppearanceCanvas().getSelection().removeSelectionListener(this);
-        proj.getFrameController().getLayoutCanvas().getSelection().removeListener(this);
-
-    }
-
 
 }
 

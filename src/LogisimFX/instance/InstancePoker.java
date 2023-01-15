@@ -7,7 +7,7 @@
 package LogisimFX.instance;
 
 import LogisimFX.data.Bounds;
-import LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
+import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutCanvas;
 
 import javafx.scene.input.KeyEvent;
 

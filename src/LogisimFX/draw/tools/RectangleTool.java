@@ -12,7 +12,7 @@ import LogisimFX.draw.model.CanvasObject;
 import LogisimFX.draw.shapes.DrawAttr;
 import LogisimFX.draw.shapes.Rectangle;
 import LogisimFX.data.Attribute;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 
 import javafx.scene.image.ImageView;
 

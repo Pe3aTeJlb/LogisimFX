@@ -7,9 +7,8 @@
 package LogisimFX.util;
 
 import LogisimFX.OldFontmetrics;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import com.sun.javafx.tk.FontMetrics;
-import com.sun.javafx.tk.Toolkit;
 
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Rectangle;

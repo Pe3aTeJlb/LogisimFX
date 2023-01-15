@@ -8,8 +8,8 @@ package LogisimFX.instance;
 
 import LogisimFX.comp.*;
 import LogisimFX.data.*;
-import LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutCanvas;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.tools.Caret;
 import LogisimFX.tools.SetAttributeAction;
 import LogisimFX.tools.TextEditable;

@@ -12,8 +12,8 @@ import LogisimFX.data.Attribute;
 import LogisimFX.data.AttributeDefaultProvider;
 import LogisimFX.data.AttributeSet;
 import LogisimFX.LogisimVersion;
-import LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutCanvas;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 
 import javafx.beans.binding.StringBinding;
 import javafx.scene.Cursor;

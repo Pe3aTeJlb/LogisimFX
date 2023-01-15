@@ -4,7 +4,7 @@
 * License information is located in the Launch file
 */
 
-package LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas;
+package LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas;
 
 import LogisimFX.draw.actions.ModelDeleteHandleAction;
 import LogisimFX.draw.actions.ModelInsertHandleAction;
@@ -17,7 +17,7 @@ import LogisimFX.circuit.appear.AppearanceAnchor;
 import LogisimFX.circuit.appear.AppearanceElement;
 import LogisimFX.data.Direction;
 import LogisimFX.data.Location;
-import LogisimFX.newgui.MainFrame.Canvas.EditHandler;
+import LogisimFX.newgui.MainFrame.EditorTabs.EditHandler;
 import LogisimFX.newgui.MainFrame.LC;
 import LogisimFX.proj.Project;
 

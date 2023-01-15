@@ -20,8 +20,8 @@ import LogisimFX.circuit.CircuitListener;
 import LogisimFX.circuit.RadixOption;
 import LogisimFX.circuit.Wire;
 import LogisimFX.circuit.WireSet;
-import LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutCanvas;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.prefs.AppPreferences;
 import LogisimFX.proj.Project;
 

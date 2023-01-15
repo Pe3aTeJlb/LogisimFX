@@ -13,9 +13,9 @@ import LogisimFX.draw.actions.ModelRemoveAction;
 import LogisimFX.draw.model.CanvasModel;
 import LogisimFX.draw.model.CanvasObject;
 import LogisimFX.draw.model.Handle;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
-import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceCanvas;
-import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.Selection;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.AppearanceCanvas;
+import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.Selection;
 
 import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;

@@ -4,7 +4,7 @@
 * License information is located in the Launch file
 */
 
-package LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas;
+package LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas;
 
 import LogisimFX.draw.undo.Action;
 

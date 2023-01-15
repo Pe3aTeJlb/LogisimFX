@@ -13,8 +13,8 @@ import LogisimFX.instance.InstancePainter;
 import LogisimFX.instance.InstancePoker;
 import LogisimFX.instance.InstanceState;
 import LogisimFX.instance.StdAttr;
-import LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutCanvas;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;

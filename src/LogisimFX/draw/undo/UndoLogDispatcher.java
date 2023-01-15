@@ -6,7 +6,7 @@
 
 package LogisimFX.draw.undo;
 
-import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.ActionDispatcher;
+import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.ActionDispatcher;
 
 public class UndoLogDispatcher implements ActionDispatcher {
 	private UndoLog log;

@@ -17,7 +17,7 @@ import LogisimFX.data.AttributeOption;
 import LogisimFX.data.Bounds;
 import LogisimFX.data.Location;
 import LogisimFX.draw.util.TextField;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.util.UnmodifiableList;
 
 import com.sun.javafx.tk.FontMetrics;

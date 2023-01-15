@@ -7,7 +7,7 @@
 package LogisimFX.comp;
 
 import LogisimFX.circuit.CircuitState;
-import LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
+import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutCanvas;
 
 public class ComponentUserEvent {
 

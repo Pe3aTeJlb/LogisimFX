@@ -10,9 +10,9 @@ import LogisimFX.comp.Component;
 import LogisimFX.data.Attribute;
 import LogisimFX.draw.tools.AbstractTool;
 import LogisimFX.instance.StdAttr;
-import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.SelectionEvent;
-import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.SelectionListener;
-import LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.Selection;
+import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.SelectionEvent;
+import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.SelectionListener;
+import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.Selection;
 import LogisimFX.proj.Project;
 import LogisimFX.tools.Tool;
 

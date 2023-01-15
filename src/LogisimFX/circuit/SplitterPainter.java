@@ -10,7 +10,7 @@ import LogisimFX.comp.ComponentDrawContext;
 import LogisimFX.data.Direction;
 import LogisimFX.data.Location;
 import LogisimFX.data.Value;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.util.GraphicsUtil;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;

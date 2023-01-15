@@ -7,12 +7,12 @@
 package LogisimFX.draw.tools;
 
 import LogisimFX.draw.actions.ModelAddAction;
-import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceCanvas;
+import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.AppearanceCanvas;
 import LogisimFX.draw.model.CanvasModel;
 import LogisimFX.draw.model.CanvasObject;
 import LogisimFX.data.Bounds;
 import LogisimFX.data.Location;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 
 import javafx.scene.Cursor;
 import javafx.scene.input.KeyCode;

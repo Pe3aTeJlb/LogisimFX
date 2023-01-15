@@ -6,8 +6,8 @@
 
 package LogisimFX.draw.tools;
 
-import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceCanvas;
-import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.CanvasTool;
+import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.AppearanceCanvas;
+import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.CanvasTool;
 import LogisimFX.data.Attribute;
 
 import javafx.scene.Cursor;

@@ -12,7 +12,7 @@ import LogisimFX.comp.EndData;
 import LogisimFX.data.*;
 import LogisimFX.instance.Instance;
 import LogisimFX.instance.StdAttr;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.std.wiring.PullResistor;
 import LogisimFX.std.wiring.Tunnel;
 import LogisimFX.util.IteratorUtil;
@@ -20,7 +20,6 @@ import LogisimFX.util.SmallSet;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.shape.StrokeLineJoin;
 
 import java.util.List;
 import java.util.*;

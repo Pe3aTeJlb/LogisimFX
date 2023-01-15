@@ -13,7 +13,7 @@ import LogisimFX.data.AttributeSet;
 import LogisimFX.data.BitWidth;
 import LogisimFX.data.Bounds;
 import LogisimFX.data.Location;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.std.wiring.Clock;
 import LogisimFX.util.CollectionUtil;
 import LogisimFX.util.EventSourceWeakSupport;

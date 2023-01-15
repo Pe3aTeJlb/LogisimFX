@@ -8,8 +8,8 @@ package LogisimFX.std.io;
 
 import LogisimFX.data.*;
 import LogisimFX.instance.*;
-import LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutCanvas;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.std.LC;
 import LogisimFX.tools.key.BitWidthConfigurator;
 

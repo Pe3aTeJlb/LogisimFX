@@ -6,16 +6,15 @@
 package LogisimFX.newgui.MainFrame;
 
 import LogisimFX.IconsManager;
-import LogisimFX.circuit.CircuitEvent;
-import LogisimFX.circuit.CircuitListener;
+import LogisimFX.circuit.*;
 import LogisimFX.comp.Component;
 import LogisimFX.draw.tools.AbstractTool;
 import LogisimFX.file.LibraryEvent;
 import LogisimFX.file.LibraryListener;
-import LogisimFX.newgui.MainFrame.Canvas.EditHandler;
-import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceCanvas;
+import LogisimFX.newgui.MainFrame.EditorTabs.EditHandler;
+import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.AppearanceCanvas;
 import LogisimFX.newgui.AbstractController;
-import LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
+import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutCanvas;
 import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.AppearanceEditor;
 import LogisimFX.newgui.MainFrame.EditorTabs.EditorBase;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.LayoutEditor;
@@ -24,9 +23,10 @@ import LogisimFX.newgui.MainFrame.SystemTabs.ProjectTreeToolBar;
 import LogisimFX.newgui.MainFrame.SystemTabs.SimulationExplorerTreeView;
 import LogisimFX.newgui.MainFrame.SystemTabs.SimulationTreeToolBar;
 import LogisimFX.proj.Project;
-import LogisimFX.circuit.Circuit;
 import LogisimFX.proj.ProjectEvent;
 import LogisimFX.proj.ProjectListener;
+import LogisimFX.tools.AddTool;
+import LogisimFX.tools.Library;
 import LogisimFX.tools.Tool;
 
 import docklib.dock.DockAnchor;
@@ -38,10 +38,8 @@ import docklib.draggabletabpane.TabGroup;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ObjectPropertyBase;
 import javafx.geometry.Side;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.fxml.FXML;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -97,6 +95,32 @@ public class MainFrameController extends AbstractController {
             if (e.getAction() == LibraryEvent.SET_NAME) {
                 computeTitle();
             }
+            if (e.getAction() == LibraryEvent.REMOVE_TOOL) {
+                Object t = e.getData();
+                Circuit circ = null;
+                if (t instanceof AddTool) {
+                    t = ((AddTool) t).getFactory();
+                    if (t instanceof SubcircuitFactory) {
+                        circ = ((SubcircuitFactory) t).getSubcircuit();
+                        Pair<Circuit, String > layout = new Pair<>(circ, "layout");
+                        if (openedWorkspaceTabs.containsKey(layout)){
+                            openedWorkspaceTabs.get(layout).close();
+                        }
+                        Pair<Circuit, String > appearance = new Pair<>(circ, "appearance");
+                        if (openedWorkspaceTabs.containsKey(appearance)){
+                            openedWorkspaceTabs.get(appearance).close();
+                        }
+                        Pair<Circuit, String > vhdl = new Pair<>(circ, "vhdl");
+                        if (openedWorkspaceTabs.containsKey(vhdl)){
+                            openedWorkspaceTabs.get(vhdl).close();
+                        }
+                        Pair<Circuit, String > verilog = new Pair<>(circ, "verilog");
+                        if (openedWorkspaceTabs.containsKey(verilog)){
+                            openedWorkspaceTabs.get(verilog).close();
+                        }
+                    }
+                }
+            }
         }
 
         public void circuitChanged(CircuitEvent event) {
@@ -142,8 +166,6 @@ public class MainFrameController extends AbstractController {
         proj.addProjectListener(myProjectListener);
         proj.addLibraryListener(myProjectListener);
         proj.addCircuitListener(myProjectListener);
-        computeTitle();
-
 
         DockPane dockPane = new DockPane(false);
         VBox.setVgrow(dockPane, Priority.ALWAYS);
@@ -174,6 +196,9 @@ public class MainFrameController extends AbstractController {
         Root.getChildren().addAll(menubar, dockPane);
 
         createDefaultLayout();
+
+        workspaceTabPane.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> computeTitle((DraggableTab) n));
+        computeTitle();
 
         /*
 
@@ -243,6 +268,10 @@ public class MainFrameController extends AbstractController {
 
         stage.titleProperty().unbind();
 
+        if (!workspaceTabPane.getTabs().isEmpty()){
+            stage.titleProperty().bind(((DraggableTab)workspaceTabPane.getSelectionModel().getSelectedItem()).getStageTitle());
+        }
+/*
         Circuit circuit = proj.getCurrentCircuit();
         String name = proj.getLogisimFile().getName();
 
@@ -250,6 +279,16 @@ public class MainFrameController extends AbstractController {
             stage.titleProperty().bind(LC.createComplexStringBinding("titleCircFileKnown",circuit.getName(), name));
         } else {
             stage.titleProperty().bind(LC.createComplexStringBinding("titleCircFileKnown", name));
+        }
+*/
+    }
+
+    public void computeTitle(DraggableTab tab){
+
+        stage.titleProperty().unbind();
+
+        if (!workspaceTabPane.getTabs().isEmpty()){
+            stage.titleProperty().bind(tab.getStageTitle());
         }
 
     }
@@ -345,27 +384,40 @@ public class MainFrameController extends AbstractController {
 
         Pair<Circuit, String> bufLayoutPair = new Pair<>(circ, "layout");
         if (openedWorkspaceTabs.containsKey(bufLayoutPair)){
-            openedWorkspaceTabs.get(bufLayoutPair).getTabPane().getSelectionModel().select(openedWorkspaceTabs.get(bufLayoutPair));
+            openedWorkspaceTabs.get(bufLayoutPair).getTabPane().getSelectionModel().select(
+                    openedWorkspaceTabs.get(bufLayoutPair));
             return;
         }
 
-        LayoutEditor layoutEditor = new LayoutEditor(proj);
+        LayoutEditor layoutEditor = new LayoutEditor(proj, circ);
         setEditor(layoutEditor);
+        setEditHandler(layoutEditor.getLayoutCanvas().getEditHandler());
         currLayoutCanvas = layoutEditor.getLayoutCanvas();
+        layoutEditor.getLayoutCanvas().getSelection().addListener(menubar);
+        layoutEditor.getLayoutCanvas().getSelection().addListener(attributeTable);
 
         DraggableTab tab = new DraggableTab(circ.getName(), IconsManager.getImage("projlayo.gif"), layoutEditor);
         tab.setStageTitle(LC.createComplexStringBinding("titleLayoutEditor", circ.getName(), proj.getLogisimFile().getName()));
 
         tab.getContent().setOnMouseClicked(event -> {
             setEditor(layoutEditor);
+            setEditHandler(layoutEditor.getLayoutCanvas().getEditHandler());
             currLayoutCanvas = layoutEditor.getLayoutCanvas();
+            proj.setCurrentCircuit(circ);
         });
 
         tab.setOnSelectionChanged(event -> {
             if (tab.isSelected()) {
                 setEditor(layoutEditor);
+                setEditHandler(layoutEditor.getLayoutCanvas().getEditHandler());
                 currLayoutCanvas = layoutEditor.getLayoutCanvas();
+               // proj.setCurrentCircuit(circ);
             }
+        });
+
+        tab.setOnCloseRequest(event -> {
+            layoutEditor.terminateListeners(menubar, attributeTable);
+            openedWorkspaceTabs.remove(new Pair<>(circ, "layout"), tab);
         });
 
         openedWorkspaceTabs.put(new Pair<>(circ, "layout"), tab);
@@ -387,24 +439,34 @@ public class MainFrameController extends AbstractController {
             return;
         }
 
-        AppearanceEditor appearanceEditor = new AppearanceEditor(proj);
+        AppearanceEditor appearanceEditor = new AppearanceEditor(proj, circ);
         setEditor(appearanceEditor);
+        setEditHandler(appearanceEditor.getAppearanceCanvas().getEditHandler());
         currAppearanceCanvas = appearanceEditor.getAppearanceCanvas();
-        System.out.println("app " + editor.get());
+        appearanceEditor.getAppearanceCanvas().getSelection().addSelectionListener(menubar);
+        appearanceEditor.getAppearanceCanvas().getSelection().addSelectionListener(attributeTable);
 
         DraggableTab tab = new DraggableTab(circ.getName(), IconsManager.getImage("projapp.gif"), appearanceEditor);
         tab.setStageTitle(LC.createComplexStringBinding("titleAppearanceEditor", circ.getName(), proj.getLogisimFile().getName()));
 
         tab.getContent().setOnMouseClicked(event -> {
             setEditor(appearanceEditor);
+            setEditHandler(appearanceEditor.getAppearanceCanvas().getEditHandler());
             currAppearanceCanvas = appearanceEditor.getAppearanceCanvas();
         });
 
         tab.setOnSelectionChanged(event -> {
             if (tab.isSelected()) {
                 setEditor(appearanceEditor);
+                setEditHandler(appearanceEditor.getAppearanceCanvas().getEditHandler());
                 currAppearanceCanvas = appearanceEditor.getAppearanceCanvas();
+                proj.setCurrentCircuit(circ);
             }
+        });
+
+        tab.setOnCloseRequest(event -> {
+            appearanceEditor.terminateListeners(menubar, attributeTable);
+            openedWorkspaceTabs.remove(new Pair<>(circ, "appearance"), tab);
         });
 
         openedWorkspaceTabs.put(new Pair<>(circ, "appearance"), tab);
@@ -462,8 +524,35 @@ public class MainFrameController extends AbstractController {
     }
 
 
+    private ObjectProperty<EditHandler> editHandler;
 
+    public EditHandler getEditHandler(){
+        return editHandlerProperty().get();
+    }
 
+    private void setEditHandler(EditHandler editHandler){
+        editHandlerProperty().set(editHandler);
+    }
+
+    public ObjectProperty<EditHandler> editHandlerProperty(){
+        if (editHandler == null) {
+            editHandler = new ObjectPropertyBase<>(null) {
+                @Override protected void invalidated() {
+                }
+
+                @Override
+                public Object getBean() {
+                    return MainFrameController.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "editHandler";
+                }
+            };
+        }
+        return editHandler;
+    }
 
 
 
@@ -531,20 +620,6 @@ public class MainFrameController extends AbstractController {
         return currAppearanceCanvas;
     }
 
-    public EditHandler getEditHandler(){
-/*
-        if(canvasRoot.getChildren().get(0).equals(layoutCanvas)){
-            return layoutCanvas.getEditHandler();
-        }else if(canvasRoot.getChildren().get(0).equals(appearanceCanvas)){
-            return appearanceCanvas.getEditHandler();
-        }else {
-            return null;
-        }
-*/
-        return null;
-
-    }
-
 
 
     /*
@@ -583,11 +658,15 @@ public class MainFrameController extends AbstractController {
     @Override
     public void onClose() {
 
-        currAppearanceCanvas.terminateCanvas();
-        currLayoutCanvas.terminateCanvas();
+        for (Tab tab: openedWorkspaceTabs.values()){
+            if(tab.getContent() instanceof LayoutEditor){
+                ((LayoutEditor) tab.getContent()).terminateListeners(menubar, attributeTable);
+            } else if (tab.getContent() instanceof AppearanceEditor){
+                ((AppearanceEditor) tab.getContent()).terminateListeners(menubar, attributeTable);
+            }
+        }
 
         attributeTable.terminateListener();
-        menubar.terminateListeners();
 
         proj.removeProjectListener(myProjectListener);
         proj.removeLibraryListener(myProjectListener);

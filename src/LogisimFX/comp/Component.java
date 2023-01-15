@@ -12,7 +12,7 @@ import LogisimFX.data.AttributeSet;
 import LogisimFX.data.Bounds;
 import LogisimFX.data.Location;
 import LogisimFX.circuit.CircuitState;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 
 public interface Component {
 

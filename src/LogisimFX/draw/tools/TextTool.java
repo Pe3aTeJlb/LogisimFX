@@ -13,7 +13,7 @@ import LogisimFX.draw.actions.ModelRemoveAction;
 import LogisimFX.draw.util.Caret;
 import LogisimFX.draw.util.CaretEvent;
 import LogisimFX.draw.util.CaretListener;
-import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceCanvas;
+import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.AppearanceCanvas;
 import LogisimFX.draw.model.CanvasObject;
 import LogisimFX.draw.shapes.DrawAttr;
 import LogisimFX.draw.shapes.Text;

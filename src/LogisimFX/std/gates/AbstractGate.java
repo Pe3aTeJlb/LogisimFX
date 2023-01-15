@@ -14,7 +14,7 @@ import LogisimFX.data.*;
 import LogisimFX.instance.*;
 import LogisimFX.newgui.AnalyzeFrame.Expression;
 import LogisimFX.newgui.AnalyzeFrame.Expressions;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.tools.WireRepair;
 import LogisimFX.tools.WireRepairData;
 import LogisimFX.tools.key.BitWidthConfigurator;

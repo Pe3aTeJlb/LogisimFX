@@ -4,7 +4,7 @@
 * License information is located in the Launch file
 */
 
-package LogisimFX.newgui.MainFrame.Canvas;
+package LogisimFX.newgui.MainFrame.EditorTabs;
 
 public abstract class EditHandler {
 

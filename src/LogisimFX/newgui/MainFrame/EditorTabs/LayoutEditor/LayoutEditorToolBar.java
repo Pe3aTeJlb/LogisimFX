@@ -31,8 +31,7 @@ import java.util.ArrayList;
 
 public class LayoutEditorToolBar extends ToolBar {
 
-    private ToolButton prevTool;
-    private ToolButton currTool;
+    private Tool currTool;
 
     private ObservableList<Node> EditCircuitBtnsList;
 
@@ -122,10 +121,8 @@ public class LayoutEditorToolBar extends ToolBar {
             setTooltip(tip);
 
             this.setOnAction(event -> {
-                System.out.println("layyyyy");
                 if(layoutEditor.isSelected()) {
-                    prevTool = currTool;
-                    currTool = this;
+                    currTool = tool;
                     proj.setTool(tool);
                 }
             });
@@ -151,6 +148,8 @@ public class LayoutEditorToolBar extends ToolBar {
         proj.getFrameController().editorProperty().addListener((observableValue, editorBase, t1) -> {
             if (layoutEditor.isSelected()){
                 recalculateAccelerators();
+                if (currTool != null)
+                proj.setTool(currTool);
             }
         });
 
@@ -184,21 +183,16 @@ public class LayoutEditorToolBar extends ToolBar {
 
     public void highlightCurTool(Tool tool){
 
-        if(prevTool != null) {
-            //prevTool.setStyle("-fx-border-color: #B5B5B5;");
-            prevTool.setEffect(null);
+        if (tool == null){
+            return;
         }
 
         for(Node node: EditCircuitBtnsList){
             if(node instanceof ToolButton){
                 if(((ToolButton) node).tool == tool){
                     node.setEffect(lighting);
-                    //node.setStyle("-fx-border-color: #00FFFF;");
-                    //init moment, currTool is null
-                    if(currTool == null){
-                        currTool = (ToolButton) node;
-                    }
-                    break;
+                } else {
+                    node.setEffect(null);
                 }
             }
         }

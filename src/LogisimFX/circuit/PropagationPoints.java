@@ -8,7 +8,7 @@ import LogisimFX.comp.Component;
 import LogisimFX.comp.ComponentDrawContext;
 import LogisimFX.data.Bounds;
 import LogisimFX.data.Location;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 
 import java.util.HashMap;
 import java.util.HashSet;

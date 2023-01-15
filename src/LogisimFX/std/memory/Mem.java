@@ -16,7 +16,7 @@ import LogisimFX.newgui.HexEditorFrame.HexModel;
 import LogisimFX.newgui.HexEditorFrame.HexModelListener;
 import LogisimFX.instance.*;
 import LogisimFX.newgui.ContextMenuManager;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.std.LC;
 import LogisimFX.tools.MenuExtender;
 import LogisimFX.tools.key.BitWidthConfigurator;

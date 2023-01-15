@@ -8,7 +8,7 @@ import LogisimFX.comp.Component;
 import LogisimFX.data.*;
 import LogisimFX.instance.*;
 import LogisimFX.newgui.ContextMenuManager;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.std.LC;
 import LogisimFX.std.wiring.Pin;
 import LogisimFX.tools.MenuExtender;

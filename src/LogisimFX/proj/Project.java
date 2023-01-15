@@ -9,11 +9,11 @@ package LogisimFX.proj;
 import LogisimFX.draw.tools.AbstractTool;
 import LogisimFX.file.*;
 import LogisimFX.circuit.*;
-import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceCanvas;
-import LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
+import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.AppearanceCanvas;
+import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutCanvas;
 import LogisimFX.newgui.MainFrame.MainFrameController;
-import LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.Selection;
-import LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.SelectionActions;
+import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.Selection;
+import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.SelectionActions;
 import LogisimFX.tools.AddTool;
 import LogisimFX.tools.Library;
 import LogisimFX.tools.Tool;
@@ -340,7 +340,7 @@ public class Project {
 		AppearanceCanvas canvas = getFrameController().getAppearanceCanvas();
 		if (old != null) old.toolDeselected(canvas);
 		/*
-		LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.Selection selection
+		LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.Selection selection
 				= canvas.getSelection();
 		if (selection != null && !selection.isEmpty()) {
 			Circuit circuit = canvas.getCircuit();
@@ -352,7 +352,7 @@ public class Project {
 				}
 			} else if (!getOptions().getMouseMappings().containsSelectTool()) {
 				Action act =
-						LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.SelectionAction.dropAll(selection);
+						LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.SelectionAction.dropAll(selection);
 				if (act != null) {
 					doAction(act);
 				}

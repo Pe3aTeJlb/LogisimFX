@@ -10,7 +10,7 @@ import LogisimFX.data.Bounds;
 import LogisimFX.newgui.HexEditorFrame.HexModel;
 import LogisimFX.newgui.HexEditorFrame.HexModelListener;
 import LogisimFX.instance.InstanceData;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.util.GraphicsUtil;
 import LogisimFX.util.StringUtil;
 

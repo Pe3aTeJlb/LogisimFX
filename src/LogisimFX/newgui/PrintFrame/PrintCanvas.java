@@ -10,7 +10,7 @@ import LogisimFX.circuit.Circuit;
 import LogisimFX.comp.Component;
 import LogisimFX.comp.ComponentDrawContext;
 import LogisimFX.data.Bounds;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.proj.Project;
 
 import com.sun.javafx.tk.FontMetrics;

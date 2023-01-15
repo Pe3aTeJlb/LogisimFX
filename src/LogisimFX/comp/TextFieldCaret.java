@@ -11,8 +11,8 @@ import java.util.LinkedList;
 
 import LogisimFX.OldFontmetrics;
 import LogisimFX.data.Bounds;
-import LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.LayoutCanvas;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutCanvas;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.tools.Caret;
 import LogisimFX.tools.CaretEvent;
 import LogisimFX.tools.CaretListener;

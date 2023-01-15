@@ -11,7 +11,7 @@ import LogisimFX.draw.model.Handle;
 import LogisimFX.draw.model.HandleGesture;
 import LogisimFX.data.Bounds;
 import LogisimFX.data.Location;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.util.UnmodifiableList;
 
 import java.util.List;

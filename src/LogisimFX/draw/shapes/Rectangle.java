@@ -12,7 +12,7 @@ import LogisimFX.data.Attribute;
 import LogisimFX.data.Bounds;
 import LogisimFX.data.Location;
 
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

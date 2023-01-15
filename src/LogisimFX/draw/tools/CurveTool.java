@@ -9,7 +9,7 @@ package LogisimFX.draw.tools;
 import LogisimFX.IconsManager;
 import LogisimFX.draw.LC;
 import LogisimFX.draw.actions.ModelAddAction;
-import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceCanvas;
+import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.AppearanceCanvas;
 import LogisimFX.draw.model.CanvasModel;
 import LogisimFX.draw.shapes.Curve;
 import LogisimFX.draw.shapes.CurveUtil;
@@ -17,7 +17,7 @@ import LogisimFX.draw.shapes.DrawAttr;
 import LogisimFX.draw.shapes.LineUtil;
 import LogisimFX.data.Attribute;
 import LogisimFX.data.Location;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 
 import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;

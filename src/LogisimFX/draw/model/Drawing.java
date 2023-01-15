@@ -6,11 +6,11 @@
 
 package LogisimFX.draw.model;
 
-import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.Selection;
+import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.Selection;
 import LogisimFX.draw.shapes.Text;
 import LogisimFX.data.Attribute;
 import LogisimFX.data.Bounds;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.util.EventSourceWeakSupport;
 
 import java.util.List;

@@ -9,7 +9,7 @@ package LogisimFX.std.plexers;
 import java.util.List;
 
 import LogisimFX.data.*;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.std.LC;
 import LogisimFX.tools.FactoryDescription;
 import LogisimFX.tools.Library;

@@ -16,9 +16,9 @@ import LogisimFX.draw.model.AttributeMapKey;
 import LogisimFX.draw.model.CanvasObject;
 import LogisimFX.draw.tools.AbstractTool;
 import LogisimFX.draw.tools.DrawingAttributeSet;
-import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceCanvas;
-import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.SelectionAttributes;
-import LogisimFX.newgui.MainFrame.Canvas.layoutCanvas.Selection;
+import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.AppearanceCanvas;
+import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.SelectionAttributes;
+import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.Selection;
 import LogisimFX.proj.Project;
 import LogisimFX.tools.SetAttributeAction;
 import LogisimFX.tools.Tool;
@@ -268,7 +268,7 @@ class AttrTableAppearanceSelectionModel extends AttrTableModel{
 
     private Project proj;
     private AppearanceCanvas canvas;
-    private LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.Selection selection;
+    private LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.Selection selection;
 
     public AttrTableAppearanceSelectionModel(Project proj) {
         super(null);

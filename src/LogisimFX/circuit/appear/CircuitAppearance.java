@@ -15,7 +15,7 @@ import LogisimFX.data.Bounds;
 import LogisimFX.data.Direction;
 import LogisimFX.data.Location;
 import LogisimFX.instance.Instance;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.util.EventSourceWeakSupport;
 
 import java.util.List;

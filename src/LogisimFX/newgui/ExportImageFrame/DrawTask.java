@@ -9,7 +9,7 @@ import LogisimFX.circuit.Circuit;
 import LogisimFX.comp.Component;
 import LogisimFX.comp.ComponentDrawContext;
 import LogisimFX.data.Bounds;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.proj.Project;
 
 import javafx.concurrent.Task;
@@ -21,7 +21,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
-import javafx.scene.transform.Scale;
 import javafx.scene.transform.Transform;
 
 import java.util.Collection;

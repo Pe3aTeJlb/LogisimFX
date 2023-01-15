@@ -9,7 +9,7 @@ package LogisimFX.std.wiring;
 import LogisimFX.IconsManager;
 import LogisimFX.data.*;
 import LogisimFX.instance.*;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.std.LC;
 import LogisimFX.util.GraphicsUtil;
 import LogisimFX.prefs.AppPreferences;

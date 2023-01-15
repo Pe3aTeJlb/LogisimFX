@@ -11,7 +11,7 @@ import LogisimFX.draw.model.CanvasObject;
 import LogisimFX.draw.model.Handle;
 import LogisimFX.draw.model.HandleGesture;
 import LogisimFX.data.*;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.util.UnmodifiableList;
 
 import javafx.scene.paint.Color;

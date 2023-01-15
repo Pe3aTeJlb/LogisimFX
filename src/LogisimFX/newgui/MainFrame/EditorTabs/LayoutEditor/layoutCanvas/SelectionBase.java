@@ -4,7 +4,7 @@
 * License information is located in the Launch file
 */
 
-package LogisimFX.newgui.MainFrame.Canvas.layoutCanvas;
+package LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas;
 
 import LogisimFX.circuit.Circuit;
 import LogisimFX.circuit.CircuitMutation;
@@ -15,7 +15,7 @@ import LogisimFX.comp.EndData;
 import LogisimFX.data.AttributeSet;
 import LogisimFX.data.Bounds;
 import LogisimFX.data.Location;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.proj.Project;
 import LogisimFX.util.CollectionUtil;
 

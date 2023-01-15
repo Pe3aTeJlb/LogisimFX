@@ -13,7 +13,7 @@ import java.util.List;
 
 import LogisimFX.comp.*;
 import LogisimFX.data.*;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.tools.TextEditable;
 import LogisimFX.tools.ToolTipMaker;
 import LogisimFX.util.EventSourceWeakSupport;

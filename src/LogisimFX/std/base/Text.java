@@ -12,7 +12,7 @@ import LogisimFX.instance.Instance;
 import LogisimFX.instance.InstanceFactory;
 import LogisimFX.instance.InstancePainter;
 import LogisimFX.instance.InstanceState;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.std.LC;
 import LogisimFX.util.GraphicsUtil;
 

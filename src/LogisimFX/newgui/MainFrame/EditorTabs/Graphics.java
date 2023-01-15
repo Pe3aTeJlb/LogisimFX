@@ -3,7 +3,7 @@
  * License information is located in the Launch file
  */
 
-package LogisimFX.newgui.MainFrame.Canvas;
+package LogisimFX.newgui.MainFrame.EditorTabs;
 
 import com.sun.javafx.tk.FontMetrics;
 import com.sun.javafx.tk.Toolkit;

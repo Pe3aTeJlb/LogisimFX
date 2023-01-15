@@ -12,7 +12,7 @@ import LogisimFX.data.Bounds;
 import LogisimFX.data.Direction;
 import LogisimFX.data.Location;
 import LogisimFX.instance.InstancePainter;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.util.GraphicsUtil;
 import LogisimFX.circuit.Circuit;
 import LogisimFX.circuit.CircuitState;

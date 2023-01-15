@@ -11,7 +11,7 @@ import java.util.Map;
 import LogisimFX.data.*;
 import LogisimFX.instance.*;
 import LogisimFX.newgui.AnalyzeFrame.Expression;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.std.LC;
 import LogisimFX.tools.key.BitWidthConfigurator;
 import LogisimFX.circuit.ExpressionComputer;

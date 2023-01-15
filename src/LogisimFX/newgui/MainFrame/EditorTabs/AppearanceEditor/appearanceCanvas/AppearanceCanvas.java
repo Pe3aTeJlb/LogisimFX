@@ -3,7 +3,7 @@
  * License information is located in the Launch file
  */
 
-package LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas;
+package LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas;
 
 import LogisimFX.circuit.Circuit;
 import LogisimFX.circuit.CircuitState;
@@ -16,7 +16,7 @@ import LogisimFX.draw.tools.DragTool;
 import LogisimFX.draw.tools.SelectTool;
 import LogisimFX.draw.undo.Action;
 import LogisimFX.newgui.ContextMenuManager;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.proj.Project;
 import LogisimFX.proj.ProjectEvent;
 import LogisimFX.proj.ProjectListener;
@@ -66,6 +66,8 @@ public class AppearanceCanvas extends Canvas {
     private Selection selection;
     private CircuitState circuitState;
 
+    private Circuit circ;
+
     private ContextMenu contextMenu;
 
     private AppearanceCanvas canvas;
@@ -100,9 +102,11 @@ public class AppearanceCanvas extends Canvas {
 
     }
 
-    public AppearanceCanvas(AnchorPane rt, Project project){
+    public AppearanceCanvas(AnchorPane rt, Project project, Circuit circ){
 
         super(rt.getWidth(),rt.getHeight());
+
+        this.circ = circ;
 
         canvas = this;
 
@@ -140,6 +144,8 @@ public class AppearanceCanvas extends Canvas {
             }
         };
 
+        setModel(circ.getAppearance());
+
         //update.start();
 
     }
@@ -169,7 +175,7 @@ public class AppearanceCanvas extends Canvas {
 
         drawGrid();
 
-        setCircuit(proj, proj.getCircuitState());
+        //setCircuit(proj, proj.getCircuitState());
 
         tool = proj.getAbstractTool();
 

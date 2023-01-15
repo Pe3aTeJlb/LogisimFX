@@ -6,7 +6,7 @@
 
 package LogisimFX.draw.model;
 
-import LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas.AppearanceCanvas;
+import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.AppearanceCanvas;
 
 import java.awt.event.InputEvent;
 

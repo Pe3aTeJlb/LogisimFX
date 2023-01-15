@@ -8,7 +8,7 @@ package LogisimFX.comp;
 
 import LogisimFX.IconsManager;
 import LogisimFX.data.*;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.std.LC;
 import LogisimFX.LogisimVersion;
 

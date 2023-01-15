@@ -11,7 +11,7 @@ import java.util.HashMap;
 import LogisimFX.data.Location;
 import LogisimFX.data.Value;
 import LogisimFX.instance.InstancePainter;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.ArcType;

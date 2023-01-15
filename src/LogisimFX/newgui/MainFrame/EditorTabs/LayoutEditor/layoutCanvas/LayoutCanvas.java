@@ -3,9 +3,8 @@
  * License information is located in the Launch file
  */
 
-package LogisimFX.newgui.MainFrame.Canvas.layoutCanvas;
+package LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas;
 
-import LogisimFX.IconsManager;
 import LogisimFX.OldFontmetrics;
 import LogisimFX.circuit.*;
 import LogisimFX.comp.Component;
@@ -14,7 +13,7 @@ import LogisimFX.comp.ComponentUserEvent;
 import LogisimFX.data.*;
 import LogisimFX.file.LibraryEvent;
 import LogisimFX.file.LibraryListener;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.newgui.MainFrame.LC;
 import LogisimFX.prefs.AppPreferences;
 import LogisimFX.proj.Project;
@@ -31,7 +30,6 @@ import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -165,10 +163,6 @@ public class LayoutCanvas extends Canvas {
                     }
                 }
 
-                if (t == proj.getCurrentCircuit() && t != null) {
-                    proj.setCurrentCircuit(proj.getLogisimFile().getMainCircuit());
-                }
-
                 if (proj.getTool() == event.getData()) {
                     Tool next = findTool(proj.getLogisimFile().getOptions()
                             .getToolbarData().getContents());
@@ -181,17 +175,6 @@ public class LayoutCanvas extends Canvas {
                     proj.setTool(next);
                 }
 
-                if (circ != null) {
-                    CircuitState state = getCircuitState();
-                    CircuitState last = state;
-                    while (state != null && state.getCircuit() != circ) {
-                        last = state;
-                        state = state.getParentState();
-                    }
-                    if (state != null) {
-                        getProject().setCircuitState(last.cloneState());
-                    }
-                }
             }
         }
 
@@ -227,7 +210,7 @@ public class LayoutCanvas extends Canvas {
 
     private  double dx, dy;
 
-    public LayoutCanvas(AnchorPane rt, Project project){
+    public LayoutCanvas(AnchorPane rt, Project project, Circuit circ){
 
         //Super & set cache options & focus traversable
         super(rt.getWidth(),rt.getHeight());
@@ -264,8 +247,8 @@ public class LayoutCanvas extends Canvas {
 
         pauseTransition = new PauseTransition(Duration.millis(750));
 
-        circ = proj.getCurrentCircuit();
-        circState = proj.getCircuitState();
+        this.circ = circ;
+        circState = proj.getCircuitState(circ);
         ptContext = new ComponentDrawContext(circ, circState, g);
 
         update = new AnimationTimer() {
@@ -421,7 +404,7 @@ public class LayoutCanvas extends Canvas {
 
     private void drawWithUserState() {
 
-        circ = proj.getCurrentCircuit();
+        //circ = proj.getCurrentCircuit();
         Set<Component> hidden = NO_COMPONENTS;
 
         if (dragTool == null) {
@@ -475,7 +458,7 @@ public class LayoutCanvas extends Canvas {
     private void drawWidthIncompatibilityData() {
 
         Set<WidthIncompatibilityData> exceptions;
-        exceptions = proj.getCurrentCircuit().getWidthIncompatibilityData();
+        exceptions = circ.getWidthIncompatibilityData();
         if (exceptions == null || exceptions.size() == 0) return;
 
         g.setColor(Value.WIDTH_ERROR_COLOR);
@@ -910,7 +893,7 @@ public class LayoutCanvas extends Canvas {
     }
 
     public Circuit getCircuit(){
-        return proj.getCurrentCircuit();
+        return circ;
     }
 
     public CircuitState getCircuitState(){

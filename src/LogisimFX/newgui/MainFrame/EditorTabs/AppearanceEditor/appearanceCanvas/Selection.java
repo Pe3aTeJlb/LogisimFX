@@ -4,14 +4,14 @@
 * License information is located in the Launch file
 */
 
-package LogisimFX.newgui.MainFrame.Canvas.appearanceCanvas;
+package LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas;
 
 import LogisimFX.draw.model.CanvasModelEvent;
 import LogisimFX.draw.model.CanvasObject;
 import LogisimFX.draw.model.Handle;
 import LogisimFX.draw.model.HandleGesture;
 import LogisimFX.data.Location;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 
 import java.util.*;
 

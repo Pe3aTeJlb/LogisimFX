@@ -7,7 +7,7 @@ package LogisimFX.draw.model;
 
 import LogisimFX.draw.shapes.DrawAttr;
 import LogisimFX.data.*;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.util.EventSourceWeakSupport;
 
 import javafx.scene.paint.Color;

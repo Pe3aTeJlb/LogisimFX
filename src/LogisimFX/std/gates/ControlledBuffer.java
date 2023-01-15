@@ -10,7 +10,7 @@ import LogisimFX.IconsManager;
 import LogisimFX.comp.ComponentFactory;
 import LogisimFX.data.*;
 import LogisimFX.instance.*;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.std.LC;
 import LogisimFX.tools.WireRepair;
 import LogisimFX.tools.WireRepairData;

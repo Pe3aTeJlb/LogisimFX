@@ -9,7 +9,7 @@ package LogisimFX.circuit;
 import LogisimFX.comp.Component;
 import LogisimFX.comp.*;
 import LogisimFX.data.*;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.tools.CustomHandles;
 import LogisimFX.util.Cache;
 

@@ -25,8 +25,7 @@ import java.beans.PropertyChangeListener;
 
 public class AppearanceEditorToolBar extends ToolBar {
 
-    private ToolButton prevTool;
-    private ToolButton currTool;
+    private AbstractTool currTool;
 
     private ObservableList<ToolButton> EditAppearanceBtnsList;
 
@@ -38,7 +37,6 @@ public class AppearanceEditorToolBar extends ToolBar {
     private Project proj;
     private AppearanceEditor appearanceEditor;
 
-    private String currType = null;
 
     private Lighting lighting = new Lighting();
 
@@ -122,10 +120,8 @@ public class AppearanceEditorToolBar extends ToolBar {
             setTooltip(tip);
 
             this.setOnAction(event -> {
-                System.out.println("Apppp");
                 if(appearanceEditor.isSelected()) {
-                    prevTool = currTool;
-                    currTool = this;
+                    currTool = abstractTool;
                     proj.setAbstractTool(tool);
                 }
             });
@@ -151,6 +147,8 @@ public class AppearanceEditorToolBar extends ToolBar {
         proj.getFrameController().editorProperty().addListener((observableValue, editorBase, t1) -> {
             if (appearanceEditor.isSelected()){
                 recalculateAccelerators();
+                if (currTool != null)
+                proj.setAbstractTool(currTool);
             }
         });
 
@@ -192,20 +190,16 @@ public class AppearanceEditorToolBar extends ToolBar {
 
     public void highlightCurTool(AbstractTool tool){
 
-        if(prevTool != null) {
-            //prevTool.setStyle("-fx-border-color: #B5B5B5;");
-            prevTool.setEffect(null);
+        if (tool == null){
+            return;
         }
 
         for(Node node: EditAppearanceBtnsList){
             if(node instanceof ToolButton){
                 if(((ToolButton) node).abstractTool == tool) {
                     node.setEffect(lighting);
-                    //node.setStyle("-fx-border-color: #00FFFF;");
-                    //init moment, currTool is null
-                    if(currTool == null){
-                        currTool = (ToolButton) node;
-                    }
+                } else {
+                    node.setEffect(null);
                 }
             }
         }

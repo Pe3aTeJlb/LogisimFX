@@ -11,7 +11,7 @@ import LogisimFX.data.*;
 import LogisimFX.circuit.Circuit;
 import LogisimFX.circuit.CircuitState;
 import LogisimFX.circuit.WireSet;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.proj.Project;
 
 import com.sun.javafx.tk.FontMetrics;

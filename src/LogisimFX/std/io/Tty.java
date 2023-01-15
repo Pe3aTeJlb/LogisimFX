@@ -9,7 +9,7 @@ package LogisimFX.std.io;
 import LogisimFX.OldFontmetrics;
 import LogisimFX.data.*;
 import LogisimFX.instance.*;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.std.LC;
 
 import com.sun.javafx.tk.FontMetrics;

@@ -8,7 +8,7 @@ package LogisimFX.comp;
 
 import LogisimFX.OldFontmetrics;
 import LogisimFX.data.Bounds;
-import LogisimFX.newgui.MainFrame.Canvas.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.util.GraphicsUtil;
 import com.sun.javafx.tk.FontMetrics;
 import javafx.scene.text.Font;

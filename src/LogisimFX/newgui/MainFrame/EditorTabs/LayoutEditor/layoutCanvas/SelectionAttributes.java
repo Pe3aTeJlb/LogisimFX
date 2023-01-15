@@ -4,7 +4,7 @@
 * License information is located in the Launch file
 */
 
-package LogisimFX.newgui.MainFrame.Canvas.layoutCanvas;
+package LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas;
 
 import LogisimFX.circuit.Circuit;
 import LogisimFX.circuit.Wire;
