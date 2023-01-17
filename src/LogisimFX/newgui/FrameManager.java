@@ -22,7 +22,6 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.*;
 import java.util.List;
 
@@ -205,7 +204,7 @@ public class FrameManager {
     }
 
     public static void CreateCircLogFrame(Project proj){
-        CreateNewFrame("LogisimFX/newgui/CircLogFrame/CircLog.fxml", proj, Modality.NONE);
+        CreateNewFrame("LogisimFX/newgui/WaveformFrame/CircLog.fxml", proj, Modality.NONE);
     }
 
     public static void CreatePrintFrame(Project proj){

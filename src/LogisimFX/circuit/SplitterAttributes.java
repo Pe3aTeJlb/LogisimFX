@@ -8,8 +8,8 @@ package LogisimFX.circuit;
 
 import LogisimFX.data.*;
 import LogisimFX.instance.StdAttr;
-import LogisimFX.newgui.MainFrame.AttrTableSetException;
-import LogisimFX.newgui.MainFrame.AttributeTable;
+import LogisimFX.newgui.MainFrame.SystemTabs.AttributesTab.AttrTableSetException;
+import LogisimFX.newgui.MainFrame.SystemTabs.AttributesTab.AttributeTable;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.util.StringConverter;

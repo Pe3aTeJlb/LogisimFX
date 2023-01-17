@@ -14,7 +14,7 @@ import LogisimFX.comp.AbstractComponentFactory;
 import LogisimFX.comp.Component;
 import LogisimFX.comp.ComponentDrawContext;
 import LogisimFX.data.*;
-import LogisimFX.newgui.CircLogFrame.Loggable;
+import LogisimFX.newgui.WaveformFrame.Loggable;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.std.LC;
 import LogisimFX.tools.Pokable;

@@ -9,8 +9,8 @@ package LogisimFX.std.gates;
 import LogisimFX.data.Attribute;
 import LogisimFX.data.Attributes;
 import LogisimFX.data.Direction;
-import LogisimFX.newgui.MainFrame.AttrTableSetException;
-import LogisimFX.newgui.MainFrame.AttributeTable;
+import LogisimFX.newgui.MainFrame.SystemTabs.AttributesTab.AttrTableSetException;
+import LogisimFX.newgui.MainFrame.SystemTabs.AttributesTab.AttributeTable;
 import LogisimFX.std.LC;
 
 import javafx.scene.Node;

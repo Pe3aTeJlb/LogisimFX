@@ -7,8 +7,8 @@
 package LogisimFX.data;
 
 import LogisimFX.newgui.DialogManager;
-import LogisimFX.newgui.MainFrame.AttrTableSetException;
-import LogisimFX.newgui.MainFrame.AttributeTable;
+import LogisimFX.newgui.MainFrame.SystemTabs.AttributesTab.AttrTableSetException;
+import LogisimFX.newgui.MainFrame.SystemTabs.AttributesTab.AttributeTable;
 
 import javafx.beans.binding.StringBinding;
 import javafx.scene.Node;

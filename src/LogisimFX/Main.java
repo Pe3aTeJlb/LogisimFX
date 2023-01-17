@@ -24,6 +24,8 @@ public class Main extends Application{
     @Override
     public void start(Stage primaryStage) {
 
+        StyleManager.initializeDefaultUserAgentStylesheet();
+
         Startup startup = Startup.parseArgs(arguments);
 
         if (startup == null) {

@@ -1,0 +1,18 @@
+/*Theme change popup*/
+
+.popup-container {
+    -fx-pref-width: 250;
+}
+.rename_field {
+    -fx-pref-width: 250;
+}
+.theme-list-container {
+    -fx-background-color: #F3F3F3;
+}
+.theme-list-item {
+    -fx-background-color: #FFFFFF;
+    -fx-pref-width: 250;
+}
+.theme-list-item:hover {
+    -fx-background-color: #EDEDED;
+}

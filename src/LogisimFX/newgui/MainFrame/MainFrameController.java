@@ -18,15 +18,16 @@ import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutCan
 import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.AppearanceEditor;
 import LogisimFX.newgui.MainFrame.EditorTabs.EditorBase;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.LayoutEditor;
-import LogisimFX.newgui.MainFrame.SystemTabs.ProjectExplorerTreeView;
-import LogisimFX.newgui.MainFrame.SystemTabs.ProjectTreeToolBar;
-import LogisimFX.newgui.MainFrame.SystemTabs.SimulationExplorerTreeView;
-import LogisimFX.newgui.MainFrame.SystemTabs.SimulationTreeToolBar;
+import LogisimFX.newgui.MainFrame.SystemTabs.AttributesTab.AttributeTable;
+import LogisimFX.newgui.MainFrame.SystemTabs.ProjectExplorerTab.ProjectExplorerTreeView;
+import LogisimFX.newgui.MainFrame.SystemTabs.ProjectExplorerTab.ProjectTreeToolBar;
+import LogisimFX.newgui.MainFrame.SystemTabs.SimulationExplorerTab.SimulationExplorerTreeView;
+import LogisimFX.newgui.MainFrame.SystemTabs.SimulationExplorerTab.SimulationTreeToolBar;
+import LogisimFX.newgui.MainFrame.SystemTabs.WaveformTab.WaveformController;
 import LogisimFX.proj.Project;
 import LogisimFX.proj.ProjectEvent;
 import LogisimFX.proj.ProjectListener;
 import LogisimFX.tools.AddTool;
-import LogisimFX.tools.Library;
 import LogisimFX.tools.Tool;
 
 import docklib.dock.DockAnchor;
@@ -35,9 +36,12 @@ import docklib.draggabletabpane.DoubleSidedTabPane;
 import docklib.draggabletabpane.DraggableTab;
 import docklib.draggabletabpane.DraggableTabPane;
 import docklib.draggabletabpane.TabGroup;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ObjectPropertyBase;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Side;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.fxml.FXML;
 import javafx.scene.layout.Priority;
@@ -45,7 +49,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
-import java.util.HashMap;
+import java.io.IOException;
+import java.util.*;
+
+import static java.util.Map.entry;
 
 public class MainFrameController extends AbstractController {
 
@@ -68,6 +75,7 @@ public class MainFrameController extends AbstractController {
 
 
     private HashMap<String, DraggableTab> openedTabs = new HashMap<>();
+    private HashMap<DraggableTab, WaveformController> openedWaveforms = new HashMap<>();
     private HashMap<Pair<Circuit, String>, DraggableTab> openedWorkspaceTabs = new HashMap<>();
 
     private DockPane dockPane;
@@ -144,8 +152,24 @@ public class MainFrameController extends AbstractController {
 //monolith - strength in unity
     @FXML
     public void initialize(){
-        //Nothing to see here lol
+        //Init of DockLib-FX values: icons, localization
         docklib.utils.IconsManager.setStageIcon(IconsManager.LogisimFX);
+        DraggableTab.setLocalizationPack(
+                Map.ofEntries(
+                        entry("dockPinnedItem", LC.createStringBinding("dockPinnedItem")),
+                        entry("floatItem", LC.createStringBinding("floatItem")),
+                        entry("windowItem", LC.createStringBinding("windowItem")),
+                        entry("closeItem", LC.createStringBinding("closeItem")),
+                        entry("closeOthersItem", LC.createStringBinding("closeOthersItem")),
+                        entry("closeAllItems", LC.createStringBinding("closeAllItems")),
+                        entry("closeToTheLeftItem", LC.createStringBinding("closeToTheLeftItem")),
+                        entry("closeToTheRightItem", LC.createStringBinding("closeToTheRightItem")),
+                        entry("splitVerticallyItem", LC.createStringBinding("splitVerticallyItem")),
+                        entry("splitHorizontallyItem", LC.createStringBinding("splitHorizontallyItem")),
+                        entry("selectNextTabItem", LC.createStringBinding("selectNextTabItem")),
+                        entry("selectPreviousTabItem", LC.createStringBinding("selectPreviousTabItem")
+                )
+        ));
     }
 
     public void postInitialization(Stage s,Project p) {
@@ -191,7 +215,7 @@ public class MainFrameController extends AbstractController {
         dockPane.dock(systemTabPaneRight, DockAnchor.RIGHT);
         dockPane.dock(systemTabPaneBottom, DockAnchor.BOTTOM);
 
-        menubar = new CustomMenuBar(proj);
+        menubar = new CustomMenuBar(stage, proj);
 
         Root.getChildren().addAll(menubar, dockPane);
 
@@ -298,6 +322,7 @@ public class MainFrameController extends AbstractController {
         createToolsTab();
         createSimulationTab();
         createAttributesTab();
+        createWaveformTab();
 
         createCircAppearanceEditor(proj.getCurrentCircuit());
         createCircLayoutEditor(proj.getCurrentCircuit());
@@ -360,10 +385,15 @@ public class MainFrameController extends AbstractController {
             return;
         }
 
+        ScrollPane scrollPane = new ScrollPane();
+
         attributeTable = new AttributeTable(proj);
         attributeTable.setFocusTraversable(false);
 
-        DraggableTab attributeTableTab = new DraggableTab(LC.createStringBinding("attrTab"), IconsManager.getImage("circattr.gif"), attributeTable);
+        scrollPane.setContent(attributeTable);
+        scrollPane.setFitToWidth(true);
+
+        DraggableTab attributeTableTab = new DraggableTab(LC.createStringBinding("attrTab"), IconsManager.getImage("circattr.gif"), scrollPane);
         attributeTableTab.setOnClosed(event -> openedTabs.remove("AttributesTab"));
 
         openedTabs.put("AttributesTab", attributeTableTab);
@@ -372,8 +402,32 @@ public class MainFrameController extends AbstractController {
 
     }
 
-    public void createTimelineTab(){
+    public void createWaveformTab(){
 
+        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource(
+                "LogisimFX/newgui/MainFrame/SystemTabs/WaveformTab/WaveformTab.fxml"));
+        Parent root = null;
+
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        AbstractController c = loader.getController();
+        c.postInitialization(stage, proj);
+
+        DraggableTab waveformTab = new DraggableTab(LC.createStringBinding("waveformTab"), IconsManager.getImage("waveform.gif"), root);
+
+        waveformTab.setOnCloseRequest(event -> openedWaveforms.remove(waveformTab));
+
+        openedWaveforms.put(waveformTab, (WaveformController)c);
+
+        systemTabPaneBottom.addLeft(waveformTab);
+
+        if (stage.isShowing()) {
+            Platform.runLater(((WaveformController) c)::findScrollBar);
+        }
     }
 
     //WorkSpace Tabs
@@ -666,7 +720,12 @@ public class MainFrameController extends AbstractController {
             }
         }
 
-        attributeTable.terminateListener();
+        List<DraggableTab> keys = new ArrayList<>(openedWaveforms.keySet());
+        for (DraggableTab tab: keys){
+            openedWaveforms.get(tab).onClose();
+            tab.close();
+            openedWaveforms.remove(tab);
+        }
 
         proj.removeProjectListener(myProjectListener);
         proj.removeLibraryListener(myProjectListener);

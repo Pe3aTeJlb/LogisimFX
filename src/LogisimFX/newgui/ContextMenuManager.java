@@ -4,8 +4,8 @@ import LogisimFX.FileSelector;
 import LogisimFX.circuit.CircuitMutation;
 import LogisimFX.circuit.CircuitState;
 import LogisimFX.comp.Component;
-import LogisimFX.newgui.CircLogFrame.CircLogController;
-import LogisimFX.newgui.CircLogFrame.SelectionItem;
+import LogisimFX.newgui.WaveformFrame.WaveformController;
+import LogisimFX.newgui.WaveformFrame.SelectionItem;
 import LogisimFX.newgui.HexEditorFrame.HexFile;
 import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.AppearanceCanvas;
 import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.AppearanceEditHandler;
@@ -460,9 +460,9 @@ public class ContextMenuManager {
 
     }
 
-    //Timeline Radix
+    //Waveform Radix
 
-    public static ContextMenu RadixOptionsContextMenu(CircLogController.TimelineTableModel tableModel, TreeTableView table){
+    public static ContextMenu RadixOptionsContextMenu(WaveformController.WaveformTableModel tableModel, TreeTableView table){
 
         ContextMenu contextMenu = new ContextMenu();
 
@@ -495,6 +495,41 @@ public class ContextMenuManager {
         return contextMenu;
 
     }
+
+    public static ContextMenu RadixOptionsContextMenu(LogisimFX.newgui.MainFrame.SystemTabs.WaveformTab.WaveformController.WaveformTableModel tableModel, TreeTableView table){
+
+        ContextMenu contextMenu = new ContextMenu();
+
+        MenuItem bin = new MenuItem();
+        bin.setText("Binary");
+        bin.setDisable(tableModel.getRadix() == 2);
+        bin.setOnAction(event -> {
+            tableModel.setRadix(2);
+            table.refresh();
+        });
+
+        MenuItem dec = new MenuItem();
+        dec.setText("Decimal");
+        dec.setDisable(tableModel.getRadix() == 10);
+        dec.setOnAction(event -> {
+            tableModel.setRadix(10);
+            table.refresh();
+        });
+
+        MenuItem hex = new MenuItem();
+        hex.setText("Hexagonal");
+        hex.setDisable(tableModel.getRadix() == 16);
+        hex.setOnAction(event -> {
+            tableModel.setRadix(16);
+            table.refresh();
+        });
+
+        contextMenu.getItems().addAll(bin, dec, hex);
+
+        return contextMenu;
+
+    }
+
 
     public static ContextMenu RadixOptionsContextMenu(SelectionItem tableModel, TableView table){
 

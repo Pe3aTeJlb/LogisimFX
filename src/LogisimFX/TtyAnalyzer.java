@@ -19,7 +19,7 @@ import LogisimFX.file.Loader;
 import LogisimFX.file.LogisimFile;
 import LogisimFX.instance.Instance;
 import LogisimFX.instance.InstanceState;
-import LogisimFX.newgui.CircLogFrame.Loggable;
+import LogisimFX.newgui.WaveformFrame.Loggable;
 import LogisimFX.proj.Project;
 import LogisimFX.std.io.Keyboard;
 import LogisimFX.std.io.Tty;

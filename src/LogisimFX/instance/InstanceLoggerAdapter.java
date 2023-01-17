@@ -8,7 +8,7 @@ package LogisimFX.instance;
 
 import LogisimFX.data.Value;
 import LogisimFX.circuit.CircuitState;
-import LogisimFX.newgui.CircLogFrame.Loggable;
+import LogisimFX.newgui.WaveformFrame.Loggable;
 
 class InstanceLoggerAdapter implements Loggable {
 

@@ -1,7 +1,7 @@
 package LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor;
 
 import LogisimFX.circuit.Circuit;
-import LogisimFX.newgui.MainFrame.AttributeTable;
+import LogisimFX.newgui.MainFrame.SystemTabs.AttributesTab.AttributeTable;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutCanvas;
 import LogisimFX.newgui.MainFrame.CustomMenuBar;
 import LogisimFX.newgui.MainFrame.EditorTabs.EditorBase;

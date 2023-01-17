@@ -442,6 +442,7 @@ public class LayoutCanvas extends Canvas {
         circ.draw(context, hidden, inverseTransformX(0),inverseTransformY(0),
                 inverseTransformX(this.getWidth()),inverseTransformY(this.getHeight()));
         //circ.draw(context, hidden);
+
         selection.draw(context, hidden);
 
 

@@ -7,7 +7,7 @@ package LogisimFX.newgui.OptionsFrame;
 
 import LogisimFX.file.*;
 import LogisimFX.newgui.AbstractController;
-import LogisimFX.newgui.MainFrame.AttributeTable;
+import LogisimFX.newgui.MainFrame.SystemTabs.AttributesTab.AttributeTable;
 import LogisimFX.proj.Project;
 import LogisimFX.tools.AddTool;
 import LogisimFX.tools.Library;

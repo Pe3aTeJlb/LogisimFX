@@ -24,11 +24,14 @@ import LogisimFX.localization.Localizer;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
 public class CustomMenuBar extends MenuBar implements SelectionListener, Selection.Listener {
 
@@ -36,6 +39,7 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
 
     private static Localizer localizer = LC_menu.getInstance();
 
+    private Stage stage;
     private Project proj;
     private LogisimFile logisimFile;
 
@@ -43,14 +47,17 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
     private EditMenu editMenu;
     private EditHandler editHandler;
 
-    public CustomMenuBar(Project project){
+    public CustomMenuBar(Stage s, Project project){
 
         super();
 
+        stage = s;
         proj = project;
         logisimFile = proj.getLogisimFile();
 
-        editHandler = proj.getFrameController().getEditHandler();
+        proj.getFrameController().editHandlerProperty().addListener((observableValue, handler, t1) -> {
+            editHandler = t1;
+        });
 
         prefHeight(prefHeight);
 
@@ -66,6 +73,7 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
 
         initFileMenu();
         this.getMenus().add(editMenu = new EditMenu());
+        initViewMenu();
         initProjectMenu();
         this.getMenus().add(new SimulateMenu());
         this.getMenus().add(new WindowMenu());
@@ -126,8 +134,6 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
         Print.setOnAction(event -> FrameManager.CreatePrintFrame(proj));
 
 
-
-
         SeparatorMenuItem sp3 = new SeparatorMenuItem();
 
 
@@ -168,6 +174,55 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
         );
 
         this.getMenus().add(File);
+
+    }
+
+    private void initViewMenu(){
+
+        Menu View = new Menu();
+        View.textProperty().bind(localizer.createStringBinding("viewMenu"));
+
+        Menu tabMenu = new Menu();
+        tabMenu.textProperty().bind(localizer.createStringBinding("viewToolsWindow"));
+
+        MenuItem addToolsTab = new MenuItem();
+        //addToolsTab.setAccelerator(KeyCombination.keyCombination("Alt+1"));
+        addToolsTab.textProperty().bind(localizer.createStringBinding("viewToolsTab"));
+        addToolsTab.setOnAction(event -> proj.getFrameController().createToolsTab());
+
+        MenuItem addSimulationTab = new MenuItem();
+        //addSimulationTab.setAccelerator(KeyCombination.keyCombination("Alt+2"));
+        addSimulationTab.textProperty().bind(localizer.createStringBinding("viewSimTab"));
+        addSimulationTab.setOnAction(event -> proj.getFrameController().createSimulationTab());
+
+        MenuItem addAttributesTab = new MenuItem();
+        //addAttributesTab.setAccelerator(KeyCombination.keyCombination("Alt+3"));
+        addAttributesTab.textProperty().bind(localizer.createStringBinding("viewAttrTab"));
+        addAttributesTab.setOnAction(event -> proj.getFrameController().createAttributesTab());
+
+        MenuItem addWaveformTab = new MenuItem();
+        //addWaveformTab.setAccelerator(KeyCombination.keyCombination("Alt+4"));
+        addWaveformTab.textProperty().bind(localizer.createStringBinding("viewWaveformTab"));
+        addWaveformTab.setOnAction(event -> proj.getFrameController().createWaveformTab());
+
+        tabMenu.getItems().addAll(
+                addToolsTab,
+                addSimulationTab,
+                addAttributesTab,
+                addWaveformTab
+        );
+
+
+        MenuItem changeTheme = new MenuItem();
+        changeTheme.textProperty().bind(localizer.createStringBinding("viewChangeTheme"));
+        changeTheme.setOnAction(event -> new ThemeChangePopup(stage));
+
+        View.getItems().addAll(
+                tabMenu,
+                changeTheme
+        );
+
+        this.getMenus().add(View);
 
     }
 
@@ -908,34 +963,6 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
 
             SeparatorMenuItem sp2 = new SeparatorMenuItem();
 
-            Menu tabMenu = new Menu();
-            tabMenu.textProperty().bind(localizer.createStringBinding("windowToolsWindow"));
-
-            MenuItem addToolsTab = new MenuItem();
-            addToolsTab.textProperty().bind(localizer.createStringBinding("windowToolsTab"));
-            addToolsTab.setOnAction(event -> proj.getFrameController().createToolsTab());
-
-            MenuItem addSimulationTab = new MenuItem();
-            addSimulationTab.textProperty().bind(localizer.createStringBinding("windowSimTab"));
-            addSimulationTab.setOnAction(event -> proj.getFrameController().createSimulationTab());
-
-            MenuItem addAttributesTab = new MenuItem();
-            addAttributesTab.textProperty().bind(localizer.createStringBinding("windowAttrTab"));
-            addAttributesTab.setOnAction(event -> proj.getFrameController().createAttributesTab());
-
-            MenuItem addTimelineTab = new MenuItem();
-            addTimelineTab.textProperty().bind(localizer.createStringBinding("windowTimelineTab"));
-            addTimelineTab.setOnAction(event -> proj.getFrameController().createTimelineTab());
-
-            tabMenu.getItems().addAll(
-                    addToolsTab,
-                    addSimulationTab,
-                    addAttributesTab,
-                    addTimelineTab
-            );
-
-            SeparatorMenuItem sp3 = new SeparatorMenuItem();
-
             defaultWindowMenuItems.addAll(
                     Maximize,
                     Minimize,
@@ -943,9 +970,7 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
                     sp1,
                     CombAnalyse,
                     Preferences,
-                    sp2,
-                    tabMenu,
-                    sp3
+                    sp2
             );
 
             this.getItems().addAll(defaultWindowMenuItems);
@@ -1007,13 +1032,6 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
         this.getMenus().add(Help);
 
     }
-
-    //Technical methods
-    public void setEditHandler(EditHandler handler){
-        editHandler = handler;
-        editMenu.calculateEnabled();
-    }
-
 
     //Listeners
 
