@@ -16,3 +16,51 @@
 .theme-list-item:hover {
     -fx-background-color: #EDEDED;
 }
+
+/*CodeEditor*/
+
+.find
+{
+    -rtfx-background-color: #F8E71C !important;
+    -fx-fill: #000 !important;
+}
+.findActive
+{
+    -rtfx-background-color: #A07C61 !important;
+}
+
+
+.keyword {
+    -fx-fill: #0026FF !important;
+    -fx-font-weight: bold;
+}
+.data-types {
+    -fx-fill: #4ECBFD !important;
+    -fx-font-weight: bold;
+}
+.literals {
+    -fx-fill: #9C93F9 !important;
+    -fx-font-weight: bold;
+}
+.semicolon {
+    -fx-font-weight: bold !important;
+    -fx-fill: #fff  !important;
+}
+.paren {
+    -fx-fill: #fff !important;
+    -fx-font-weight: bold !important;
+}
+.bracket {
+    -fx-fill: #fff !important;
+    -fx-font-weight: bold !important;
+}
+.brace {
+    -fx-fill: #fff !important;
+    -fx-font-weight: bold !important;
+}
+.string {
+    -fx-fill: #F1FA8C !important;
+}
+.comment {
+	-fx-fill: #62677D !important;
+}

@@ -19,10 +19,7 @@ public class LayoutEditHandler extends EditHandler {
 	private LayoutCanvas canvas;
 
 	public LayoutEditHandler(LayoutCanvas canvas) {
-
 		this.canvas = canvas;
-		//Clipboard.addPropertyChangeListener(Clipboard.contentsProperty, this);
-
 	}
 
 	@Override
@@ -38,7 +35,10 @@ public class LayoutEditHandler extends EditHandler {
 			if (lib instanceof Base) selectAvailable = true;
 		}
 
+		Action last = proj.getLastAction();
 
+		if(from.equals("UNDO")){ return !(last == null);}
+		if(from.equals("REDO")){ return false;}
 		if(from.equals("CUT")){ return !selEmpty && selectAvailable && canChange;}
 		if(from.equals("COPY")){ return !selEmpty && selectAvailable;}
 		if(from.equals("PASTE")){ return selectAvailable && canChange && !Clipboard.isEmpty();}
@@ -54,7 +54,17 @@ public class LayoutEditHandler extends EditHandler {
 		return false;
 
 	}
-	
+
+	@Override
+	public void undo() {
+		canvas.getProject().undoAction();
+	}
+
+	@Override
+	public void redo() {
+
+	}
+
 	@Override
 	public void cut() {
 

@@ -16,6 +16,7 @@ import LogisimFX.draw.tools.DragTool;
 import LogisimFX.draw.tools.SelectTool;
 import LogisimFX.draw.undo.Action;
 import LogisimFX.newgui.ContextMenuManager;
+import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.AppearanceEditor;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.proj.Project;
 import LogisimFX.proj.ProjectEvent;
@@ -38,6 +39,7 @@ public class AppearanceCanvas extends Canvas {
 
     private AnchorPane root;
 
+    private AppearanceEditor appearanceEditor;
     private Project proj;
 
     //public Canvas;
@@ -102,11 +104,12 @@ public class AppearanceCanvas extends Canvas {
 
     }
 
-    public AppearanceCanvas(AnchorPane rt, Project project, Circuit circ){
+    public AppearanceCanvas(AnchorPane rt, AppearanceEditor appearanceEditor){
 
         super(rt.getWidth(),rt.getHeight());
 
-        this.circ = circ;
+        this.appearanceEditor = appearanceEditor;
+        this.circ = appearanceEditor.getCirc();
 
         canvas = this;
 
@@ -116,7 +119,7 @@ public class AppearanceCanvas extends Canvas {
 
         root = rt;
 
-        proj = project;
+        proj = appearanceEditor.getProj();
         proj.addProjectListener(listener);
 
         g = new Graphics(this.getGraphicsContext2D());
@@ -171,22 +174,24 @@ public class AppearanceCanvas extends Canvas {
                 transform[3], transform[4], transform[5]
         );
 
-        model = proj.getCurrentCircuit().getAppearance();
+        //model = proj.getCurrentCircuit().getAppearance();
 
         drawGrid();
 
         //setCircuit(proj, proj.getCircuitState());
-
-        tool = proj.getAbstractTool();
 
         if (model != null) {
             model.paint(g, selection);
             g.toDefault();
         }
 
-        if (tool != null) {
-            tool.draw(this);
-            g.toDefault();
+        if (appearanceEditor.isSelected()) {
+            tool = proj.getAbstractTool();
+
+            if (tool != null) {
+                tool.draw(this);
+                g.toDefault();
+            }
         }
 
     }
@@ -235,11 +240,8 @@ public class AppearanceCanvas extends Canvas {
 
             this.requestFocus();
 
-            if(event.getButton() != MouseButton.SECONDARY &&
-                    contextMenu != null &&
-                    contextMenu.isShowing() &&
-                    !event.getTarget().equals(contextMenu)){
-                    contextMenu.hide();
+            if(contextMenu != null && contextMenu.isShowing() && !event.getTarget().equals(contextMenu)){
+                contextMenu.hide();
             }
 
             if (event.getButton() == MouseButton.SECONDARY) {
@@ -277,10 +279,11 @@ public class AppearanceCanvas extends Canvas {
 
                 dragScreenX = event.getX();
                 dragScreenY = event.getY();
-            }
 
-            if (tool != null) {
-                tool.mouseDragged(this, new AppearanceCanvas.CME(event));
+                if (tool != null) {
+                    tool.mouseDragged(this, new AppearanceCanvas.CME(event));
+                }
+
             }
 
         });
@@ -395,8 +398,7 @@ public class AppearanceCanvas extends Canvas {
 
     public void doAction(Action canvasAction) {
 
-        Circuit circuit = circuitState.getCircuit();
-        if (!proj.getLogisimFile().contains(circuit)) {
+        if (!proj.getLogisimFile().contains(circ)) {
             return;
         }
 
@@ -445,7 +447,7 @@ public class AppearanceCanvas extends Canvas {
             }
         }
 
-        proj.doAction(new CanvasActionAdapter(circuit, canvasAction));
+        proj.doAction(new CanvasActionAdapter(circ, canvasAction));
 
     }
 
@@ -568,16 +570,6 @@ public class AppearanceCanvas extends Canvas {
 
     public AppearanceEditHandler getEditHandler(){
         return appearanceEditHandler;
-    }
-
-
-    public void setCircuit(Project proj, CircuitState circuitState) {
-
-        this.proj = proj;
-        this.circuitState = circuitState;
-        Circuit circuit = circuitState.getCircuit();
-        setModel(circuit.getAppearance());
-
     }
 
     public void setModel(CanvasModel value) {

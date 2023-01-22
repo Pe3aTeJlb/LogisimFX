@@ -128,6 +128,14 @@ public class ContextMenuManager {
         EditAppearance.textProperty().bind(lc.createStringBinding("projectEditCircuitAppearanceItem"));
         EditAppearance.setOnAction(event -> proj.getFrameController().createCircAppearanceEditor(circ));
 
+        MenuItem EditVerilogModel = new MenuItem();
+        EditVerilogModel.textProperty().bind(lc.createStringBinding("projectEditVerilogModelItem"));
+        EditVerilogModel.setOnAction(event -> proj.getFrameController().createVerilogModelEditor(circ));
+
+        MenuItem EditVHDLModel = new MenuItem();
+        EditVHDLModel.textProperty().bind(lc.createStringBinding("projectEditVHDLModelItem"));
+        EditVHDLModel.setOnAction(event -> proj.getFrameController().createVHDLModelEditor(circ));
+
         MenuItem AnalyzeCircuit = new MenuItem();
         AnalyzeCircuit.textProperty().bind(lc.createStringBinding("projectAnalyzeCircuitItem"));
         AnalyzeCircuit.setOnAction(event -> FrameManager.CreateCircuitAnalysisFrame(proj));
@@ -150,6 +158,8 @@ public class ContextMenuManager {
         contextMenu.getItems().addAll(
                 EditCircuit,
                 EditAppearance,
+                EditVerilogModel,
+                EditVHDLModel,
                 AnalyzeCircuit,
                 GetCircuitStatistics,
                 SetAsMain,
@@ -388,7 +398,7 @@ public class ContextMenuManager {
         lc.changeBundle("menu");
 
         ContextMenu menu = new ContextMenu();
-        AppearanceEditHandler handler = new AppearanceEditHandler(canvas);
+        AppearanceEditHandler handler = canvas.getEditHandler();
 
         MenuItem cut = new MenuItem();
         cut.textProperty().bind(LC_menu.getInstance().createStringBinding("editCutItem"));

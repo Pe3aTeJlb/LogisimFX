@@ -41,4 +41,8 @@ public class IconsManager {
 
     }
 
+    public static void initializeDefaultIcons(){
+        docklib.utils.IconsManager.setStageIcon(IconsManager.LogisimFX);
+    }
+
 }

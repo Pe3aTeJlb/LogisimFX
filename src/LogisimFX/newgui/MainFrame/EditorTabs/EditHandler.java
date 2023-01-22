@@ -9,6 +9,8 @@ package LogisimFX.newgui.MainFrame.EditorTabs;
 public abstract class EditHandler {
 
 	public abstract boolean computeEnabled(String from);
+	public abstract void undo();
+	public abstract void redo();
 	public abstract void cut();
 	public abstract void copy();
 	public abstract void paste();

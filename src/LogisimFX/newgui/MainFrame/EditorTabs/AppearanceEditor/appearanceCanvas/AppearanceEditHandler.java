@@ -19,6 +19,7 @@ import LogisimFX.data.Direction;
 import LogisimFX.data.Location;
 import LogisimFX.newgui.MainFrame.EditorTabs.EditHandler;
 import LogisimFX.newgui.MainFrame.LC;
+import LogisimFX.proj.Action;
 import LogisimFX.proj.Project;
 
 import java.util.ArrayList;
@@ -95,6 +96,10 @@ public class AppearanceEditHandler extends EditHandler {
 			canRemCtrl = o.canDeleteHandle(handle.getLocation()) != null;
 		}
 
+		Action last = proj.getLastAction();
+
+		if(from.equals("UNDO")){ return !(last == null);}
+		if(from.equals("REDO")){ return false;}
 		if(from.equals("CUT")){ return selHasRemovable && canChange;}
 		if(from.equals("COPY")){ return !selEmpty;}
 		if(from.equals("PASTE")){ return canChange && clipExists;}
@@ -110,7 +115,17 @@ public class AppearanceEditHandler extends EditHandler {
 		return false;
 
 	}
-	
+
+	@Override
+	public void undo() {
+		canvas.getProject().undoAction();
+	}
+
+	@Override
+	public void redo() {
+
+	}
+
 	@Override
 	public void cut() {
 

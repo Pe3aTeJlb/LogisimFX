@@ -14,6 +14,7 @@ import LogisimFX.data.*;
 import LogisimFX.file.LibraryEvent;
 import LogisimFX.file.LibraryListener;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.LayoutEditor;
 import LogisimFX.newgui.MainFrame.LC;
 import LogisimFX.prefs.AppPreferences;
 import LogisimFX.proj.Project;
@@ -48,6 +49,7 @@ public class LayoutCanvas extends Canvas {
 
     private AnchorPane root;
 
+    private LayoutEditor layoutEditor;
     private Project proj;
 
     //public Canvas;
@@ -111,9 +113,6 @@ public class LayoutCanvas extends Canvas {
 
     private Circuit circ;
     private CircuitState circState;
-
-    //
-    private LayoutEditHandler layoutEditHandler;
 
     private MyProjectListener myProjectListener = new MyProjectListener();
 
@@ -210,7 +209,7 @@ public class LayoutCanvas extends Canvas {
 
     private  double dx, dy;
 
-    public LayoutCanvas(AnchorPane rt, Project project, Circuit circ){
+    public LayoutCanvas(AnchorPane rt, LayoutEditor layoutEditor){
 
         //Super & set cache options & focus traversable
         super(rt.getWidth(),rt.getHeight());
@@ -220,7 +219,8 @@ public class LayoutCanvas extends Canvas {
 
         root = rt;
 
-        proj = project;
+        this.layoutEditor = layoutEditor;
+        proj = layoutEditor.getProj();
 
         //set Listeners
         proj.addProjectListener(myProjectListener);
@@ -232,8 +232,6 @@ public class LayoutCanvas extends Canvas {
         g.toDefault();
 
         setCanvasEvents();
-
-        layoutEditHandler = new LayoutEditHandler(this);
 
         //set init transforms
         transform = new double[6];
@@ -247,7 +245,7 @@ public class LayoutCanvas extends Canvas {
 
         pauseTransition = new PauseTransition(Duration.millis(750));
 
-        this.circ = circ;
+        this.circ = layoutEditor.getCirc();
         circState = proj.getCircuitState(circ);
         ptContext = new ComponentDrawContext(circ, circState, g);
 
@@ -443,15 +441,18 @@ public class LayoutCanvas extends Canvas {
                 inverseTransformX(this.getWidth()),inverseTransformY(this.getHeight()));
         //circ.draw(context, hidden);
 
-        selection.draw(context, hidden);
+        if (layoutEditor.isSelected()) {
+            selection.draw(context, hidden);
 
 
-        // draw tool
-       Tool tool = dragTool != null ? dragTool : proj.getTool();
-        //if (tool != null && !canvas.isPopupMenuUp()) {
-        if (tool != null) {
-            tool.draw(this, context);
-            g.toDefault();
+            // draw tool
+            Tool tool = dragTool != null ? dragTool : proj.getTool();
+            //if (tool != null && !canvas.isPopupMenuUp()) {
+            if (tool != null) {
+                tool.draw(this, context);
+                g.toDefault();
+            }
+
         }
 
     }
@@ -613,7 +614,9 @@ public class LayoutCanvas extends Canvas {
                     contextMenu != null &&
                     contextMenu.isShowing() &&
                     !event.getTarget().equals(contextMenu)){
-                contextMenu.hide();
+
+                        contextMenu.hide();
+
             }
 
             if(event.getButton() == MouseButton.PRIMARY) {
@@ -910,10 +913,6 @@ public class LayoutCanvas extends Canvas {
     }
 
     public Canvas getCanvas(){return this;}
-
-    public LayoutEditHandler getEditHandler(){
-        return layoutEditHandler;
-    }
 
 
 

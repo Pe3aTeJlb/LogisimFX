@@ -206,14 +206,16 @@ public class AppearanceEditorToolBar extends ToolBar {
 
     }
 
-    private void recalculateAccelerators(){
+    public void recalculateAccelerators(){
+
+        if (appearanceEditor.getScene() == null) return;
 
         int toolsCount = Math.min(EditAppearanceBtnsList.size(), 10);
 
         for(int i = 0; i < toolsCount; i++){
             int finalI = i;
             int index = (i) == 9 ? 0 : i + 1;
-            proj.getFrameController().getStage().getScene().getAccelerators().put(
+            appearanceEditor.getScene().getAccelerators().put(
                     new KeyCodeCombination(KeyCode.valueOf("DIGIT"+ index), KeyCombination.CONTROL_DOWN),
                     new Runnable() {
                         @FXML
@@ -224,6 +226,7 @@ public class AppearanceEditorToolBar extends ToolBar {
 
             );
         }
+
     }
 
     public void terminateListeners(){

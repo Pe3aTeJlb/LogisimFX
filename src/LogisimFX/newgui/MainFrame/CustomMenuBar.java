@@ -33,7 +33,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-public class CustomMenuBar extends MenuBar implements SelectionListener, Selection.Listener {
+public class CustomMenuBar extends MenuBar {
 
     private int prefHeight = 25;
 
@@ -43,9 +43,7 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
     private Project proj;
     private LogisimFile logisimFile;
 
-
     private EditMenu editMenu;
-    private EditHandler editHandler;
 
     public CustomMenuBar(Stage s, Project project){
 
@@ -55,8 +53,9 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
         proj = project;
         logisimFile = proj.getLogisimFile();
 
-        proj.getFrameController().editHandlerProperty().addListener((observableValue, handler, t1) -> {
-            editHandler = t1;
+        proj.getFrameController().editorProperty().addListener((observableValue, handler, t1) -> {
+            editMenu.getItems().clear();
+            editMenu.getItems().addAll(t1.getEditMenuItems());
         });
 
         prefHeight(prefHeight);
@@ -228,205 +227,9 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
 
     private class EditMenu extends Menu{
 
-        private final MenuItem Undo,
-                                Cut,
-                                Copy,
-                                Paste,
-                                Delete,
-                                Duplicate,
-                                SelectAll,
-                                RaiseSelection,
-                                LowerSelection,
-                                RiseToTop,
-                                LowerToBottom,
-                                AddVertex,
-                                RemoveVertex;
-
         public EditMenu() {
-
             super();
-
             this.textProperty().bind(localizer.createStringBinding("editMenu"));
-
-            Undo = new MenuItem();
-            Undo.setAccelerator(KeyCombination.keyCombination("Ctrl+Z"));
-            Undo.textProperty().bind(localizer.createStringBinding("editCantUndoItem"));
-            Undo.setDisable(true);
-            Undo.setOnAction(event -> {
-                proj.undoAction();
-                calculateEnabled();
-            });
-
-
-            SeparatorMenuItem sp1 = new SeparatorMenuItem();
-
-
-            Cut = new MenuItem();
-            Cut.setAccelerator(KeyCombination.keyCombination("Ctrl+X"));
-            Cut.textProperty().bind(localizer.createStringBinding("editCutItem"));
-            Cut.setDisable(editHandler == null || !editHandler.computeEnabled("CUT"));
-            Cut.setOnAction(event -> {
-                editHandler.cut();
-                calculateEnabled();
-            });
-
-            Copy = new MenuItem();
-            Copy.setAccelerator(KeyCombination.keyCombination("Ctrl+C"));
-            Copy.textProperty().bind(localizer.createStringBinding("editCopyItem"));
-            Copy.setDisable(editHandler == null || !editHandler.computeEnabled("COPY"));
-            Copy.setOnAction(event -> {
-                editHandler.copy();
-                calculateEnabled();
-            });
-
-            Paste = new MenuItem();
-            Paste.setAccelerator(KeyCombination.keyCombination("Ctrl+V"));
-            Paste.textProperty().bind(localizer.createStringBinding("editPasteItem"));
-            Paste.setDisable(editHandler == null || !editHandler.computeEnabled("PASTE"));
-            Paste.setOnAction(event -> {
-                editHandler.paste();
-                calculateEnabled();
-            });
-
-
-            SeparatorMenuItem sp2 = new SeparatorMenuItem();
-
-
-            Delete = new MenuItem();
-            Delete.setAccelerator(KeyCombination.keyCombination("Delete"));
-            Delete.textProperty().bind(localizer.createStringBinding("editClearItem"));
-            Delete.setDisable(editHandler == null || !editHandler.computeEnabled("DELETE"));
-            Delete.setOnAction(event -> {
-                editHandler.delete();
-                calculateEnabled();
-            });
-
-            Duplicate = new MenuItem();
-            Duplicate.setAccelerator(KeyCombination.keyCombination("Ctrl+D"));
-            Duplicate.textProperty().bind(localizer.createStringBinding("editDuplicateItem"));
-            Duplicate.setDisable(editHandler == null || !editHandler.computeEnabled("DUPLICATE"));
-            Duplicate.setOnAction(event -> {
-                editHandler.duplicate();
-                calculateEnabled();
-            });
-
-            SelectAll = new MenuItem();
-            SelectAll.setAccelerator(KeyCombination.keyCombination("Ctrl+A"));
-            SelectAll.textProperty().bind(localizer.createStringBinding("editSelectAllItem"));
-            SelectAll.setDisable(editHandler == null || !editHandler.computeEnabled("SELECT_ALL"));
-            SelectAll.setOnAction(event -> {
-                editHandler.selectAll();
-                calculateEnabled();
-            });
-
-
-            SeparatorMenuItem sp3 = new SeparatorMenuItem();
-
-
-            RaiseSelection = new MenuItem();
-            RaiseSelection.setAccelerator(KeyCombination.keyCombination("Ctrl+Up"));
-            RaiseSelection.textProperty().bind(localizer.createStringBinding("editLowerItem"));
-            RaiseSelection.setDisable(editHandler == null || !editHandler.computeEnabled("RAISE"));
-            RaiseSelection.setOnAction(event -> {
-                editHandler.raise();
-                calculateEnabled();
-            });
-
-            LowerSelection = new MenuItem();
-            LowerSelection.setAccelerator(KeyCombination.keyCombination("Ctrl+Down"));
-            LowerSelection.textProperty().bind(localizer.createStringBinding("editRaiseItem"));
-            LowerSelection.setDisable(editHandler == null || !editHandler.computeEnabled("LOWER"));
-            LowerSelection.setOnAction(event -> {
-                editHandler.lower();
-                calculateEnabled();
-            });
-
-            RiseToTop = new MenuItem();
-            RiseToTop.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+Up"));
-            RiseToTop.textProperty().bind(localizer.createStringBinding("editRaiseTopItem"));
-            RiseToTop.setDisable(editHandler == null || !editHandler.computeEnabled("RAISE_TOP"));
-            RiseToTop.setOnAction(event -> {
-                editHandler.raiseTop();
-                calculateEnabled();
-            });
-
-            LowerToBottom = new MenuItem();
-            LowerToBottom.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+Down"));
-            LowerToBottom.textProperty().bind(localizer.createStringBinding("editLowerBottomItem"));
-            LowerToBottom.setDisable(editHandler == null || !editHandler.computeEnabled("LOWER_BOTTOM"));
-            LowerToBottom.setOnAction(event -> {
-                editHandler.lowerBottom();
-                calculateEnabled();
-            });
-
-
-            SeparatorMenuItem sp4 = new SeparatorMenuItem();
-
-
-            AddVertex = new MenuItem();
-            AddVertex.textProperty().bind(localizer.createStringBinding("editAddControlItem"));
-            AddVertex.setDisable(editHandler == null || !editHandler.computeEnabled("ADD_CONTROL"));
-            AddVertex.setOnAction(event -> {
-                editHandler.addControlPoint();
-                calculateEnabled();
-            });
-
-            RemoveVertex = new MenuItem();
-            RemoveVertex.textProperty().bind(localizer.createStringBinding("editRemoveControlItem"));
-            RemoveVertex.setDisable(editHandler == null || !editHandler.computeEnabled("REMOVE_CONTROL"));
-            RemoveVertex.setOnAction(event -> {
-                editHandler.removeControlPoint();
-                calculateEnabled();
-            });
-
-            this.getItems().addAll(
-                    Undo,
-                    sp1,
-                    Cut,
-                    Copy,
-                    Paste,
-                    sp2,
-                    Delete,
-                    Duplicate,
-                    SelectAll,
-                    sp3,
-                    RaiseSelection,
-                    LowerSelection,
-                    RiseToTop,
-                    LowerToBottom,
-                    sp4,
-                    AddVertex,
-                    RemoveVertex
-            );
-
-        }
-
-        private void calculateEnabled(){
-
-            Action last = proj == null ? null : proj.getLastAction();
-            if (last == null && !Undo.isDisable()) {
-                Undo.textProperty().unbind();
-                Undo.textProperty().bind(localizer.createStringBinding("editCantUndoItem"));
-                Undo.setDisable(true);
-            } else if(last != null && Undo.isDisable()){
-                Undo.textProperty().unbind();
-                Undo.textProperty().bind(localizer.createComplexStringBinding("editUndoItem", last.getName()));
-                Undo.setDisable(false);
-            }
-
-            Cut.setDisable(editHandler == null || !editHandler.computeEnabled("CUT"));
-            Copy.setDisable(editHandler == null || !editHandler.computeEnabled("COPY"));
-            Paste.setDisable(editHandler == null || !editHandler.computeEnabled("PASTE"));
-            Delete.setDisable(editHandler == null || !editHandler.computeEnabled("DELETE"));
-            Duplicate.setDisable(editHandler == null || !editHandler.computeEnabled("DUPLICATE"));
-            SelectAll.setDisable(editHandler == null || !editHandler.computeEnabled("SELECT_ALL"));
-            RaiseSelection.setDisable(editHandler == null || !editHandler.computeEnabled("RAISE"));
-            LowerSelection.setDisable(editHandler == null || !editHandler.computeEnabled("LOWER"));
-            RiseToTop.setDisable(editHandler == null || !editHandler.computeEnabled("RAISE_TOP"));
-            LowerToBottom.setDisable(editHandler == null || !editHandler.computeEnabled("LOWER_BOTTOM"));
-            AddVertex.setDisable(editHandler == null || !editHandler.computeEnabled("ADD_CONTROL"));
-            RemoveVertex.setDisable(editHandler == null || !editHandler.computeEnabled("REMOVE_CONTROL"));
-
         }
 
     }
@@ -1031,17 +834,6 @@ public class CustomMenuBar extends MenuBar implements SelectionListener, Selecti
         );
         this.getMenus().add(Help);
 
-    }
-
-    //Listeners
-
-    public void selectionChanged(SelectionEvent e) {
-        editMenu.calculateEnabled();
-    }
-
-    @Override
-    public void selectionChanged(Selection.Event event) {
-        editMenu.calculateEnabled();
     }
 
 }

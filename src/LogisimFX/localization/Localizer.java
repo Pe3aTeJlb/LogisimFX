@@ -5,13 +5,17 @@
 
 package LogisimFX.localization;
 
+import LogisimFX.newgui.MainFrame.LC;
 import LogisimFX.util.LocaleListener;
 import LogisimFX.util.StringUtil;
 
+import docklib.draggabletabpane.DraggableTab;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 
 import java.util.*;
+
+import static java.util.Map.entry;
 
 public class Localizer implements LocaleListener{
 
@@ -66,4 +70,23 @@ public class Localizer implements LocaleListener{
         return StringUtil.format(get(key),strings);
     }
 
+    public static void initExtrenalLibrariesLocalization(){
+        DraggableTab.setLocalizationPack(
+                Map.ofEntries(
+                        entry("dockPinnedItem", LC.createStringBinding("dockPinnedItem")),
+                        entry("floatItem", LC.createStringBinding("floatItem")),
+                        entry("windowItem", LC.createStringBinding("windowItem")),
+                        entry("closeItem", LC.createStringBinding("closeItem")),
+                        entry("closeOthersItem", LC.createStringBinding("closeOthersItem")),
+                        entry("closeAllItems", LC.createStringBinding("closeAllItems")),
+                        entry("closeToTheLeftItem", LC.createStringBinding("closeToTheLeftItem")),
+                        entry("closeToTheRightItem", LC.createStringBinding("closeToTheRightItem")),
+                        entry("splitVerticallyItem", LC.createStringBinding("splitVerticallyItem")),
+                        entry("splitHorizontallyItem", LC.createStringBinding("splitHorizontallyItem")),
+                        entry("selectNextTabItem", LC.createStringBinding("selectNextTabItem")),
+                        entry("selectPreviousTabItem", LC.createStringBinding("selectPreviousTabItem")
+                        )
+                ));
+    }
+    
 }

@@ -199,7 +199,9 @@ public class LayoutEditorToolBar extends ToolBar {
 
     }
 
-    private void recalculateAccelerators(){
+    public void recalculateAccelerators(){
+
+        if (layoutEditor.getScene() == null) return;
 
         int toolsCount = 0;
 
@@ -216,7 +218,7 @@ public class LayoutEditorToolBar extends ToolBar {
         for(int i = 0; i < toolsCount; i++){
             int finalI = i;
             int index = (i) == 9 ? 0 : i + 1;
-            proj.getFrameController().getStage().getScene().getAccelerators().put(
+            layoutEditor.getScene().getAccelerators().put(
                     new KeyCodeCombination(KeyCode.valueOf("DIGIT"+ index), KeyCombination.CONTROL_DOWN),
                     new Runnable() {
                         @FXML
@@ -227,6 +229,7 @@ public class LayoutEditorToolBar extends ToolBar {
 
             );
         }
+
     }
 
     public void terminateListeners(){
