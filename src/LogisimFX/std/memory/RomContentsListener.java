@@ -40,6 +40,11 @@ public class RomContentsListener implements HexModelListener {
 		}
 
 		@Override
+		public int getActionType() {
+			return Action.ROM_CONTENTS_ACTION;
+		}
+
+		@Override
 		public void doIt(Project proj) {
 
 			if (!completed) {

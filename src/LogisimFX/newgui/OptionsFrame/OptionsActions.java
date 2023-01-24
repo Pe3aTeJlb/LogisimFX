@@ -57,6 +57,11 @@ class OptionsActions {
 		}
 
 		@Override
+		public int getActionType() {
+			return Action.OPTIONS_ACTION;
+		}
+
+		@Override
 		public void doIt(Project proj) {
 			oldval = attrs.getValue(attr);
 			attrs.setValue(attr, newval);
@@ -86,6 +91,11 @@ class OptionsActions {
 		}
 
 		@Override
+		public int getActionType() {
+			return Action.OPTIONS_ACTION;
+		}
+
+		@Override
 		public void doIt(Project proj) {
 			oldtool = mm.getToolFor(mods);
 			mm.setToolFor(mods, tool);
@@ -110,6 +120,11 @@ class OptionsActions {
 		@Override
 		public String getName() {
 			return LC.get("removeMouseMappingAction");
+		}
+
+		@Override
+		public int getActionType() {
+			return Action.OPTIONS_ACTION;
 		}
 
 		@Override

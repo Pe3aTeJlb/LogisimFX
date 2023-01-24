@@ -28,6 +28,11 @@ public class CircuitAction extends Action {
 	}
 
 	@Override
+	public int getActionType() {
+		return Action.CIRCUIT_ACTION;
+	}
+
+	@Override
 	public void doIt(Project proj) {
 		CircuitTransactionResult result = forward.execute();
 		if (result != null) {

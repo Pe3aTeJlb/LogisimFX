@@ -30,6 +30,11 @@ public class RevertAppearanceAction extends Action {
 	}
 
 	@Override
+	public int getActionType() {
+		return Action.REVERT_APPEARANCE_ACTION;
+	}
+
+	@Override
 	public void doIt(Project proj) {
 		CircuitAppearance appear = circuit.getAppearance();
 		wasDefault = appear.isDefaultAppearance();

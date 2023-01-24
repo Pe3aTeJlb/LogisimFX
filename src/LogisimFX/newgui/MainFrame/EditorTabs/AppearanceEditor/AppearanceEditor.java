@@ -25,7 +25,7 @@ public class AppearanceEditor extends EditorBase {
 
     public AppearanceEditor(Project project, Circuit circ) {
 
-        super(project);
+        super(project, circ);
 
         this.circ = circ;
 
@@ -50,10 +50,6 @@ public class AppearanceEditor extends EditorBase {
         return menu.getMenuItems();
     }
 
-    public Circuit getCirc() {
-        return circ;
-    }
-
     public AppearanceCanvas getAppearanceCanvas(){
         return appearanceCanvas;
     }
@@ -74,6 +70,7 @@ public class AppearanceEditor extends EditorBase {
 
     @Override
     public void terminateListeners(){
+        proj.removeProjectListener(projectListener);
         toolBar.terminateListeners();
         appearanceCanvas.getSelection().removeSelectionListener(menu);
         appearanceCanvas.getSelection().removeSelectionListener(proj.getFrameController().getAttributeTable());

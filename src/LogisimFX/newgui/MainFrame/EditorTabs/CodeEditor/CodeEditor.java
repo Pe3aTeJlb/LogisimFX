@@ -61,11 +61,9 @@ public class CodeEditor extends EditorBase {
     private SimpleStringProperty lineNum, colNum, selectedTextNum;
     private AtomicInteger currWordIndex = new AtomicInteger(0);
 
-
-
     public CodeEditor(Project project, Circuit circ, String ext){
 
-        super(project);
+        super(project, circ);
 
         this.circ = circ;
         this.ext = ext;
@@ -406,11 +404,11 @@ public class CodeEditor extends EditorBase {
 
     //Accelerator events
 
-    void undo() {
+    public void undo() {
         codeArea.undo();
     }
 
-    void redo() {
+    public void redo() {
         codeArea.redo();
     }
 
@@ -449,10 +447,6 @@ public class CodeEditor extends EditorBase {
 
     public StyleClassedTextArea getCodeArea(){
         return codeArea;
-    }
-
-    public Circuit getCirc() {
-        return circ;
     }
 
     public List<MenuItem> getEditMenuItems(){

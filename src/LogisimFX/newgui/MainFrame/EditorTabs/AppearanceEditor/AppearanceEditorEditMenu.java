@@ -6,6 +6,7 @@ import LogisimFX.localization.Localizer;
 import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.AppearanceEditHandler;
 import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.SelectionEvent;
 import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.SelectionListener;
+import LogisimFX.proj.Action;
 import LogisimFX.proj.Project;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
@@ -48,20 +49,30 @@ public class AppearanceEditorEditMenu implements SelectionListener {
         Undo = new MenuItem();
         Undo.setAccelerator(KeyCombination.keyCombination("Ctrl+Z"));
         Undo.textProperty().bind(localizer.createStringBinding("editCantUndoItem"));
-        Undo.setDisable(true);
-        Undo.setOnAction(event -> {
-            proj.undoAction();
-            calculateEnabled();
+        Undo.disableProperty().bind(appearanceEditor.undoAvailableProperty().not());
+        Undo.disableProperty().addListener(change ->{
+            Undo.textProperty().unbind();
+            Undo.textProperty().bind(
+                    appearanceEditor.getLastAction() == null
+                            ? localizer.createStringBinding("editCantUndoItem")
+                            : localizer.createComplexStringBinding("editUndoItem", appearanceEditor.getLastAction().getName())
+            );
         });
+        Undo.setOnAction(event -> appearanceEditor.undo());
 
         Redo = new MenuItem();
         Redo.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+Z"));
         Redo.textProperty().bind(localizer.createStringBinding("editCantRedoItem"));
-        Redo.setDisable(true);
-        Redo.setOnAction(event -> {
-            proj.undoAction();
-            calculateEnabled();
+        Redo.disableProperty().bind(appearanceEditor.redoAvailableProperty().not());
+        Redo.disableProperty().addListener(change ->{
+            Redo.textProperty().unbind();
+            Redo.textProperty().bind(
+                    appearanceEditor.getLastRedoAction() == null
+                            ? localizer.createStringBinding("editCantRedoItem")
+                            : localizer.createComplexStringBinding("editRedoItem", appearanceEditor.getLastRedoAction().getName())
+            );
         });
+        Redo.setOnAction(event -> appearanceEditor.redo());
 
 
         SeparatorMenuItem sp1 = new SeparatorMenuItem();
@@ -186,6 +197,7 @@ public class AppearanceEditorEditMenu implements SelectionListener {
 
         menuItems = List.of(
                 Undo,
+                Redo,
                 sp1,
                 Cut,
                 Copy,
@@ -207,22 +219,6 @@ public class AppearanceEditorEditMenu implements SelectionListener {
     }
 
     private void calculateEnabled(){
-
-        Undo.setDisable(editHandler == null || !editHandler.computeEnabled("UNDO"));
-        Undo.textProperty().unbind();
-        if (Undo.isDisable()){
-            Undo.textProperty().bind(localizer.createStringBinding("editCantUndoItem"));
-        } else {
-            Undo.textProperty().bind(localizer.createComplexStringBinding("editUndoItem", ""));
-        }
-
-        Redo.setDisable(editHandler == null || !editHandler.computeEnabled("REDO"));
-        Redo.textProperty().unbind();
-        if (Redo.isDisable()){
-            Redo.textProperty().bind(localizer.createStringBinding("editCantRedoItem"));
-        } else {
-            Redo.textProperty().bind(localizer.createComplexStringBinding("editRedoItem", ""));
-        }
 
         Cut.setDisable(editHandler == null || !editHandler.computeEnabled("CUT"));
         Copy.setDisable(editHandler == null || !editHandler.computeEnabled("COPY"));

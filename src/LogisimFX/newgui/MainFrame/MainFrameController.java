@@ -95,7 +95,6 @@ public class MainFrameController extends AbstractController {
                 computeTitle();
             } else if (action == ProjectEvent.ACTION_SET_CURRENT) {
                 computeTitle();
-                createCircLayoutEditor(proj.getCurrentCircuit());
             }
 
         }
@@ -113,19 +112,38 @@ public class MainFrameController extends AbstractController {
                         circ = ((SubcircuitFactory) t).getSubcircuit();
                         if (openedLayoutEditors.containsKey(circ)){
                             openedLayoutEditors.get(circ).close();
+                            ((EditorBase)openedLayoutEditors.get(circ).getContent()).terminateListeners();
+                            openedLayoutEditors.remove(circ);
                         }
                         if (openedAppearanceEditors.containsKey(circ)){
                             openedAppearanceEditors.get(circ).close();
+                            ((EditorBase)openedAppearanceEditors.get(circ).getContent()).terminateListeners();
+                            openedAppearanceEditors.remove(circ);
                         }
                         if (openedVHDLModelEditors.containsKey(circ)){
                             openedVHDLModelEditors.get(circ).close();
+                            ((EditorBase)openedVHDLModelEditors.get(circ).getContent()).terminateListeners();
+                            openedVHDLModelEditors.remove(circ);
                         }
                         if (openedVerilogModelEditors.containsKey(circ)){
                             openedVerilogModelEditors.get(circ).close();
+                            ((EditorBase)openedVerilogModelEditors.get(circ).getContent()).terminateListeners();
+                            openedVerilogModelEditors.remove(circ);
                         }
                     }
                 }
             }
+
+            if(e.getAction() == LibraryEvent.ADD_TOOL){
+                Object t = e.getData();
+                if (t instanceof AddTool) {
+                    t = ((AddTool) t).getFactory();
+                    if (t instanceof SubcircuitFactory) {
+                        createCircLayoutEditor(((SubcircuitFactory) t).getSubcircuit());
+                    }
+                }
+            }
+
         }
 
         public void circuitChanged(CircuitEvent event) {
@@ -224,6 +242,8 @@ public class MainFrameController extends AbstractController {
     }
 
     public void createDefaultLayout(){
+
+        systemTabPaneBottom.setPrefExpandedSize(300);
 
         createToolsTab();
         createSimulationTab();
@@ -347,8 +367,10 @@ public class MainFrameController extends AbstractController {
         proj.setCurrentCircuit(circ);
 
         if (openedLayoutEditors.containsKey(circ)){
-            openedLayoutEditors.get(circ).getTabPane().getSelectionModel().select(
-                    openedLayoutEditors.get(circ));
+            if (openedLayoutEditors.get(circ).getTabPane() == null){
+                workspaceTabPane.addTab(openedLayoutEditors.get(circ));
+            }
+            selectCircLayoutEditor(circ);
             return;
         }
 
@@ -370,16 +392,16 @@ public class MainFrameController extends AbstractController {
             if (tab.isSelected()) {
                 setEditor(layoutEditor);
                 currLayoutCanvas = layoutEditor.getLayoutCanvas();
+                layoutEditor.getLayoutCanvas().updateResume();
                 proj.setCurrentCircuit(circ);
+            } else {
+                layoutEditor.getLayoutCanvas().updateStop();
             }
         });
 
         tab.setOnIntoSeparatedWindow(event -> layoutEditor.copyAccelerators());
 
-        tab.setOnCloseRequest(event -> {
-            layoutEditor.terminateListeners();
-            openedLayoutEditors.remove(circ, tab);
-        });
+        tab.setOnCloseRequest(event -> currLayoutCanvas.updateStop());
 
         openedLayoutEditors.put(circ, tab);
 
@@ -395,8 +417,10 @@ public class MainFrameController extends AbstractController {
         proj.setCurrentCircuit(circ);
 
         if (openedAppearanceEditors.containsKey(circ)){
-            openedAppearanceEditors.get(circ).getTabPane().getSelectionModel().select(
-                    openedAppearanceEditors.get(circ));
+            if (openedAppearanceEditors.get(circ).getTabPane() == null){
+                workspaceTabPane.addTab(openedAppearanceEditors.get(circ));
+            }
+            selectCircAppearanceEditor(circ);
             return;
         }
 
@@ -418,16 +442,16 @@ public class MainFrameController extends AbstractController {
             if (tab.isSelected()) {
                 setEditor(appearanceEditor);
                 currAppearanceCanvas = appearanceEditor.getAppearanceCanvas();
+                appearanceEditor.getAppearanceCanvas().updateResume();
                 proj.setCurrentCircuit(circ);
+            } else {
+                appearanceEditor.getAppearanceCanvas().updateStop();
             }
         });
 
         tab.setOnIntoSeparatedWindow(event -> appearanceEditor.copyAccelerators());
 
-        tab.setOnCloseRequest(event -> {
-            appearanceEditor.terminateListeners();
-            openedAppearanceEditors.remove(circ, tab);
-        });
+        tab.setOnCloseRequest(event -> currAppearanceCanvas.updateStop());
 
         openedAppearanceEditors.put(circ, tab);
 
@@ -443,8 +467,10 @@ public class MainFrameController extends AbstractController {
         proj.setCurrentCircuit(circ);
 
         if (openedVerilogModelEditors.containsKey(circ)){
-            openedVerilogModelEditors.get(circ).getTabPane().getSelectionModel().select(
-                    openedVerilogModelEditors.get(circ));
+            if (openedVerilogModelEditors.get(circ).getTabPane() == null){
+                workspaceTabPane.addTab(openedVerilogModelEditors.get(circ));
+            }
+            selectVerilogModelEditor(circ);
             return;
         }
 
@@ -459,20 +485,14 @@ public class MainFrameController extends AbstractController {
             proj.setCurrentCircuit(circ);
         });
 
-        DraggableTab finalTab = tab;
         tab.setOnSelectionChanged(event -> {
-            if (finalTab.isSelected()) {
+            if (tab.isSelected()) {
                 setEditor(codeEditor);
                 proj.setCurrentCircuit(circ);
             }
         });
 
         tab.setOnIntoSeparatedWindow(event -> codeEditor.copyAccelerators());
-
-        tab.setOnCloseRequest(event -> {
-            codeEditor.terminateListeners();
-            openedVerilogModelEditors.remove(circ, finalTab);
-        });
 
         openedVerilogModelEditors.put(circ, tab);
 
@@ -486,8 +506,10 @@ public class MainFrameController extends AbstractController {
         proj.setCurrentCircuit(circ);
 
         if (openedVHDLModelEditors.containsKey(circ)){
-            openedVHDLModelEditors.get(circ).getTabPane().getSelectionModel().select(
-                    openedVHDLModelEditors.get(circ));
+            if (openedVHDLModelEditors.get(circ).getTabPane() == null){
+                workspaceTabPane.addTab(openedVHDLModelEditors.get(circ));
+            }
+            selectVHDLModelEditor(circ);
             return;
         }
 
@@ -502,20 +524,14 @@ public class MainFrameController extends AbstractController {
             proj.setCurrentCircuit(circ);
         });
 
-        DraggableTab finalTab = tab;
         tab.setOnSelectionChanged(event -> {
-            if (finalTab.isSelected()) {
+            if (tab.isSelected()) {
                 setEditor(codeEditor);
                 proj.setCurrentCircuit(circ);
             }
         });
 
         tab.setOnIntoSeparatedWindow(event -> codeEditor.copyAccelerators());
-
-        tab.setOnCloseRequest(event -> {
-            codeEditor.terminateListeners();
-            openedVHDLModelEditors.remove(circ, finalTab);
-        });
 
         openedVHDLModelEditors.put(circ, tab);
 
@@ -524,6 +540,22 @@ public class MainFrameController extends AbstractController {
 
     }
 
+
+    public void selectCircLayoutEditor(Circuit circ){
+        openedLayoutEditors.get(circ).getTabPane().getSelectionModel().select(openedLayoutEditors.get(circ));
+    }
+
+    public void selectCircAppearanceEditor(Circuit circ){
+        openedAppearanceEditors.get(circ).getTabPane().getSelectionModel().select(openedAppearanceEditors.get(circ));
+    }
+
+    public void selectVerilogModelEditor(Circuit circ){
+        openedVerilogModelEditors.get(circ).getTabPane().getSelectionModel().select(openedVerilogModelEditors.get(circ));
+    }
+
+    public void selectVHDLModelEditor(Circuit circ){
+        openedVHDLModelEditors.get(circ).getTabPane().getSelectionModel().select(openedVHDLModelEditors.get(circ));
+    }
 
 
 

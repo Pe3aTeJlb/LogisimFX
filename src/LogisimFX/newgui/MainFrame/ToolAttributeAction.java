@@ -44,6 +44,11 @@ public class ToolAttributeAction extends Action {
 	}
 
 	@Override
+	public int getActionType() {
+		return Action.TOOL_ATTRIBUTE_ACTION;
+	}
+
+	@Override
 	public void doIt(Project proj) {
 		AttributeSet attrs = config.getEvent().getAttributeSet();
 		Map<Attribute<?>,Object> newValues = config.getAttributeValues();

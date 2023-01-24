@@ -241,11 +241,11 @@ public class ProjectExplorerTreeView extends AbstractTreeExplorer {
                             ComponentFactory fact = ((AddTool) treeItem.getValue()).getFactory(false);
                             if (fact instanceof SubcircuitFactory) {
 
-                                proj.setCurrentCircuit(
-                                        ((SubcircuitFactory) fact).getSubcircuit()
-                                );
+                                proj.setCurrentCircuit(((SubcircuitFactory) fact).getSubcircuit());
 
                                 proj.setTool(prevTool);
+
+                                proj.getFrameController().selectCircLayoutEditor(((SubcircuitFactory) fact).getSubcircuit());
 
                             }
 

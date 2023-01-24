@@ -10,6 +10,7 @@ import LogisimFX.draw.tools.AbstractTool;
 import LogisimFX.file.*;
 import LogisimFX.circuit.*;
 import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.AppearanceCanvas;
+import LogisimFX.newgui.MainFrame.EditorTabs.EditorBase;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutCanvas;
 import LogisimFX.newgui.MainFrame.MainFrameController;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.Selection;
@@ -18,6 +19,8 @@ import LogisimFX.tools.AddTool;
 import LogisimFX.tools.Library;
 import LogisimFX.tools.Tool;
 import LogisimFX.util.EventSourceWeakSupport;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -71,6 +74,7 @@ public class Project {
 	private Tool tool = null;
 	private AbstractTool abstractTool = null;
 	private LinkedList<ActionData> undoLog = new LinkedList<ActionData>();
+	private final LinkedList<ActionData> redoLog = new LinkedList<>();
 	private int undoMods = 0;
 
 	private EventSourceWeakSupport<ProjectListener> projectListeners
@@ -134,14 +138,6 @@ public class Project {
 				stateMap.put(circuit, ret);
 			}
 			return ret;
-		}
-	}
-
-	public Action getLastAction() {
-		if (undoLog.size() == 0) {
-			return null;
-		} else {
-			return undoLog.getLast().action;
 		}
 	}
 
@@ -379,8 +375,17 @@ public class Project {
 			Action first = firstData.action;
 			if (first.isModification()) --undoMods;
 			toAdd = first.append(act);
+			int actType = toAdd.getActionType();
 			if (toAdd != null) {
-				undoLog.add(new ActionData(circuitState, toAdd));
+				if (
+								actType == Action.OPTIONS_ACTION 		||
+								actType == Action.CIRCUIT_ACTION 		||
+								actType == Action.LOGISIM_FILE_ACTION 	||
+								actType == Action.TOOLBAR_ACTION
+				) {
+					undoLog.add(new ActionData(circuitState, toAdd));
+					setUndoAvailable(isUndoAvailable());
+				}
 				if (toAdd.isModification()) ++undoMods;
 			}
 			fireEvent(new ProjectEvent(ProjectEvent.ACTION_START, this, act));
@@ -390,7 +395,16 @@ public class Project {
 			fireEvent(new ProjectEvent(ProjectEvent.ACTION_MERGE, this, first, toAdd));
 			return;
 		}
-		undoLog.add(new ActionData(circuitState, toAdd));
+		int actType = toAdd.getActionType();
+		if (
+					actType == Action.OPTIONS_ACTION 		||
+					actType == Action.CIRCUIT_ACTION 		||
+					actType == Action.LOGISIM_FILE_ACTION 	||
+					actType == Action.TOOLBAR_ACTION
+		) {
+			undoLog.add(new ActionData(circuitState, toAdd));
+			setUndoAvailable(isUndoAvailable());
+		}
 		fireEvent(new ProjectEvent(ProjectEvent.ACTION_START, this, act));
 		act.doIt(this);
 		while (undoLog.size() > MAX_UNDO_SIZE) {
@@ -402,24 +416,128 @@ public class Project {
 
 	}
 
+	public void setFileAsClean() {
+		undoMods = 0;
+		file.setDirty(isFileDirty());
+	}
+
+
+
+
+	public Action getLastAction() {
+		if (undoLog.size() == 0) {
+			return null;
+		} else {
+			return undoLog.getLast().action;
+		}
+	}
+
+	public boolean isUndoAvailable() {
+		return undoLog.size() > 0;
+	}
+
 	public void undoAction() {
 
 		if (undoLog != null && undoLog.size() > 0) {
+			redoLog.addLast(undoLog.getLast());
 			ActionData data = undoLog.removeLast();
 			setCircuitState(data.circuitState);
 			Action action = data.action;
 			if (action.isModification()) --undoMods;
 			fireEvent(new ProjectEvent(ProjectEvent.UNDO_START, this, action));
 			action.undo(this);
+			setUndoAvailable(isUndoAvailable());
+			setRedoAvailable(isRedoAvailable());
 			file.setDirty(isFileDirty());
 			fireEvent(new ProjectEvent(ProjectEvent.UNDO_COMPLETE, this, action));
 		}
 
 	}
 
-	public void setFileAsClean() {
-		undoMods = 0;
+	public void undoAction(Action action, CircuitState circuitState){
+
+		setCircuitState(circuitState);
+		if (action.isModification()) --undoMods;
+		fireEvent(new ProjectEvent(ProjectEvent.UNDO_START, this, action));
+		action.undo(this);
 		file.setDirty(isFileDirty());
+		fireEvent(new ProjectEvent(ProjectEvent.UNDO_COMPLETE, this, action));
+
+	}
+
+	private SimpleBooleanProperty undoAvailable;
+
+	private void setUndoAvailable(boolean val) {
+		undoAvailableProperty().set(val);
+	}
+
+	public BooleanProperty undoAvailableProperty() {
+		if (undoAvailable == null) {
+			undoAvailable = new SimpleBooleanProperty(this, "undoAvailable", false);
+		}
+		return undoAvailable;
+	}
+
+
+	public Action getLastRedoAction() {
+		if (redoLog.size() == 0) {
+			return null;
+		} else{
+			return redoLog.getLast().action;
+		}
+	}
+
+	public boolean isRedoAvailable() {
+		return redoLog.size() > 0;
+	}
+
+	public void redoAction() {
+
+		if (!redoLog.isEmpty()) {
+
+			undoLog.addLast(redoLog.getLast());
+			++undoMods;
+
+			ActionData data = redoLog.removeLast();
+
+			if (data.circuitState != null) setCircuitState(data.circuitState);
+
+			Action action = data.action;
+
+			fireEvent(new ProjectEvent(ProjectEvent.REDO_START, this, action));
+			action.doIt(this);
+			setUndoAvailable(isUndoAvailable());
+			setRedoAvailable(isRedoAvailable());
+			file.setDirty(isFileDirty());
+			fireEvent(new ProjectEvent(ProjectEvent.REDO_COMPLETE, this, action));
+		}
+
+	}
+
+	public void redoAction(Action action, CircuitState circuitState){
+
+		++undoMods;
+
+		if (circuitState != null) setCircuitState(circuitState);
+
+		fireEvent(new ProjectEvent(ProjectEvent.REDO_START, this, action));
+		action.doIt(this);
+		file.setDirty(isFileDirty());
+		fireEvent(new ProjectEvent(ProjectEvent.REDO_COMPLETE, this, action));
+
+	}
+
+	private SimpleBooleanProperty redoAvailable;
+
+	private void setRedoAvailable(boolean val) {
+		redoAvailableProperty().set(val);
+	}
+
+	public BooleanProperty redoAvailableProperty() {
+		if (redoAvailable == null) {
+			redoAvailable = new SimpleBooleanProperty(this, "redoAvailable", false);
+		}
+		return redoAvailable;
 	}
 
 }

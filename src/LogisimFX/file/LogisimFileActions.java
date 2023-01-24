@@ -71,6 +71,11 @@ public class LogisimFileActions {
 		}
 
 		@Override
+		public int getActionType() {
+			return Action.LOGISIM_FILE_ACTION;
+		}
+
+		@Override
 		public void doIt(Project proj) {
 			proj.getLogisimFile().addCircuit(circuit);
 		}
@@ -92,6 +97,11 @@ public class LogisimFileActions {
 		@Override
 		public String getName() {
 			return LC.get("removeCircuitAction");
+		}
+
+		@Override
+		public int getActionType() {
+			return Action.LOGISIM_FILE_ACTION;
 		}
 
 		@Override
@@ -119,6 +129,11 @@ public class LogisimFileActions {
 		@Override
 		public String getName() {
 			return LC.get("moveCircuitAction");
+		}
+
+		@Override
+		public int getActionType() {
+			return Action.LOGISIM_FILE_ACTION;
 		}
 
 		@Override
@@ -163,6 +178,11 @@ public class LogisimFileActions {
 		}
 
 		@Override
+		public int getActionType() {
+			return Action.LOGISIM_FILE_ACTION;
+		}
+
+		@Override
 		public void doIt(Project proj) {
 			for (int i = 0; i < libs.length; i++) {
 				proj.getLogisimFile().addLibrary(libs[i]);
@@ -194,6 +214,11 @@ public class LogisimFileActions {
 		}
 
 		@Override
+		public int getActionType() {
+			return Action.LOGISIM_FILE_ACTION;
+		}
+
+		@Override
 		public void doIt(Project proj) {
 			for (int i = libs.length - 1; i >= 0; i--) {
 				proj.getLogisimFile().removeLibrary(libs[i]);
@@ -219,6 +244,11 @@ public class LogisimFileActions {
 		@Override
 		public String getName() {
 			return LC.get("setMainCircuitAction");
+		}
+
+		@Override
+		public int getActionType() {
+			return Action.LOGISIM_FILE_ACTION;
 		}
 
 		@Override
@@ -258,6 +288,11 @@ public class LogisimFileActions {
 		@Override
 		public String getName() {
 			return LC.get("revertDefaultsAction");
+		}
+
+		@Override
+		public int getActionType() {
+			return Action.LOGISIM_FILE_ACTION;
 		}
 
 		@Override

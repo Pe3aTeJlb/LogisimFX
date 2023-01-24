@@ -716,7 +716,9 @@ public class LayoutCanvas extends Canvas {
 
             Tool tool = proj.getTool();
             if (tool != null) {
-                tool.mouseMoved(this, g, new CME(event));
+                if (layoutEditor.isSelected()) {
+                    tool.mouseMoved(this, g, new CME(event));
+                }
             }
 
             pauseTransition.stop();

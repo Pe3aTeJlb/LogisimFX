@@ -102,6 +102,11 @@ public class SelectionActions {
 		}
 
 		@Override
+		public int getActionType() {
+			return Action.LAYOUT_SELECTION_ACTION;
+		}
+
+		@Override
 		public void doIt(Project proj) {
 			Circuit circuit = proj.getCurrentCircuit();
 			CircuitMutation xn = new CircuitMutation(circuit);
@@ -147,6 +152,11 @@ public class SelectionActions {
 		}
 
 		@Override
+		public int getActionType() {
+			return Action.LAYOUT_SELECTION_ACTION;
+		}
+
+		@Override
 		public void doIt(Project proj) {
 			Circuit circuit = proj.getCurrentCircuit();
 			CircuitMutation xn = new CircuitMutation(circuit);
@@ -173,6 +183,11 @@ public class SelectionActions {
 		@Override
 		public String getName() {
 			return LC.get("duplicateSelectionAction");
+		}
+
+		@Override
+		public int getActionType() {
+			return Action.LAYOUT_SELECTION_ACTION;
 		}
 
 		@Override
@@ -207,6 +222,11 @@ public class SelectionActions {
 		}
 
 		@Override
+		public int getActionType() {
+			return Action.LAYOUT_SELECTION_ACTION;
+		}
+
+		@Override
 		public void doIt(Project proj) {
 			first.doIt(proj);
 			second.doIt(proj);
@@ -233,6 +253,11 @@ public class SelectionActions {
 		@Override
 		public String getName() {
 			return LC.get("copySelectionAction");
+		}
+
+		@Override
+		public int getActionType() {
+			return Action.LAYOUT_SELECTION_ACTION;
 		}
 
 		@Override
@@ -375,6 +400,11 @@ public class SelectionActions {
 		}
 
 		@Override
+		public int getActionType() {
+			return Action.LAYOUT_SELECTION_ACTION;
+		}
+
+		@Override
 		public void doIt(Project proj) {
 			Clipboard clip = Clipboard.get();
 			Circuit circuit = proj.getCurrentCircuit();
@@ -435,6 +465,11 @@ public class SelectionActions {
 		@Override
 		public String getName() {
 			return LC.get("moveSelectionAction");
+		}
+
+		@Override
+		public int getActionType() {
+			return Action.LAYOUT_SELECTION_ACTION;
 		}
 
 		@Override

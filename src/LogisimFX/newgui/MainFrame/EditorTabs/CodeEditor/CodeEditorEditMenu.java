@@ -41,7 +41,7 @@ public class CodeEditorEditMenu {
         Undo.textProperty().bind(localizer.createStringBinding("editCantUndoItem"));
         Undo.setDisable(true);
         Undo.setOnAction(event -> {
-            proj.undoAction();
+            codeEditor.undo();
             calculateEnabled();
         });
 
@@ -50,7 +50,7 @@ public class CodeEditorEditMenu {
         Redo.textProperty().bind(localizer.createStringBinding("editCantRedoItem"));
         Redo.setDisable(true);
         Redo.setOnAction(event -> {
-            proj.undoAction();
+            codeEditor.redo();
             calculateEnabled();
         });
 
@@ -138,7 +138,7 @@ public class CodeEditorEditMenu {
         if (Undo.isDisable()){
             Undo.textProperty().bind(localizer.createStringBinding("editCantUndoItem"));
         } else {
-            Undo.textProperty().bind(localizer.createComplexStringBinding("editUndoItem", ""));
+            Undo.textProperty().bind(localizer.createStringBinding("editUndoItem"));
         }
 
         Redo.setDisable(editHandler == null || !editHandler.computeEnabled("REDO"));
@@ -146,7 +146,7 @@ public class CodeEditorEditMenu {
         if (Redo.isDisable()){
             Redo.textProperty().bind(localizer.createStringBinding("editCantRedoItem"));
         } else {
-            Redo.textProperty().bind(localizer.createComplexStringBinding("editRedoItem", ""));
+            Redo.textProperty().bind(localizer.createStringBinding("editRedoItem"));
         }
 
         Cut.setDisable(editHandler == null || !editHandler.computeEnabled("CUT"));

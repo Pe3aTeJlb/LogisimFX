@@ -52,6 +52,11 @@ class ToolbarActions {
 		}
 
 		@Override
+		public int getActionType() {
+			return Action.TOOLBAR_ACTION;
+		}
+
+		@Override
 		public void doIt(Project proj) {
 			pos = toolbar.getContents().size();
 			toolbar.addTool(pos, tool);
@@ -76,6 +81,11 @@ class ToolbarActions {
 		@Override
 		public String getName() {
 			return LC.get("toolbarRemoveAction");
+		}
+
+		@Override
+		public int getActionType() {
+			return Action.TOOLBAR_ACTION;
 		}
 
 		@Override
@@ -107,6 +117,11 @@ class ToolbarActions {
 		@Override
 		public String getName() {
 			return LC.get("toolbarMoveAction");
+		}
+
+		@Override
+		public int getActionType() {
+			return Action.TOOLBAR_ACTION;
 		}
 
 		@Override
@@ -158,6 +173,11 @@ class ToolbarActions {
 		}
 
 		@Override
+		public int getActionType() {
+			return Action.TOOLBAR_ACTION;
+		}
+
+		@Override
 		public void doIt(Project proj) {
 			toolbar.addSeparator(pos);
 		}
@@ -180,6 +200,11 @@ class ToolbarActions {
 		@Override
 		public String getName() {
 			return LC.get("toolbarRemoveSepAction");
+		}
+
+		@Override
+		public int getActionType() {
+			return Action.TOOLBAR_ACTION;
 		}
 
 		@Override

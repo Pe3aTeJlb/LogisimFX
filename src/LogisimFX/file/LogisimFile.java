@@ -334,7 +334,9 @@ public class LogisimFile extends Library implements LibraryEventSource {
 
 		if(current != main){
 			isMain.setValue(false);
-		}else{isMain.setValue(true);}
+		}else{
+			isMain.setValue(true);
+		}
 
 		updateCircuitPos();
 

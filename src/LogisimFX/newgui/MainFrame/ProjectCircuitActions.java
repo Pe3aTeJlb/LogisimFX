@@ -59,9 +59,9 @@ public class ProjectCircuitActions {
 	public static void doRemoveCircuit(Project proj, Circuit circuit) {
 
 		if (proj.getLogisimFile().getTools().size() == 1) {
-			DialogManager.CreateErrorDialog(LC.get("circuitRemoveErrorTitle"),LC.get("circuitRemoveLastError"));
+			DialogManager.CreateErrorDialog(LC_menu.getInstance().get("circuitRemoveErrorTitle"),LC_menu.getInstance().get("circuitRemoveLastError"));
 		} else if (!proj.getDependencies().canRemove(circuit)) {
-			DialogManager.CreateErrorDialog(LC.get("circuitRemoveErrorTitle"),LC.get("circuitRemoveUsedError"));
+			DialogManager.CreateErrorDialog(LC_menu.getInstance().get("circuitRemoveErrorTitle"),LC_menu.getInstance().get("circuitRemoveUsedError"));
 		} else {
 			proj.doAction(LogisimFileActions.removeCircuit(circuit));
 		}

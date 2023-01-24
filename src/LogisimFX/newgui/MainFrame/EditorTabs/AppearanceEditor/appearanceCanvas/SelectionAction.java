@@ -55,6 +55,11 @@ public class SelectionAction extends Action {
 	public String getName() {
 		return displayName.get();
 	}
+
+	@Override
+	public int getActionType() {
+		return Action.APPEARANCE_SELECTION_ACTION;
+	}
 	
 	@Override
 	public void doIt(Project proj) {

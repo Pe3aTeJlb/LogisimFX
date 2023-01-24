@@ -125,6 +125,11 @@ class ClipboardActions extends Action {
 	}
 
 	@Override
+	public int getActionType() {
+		return Action.CLIPBOARD_ACTION;
+	}
+
+	@Override
 	public void doIt(Project proj) {
 
 		oldClipboard = Clipboard.get();

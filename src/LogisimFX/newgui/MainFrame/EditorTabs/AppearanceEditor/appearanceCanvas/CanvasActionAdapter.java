@@ -35,6 +35,11 @@ public class CanvasActionAdapter extends LogisimFX.proj.Action {
 	}
 
 	@Override
+	public int getActionType() {
+		return LogisimFX.proj.Action.CANVAS_ACTION_ADAPTER;
+	}
+
+	@Override
 	public void doIt(Project proj) {
 
 		wasDefault = circuit.getAppearance().isDefaultAppearance();

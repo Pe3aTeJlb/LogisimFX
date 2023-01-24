@@ -40,6 +40,11 @@ public class JoinedAction extends Action {
 	public String getName() { return todo[0].getName(); }
 
 	@Override
+	public int getActionType() {
+		return Action.JOINED_ACTION;
+	}
+
+	@Override
 	public void doIt(Project proj) {
 		for (Action act : todo) {
 			act.doIt(proj);

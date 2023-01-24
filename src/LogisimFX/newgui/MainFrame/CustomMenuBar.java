@@ -9,23 +9,16 @@ import LogisimFX.circuit.Circuit;
 import LogisimFX.circuit.CircuitState;
 import LogisimFX.circuit.Simulator;
 import LogisimFX.newgui.DialogManager;
-import LogisimFX.newgui.MainFrame.EditorTabs.EditHandler;
 import LogisimFX.localization.LC_menu;
 import LogisimFX.newgui.FrameManager;
 import LogisimFX.file.LogisimFile;
 import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.RevertAppearanceAction;
-import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.SelectionEvent;
-import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.SelectionListener;
-import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.Selection;
-import LogisimFX.proj.Action;
 import LogisimFX.proj.Project;
 import LogisimFX.proj.ProjectActions;
 import LogisimFX.localization.Localizer;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
@@ -239,11 +232,37 @@ public class CustomMenuBar extends MenuBar {
         Menu Project = new Menu();
         Project.textProperty().bind(localizer.createStringBinding("projectMenu"));
 
+        MenuItem UndoLastProjectAction = new MenuItem();
+        UndoLastProjectAction.textProperty().bind(localizer.createStringBinding("projectCantUndoAction"));
+        UndoLastProjectAction.disableProperty().bind(proj.undoAvailableProperty().not());
+        UndoLastProjectAction.disableProperty().addListener(change ->{
+            UndoLastProjectAction.textProperty().unbind();
+            UndoLastProjectAction.textProperty().bind(
+                    proj.getLastAction() == null
+                    ? localizer.createStringBinding("projectCantUndoAction")
+                    : localizer.createComplexStringBinding("projectUndoAction", proj.getLastAction().getName())
+            );
+        });
+        UndoLastProjectAction.setOnAction(event -> proj.undoAction());
+
+        MenuItem RedoLastProjectAction = new MenuItem();
+        RedoLastProjectAction.textProperty().bind(localizer.createStringBinding("projectCantRedoAction"));
+        RedoLastProjectAction.disableProperty().bind(proj.redoAvailableProperty().not());
+        RedoLastProjectAction.disableProperty().addListener(change ->{
+            RedoLastProjectAction.textProperty().unbind();
+            RedoLastProjectAction.textProperty().bind(
+                    proj.getLastRedoAction() == null
+                            ? localizer.createStringBinding("projectCantRedoAction")
+                            : localizer.createComplexStringBinding("projectRedoAction", proj.getLastRedoAction().getName())
+            );
+        });
+        RedoLastProjectAction.setOnAction(event -> proj.undoAction());
+
+        SeparatorMenuItem sp1 = new SeparatorMenuItem();
+
         MenuItem AddCircuit = new MenuItem();
         AddCircuit.textProperty().bind(localizer.createStringBinding("projectAddCircuitItem"));
-        AddCircuit.setOnAction(event -> {
-            ProjectCircuitActions.doAddCircuit(proj);
-        });
+        AddCircuit.setOnAction(event -> ProjectCircuitActions.doAddCircuit(proj));
 
 
         //menuproject 20
@@ -275,7 +294,7 @@ public class CustomMenuBar extends MenuBar {
         UnloadLibrary.setOnAction(event -> ProjectLibraryActions.doUnloadLibraries(proj));
 
 
-        SeparatorMenuItem sp1 = new SeparatorMenuItem();
+        SeparatorMenuItem sp2 = new SeparatorMenuItem();
 
 
         MenuItem MoveCircuitUp = new MenuItem();
@@ -292,9 +311,7 @@ public class CustomMenuBar extends MenuBar {
                 Bindings.or(logisimFile.obsPos.isEqualTo("last"),logisimFile.obsPos.isEqualTo("first&last"))
         );
         MoveCircuitDown.textProperty().bind(localizer.createStringBinding("projectMoveCircuitDownItem"));
-        MoveCircuitDown.setOnAction(event -> {
-            ProjectCircuitActions.doMoveCircuit(proj,proj.getCurrentCircuit(),1);
-        });
+        MoveCircuitDown.setOnAction(event -> ProjectCircuitActions.doMoveCircuit(proj,proj.getCurrentCircuit(),1));
 
         MenuItem SetAsMain = new MenuItem();
         SetAsMain.disableProperty().bind(logisimFile.isMain);
@@ -304,9 +321,7 @@ public class CustomMenuBar extends MenuBar {
         MenuItem RemoveCirc = new MenuItem();
         RemoveCirc.disableProperty().bind(logisimFile.obsPos.isEqualTo("first&last"));
         RemoveCirc.textProperty().bind(localizer.createStringBinding("projectRemoveCircuitItem"));
-        RemoveCirc.setOnAction(event -> {
-            ProjectCircuitActions.doRemoveCircuit(proj,proj.getCurrentCircuit());
-        });
+        RemoveCirc.setOnAction(event -> ProjectCircuitActions.doRemoveCircuit(proj,proj.getCurrentCircuit()));
 
         MenuItem RevertAppearance = new MenuItem();
 
@@ -355,10 +370,13 @@ public class CustomMenuBar extends MenuBar {
         Options.setOnAction(event -> FrameManager.CreateOptionsFrame(proj));
 
         Project.getItems().addAll(
+                UndoLastProjectAction,
+                RedoLastProjectAction,
+                sp1,
                 AddCircuit,
                 UploadLibrary,
                 UnloadLibrary,
-                sp1,
+                sp2,
                 MoveCircuitUp,
                 MoveCircuitDown,
                 SetAsMain,

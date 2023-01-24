@@ -26,7 +26,7 @@ public class LayoutEditor extends EditorBase {
 
     public LayoutEditor(Project project, Circuit circ){
 
-        super(project);
+        super(project, circ);
 
         this.circ = circ;
 
@@ -51,10 +51,6 @@ public class LayoutEditor extends EditorBase {
         return menu.getMenuItems();
     }
 
-    public Circuit getCirc() {
-        return circ;
-    }
-
     public LayoutCanvas getLayoutCanvas(){
         return layoutCanvas;
     }
@@ -75,6 +71,7 @@ public class LayoutEditor extends EditorBase {
 
     @Override
     public void terminateListeners(){
+        proj.removeProjectListener(projectListener);
         toolBar.terminateListeners();
         layoutCanvas.getSelection().removeListener(menu);
         layoutCanvas.getSelection().removeListener(proj.getFrameController().getAttributeTable());

@@ -71,39 +71,43 @@
       </AnchorPane>
       <AnchorPane fx:id="selectionPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
          <children>
-            <GridPane hgap="5.0" prefHeight="230.0" prefWidth="600.0" vgap="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <children>
-                  <Button fx:id="addBtn" mnemonicParsing="false" prefWidth="150.0" text="Button" GridPane.columnIndex="1" />
-                  <Button fx:id="changRadixBtn" mnemonicParsing="false" prefWidth="150.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Button fx:id="moveUpBtn" mnemonicParsing="false" prefWidth="150.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <Button fx:id="moveDownBtn" mnemonicParsing="false" prefWidth="150.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                  <Button fx:id="removeBtn" mnemonicParsing="false" prefWidth="150.0" text="иЗМЕНИТЬ ОСНОВАНИЕ" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                  <TreeView fx:id="circTrvw" prefHeight="200.0" prefWidth="200.0" GridPane.rowSpan="8" />
-                  <Button fx:id="startWaveformBtn" alignment="CENTER" mnemonicParsing="false" prefHeight="22.0" prefWidth="160.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-                  <TreeView fx:id="selectionTrVw" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowSpan="8" />
-                  <Label fx:id="logItemsCountLbl" text="0/257" GridPane.columnIndex="2" GridPane.rowIndex="8" />
-               </children>
-               <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="250.0" />
-                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="150.0" />
-                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="250.0" />
-               </columnConstraints>
-               <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </padding>
-               <rowConstraints>
-                  <RowConstraints maxHeight="-Infinity" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="-Infinity" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="-Infinity" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="-Infinity" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="-Infinity" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-               </rowConstraints>
-            </GridPane>
+            <ScrollPane fitToHeight="true" fitToWidth="true" prefViewportHeight="500.0" prefViewportWidth="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <content>
+                  <GridPane hgap="5.0" prefHeight="230.0" prefWidth="600.0" vgap="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Button fx:id="addBtn" mnemonicParsing="false" prefWidth="150.0" text="Button" GridPane.columnIndex="1" />
+                        <Button fx:id="changRadixBtn" mnemonicParsing="false" prefWidth="150.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Button fx:id="moveUpBtn" mnemonicParsing="false" prefWidth="150.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Button fx:id="moveDownBtn" mnemonicParsing="false" prefWidth="150.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Button fx:id="removeBtn" mnemonicParsing="false" prefWidth="150.0" text="иЗМЕНИТЬ ОСНОВАНИЕ" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <TreeView fx:id="circTrvw" prefHeight="200.0" prefWidth="200.0" GridPane.rowSpan="8" />
+                        <Button fx:id="startWaveformBtn" alignment="CENTER" mnemonicParsing="false" prefHeight="22.0" prefWidth="160.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                        <TreeView fx:id="selectionTrVw" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowSpan="8" />
+                        <Label fx:id="logItemsCountLbl" text="0/257" GridPane.columnIndex="2" GridPane.rowIndex="8" />
+                     </children>
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="250.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="150.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="250.0" />
+                     </columnConstraints>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                     <rowConstraints>
+                        <RowConstraints maxHeight="-Infinity" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+               </content>
+            </ScrollPane>
          </children>
       </AnchorPane>
    </children>

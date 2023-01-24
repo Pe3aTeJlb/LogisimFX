@@ -42,20 +42,30 @@ public class LayoutEditorEditMenu implements Selection.Listener{
         Undo = new MenuItem();
         Undo.setAccelerator(KeyCombination.keyCombination("Ctrl+Z"));
         Undo.textProperty().bind(localizer.createStringBinding("editCantUndoItem"));
-        Undo.setDisable(true);
-        Undo.setOnAction(event -> {
-            proj.undoAction();
-            calculateEnabled();
+        Undo.disableProperty().bind(layoutEditor.undoAvailableProperty().not());
+        Undo.disableProperty().addListener(change ->{
+            Undo.textProperty().unbind();
+            Undo.textProperty().bind(
+                    layoutEditor.getLastAction() == null
+                            ? localizer.createStringBinding("editCantUndoItem")
+                            : localizer.createComplexStringBinding("editUndoItem", layoutEditor.getLastAction().getName())
+            );
         });
+        Undo.setOnAction(event -> layoutEditor.undo());
 
         Redo = new MenuItem();
         Redo.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+Z"));
         Redo.textProperty().bind(localizer.createStringBinding("editCantRedoItem"));
-        Redo.setDisable(true);
-        Redo.setOnAction(event -> {
-            proj.undoAction();
-            calculateEnabled();
+        Redo.disableProperty().bind(layoutEditor.redoAvailableProperty().not());
+        Redo.disableProperty().addListener(change ->{
+            Redo.textProperty().unbind();
+            Redo.textProperty().bind(
+                    layoutEditor.getLastRedoAction() == null
+                            ? localizer.createStringBinding("editCantRedoItem")
+                            : localizer.createComplexStringBinding("editRedoItem", layoutEditor.getLastRedoAction().getName())
+            );
         });
+        Redo.setOnAction(event -> layoutEditor.redo());
 
 
         SeparatorMenuItem sp1 = new SeparatorMenuItem();
@@ -135,25 +145,6 @@ public class LayoutEditorEditMenu implements Selection.Listener{
     }
 
     private void calculateEnabled(){
-
-        Action last = proj == null ? null : proj.getLastAction();
-        if (last == null && !Undo.isDisable()) {
-            Undo.textProperty().unbind();
-            Undo.textProperty().bind(localizer.createStringBinding("editCantUndoItem"));
-            Undo.setDisable(true);
-        } else if(last != null && Undo.isDisable()){
-            Undo.textProperty().unbind();
-            Undo.textProperty().bind(localizer.createComplexStringBinding("editUndoItem", last.getName()));
-            Undo.setDisable(false);
-        }
-
-        Redo.setDisable(editHandler == null || !editHandler.computeEnabled("REDO"));
-        Redo.textProperty().unbind();
-        if (Redo.isDisable()){
-            Redo.textProperty().bind(localizer.createStringBinding("editCantRedoItem"));
-        } else {
-            Redo.textProperty().bind(localizer.createComplexStringBinding("editRedoItem", ""));
-        }
 
         Cut.setDisable(editHandler == null || !editHandler.computeEnabled("CUT"));
         Copy.setDisable(editHandler == null || !editHandler.computeEnabled("COPY"));

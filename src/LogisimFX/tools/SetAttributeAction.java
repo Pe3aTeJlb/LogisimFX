@@ -60,6 +60,11 @@ public class SetAttributeAction extends Action {
 	public String getName() {
 		return nameGetter.get();
 	}
+
+	@Override
+	public int getActionType() {
+		return Action.SET_ATTRIBUTE_ACTION;
+	}
 	
 	@Override
 	public void doIt(Project proj) {

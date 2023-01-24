@@ -96,10 +96,6 @@ public class AppearanceEditHandler extends EditHandler {
 			canRemCtrl = o.canDeleteHandle(handle.getLocation()) != null;
 		}
 
-		Action last = proj.getLastAction();
-
-		if(from.equals("UNDO")){ return !(last == null);}
-		if(from.equals("REDO")){ return false;}
 		if(from.equals("CUT")){ return selHasRemovable && canChange;}
 		if(from.equals("COPY")){ return !selEmpty;}
 		if(from.equals("PASTE")){ return canChange && clipExists;}
