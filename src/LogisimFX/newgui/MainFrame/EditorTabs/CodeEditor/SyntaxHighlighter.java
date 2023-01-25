@@ -13,8 +13,8 @@ public class SyntaxHighlighter {
     public void start(String ext) {
         switch (ext) {
             case "java" : new JavaKeywordHighlighter().start(codeArea); break;
-            case "verilog" : new JavaKeywordHighlighter().start(codeArea); break;
-            case "vhdl" : new JavaKeywordHighlighter().start(codeArea); break;
+            case "verilog" : new VerilogKeywordHighlighter().start(codeArea); break;
+            case "vhdl" : new VHDLKeywordHighLighter().start(codeArea); break;
         }
     }
 

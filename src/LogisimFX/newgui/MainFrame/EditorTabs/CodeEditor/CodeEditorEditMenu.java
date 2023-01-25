@@ -39,7 +39,7 @@ public class CodeEditorEditMenu {
         Undo = new MenuItem();
         Undo.setAccelerator(KeyCombination.keyCombination("Ctrl+Z"));
         Undo.textProperty().bind(localizer.createStringBinding("editCantUndoItem"));
-        Undo.setDisable(true);
+        Undo.setDisable(editHandler == null || !editHandler.computeEnabled("UNDO"));
         Undo.setOnAction(event -> {
             codeEditor.undo();
             calculateEnabled();
@@ -48,7 +48,7 @@ public class CodeEditorEditMenu {
         Redo = new MenuItem();
         Redo.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+Z"));
         Redo.textProperty().bind(localizer.createStringBinding("editCantRedoItem"));
-        Redo.setDisable(true);
+        Redo.setDisable(editHandler == null || !editHandler.computeEnabled("REDO"));
         Redo.setOnAction(event -> {
             codeEditor.redo();
             calculateEnabled();

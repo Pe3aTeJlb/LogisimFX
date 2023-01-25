@@ -69,7 +69,7 @@ public class CodeEditor extends EditorBase {
         this.ext = ext;
 
         initFindReplaceBar();
-        initCodeArea("java");
+        initCodeArea(ext);
         initInfoBar();
 
         this.getChildren().addAll(findBar, replaceBar, virtualizedScrollPane, infoBar);
