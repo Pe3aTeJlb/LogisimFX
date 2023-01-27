@@ -36,6 +36,8 @@ public class CodeEditorEditMenu {
         this.circ = codeEditor.getCirc();
         editHandler = new CodeEditHandler(codeEditor);
 
+        codeEditor.getCodeArea().getCaretSelectionBind().selectedTextProperty().addListener(change -> calculateEnabled());
+
         Undo = new MenuItem();
         Undo.setAccelerator(KeyCombination.keyCombination("Ctrl+Z"));
         Undo.textProperty().bind(localizer.createStringBinding("editCantUndoItem"));
@@ -138,7 +140,7 @@ public class CodeEditorEditMenu {
         if (Undo.isDisable()){
             Undo.textProperty().bind(localizer.createStringBinding("editCantUndoItem"));
         } else {
-            Undo.textProperty().bind(localizer.createStringBinding("editUndoItem"));
+            Undo.textProperty().bind(localizer.createStringBinding("editUndoItemSimple"));
         }
 
         Redo.setDisable(editHandler == null || !editHandler.computeEnabled("REDO"));
@@ -146,7 +148,7 @@ public class CodeEditorEditMenu {
         if (Redo.isDisable()){
             Redo.textProperty().bind(localizer.createStringBinding("editCantRedoItem"));
         } else {
-            Redo.textProperty().bind(localizer.createStringBinding("editRedoItem"));
+            Redo.textProperty().bind(localizer.createStringBinding("editRedoItemSimple"));
         }
 
         Cut.setDisable(editHandler == null || !editHandler.computeEnabled("CUT"));

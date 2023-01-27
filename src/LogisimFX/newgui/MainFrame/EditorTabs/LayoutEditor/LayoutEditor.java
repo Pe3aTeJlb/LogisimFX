@@ -8,7 +8,9 @@ import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutCan
 import LogisimFX.newgui.MainFrame.CustomMenuBar;
 import LogisimFX.newgui.MainFrame.EditorTabs.EditorBase;
 import LogisimFX.proj.Project;
+import javafx.event.Event;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -37,6 +39,7 @@ public class LayoutEditor extends EditorBase {
         canvasRoot.getChildren().add(layoutCanvas);
 
         toolBar = new LayoutEditorToolBar(proj, this);
+        toolBar.setOnMouseClicked(event -> Event.fireEvent(this, event.copyFor(event.getSource(), this)));
 
         VBox.setVgrow(canvasRoot, Priority.ALWAYS);
 

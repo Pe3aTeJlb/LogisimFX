@@ -132,10 +132,6 @@ public class ContextMenuManager {
         EditVerilogModel.textProperty().bind(lc.createStringBinding("projectEditVerilogModelItem"));
         EditVerilogModel.setOnAction(event -> proj.getFrameController().createVerilogModelEditor(circ));
 
-        MenuItem EditVHDLModel = new MenuItem();
-        EditVHDLModel.textProperty().bind(lc.createStringBinding("projectEditVHDLModelItem"));
-        EditVHDLModel.setOnAction(event -> proj.getFrameController().createVHDLModelEditor(circ));
-
         MenuItem AnalyzeCircuit = new MenuItem();
         AnalyzeCircuit.textProperty().bind(lc.createStringBinding("projectAnalyzeCircuitItem"));
         AnalyzeCircuit.setOnAction(event -> FrameManager.CreateCircuitAnalysisFrame(proj));
@@ -159,7 +155,6 @@ public class ContextMenuManager {
                 EditCircuit,
                 EditAppearance,
                 EditVerilogModel,
-                EditVHDLModel,
                 AnalyzeCircuit,
                 GetCircuitStatistics,
                 SetAsMain,

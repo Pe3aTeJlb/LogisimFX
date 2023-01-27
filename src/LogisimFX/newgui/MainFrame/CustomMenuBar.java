@@ -13,6 +13,7 @@ import LogisimFX.localization.LC_menu;
 import LogisimFX.newgui.FrameManager;
 import LogisimFX.file.LogisimFile;
 import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.RevertAppearanceAction;
+import LogisimFX.newgui.MainFrame.EditorTabs.CodeEditor.CodeEditor;
 import LogisimFX.proj.Project;
 import LogisimFX.proj.ProjectActions;
 import LogisimFX.localization.Localizer;
@@ -328,31 +329,26 @@ public class CustomMenuBar extends MenuBar {
         RevertAppearance.textProperty().bind(localizer.createStringBinding("projectRevertAppearanceItem"));
         RevertAppearance.setOnAction(event -> proj.doAction(new RevertAppearanceAction(proj.getCurrentCircuit())));
 
-/*
-        SeparatorMenuItem sp2 = new SeparatorMenuItem();
-
-        MenuItem ShowTools = new MenuItem();
-        ShowTools.disableProperty().bind(explorerToolBar.ShowProjectExplorer);
-        ShowTools.textProperty().bind(localizer.createStringBinding("projectViewToolboxItem"));
-        ShowTools.setOnAction(event -> explorerToolBar.ShowProjectExplorer());
-
-        MenuItem ViewSimulationTree = new MenuItem();
-        ViewSimulationTree.disableProperty().bind(explorerToolBar.ShowSimulationHierarchy);
-        ViewSimulationTree.textProperty().bind(localizer.createStringBinding("projectViewSimulationItem"));
-        ViewSimulationTree.setOnAction(event -> explorerToolBar.ShowSimulation());
-
-        MenuItem EditCircuitLayout = new MenuItem();
-        EditCircuitLayout.disableProperty().bind(explorerToolBar.EditCircuitLayout);
-        EditCircuitLayout.textProperty().bind(localizer.createStringBinding("projectEditCircuitLayoutItem"));
-        EditCircuitLayout.setOnAction(event -> explorerToolBar.EditCircuit());
-
-        MenuItem EditCircuitAppearance = new MenuItem();
-        EditCircuitAppearance.disableProperty().bind(explorerToolBar.EditCircuitAppearance);
-        EditCircuitAppearance.textProperty().bind(localizer.createStringBinding("projectEditCircuitAppearanceItem"));
-        EditCircuitAppearance.setOnAction(event -> explorerToolBar.EditAppearance());
-*/
 
         SeparatorMenuItem sp3 = new SeparatorMenuItem();
+
+        MenuItem EditCircuitLayout = new MenuItem();
+        //EditCircuitLayout.disableProperty().bind(explorerToolBar.EditCircuitLayout);
+        EditCircuitLayout.textProperty().bind(localizer.createStringBinding("projectEditCircuitLayoutItem"));
+        EditCircuitLayout.setOnAction(event -> proj.getFrameController().createCircLayoutEditor(proj.getCurrentCircuit()));
+
+        MenuItem EditCircuitAppearance = new MenuItem();
+        //EditCircuitAppearance.disableProperty().bind(explorerToolBar.EditCircuitAppearance);
+        EditCircuitAppearance.textProperty().bind(localizer.createStringBinding("projectEditCircuitAppearanceItem"));
+        EditCircuitAppearance.setOnAction(event -> proj.getFrameController().createCircAppearanceEditor(proj.getCurrentCircuit()));
+
+        MenuItem EditVerilogModel = new MenuItem();
+        //EditVerilogModel.disableProperty().bind(proj.getFrameController().editorProperty() instanceof CodeEditor);
+        EditVerilogModel.textProperty().bind(localizer.createStringBinding("projectEditVerilogModelItem"));
+        EditVerilogModel.setOnAction(event -> proj.getFrameController().createVerilogModelEditor(proj.getCurrentCircuit()));
+
+
+        SeparatorMenuItem sp4 = new SeparatorMenuItem();
 
         MenuItem AnalyzeCircuit = new MenuItem();
         AnalyzeCircuit.textProperty().bind(localizer.createStringBinding("projectAnalyzeCircuitItem"));
@@ -363,7 +359,7 @@ public class CustomMenuBar extends MenuBar {
         GetCircuitStatistics.textProperty().bind(localizer.createStringBinding("projectGetCircuitStatisticsItem"));
         GetCircuitStatistics.setOnAction(event -> FrameManager.CreateCircuitStatisticFrame(proj, proj.getCurrentCircuit()));
 
-        SeparatorMenuItem sp4 = new SeparatorMenuItem();
+        SeparatorMenuItem sp5 = new SeparatorMenuItem();
 
         MenuItem Options = new MenuItem();
         Options.textProperty().bind(localizer.createStringBinding("projectOptionsItem"));
@@ -382,16 +378,14 @@ public class CustomMenuBar extends MenuBar {
                 SetAsMain,
                 RemoveCirc,
                 RevertAppearance,
-                /*
-                sp2,
-                ShowTools,
-                ViewSimulationTree,
-                EditCircuitLayout,
-                EditCircuitAppearance,*/
                 sp3,
+                EditCircuitLayout,
+                EditCircuitAppearance,
+                EditVerilogModel,
+                sp4,
                 AnalyzeCircuit,
                 GetCircuitStatistics,
-                sp4,
+                sp5,
                 Options
         );
         this.getMenus().add(Project);

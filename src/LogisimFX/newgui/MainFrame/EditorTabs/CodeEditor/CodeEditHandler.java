@@ -1,6 +1,7 @@
 package LogisimFX.newgui.MainFrame.EditorTabs.CodeEditor;
 
 import LogisimFX.newgui.MainFrame.EditorTabs.EditHandler;
+import javafx.scene.input.Clipboard;
 
 public class CodeEditHandler extends EditHandler {
 
@@ -17,7 +18,7 @@ public class CodeEditHandler extends EditHandler {
         if(from.equals("REDO")){ return codeEditor.getCodeArea().getUndoManager().isRedoAvailable();}
         if(from.equals("CUT")){ return !codeEditor.getCodeArea().getSelectedText().isEmpty();}
         if(from.equals("COPY")){ return !codeEditor.getCodeArea().getSelectedText().isEmpty();}
-        if(from.equals("PASTE")){ return !codeEditor.getCodeArea().getSelectedText().isEmpty();}
+        if(from.equals("PASTE")){ return Clipboard.getSystemClipboard().hasString();}
         if(from.equals("DELETE")){ return !codeEditor.getCodeArea().getSelectedText().isEmpty();}
         if(from.equals("DUPLICATE")){ return !codeEditor.getCodeArea().getSelectedText().isEmpty();}
         if(from.equals("SELECT_ALL")){ return true;}

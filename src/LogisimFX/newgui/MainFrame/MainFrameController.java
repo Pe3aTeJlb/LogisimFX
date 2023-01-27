@@ -47,6 +47,7 @@ import javafx.fxml.FXML;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import java.io.IOException;
 import java.util.*;
@@ -75,8 +76,9 @@ public class MainFrameController extends AbstractController {
     private HashMap<DraggableTab, WaveformController> openedWaveforms = new HashMap<>();
     private HashMap<Circuit, DraggableTab> openedLayoutEditors = new HashMap<>();
     private HashMap<Circuit, DraggableTab> openedAppearanceEditors = new HashMap<>();
-    private HashMap<Circuit, DraggableTab> openedVHDLModelEditors = new HashMap<>();
     private HashMap<Circuit, DraggableTab> openedVerilogModelEditors = new HashMap<>();
+
+    private HashMap<Window, DraggableTab> lastSelectedTabInWindow = new HashMap<>();
 
 
     private DockPane dockPane;
@@ -119,11 +121,6 @@ public class MainFrameController extends AbstractController {
                             openedAppearanceEditors.get(circ).close();
                             ((EditorBase)openedAppearanceEditors.get(circ).getContent()).terminateListeners();
                             openedAppearanceEditors.remove(circ);
-                        }
-                        if (openedVHDLModelEditors.containsKey(circ)){
-                            openedVHDLModelEditors.get(circ).close();
-                            ((EditorBase)openedVHDLModelEditors.get(circ).getContent()).terminateListeners();
-                            openedVHDLModelEditors.remove(circ);
                         }
                         if (openedVerilogModelEditors.containsKey(circ)){
                             openedVerilogModelEditors.get(circ).close();
@@ -243,6 +240,9 @@ public class MainFrameController extends AbstractController {
 
     public void createDefaultLayout(){
 
+        systemTabPaneLeft.setCollapseOnInit(false);
+        systemTabPaneLeft.setPrefExpandedSize(200);
+
         systemTabPaneBottom.setPrefExpandedSize(300);
 
         createToolsTab();
@@ -253,11 +253,11 @@ public class MainFrameController extends AbstractController {
         createCircAppearanceEditor(proj.getCurrentCircuit());
         createCircLayoutEditor(proj.getCurrentCircuit());
         createVerilogModelEditor(proj.getCurrentCircuit());
-        createVHDLModelEditor(proj.getCurrentCircuit());
 
         workspaceTabPane.getSelectionModel().select(1);
 
     }
+
 
     //SideBar Tabs
 
@@ -360,6 +360,7 @@ public class MainFrameController extends AbstractController {
         }
     }
 
+
     //WorkSpace Tabs
 
     public void createCircLayoutEditor(Circuit circ){
@@ -394,6 +395,7 @@ public class MainFrameController extends AbstractController {
                 currLayoutCanvas = layoutEditor.getLayoutCanvas();
                 layoutEditor.getLayoutCanvas().updateResume();
                 proj.setCurrentCircuit(circ);
+                //lastSelectedTabInWindow.put(tab.getTabPane().getScene().getWindow(), tab);
             } else {
                 layoutEditor.getLayoutCanvas().updateStop();
             }
@@ -449,7 +451,10 @@ public class MainFrameController extends AbstractController {
             }
         });
 
-        tab.setOnIntoSeparatedWindow(event -> appearanceEditor.copyAccelerators());
+        tab.setOnIntoSeparatedWindow(event -> {
+            //tab.getTabPane().getScene().getWindow()
+            appearanceEditor.copyAccelerators();
+        });
 
         tab.setOnCloseRequest(event -> currAppearanceCanvas.updateStop());
 
@@ -501,45 +506,6 @@ public class MainFrameController extends AbstractController {
 
     }
 
-    public void createVHDLModelEditor(Circuit circ){
-
-        proj.setCurrentCircuit(circ);
-
-        if (openedVHDLModelEditors.containsKey(circ)){
-            if (openedVHDLModelEditors.get(circ).getTabPane() == null){
-                workspaceTabPane.addTab(openedVHDLModelEditors.get(circ));
-            }
-            selectVHDLModelEditor(circ);
-            return;
-        }
-
-        CodeEditor codeEditor = new CodeEditor(proj, circ, "vhdl");
-        setEditor(codeEditor);
-
-        DraggableTab tab = new DraggableTab(circ.getName()+".vhdl", IconsManager.getImage("code.gif"), codeEditor);
-        tab.setStageTitle(LC.createComplexStringBinding("titleVhdlCodeEditor", circ.getName(), proj.getLogisimFile().getName()));
-
-        tab.getContent().setOnMouseClicked(event -> {
-            setEditor(codeEditor);
-            proj.setCurrentCircuit(circ);
-        });
-
-        tab.setOnSelectionChanged(event -> {
-            if (tab.isSelected()) {
-                setEditor(codeEditor);
-                proj.setCurrentCircuit(circ);
-            }
-        });
-
-        tab.setOnIntoSeparatedWindow(event -> codeEditor.copyAccelerators());
-
-        openedVHDLModelEditors.put(circ, tab);
-
-        workspaceTabPane.addTab(tab);
-        workspaceTabPane.getSelectionModel().select(tab);
-
-    }
-
 
     public void selectCircLayoutEditor(Circuit circ){
         openedLayoutEditors.get(circ).getTabPane().getSelectionModel().select(openedLayoutEditors.get(circ));
@@ -551,10 +517,6 @@ public class MainFrameController extends AbstractController {
 
     public void selectVerilogModelEditor(Circuit circ){
         openedVerilogModelEditors.get(circ).getTabPane().getSelectionModel().select(openedVerilogModelEditors.get(circ));
-    }
-
-    public void selectVHDLModelEditor(Circuit circ){
-        openedVHDLModelEditors.get(circ).getTabPane().getSelectionModel().select(openedVHDLModelEditors.get(circ));
     }
 
 
@@ -700,10 +662,6 @@ public class MainFrameController extends AbstractController {
 
         for (Tab tab: openedAppearanceEditors.values()){
             ((AppearanceEditor) tab.getContent()).terminateListeners();
-        }
-
-        for (Tab tab: openedVHDLModelEditors.values()){
-            ((CodeEditor) tab.getContent()).terminateListeners();
         }
 
         for (Tab tab: openedVerilogModelEditors.values()){
