@@ -53,12 +53,13 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <CheckBox fx:id="ShowTickRateChbx" layoutX="35.0" layoutY="27.0" mnemonicParsing="false" text="CheckBox" AnchorPane.leftAnchor="35.0" />
-                        <CheckBox fx:id="PrinterViewChbx" layoutX="35.0" layoutY="52.0" mnemonicParsing="false" text="CheckBox" AnchorPane.leftAnchor="35.0" />
-                        <CheckBox fx:id="ShowAttrHaloChbx" layoutX="35.0" layoutY="77.0" mnemonicParsing="false" text="CheckBox" AnchorPane.leftAnchor="35.0" />
-                        <CheckBox fx:id="ShowComponentTipsChbx" layoutX="35.0" layoutY="102.0" mnemonicParsing="false" text="CheckBox" AnchorPane.leftAnchor="35.0" />
-                        <CheckBox fx:id="KeepConnectionsChbx" layoutX="35.0" layoutY="127.0" mnemonicParsing="false" text="CheckBox" AnchorPane.leftAnchor="35.0" />
-                        <CheckBox fx:id="ShowGhostChbx" layoutX="35.0" layoutY="152.0" mnemonicParsing="false" text="CheckBox" AnchorPane.leftAnchor="35.0" />
+                        <CheckBox fx:id="ShowTickRateChbx" layoutX="35.0" layoutY="21.0" mnemonicParsing="false" text="CheckBox" AnchorPane.leftAnchor="35.0" />
+                        <CheckBox fx:id="PrinterViewChbx" layoutX="35.0" layoutY="46.0" mnemonicParsing="false" text="CheckBox" AnchorPane.leftAnchor="35.0" />
+                        <CheckBox fx:id="ShowAttrHaloChbx" layoutX="35.0" layoutY="71.0" mnemonicParsing="false" text="CheckBox" AnchorPane.leftAnchor="35.0" />
+                        <CheckBox fx:id="ShowComponentTipsChbx" layoutX="35.0" layoutY="96.0" mnemonicParsing="false" text="CheckBox" AnchorPane.leftAnchor="35.0" />
+                        <CheckBox fx:id="KeepConnectionsChbx" layoutX="35.0" layoutY="121.0" mnemonicParsing="false" text="CheckBox" AnchorPane.leftAnchor="35.0" />
+                        <CheckBox fx:id="ShowGhostChbx" layoutX="35.0" layoutY="146.0" mnemonicParsing="false" text="CheckBox" AnchorPane.leftAnchor="35.0" />
+                        <CheckBox fx:id="ShowGridChbx" layoutX="35.0" layoutY="174.0" mnemonicParsing="false" text="CheckBox" AnchorPane.leftAnchor="35.0" />
                         <GridPane hgap="5.0" layoutX="35.0" layoutY="196.0" prefHeight="90.0" prefWidth="405.0">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="263.0" minWidth="10.0" prefWidth="244.0" />

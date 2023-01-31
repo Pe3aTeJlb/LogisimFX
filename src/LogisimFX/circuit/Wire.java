@@ -251,7 +251,7 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 	//
 
 	public void draw(ComponentDrawContext context) {
-		System.out.println("lols");
+
 		CircuitState state = context.getCircuitState();
 		Graphics g = context.getGraphics();
 

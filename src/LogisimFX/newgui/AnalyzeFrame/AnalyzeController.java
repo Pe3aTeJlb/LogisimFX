@@ -1426,7 +1426,7 @@ public class AnalyzeController extends AbstractController {
 
     @Override
     public void onClose() {
-        System.out.println("Analysis closed");
+
     }
 
 }

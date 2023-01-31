@@ -1,6 +1,6 @@
 package LogisimFX;
 
-import LogisimFX.newgui.MainFrame.MainFrameController;
+import LogisimFX.prefs.AppPreferences;
 import docklib.dock.DockPane;
 import javafx.application.Application;
 
@@ -13,7 +13,7 @@ public class StyleManager {
     public static Map<String, String> themes = Map.ofEntries(
             entry(Application.STYLESHEET_MODENA, Application.STYLESHEET_MODENA),
             entry(Application.STYLESHEET_CASPIAN, Application.STYLESHEET_CASPIAN),
-            entry("Dracula", "/LogisimFX/resources/css/dracula.css"),
+            entry("Darcula", "/LogisimFX/resources/css/darcula.css"),
             entry("Monokai", "/LogisimFX/resources/css/monokai.css")
     );
 
@@ -24,11 +24,11 @@ public class StyleManager {
     public static void initializeDefaultUserAgentStylesheet(){
         //firstly init default javafx default stylesheet
         Application.setUserAgentStylesheet(Application.STYLESHEET_MODENA);
+        //Set app preference stylesheet
+        setTheme(AppPreferences.WINDOW_STYLE.get());
         //init additional stylesheets for every getStyleClass().add() in project
         DockPane.initializeDefaultUserAgentStylesheet();
         com.sun.javafx.css.StyleManager.getInstance().addUserAgentStylesheet(StyleManager.class.getResource("/LogisimFX/resources/css/default.css").toExternalForm());
-        //Set app preference stylesheet
-
     }
 
     public static void setTheme(String theme){
@@ -38,6 +38,7 @@ public class StyleManager {
             com.sun.javafx.css.StyleManager.getInstance().
                     addUserAgentStylesheet(StyleManager.class.getResource(themes.get(theme)).toExternalForm());
         }
+        AppPreferences.WINDOW_STYLE.set(theme);
     }
 
 }

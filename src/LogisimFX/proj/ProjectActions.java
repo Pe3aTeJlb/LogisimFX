@@ -210,15 +210,12 @@ public class ProjectActions {
 		//Project proj = Projects.findProjectFor(f);
 
 		Project proj = FrameManager.FindProjectForFile(f);
-		System.out.println("proj "+proj);
 
 		Loader loader = null;
 
 		if (proj != null) {
 
 			if (proj.isFileDirty()) {
-
-				System.out.println("tersr");
 
 				int type = DialogManager.CreateFileReloadDialog(proj);
 
@@ -252,7 +249,6 @@ public class ProjectActions {
 				*/
 
 			}else {
-				System.out.println("test2");
 				FrameManager.FocusOnFrame(proj);
 				return proj;
 			}
@@ -314,11 +310,9 @@ public class ProjectActions {
 
 		FileSelector fileSelector = new FileSelector(proj.getFrameController().getStage());
 
-		if (loader.getMainFile() != null) {
-			//fileSelector.setInitialDirectory(loader.getMainFile());
-		}
-
 		File f = fileSelector.SaveCircFile();
+
+		if (f == null) return false;
 
 		return doSave(proj, f);
 

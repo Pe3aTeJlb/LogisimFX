@@ -66,6 +66,7 @@ public class AppearanceEditorToolBar extends ToolBar {
             if (action == ProjectEvent.ACTION_SET_TOOL) {
                 if(event.getAbstractTool() != null && appearanceEditor.isSelected()) {
                     highlightCurTool(event.getAbstractTool());
+                    currTool = event.getAbstractTool();
                 }
             }
         }
@@ -121,7 +122,6 @@ public class AppearanceEditorToolBar extends ToolBar {
 
             this.setOnAction(event -> {
                 if(appearanceEditor.isSelected()) {
-                    currTool = abstractTool;
                     proj.setAbstractTool(tool);
                 }
             });

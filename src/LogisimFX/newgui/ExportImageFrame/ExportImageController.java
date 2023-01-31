@@ -447,14 +447,11 @@ public class ExportImageController extends AbstractController implements Simulat
 
                     for(int i = 0; i < ticks * 2; i++){
 
-                        System.out.println("cycle restart");
                         if (sim != null) sim.tick();
                         tickLatch.await();
-                        System.out.println("ticklatch passed");
 
                         Platform.runLater(() -> drawTask.call());
                         latch.await();
-                        System.out.println("latch passed");
 
                         img = drawTask.img;
 
@@ -497,7 +494,6 @@ public class ExportImageController extends AbstractController implements Simulat
 
         @Override
         public void tickCompleted(SimulatorEvent e) {
-            System.out.println("ticked");
             tickLatch.countDown();
         }
 
@@ -511,7 +507,6 @@ public class ExportImageController extends AbstractController implements Simulat
     @Override
     public void onClose() {
         if(exportThread != null)exportThread.interrupt();
-        System.out.println("Export image closed");
     }
 
 }

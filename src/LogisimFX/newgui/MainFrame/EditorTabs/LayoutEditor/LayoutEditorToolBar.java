@@ -71,6 +71,7 @@ public class LayoutEditorToolBar extends ToolBar {
             if (action == ProjectEvent.ACTION_SET_TOOL) {
                 if(event.getTool() != null && layoutEditor.isSelected()) {
                     highlightCurTool(event.getTool());
+                    currTool = event.getTool();
                 }
             }
         }
@@ -122,7 +123,6 @@ public class LayoutEditorToolBar extends ToolBar {
 
             this.setOnAction(event -> {
                 if(layoutEditor.isSelected()) {
-                    currTool = tool;
                     proj.setTool(tool);
                 }
             });

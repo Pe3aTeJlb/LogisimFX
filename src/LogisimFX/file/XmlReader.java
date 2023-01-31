@@ -17,6 +17,7 @@ import LogisimFX.data.AttributeDefaultProvider;
 import LogisimFX.data.AttributeSet;
 import LogisimFX.data.Location;
 import LogisimFX.instance.Instance;
+import LogisimFX.newgui.MainFrame.FrameLayout;
 import LogisimFX.std.wiring.Pin;
 import LogisimFX.tools.Library;
 import LogisimFX.tools.Tool;
@@ -120,6 +121,8 @@ class XmlReader {
 					initMouseMappings(sub_elt);
 				} else if (name.equals("toolbar")) {
 					initToolbarData(sub_elt);
+				} else if (name.equals("layout")){
+					initMainFrameLayout(sub_elt);
 				} else if (name.equals("main")) {
 					String main = sub_elt.getAttribute("name");
 					Circuit circ = file.getCircuit(main);
@@ -381,6 +384,140 @@ class XmlReader {
 				return ret;
 			}
 		}
+
+		private void initMainFrameLayout(Element elt){
+
+			FrameLayout layout = file.getOptions().getMainFrameLayout();
+
+			for (Element mainframe : XmlIterator.forChildElements(elt, "mainwindow")) {
+
+				double w = 0;
+				String width = mainframe.getAttribute("width");
+				if (width != null && !width.equals("")) w = Double.parseDouble(width);
+
+				double h = 0;
+				String height = mainframe.getAttribute("height");
+				if (height != null && !height.equals("")) h = Double.parseDouble(height);
+
+				double x = 0;
+				String xx = mainframe.getAttribute("x");
+				if (xx != null && !xx.equals("")) x = Double.parseDouble(xx);
+
+				double y = 0;
+				String yy = mainframe.getAttribute("y");
+				if (yy != null && !yy.equals("")) y = Double.parseDouble(yy);
+
+				String fullScreen = mainframe.getAttribute("fullscreen");
+				boolean isFullScreen = false;
+				if (fullScreen != null && !fullScreen.equals("")) isFullScreen = Boolean.parseBoolean(fullScreen);
+
+				FrameLayout.MainWindowDescriptor mainWindowDescriptor = new FrameLayout.MainWindowDescriptor(w, h, x, y, isFullScreen);
+				layout.setMainWindowDescriptor(mainWindowDescriptor);
+
+				for (Element sidebar : XmlIterator.forChildElements(mainframe, "sidebar")) {
+
+					String pane = sidebar.getAttribute("pane");
+
+					boolean leftCollapsed = true;
+					String left = sidebar.getAttribute("left");
+					if (left != null && !left.equals("")) leftCollapsed = Boolean.parseBoolean(left);
+
+					boolean rightCollapsed = true;
+					String right = sidebar.getAttribute("right");
+					if (right != null && !right.equals("")) rightCollapsed = Boolean.parseBoolean(right);
+
+					double prefSize = -1;
+					String size = sidebar.getAttribute("size");
+					if (size != null && !size.equals("")) prefSize = Double.parseDouble(size);
+
+					FrameLayout.SideBarDescriptor sideBarDescriptor = new FrameLayout.SideBarDescriptor(pane, leftCollapsed, rightCollapsed, prefSize);
+
+					for (Element tab : XmlIterator.forChildElements(sidebar, "tab")) {
+						sideBarDescriptor.addSystemTabDescriptor(
+								new FrameLayout.SystemTabDescriptor(tab.getAttribute("side"), tab.getAttribute("type")));
+					}
+
+					mainWindowDescriptor.addSystemSideBarDescriptor(sideBarDescriptor);
+
+				}
+
+				for (Element workpane : XmlIterator.forChildElements(mainframe, "workpane")) {
+
+					for (Element tab : XmlIterator.forChildElements(workpane, "tab")) {
+
+						String circ = tab.getAttribute("circ");
+						String type = tab.getAttribute("type");
+						String selected = tab.getAttribute("selected");
+						boolean isSelected = false;
+						if (selected != null && !selected.equals("")) isSelected = Boolean.parseBoolean(selected);
+
+						mainWindowDescriptor.addEditorTabDescriptor(new FrameLayout.EditorTabDescriptor(circ, type, isSelected));
+
+					}
+				}
+
+			}
+
+			for (Element subwindow : XmlIterator.forChildElements(elt, "window")) {
+
+				double w = 0;
+				String width = subwindow.getAttribute("width");
+				if (width != null && !width.equals("")) w = Double.parseDouble(width);
+
+				double h = 0;
+				String height = subwindow.getAttribute("height");
+				if (height != null && !height.equals("")) h = Double.parseDouble(height);
+
+				double x = 0;
+				String xx = subwindow.getAttribute("x");
+				if (xx != null && !xx.equals("")) x = Double.parseDouble(xx);
+
+				double y = 0;
+				String yy = subwindow.getAttribute("y");
+				if (yy != null && !yy.equals("")) y = Double.parseDouble(yy);
+
+				String fullScreen = subwindow.getAttribute("fullscreen");
+				boolean isFullScreen = false;
+				if (fullScreen != null && !fullScreen.equals("")) isFullScreen = Boolean.parseBoolean(fullScreen);
+
+				FrameLayout.SubWindowDescriptor subWindowDescriptor = new FrameLayout.SubWindowDescriptor(w, h, x, y, isFullScreen);
+
+				for (Element tabpane: XmlIterator.forChildElements(subwindow, "tabpane")) {
+
+					String anchor = tabpane.getAttribute("anchor");
+
+					boolean append = false;
+					String a = tabpane.getAttribute("append");
+					if (a != null && !a.equals("")) append = Boolean.parseBoolean(a);
+
+					FrameLayout.TabPaneLayoutDescriptor tabPaneLayoutDescriptor = new FrameLayout.TabPaneLayoutDescriptor(anchor, append);
+
+					for (Element tab : XmlIterator.forChildElements(tabpane, "tab")) {
+
+						String circ = tab.getAttribute("circ");
+						String type = tab.getAttribute("type");
+						String selected = tab.getAttribute("selected");
+						boolean isSelected = false;
+						if (selected != null && !selected.equals("")) isSelected = Boolean.parseBoolean(selected);
+
+						tabPaneLayoutDescriptor.addTabDescriptor(new FrameLayout.EditorTabDescriptor(
+								circ,
+								type,
+								isSelected
+						));
+
+					}
+
+					subWindowDescriptor.addTabPaneDescriptor(tabPaneLayoutDescriptor);
+
+				}
+
+				layout.addSubWindowDescriptor(subWindowDescriptor);
+
+			}
+
+		}
+
 	}
 
 	private LibraryLoader loader;

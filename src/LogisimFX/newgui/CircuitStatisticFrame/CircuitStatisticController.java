@@ -100,7 +100,6 @@ public class CircuitStatisticController extends AbstractController {
     @Override
     public void onClose() {
         statisticsTable.getItems().clear();
-        System.out.println("Circuit statistic closed");
     }
 
 }

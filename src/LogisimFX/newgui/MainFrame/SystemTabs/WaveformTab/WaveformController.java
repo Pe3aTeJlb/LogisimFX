@@ -2011,8 +2011,6 @@ public class WaveformController extends AbstractController {
     @Override
     public void onClose() {
 
-        System.out.println("Circ log closed");
-
         if(logObjects != null) {
             logObjects.clear();
             logObjects = null;

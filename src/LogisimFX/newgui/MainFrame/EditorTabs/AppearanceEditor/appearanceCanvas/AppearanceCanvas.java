@@ -18,6 +18,7 @@ import LogisimFX.draw.undo.Action;
 import LogisimFX.newgui.ContextMenuManager;
 import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.AppearanceEditor;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
+import LogisimFX.prefs.AppPreferences;
 import LogisimFX.proj.Project;
 import LogisimFX.proj.ProjectEvent;
 import LogisimFX.proj.ProjectListener;
@@ -176,7 +177,9 @@ public class AppearanceCanvas extends Canvas {
 
         //model = proj.getCurrentCircuit().getAppearance();
 
-        drawGrid();
+        if (AppPreferences.SHOW_GRID.get()) {
+            drawGrid();
+        }
 
         //setCircuit(proj, proj.getCircuitState());
 

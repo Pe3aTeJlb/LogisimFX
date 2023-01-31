@@ -7,6 +7,7 @@ package LogisimFX;
 
 import LogisimFX.localization.LC_file;
 import LogisimFX.localization.LC_gui;
+import LogisimFX.prefs.AppPreferences;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
@@ -20,7 +21,7 @@ public class FileSelector {
 
     private DirectoryChooser directoryChooser;
 
-    private File tempFile;
+    private File tempFile = new File(AppPreferences.DIALOG_DIRECTORY.get());
 
     private FileChooser.ExtensionFilter circ = new FileChooser.ExtensionFilter(LC_file.getInstance().get("logisimFilter"),"*.circ");
     private FileChooser.ExtensionFilter jar =  new FileChooser.ExtensionFilter(LC_file.getInstance().get("jarFilter"),"*.jar");
@@ -57,7 +58,11 @@ public class FileSelector {
 
         directoryChooser.setTitle(title);
 
+        if (tempFile != null) fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
+
         tempFile = directoryChooser.showDialog(ownerWindow);
+
+        if (tempFile != null) AppPreferences.DIALOG_DIRECTORY.set(tempFile.getParent());
 
         return tempFile;
 
@@ -67,9 +72,13 @@ public class FileSelector {
 
         UpdateLocale();
 
+        if (tempFile != null) fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
+
         fileChooser.setTitle(title);
 
         fileChooser.getExtensionFilters().clear();
+
+        if (tempFile != null) AppPreferences.DIALOG_DIRECTORY.set(tempFile.getParent());
 
         return fileChooser.showOpenDialog(ownerWindow);
 
@@ -79,11 +88,15 @@ public class FileSelector {
 
         UpdateLocale();
 
+        if (tempFile != null) fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
+
         fileChooser.setTitle(title);
 
         fileChooser.getExtensionFilters().clear();
 
         tempFile = fileChooser.showSaveDialog(ownerWindow);
+
+        if (tempFile != null) AppPreferences.DIALOG_DIRECTORY.set(tempFile.getParent());
 
         return tempFile;
 
@@ -95,11 +108,13 @@ public class FileSelector {
 
         UpdateLocale();
 
-        //fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
+        if (tempFile != null) fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
 
         setCircFilter();
 
         tempFile = fileChooser.showOpenDialog(ownerWindow);
+
+        if (tempFile != null) AppPreferences.DIALOG_DIRECTORY.set(tempFile.getParent());
 
         return tempFile;
 
@@ -109,11 +124,13 @@ public class FileSelector {
 
         UpdateLocale();
 
-       // fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
+        if (tempFile != null) fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
 
         setJarFilter();
 
         tempFile = fileChooser.showOpenDialog(ownerWindow);
+
+        if (tempFile != null) AppPreferences.DIALOG_DIRECTORY.set(tempFile.getParent());
 
         return tempFile;
 
@@ -123,11 +140,13 @@ public class FileSelector {
 
         UpdateLocale();
 
-        // fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
+        if (tempFile != null) fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
 
         setCirclogFilter();
 
         tempFile = fileChooser.showOpenDialog(ownerWindow);
+
+        if (tempFile != null) AppPreferences.DIALOG_DIRECTORY.set(tempFile.getParent());
 
         return tempFile;
 
@@ -137,11 +156,13 @@ public class FileSelector {
 
         UpdateLocale();
 
-        //fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
+        if (tempFile != null) fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
 
         setCircFilter();
 
         tempFile = fileChooser.showSaveDialog(ownerWindow);
+
+        if (tempFile != null) AppPreferences.DIALOG_DIRECTORY.set(tempFile.getParent());
 
         return tempFile;
 
@@ -151,11 +172,13 @@ public class FileSelector {
 
         UpdateLocale();
 
-        // fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
+        if (tempFile != null) fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
 
         setJarFilter();
 
         tempFile = fileChooser.showOpenDialog(ownerWindow);
+
+        if (tempFile != null) AppPreferences.DIALOG_DIRECTORY.set(tempFile.getParent());
 
         return tempFile;
 
@@ -165,11 +188,13 @@ public class FileSelector {
 
         UpdateLocale();
 
-        // fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
+        if (tempFile != null) fileChooser.setInitialDirectory(tempFile.getAbsoluteFile()); 
 
         setPngFilter();
 
         tempFile = fileChooser.showSaveDialog(ownerWindow);
+
+        if (tempFile != null) AppPreferences.DIALOG_DIRECTORY.set(tempFile.getParent());
 
         return tempFile;
 
@@ -179,11 +204,13 @@ public class FileSelector {
 
         UpdateLocale();
 
-        // fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
+        if (tempFile != null) fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
 
         setJpgFilter();
 
         tempFile = fileChooser.showSaveDialog(ownerWindow);
+
+        if (tempFile != null) AppPreferences.DIALOG_DIRECTORY.set(tempFile.getParent());
 
         return tempFile;
 
@@ -193,11 +220,13 @@ public class FileSelector {
 
         UpdateLocale();
 
-        // fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
+        if (tempFile != null) fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
 
         setGifFilter();
 
         tempFile = fileChooser.showSaveDialog(ownerWindow);
+
+        if (tempFile != null) AppPreferences.DIALOG_DIRECTORY.set(tempFile.getParent());
 
         return tempFile;
 
@@ -207,11 +236,13 @@ public class FileSelector {
 
         UpdateLocale();
 
-        // fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
+        if (tempFile != null) fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
 
         setCirclogFilter();
 
         tempFile = fileChooser.showSaveDialog(ownerWindow);
+
+        if (tempFile != null) AppPreferences.DIALOG_DIRECTORY.set(tempFile.getParent());
 
         return tempFile;
 

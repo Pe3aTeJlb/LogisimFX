@@ -64,8 +64,6 @@ public class DrawTask extends Task<ImageView> {
 
         canvas = new Canvas(sizeX,sizeY);
 
-        System.out.println("scree "+ sizeX+""+sizeY);
-
         proj = project;
         this.latch = latch;
 

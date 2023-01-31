@@ -44,7 +44,6 @@ public class HelpController extends AbstractController {
 
     @Override
     public void onClose() {
-        System.out.println("Help closed");
     }
 
 }

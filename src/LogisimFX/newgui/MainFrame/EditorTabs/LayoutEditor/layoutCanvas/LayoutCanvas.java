@@ -321,7 +321,9 @@ public class LayoutCanvas extends Canvas {
                 transform[3], transform[4], transform[5]
         );
 
-        drawGrid();
+        if (AppPreferences.SHOW_GRID.get()) {
+            drawGrid();
+        }
 
         drawWithUserState();
 
@@ -376,7 +378,7 @@ public class LayoutCanvas extends Canvas {
 
     private void drawGrid(){
 
-        if(AppPreferences.APPEARANCE_SHOW_GRID.get()) {
+        if(AppPreferences.SHOW_GRID.get()) {
 
             for (int x = inverseSnapXToGrid(0);
                  x < inverseSnapXToGrid((int) this.getWidth()); x += SPACING_X) {
@@ -786,7 +788,7 @@ public class LayoutCanvas extends Canvas {
             if(event.getCode().isArrowKey())event.consume();
 
             if(event.getCode() == KeyCode.Y){
-                AppPreferences.APPEARANCE_SHOW_GRID.set(!AppPreferences.APPEARANCE_SHOW_GRID.get());
+                AppPreferences.SHOW_GRID.set(!AppPreferences.SHOW_GRID.get());
             }
 
             if(event.getCode() == KeyCode.F){

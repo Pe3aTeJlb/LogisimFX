@@ -7,6 +7,7 @@
 package LogisimFX.file;
 
 import LogisimFX.data.*;
+import LogisimFX.newgui.MainFrame.FrameLayout;
 
 public class Options {
 
@@ -33,13 +34,15 @@ public class Options {
 	};
 
 	private AttributeSet attrs;
-	private MouseMappings mmappings;
+	private MouseMappings mappings;
 	private ToolbarData toolbar;
+	private FrameLayout layout;
 
 	public Options() {
 		attrs = AttributeSets.fixedSet(ATTRIBUTES, DEFAULTS);
-		mmappings = new MouseMappings();
+		mappings = new MouseMappings();
 		toolbar = new ToolbarData();
+		layout = new FrameLayout();
 	}
 
 	public AttributeSet getAttributeSet() {
@@ -47,17 +50,22 @@ public class Options {
 	}
 
 	public MouseMappings getMouseMappings() {
-		return mmappings;
+		return mappings;
 	}
 
 	public ToolbarData getToolbarData() {
 		return toolbar;
 	}
 
+	public FrameLayout getMainFrameLayout(){
+		return layout;
+	}
+
 	public void copyFrom(Options other, LogisimFile dest) {
 		AttributeSets.copy(other.attrs, this.attrs);
 		this.toolbar.copyFrom(other.toolbar, dest);
-		this.mmappings.copyFrom(other.mmappings, dest);
+		this.mappings.copyFrom(other.mappings, dest);
+		this.layout.copyFrom(other.layout, dest);
 	}
 
 }

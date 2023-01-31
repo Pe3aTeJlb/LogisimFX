@@ -666,10 +666,7 @@ public class OptionsController extends AbstractController {
 
     @Override
     public void onClose() {
-
         proj.getLogisimFile().removeLibraryListener(myListener);
-
-        System.out.println("test options");
     }
 
 }

@@ -69,7 +69,7 @@ public class Project {
 	private Simulator simulator = new Simulator();
 	private LogisimFile file;
 	private CircuitState circuitState;
-	private HashMap<Circuit,CircuitState> stateMap = new HashMap<>();
+	private HashMap<Circuit, CircuitState> stateMap = new HashMap<>();
 	private MainFrameController frameController;
 	private Tool tool = null;
 	private AbstractTool abstractTool = null;
@@ -100,9 +100,10 @@ public class Project {
 		return frameController;
 	}
 
-	//
-	// access methods
-	//
+
+
+	/* access methods */
+
 	public LogisimFile getLogisimFile() {
 		return file;
 	}
@@ -118,7 +119,6 @@ public class Project {
 	public Dependencies getDependencies() {
 		return depends;
 	}
-
 
 	public Circuit getCurrentCircuit() {
 		return circuitState == null ? null : circuitState.getCircuit();
@@ -153,9 +153,10 @@ public class Project {
 		return undoMods != 0;
 	}
 
-	//
-	// Listener methods
-	//
+
+
+	/* Listener methods */
+
 	public void addProjectListener(ProjectListener what) {
 		projectListeners.add(what);
 	}
@@ -200,9 +201,10 @@ public class Project {
 		}
 	}
 
-	//
-	// actions
-	//
+
+
+	/* actions */
+
 	public void setLogisimFile(LogisimFile value) {
 
 		LogisimFile old = this.file;
@@ -423,6 +425,7 @@ public class Project {
 
 
 
+	/* Undo */
 
 	public Action getLastAction() {
 		if (undoLog.size() == 0) {
@@ -478,6 +481,8 @@ public class Project {
 		return undoAvailable;
 	}
 
+
+	/* Redo */
 
 	public Action getLastRedoAction() {
 		if (redoLog.size() == 0) {

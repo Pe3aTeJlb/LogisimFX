@@ -14,6 +14,7 @@ import LogisimFX.newgui.FrameManager;
 import LogisimFX.file.LogisimFile;
 import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.RevertAppearanceAction;
 import LogisimFX.newgui.MainFrame.EditorTabs.CodeEditor.CodeEditor;
+import LogisimFX.prefs.AppPreferences;
 import LogisimFX.proj.Project;
 import LogisimFX.proj.ProjectActions;
 import LogisimFX.localization.Localizer;
@@ -181,22 +182,22 @@ public class CustomMenuBar extends MenuBar {
         MenuItem addToolsTab = new MenuItem();
         //addToolsTab.setAccelerator(KeyCombination.keyCombination("Alt+1"));
         addToolsTab.textProperty().bind(localizer.createStringBinding("viewToolsTab"));
-        addToolsTab.setOnAction(event -> proj.getFrameController().createToolsTab());
+        addToolsTab.setOnAction(event -> proj.getFrameController().addToolsTab());
 
         MenuItem addSimulationTab = new MenuItem();
         //addSimulationTab.setAccelerator(KeyCombination.keyCombination("Alt+2"));
         addSimulationTab.textProperty().bind(localizer.createStringBinding("viewSimTab"));
-        addSimulationTab.setOnAction(event -> proj.getFrameController().createSimulationTab());
+        addSimulationTab.setOnAction(event -> proj.getFrameController().addSimulationTab());
 
         MenuItem addAttributesTab = new MenuItem();
         //addAttributesTab.setAccelerator(KeyCombination.keyCombination("Alt+3"));
         addAttributesTab.textProperty().bind(localizer.createStringBinding("viewAttrTab"));
-        addAttributesTab.setOnAction(event -> proj.getFrameController().createAttributesTab());
+        addAttributesTab.setOnAction(event -> proj.getFrameController().addAttributesTab());
 
         MenuItem addWaveformTab = new MenuItem();
         //addWaveformTab.setAccelerator(KeyCombination.keyCombination("Alt+4"));
         addWaveformTab.textProperty().bind(localizer.createStringBinding("viewWaveformTab"));
-        addWaveformTab.setOnAction(event -> proj.getFrameController().createWaveformTab());
+        addWaveformTab.setOnAction(event -> proj.getFrameController().addWaveformTab());
 
         tabMenu.getItems().addAll(
                 addToolsTab,
@@ -335,17 +336,17 @@ public class CustomMenuBar extends MenuBar {
         MenuItem EditCircuitLayout = new MenuItem();
         //EditCircuitLayout.disableProperty().bind(explorerToolBar.EditCircuitLayout);
         EditCircuitLayout.textProperty().bind(localizer.createStringBinding("projectEditCircuitLayoutItem"));
-        EditCircuitLayout.setOnAction(event -> proj.getFrameController().createCircLayoutEditor(proj.getCurrentCircuit()));
+        EditCircuitLayout.setOnAction(event -> proj.getFrameController().addCircLayoutEditor(proj.getCurrentCircuit()));
 
         MenuItem EditCircuitAppearance = new MenuItem();
         //EditCircuitAppearance.disableProperty().bind(explorerToolBar.EditCircuitAppearance);
         EditCircuitAppearance.textProperty().bind(localizer.createStringBinding("projectEditCircuitAppearanceItem"));
-        EditCircuitAppearance.setOnAction(event -> proj.getFrameController().createCircAppearanceEditor(proj.getCurrentCircuit()));
+        EditCircuitAppearance.setOnAction(event -> proj.getFrameController().addCircAppearanceEditor(proj.getCurrentCircuit()));
 
         MenuItem EditVerilogModel = new MenuItem();
         //EditVerilogModel.disableProperty().bind(proj.getFrameController().editorProperty() instanceof CodeEditor);
         EditVerilogModel.textProperty().bind(localizer.createStringBinding("projectEditVerilogModelItem"));
-        EditVerilogModel.setOnAction(event -> proj.getFrameController().createVerilogModelEditor(proj.getCurrentCircuit()));
+        EditVerilogModel.setOnAction(event -> proj.getFrameController().addVerilogModelEditor(proj.getCurrentCircuit()));
 
 
         SeparatorMenuItem sp4 = new SeparatorMenuItem();
@@ -681,7 +682,7 @@ public class CustomMenuBar extends MenuBar {
 
                 this.setOnAction(event -> {
                     if (sim != null) sim.setTickFrequency(freq);
-
+                    AppPreferences.TICK_FREQUENCY.set(freq);
                     if(lastTickFreqItem != null)lastTickFreqItem.setSelected(false);
                     lastTickFreqItem = this;
 

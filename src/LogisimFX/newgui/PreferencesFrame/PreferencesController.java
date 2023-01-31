@@ -119,6 +119,9 @@ public class PreferencesController extends AbstractController {
     private CheckBox ShowGhostChbx;
 
     @FXML
+    private CheckBox ShowGridChbx;
+
+    @FXML
     private Label AfterAddingLbl;
 
     @FXML
@@ -354,6 +357,9 @@ public class PreferencesController extends AbstractController {
         ShowGhostChbx.setSelected(AppPreferences.ADD_SHOW_GHOSTS.get());
         ShowGhostChbx.setOnAction(event -> AppPreferences.ADD_SHOW_GHOSTS.set(ShowGhostChbx.isSelected()));
 
+        ShowGridChbx.textProperty().bind(LC.createStringBinding("layoutAddShowGrid"));
+        ShowGridChbx.setSelected(AppPreferences.SHOW_GRID.get());
+        ShowGridChbx.setOnAction(event -> AppPreferences.SHOW_GRID.set(ShowGridChbx.isSelected()));
 
 
         AfterAddingLbl.textProperty().bind(LC.createStringBinding("layoutAddAfter"));

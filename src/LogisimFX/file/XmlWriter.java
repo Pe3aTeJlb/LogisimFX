@@ -16,6 +16,7 @@ import LogisimFX.comp.ComponentFactory;
 import LogisimFX.data.Attribute;
 import LogisimFX.data.AttributeDefaultProvider;
 import LogisimFX.data.AttributeSet;
+import LogisimFX.newgui.MainFrame.FrameLayout;
 import LogisimFX.tools.Library;
 import LogisimFX.tools.Tool;
 import LogisimFX.util.InputEventUtil;
@@ -94,6 +95,7 @@ class XmlWriter {
 		ret.appendChild(fromOptions());
 		ret.appendChild(fromMouseMappings());
 		ret.appendChild(fromToolbarData());
+		ret.appendChild(fromMainFrameLayout());
 
 		for (Circuit circ : file.getCircuits()) {
 			ret.appendChild(fromCircuit(circ));
@@ -159,6 +161,10 @@ class XmlWriter {
 			}
 		}
 		return elt;
+	}
+
+	Element fromMainFrameLayout(){
+		return file.getOptions().getMainFrameLayout().getLayout(doc);
 	}
 
 	Element fromTool(Tool tool) {

@@ -122,15 +122,15 @@ public class ContextMenuManager {
 
         MenuItem EditCircuit = new MenuItem();
         EditCircuit.textProperty().bind(lc.createStringBinding("projectEditCircuitLayoutItem"));
-        EditCircuit.setOnAction(event -> proj.getFrameController().createCircLayoutEditor(circ));
+        EditCircuit.setOnAction(event -> proj.getFrameController().addCircLayoutEditor(circ));
 
         MenuItem EditAppearance = new MenuItem();
         EditAppearance.textProperty().bind(lc.createStringBinding("projectEditCircuitAppearanceItem"));
-        EditAppearance.setOnAction(event -> proj.getFrameController().createCircAppearanceEditor(circ));
+        EditAppearance.setOnAction(event -> proj.getFrameController().addCircAppearanceEditor(circ));
 
         MenuItem EditVerilogModel = new MenuItem();
         EditVerilogModel.textProperty().bind(lc.createStringBinding("projectEditVerilogModelItem"));
-        EditVerilogModel.setOnAction(event -> proj.getFrameController().createVerilogModelEditor(circ));
+        EditVerilogModel.setOnAction(event -> proj.getFrameController().addVerilogModelEditor(circ));
 
         MenuItem AnalyzeCircuit = new MenuItem();
         AnalyzeCircuit.textProperty().bind(lc.createStringBinding("projectAnalyzeCircuitItem"));

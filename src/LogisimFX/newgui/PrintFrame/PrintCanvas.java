@@ -63,8 +63,6 @@ public class PrintCanvas extends Canvas{
 
         super(sizeX,sizeY);
 
-        System.out.println("scree "+ sizeX+""+sizeY);
-
         proj = project;
 
         g = new Graphics(this.getGraphicsContext2D());
@@ -101,11 +99,11 @@ public class PrintCanvas extends Canvas{
 
         Bounds bds = circ.getBounds(g).expand(8);
         scale = Math.min(imWidth / bds.getWidth(), (imHeight - headHeight) / bds.getHeight());
-        System.out.println("scale "+scale);
+
         if (rotateToFit && scale < 1.0 / 1.1) {
             double scale2 = Math.min(imHeight / bds.getWidth(),
                     (imWidth - headHeight) / bds.getHeight());
-            System.out.println("scale2 "+scale2);
+
             if (scale2 >= scale * 1.1) { // will rotate
                 scale = scale2;
                 rotated = true;
@@ -120,7 +118,6 @@ public class PrintCanvas extends Canvas{
         double pow = Math.pow(10, 3);
         scale = Math.ceil(scale * pow) / pow;
         if(scale < 0.05) scale = 0.05;
-        System.out.println("final scale "+scale);
 
         if(header != null){
 
@@ -179,8 +176,6 @@ public class PrintCanvas extends Canvas{
             // Setting pivot points for the rotation
             rotate.setPivotX(bds.getWidth()/2);
             rotate.setPivotY(3.1*bds.getHeight()/4);
-
-            System.out.println(bds.getWidth() + " " + bds.getHeight());
 
             // Adding the transformation to img
             img.getTransforms().addAll(rotate);
