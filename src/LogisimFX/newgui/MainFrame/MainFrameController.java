@@ -89,6 +89,7 @@ public class MainFrameController extends AbstractController {
 
     private DockPane dockPane;
     private DoubleSidedTabPane systemTabPaneLeft, systemTabPaneRight, systemTabPaneBottom;
+    private DockPane workSpaceDockPane;
     private DraggableTabPane workspaceTabPane;
 
     MyProjectListener myProjectListener = new MyProjectListener();
@@ -195,7 +196,7 @@ public class MainFrameController extends AbstractController {
         proj.addLibraryListener(myProjectListener);
         proj.addCircuitListener(myProjectListener);
 
-        DockPane dockPane = new DockPane(false);
+        dockPane = new DockPane(false);
         VBox.setVgrow(dockPane, Priority.ALWAYS);
 
         systemTabPaneLeft = new DoubleSidedTabPane(stage, proj);
@@ -207,14 +208,10 @@ public class MainFrameController extends AbstractController {
         systemTabPaneBottom = new DoubleSidedTabPane(stage, proj);
         systemTabPaneBottom.setSide(Side.BOTTOM);
 
-        workspaceTabPane = new DraggableTabPane(stage, TabGroup.WorkSpace);
-        workspaceTabPane.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
-        workspaceTabPane.setSide(Side.TOP);
-        workspaceTabPane.setRotateGraphic(true);
-        workspaceTabPane.setUnDockable(false);
-        workspaceTabPane.setProject(proj);
+        workSpaceDockPane = new DockPane(false);
+        workSpaceDockPane.setUseDockPaneBoundaryForSideDock(true);
 
-        dockPane.dock(workspaceTabPane, DockAnchor.TOP);
+        dockPane.dock(workSpaceDockPane, DockAnchor.TOP);
         dockPane.dock(systemTabPaneLeft, DockAnchor.LEFT);
         dockPane.dock(systemTabPaneRight, DockAnchor.RIGHT);
         dockPane.dock(systemTabPaneBottom, DockAnchor.BOTTOM);
@@ -225,7 +222,7 @@ public class MainFrameController extends AbstractController {
 
         restoreLayout(proj.getLogisimFile().getOptions().getMainFrameLayout());
 
-        workspaceTabPane.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> computeTitle((DraggableTab) n));
+        //workspaceTabPane.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> computeTitle((DraggableTab) n));
         computeTitle();
 
     }
@@ -233,13 +230,13 @@ public class MainFrameController extends AbstractController {
     private void computeTitle(){
 
         stage.titleProperty().unbind();
-
+/*
         if (!workspaceTabPane.getTabs().isEmpty()){
             stage.titleProperty().bind(((DraggableTab)workspaceTabPane.getSelectionModel().getSelectedItem()).getStageTitle());
         } else {
             stage.setTitle("LogisimFX");
         }
-
+*/
     }
 
     private void computeTitle(DraggableTab tab){
@@ -311,32 +308,9 @@ public class MainFrameController extends AbstractController {
 
            }
 
-            //Add workspace tabs
+            //Restore workspace tabs
 
-            Circuit selectedTab = null;
-            String selectedTabType = null;
-            for (FrameLayout.EditorTabDescriptor editorTabDescriptor: mainWindowDescriptor.editorTabDescriptors){
-                Circuit circ = proj.getLogisimFile().getCircuits().stream().filter(c -> c.getName().equals(editorTabDescriptor.circ)).findFirst().get();
-                if (editorTabDescriptor.isSelected) {
-                    selectedTab = circ;
-                    selectedTabType = editorTabDescriptor.type;
-                }
-                switch (editorTabDescriptor.type){
-                    case "app":     addCircAppearanceEditor(circ); break;
-                    case "layo":    addCircLayoutEditor(circ); break;
-                    case "hdl":    addVerilogModelEditor(circ); break;
-                }
-            }
-
-            //if descriptors contains selected tab
-            if (selectedTab != null) {
-                switch (selectedTabType) {
-                    case "app":     selectCircAppearanceEditor(selectedTab); break;
-                    case "layo":    selectCircLayoutEditor(selectedTab); break;
-                    case "hdl":    selectVerilogModelEditor(selectedTab); break;
-                }
-            }
-
+            restoreTabPaneLayout(mainWindowDescriptor.tabPaneLayoutDescriptors, workSpaceDockPane);
 
 
             //SubWindows
@@ -345,61 +319,8 @@ public class MainFrameController extends AbstractController {
 
                 dockPane = new DockPane();
                 DraggableTab lastTab = null;
-                DraggableTabPane prevTabPane = null;
 
-                for (FrameLayout.TabPaneLayoutDescriptor tabPaneLayoutDescriptor: subWindowDescriptor.tabpanes){
-
-                    DraggableTabPane tabPane = new DraggableTabPane(stage, workspaceTabPane.getTabGroup());
-                    tabPane.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
-                    if(workspaceTabPane.getProject() != null) tabPane.setProject(workspaceTabPane.getProject());
-
-                    DraggableTab tab = null;
-                    selectedTab = null;
-                    selectedTabType = null;
-
-                    for (FrameLayout.EditorTabDescriptor editorTabDescriptor : tabPaneLayoutDescriptor.tabs){
-
-                        Circuit circ = proj.getLogisimFile().getCircuits().stream().filter(c -> c.getName().equals(editorTabDescriptor.circ)).findFirst().get();
-                        if (editorTabDescriptor.isSelected) {
-                            selectedTab = circ;
-                            selectedTabType = editorTabDescriptor.type;
-                        }
-
-                        switch (editorTabDescriptor.type){
-                            case "app":     tab = createCircAppearanceEditor(circ); break;
-                            case "layo":    tab = createCircLayoutEditor(circ); break;
-                            case "hdl":    tab = createVerilogModelEditor(circ); break;
-                        }
-
-                        tabPane.addTab(tab);
-
-                    }
-
-                    if (selectedTab != null) {
-                        switch (selectedTabType) {
-                            case "app":     selectCircAppearanceEditor(selectedTab); break;
-                            case "layo":    selectCircLayoutEditor(selectedTab); break;
-                            case "hdl":       selectVerilogModelEditor(selectedTab); break;
-                        }
-                        lastTab = tab;
-                    }
-
-                    DockAnchor anchor;
-                    if (tabPaneLayoutDescriptor.anchor.equals("bottom")){
-                        anchor = DockAnchor.BOTTOM;
-                    } else {
-                        anchor = DockAnchor.RIGHT;
-                    }
-
-                    if (tabPaneLayoutDescriptor.append && prevTabPane != null){
-                        dockPane.dock(tabPane, anchor, prevTabPane);
-                    } else {
-                        dockPane.dock(tabPane, anchor);
-                    }
-
-                    prevTabPane = tabPane;
-
-                }
+                restoreTabPaneLayout(subWindowDescriptor.tabpanes, dockPane);
 
                 final Stage newFloatStage = new Stage();
                 newFloatStage.getIcons().add(IconsManager.LogisimFX);
@@ -420,6 +341,7 @@ public class MainFrameController extends AbstractController {
                     if(finalDockPane.getChildren().isEmpty()){
                         newFloatStage.close();
                         newFloatStage.setScene(null);
+                        lastSelectedTabInWindow.remove(newFloatStage);
                     }
 
                 });
@@ -435,12 +357,83 @@ public class MainFrameController extends AbstractController {
 
     }
 
+    private void restoreTabPaneLayout(ArrayList<FrameLayout.TabPaneLayoutDescriptor> descriptors, DockPane dockPane){
+
+        Circuit selectedTab;
+        String selectedTabType;
+        DraggableTabPane prevTabPane = null;
+
+        for (FrameLayout.TabPaneLayoutDescriptor tabPaneLayoutDescriptor: descriptors){
+
+            DraggableTabPane tabPane = new DraggableTabPane(stage, TabGroup.WorkSpace);
+            tabPane.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
+            tabPane.setProject(proj);
+
+            DraggableTab tab = null;
+            selectedTab = null;
+            selectedTabType = null;
+
+            for (FrameLayout.EditorTabDescriptor editorTabDescriptor : tabPaneLayoutDescriptor.tabs){
+
+                Circuit circ = proj.getLogisimFile().getCircuits().stream().filter(c -> c.getName().equals(editorTabDescriptor.circ)).findFirst().get();
+                if (editorTabDescriptor.isSelected) {
+                    selectedTab = circ;
+                    selectedTabType = editorTabDescriptor.type;
+                }
+
+                switch (editorTabDescriptor.type){
+                    case "app":     tab = createCircAppearanceEditor(circ); break;
+                    case "layo":    tab = createCircLayoutEditor(circ); break;
+                    case "hdl":    tab = createVerilogModelEditor(circ); break;
+                }
+
+                tabPane.addTab(tab);
+
+            }
+
+            if (selectedTab != null) {
+                switch (selectedTabType) {
+                    case "app":     selectCircAppearanceEditor(selectedTab); break;
+                    case "layo":    selectCircLayoutEditor(selectedTab); break;
+                    case "hdl":       selectVerilogModelEditor(selectedTab); break;
+                }
+            }
+
+            DockAnchor anchor;
+            if (tabPaneLayoutDescriptor.anchor.equals("bottom")){
+                anchor = DockAnchor.BOTTOM;
+            } else {
+                anchor = DockAnchor.RIGHT;
+            }
+
+            if (tabPaneLayoutDescriptor.append && prevTabPane != null){
+                dockPane.dock(tabPane, anchor, prevTabPane);
+            } else {
+                dockPane.dock(tabPane, anchor);
+            }
+
+            prevTabPane = tabPane;
+
+        }
+
+
+    }
+
     private void createDefaultLayout(){
 
         systemTabPaneLeft.setCollapseOnInit(false);
         systemTabPaneLeft.setPrefExpandedSize(200);
 
         systemTabPaneBottom.setPrefExpandedSize(300);
+
+        workspaceTabPane = new DraggableTabPane(stage, TabGroup.WorkSpace);
+        workspaceTabPane.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
+        workspaceTabPane.setSide(Side.TOP);
+        workspaceTabPane.setRotateGraphic(true);
+        //workspaceTabPane.setUnDockable(false);
+        workspaceTabPane.setProject(proj);
+
+        workSpaceDockPane.dock(workspaceTabPane, DockAnchor.CENTER);
 
         addToolsTab();
         addSimulationTab();
@@ -481,19 +474,8 @@ public class MainFrameController extends AbstractController {
         //Workspace
 
         Element workSpace = doc.createElement("workpane");
-        for (Tab tab: workspaceTabPane.getTabs()){
-
-            DraggableTab t = (DraggableTab) tab;
-            Element elm = doc.createElement("tab");
-            elm.setAttribute("circ", ((EditorBase)t.getContent()).getCirc().getName());
-            elm.setAttribute("type", t.getType());
-
-            if (t.isSelected()) {
-                elm.setAttribute("selected", "true");
-            }
-
-            workSpace.appendChild(elm);
-
+        for (Element tabpane: getSubFrameLayout(workSpaceDockPane, doc, null)){
+            workSpace.appendChild(tabpane);
         }
 
         mainframe.appendChild(sysLeft);
@@ -776,7 +758,7 @@ public class MainFrameController extends AbstractController {
         tab.setStageTitle(LC.createComplexStringBinding("titleLayoutEditor", circ.getName(), proj.getLogisimFile().getName()));
         tab.setType("layo");
 
-        tab.getContent().setOnMouseClicked(event -> {
+        tab.getContent().setOnMousePressed(event -> {
             setEditor(layoutEditor);
             currLayoutCanvas = layoutEditor.getLayoutCanvas();
             proj.setCurrentCircuit(circ);
@@ -796,6 +778,7 @@ public class MainFrameController extends AbstractController {
         tab.setOnIntoSeparatedWindow(event -> {
             layoutEditor.copyAccelerators();
             lastSelectedTabInWindow.put(tab.getTabPane().getScene().getWindow(), tab);
+            tab.getTabPane().getScene().getWindow().addEventHandler(WindowEvent.WINDOW_HIDING, windowEvent -> lastSelectedTabInWindow.remove(tab.getTabPane().getScene().getWindow()));
             tab.getTabPane().getScene().getWindow().focusedProperty().addListener(change -> {
                 Window tabWin = tab.getTabPane().getScene().getWindow();
                 if (tabWin.isFocused() && lastSelectedTabInWindow.get(tabWin).getTabPane() != null) {
@@ -844,7 +827,7 @@ public class MainFrameController extends AbstractController {
         tab.setStageTitle(LC.createComplexStringBinding("titleAppearanceEditor", circ.getName(), proj.getLogisimFile().getName()));
         tab.setType("app");
 
-        tab.getContent().setOnMouseClicked(event -> {
+        tab.getContent().setOnMousePressed(event -> {
             setEditor(appearanceEditor);
             currAppearanceCanvas = appearanceEditor.getAppearanceCanvas();
             proj.setCurrentCircuit(circ);
@@ -864,6 +847,7 @@ public class MainFrameController extends AbstractController {
         tab.setOnIntoSeparatedWindow(event -> {
             appearanceEditor.copyAccelerators();
             lastSelectedTabInWindow.put(tab.getTabPane().getScene().getWindow(), tab);
+            tab.getTabPane().getScene().getWindow().addEventHandler(WindowEvent.WINDOW_HIDING, windowEvent -> lastSelectedTabInWindow.remove(tab.getTabPane().getScene().getWindow()));
             tab.getTabPane().getScene().getWindow().focusedProperty().addListener(change -> {
                 Window tabWin = tab.getTabPane().getScene().getWindow();
                 if (tabWin.isFocused() && lastSelectedTabInWindow.get(tabWin).getTabPane() != null) {
@@ -910,7 +894,7 @@ public class MainFrameController extends AbstractController {
         tab.setStageTitle(LC.createComplexStringBinding("titleVerilogCodeEditor", circ.getName(), proj.getLogisimFile().getName()));
         tab.setType("hdl");
 
-        tab.getContent().setOnMouseClicked(event -> {
+        tab.getContent().setOnMousePressed(event -> {
             setEditor(codeEditor);
             proj.setCurrentCircuit(circ);
         });
@@ -925,6 +909,7 @@ public class MainFrameController extends AbstractController {
         tab.setOnIntoSeparatedWindow(event -> {
             codeEditor.copyAccelerators();
             lastSelectedTabInWindow.put(tab.getTabPane().getScene().getWindow(), tab);
+            tab.getTabPane().getScene().getWindow().addEventHandler(WindowEvent.WINDOW_HIDING, windowEvent -> lastSelectedTabInWindow.remove(tab.getTabPane().getScene().getWindow()));
             tab.getTabPane().getScene().getWindow().focusedProperty().addListener(change -> {
                 Window tabWin = tab.getTabPane().getScene().getWindow();
                 if (tabWin.isFocused() && lastSelectedTabInWindow.get(tabWin).getTabPane() != null) {

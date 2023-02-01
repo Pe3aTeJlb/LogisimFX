@@ -443,17 +443,36 @@ class XmlReader {
 
 				for (Element workpane : XmlIterator.forChildElements(mainframe, "workpane")) {
 
-					for (Element tab : XmlIterator.forChildElements(workpane, "tab")) {
+					for (Element tabpane: XmlIterator.forChildElements(workpane, "tabpane")) {
 
-						String circ = tab.getAttribute("circ");
-						String type = tab.getAttribute("type");
-						String selected = tab.getAttribute("selected");
-						boolean isSelected = false;
-						if (selected != null && !selected.equals("")) isSelected = Boolean.parseBoolean(selected);
+						String anchor = tabpane.getAttribute("anchor");
 
-						mainWindowDescriptor.addEditorTabDescriptor(new FrameLayout.EditorTabDescriptor(circ, type, isSelected));
+						boolean append = false;
+						String a = tabpane.getAttribute("append");
+						if (a != null && !a.equals("")) append = Boolean.parseBoolean(a);
+
+						FrameLayout.TabPaneLayoutDescriptor tabPaneLayoutDescriptor = new FrameLayout.TabPaneLayoutDescriptor(anchor, append);
+
+						for (Element tab : XmlIterator.forChildElements(tabpane, "tab")) {
+
+							String circ = tab.getAttribute("circ");
+							String type = tab.getAttribute("type");
+							String selected = tab.getAttribute("selected");
+							boolean isSelected = false;
+							if (selected != null && !selected.equals("")) isSelected = Boolean.parseBoolean(selected);
+
+							tabPaneLayoutDescriptor.addTabDescriptor(new FrameLayout.EditorTabDescriptor(
+									circ,
+									type,
+									isSelected
+							));
+
+						}
+
+						mainWindowDescriptor.addTabPaneDescriptor(tabPaneLayoutDescriptor);
 
 					}
+
 				}
 
 			}

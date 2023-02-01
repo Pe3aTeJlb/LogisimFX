@@ -9,6 +9,7 @@ import LogisimFX.proj.ProjectListener;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -19,6 +20,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.input.MouseEvent;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -120,6 +122,9 @@ public class AppearanceEditorToolBar extends ToolBar {
             tip.setText(bindbuff);
             setTooltip(tip);
 
+            this.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
+                Event.fireEvent(appearanceEditor, event.copyFor(event.getSource(), appearanceEditor));
+            });
             this.setOnAction(event -> {
                 if(appearanceEditor.isSelected()) {
                     proj.setAbstractTool(tool);

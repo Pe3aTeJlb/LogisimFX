@@ -39,7 +39,7 @@ public class LayoutEditor extends EditorBase {
         canvasRoot.getChildren().add(layoutCanvas);
 
         toolBar = new LayoutEditorToolBar(proj, this);
-        toolBar.setOnMouseClicked(event -> Event.fireEvent(this, event.copyFor(event.getSource(), this)));
+        toolBar.setOnMousePressed(event -> Event.fireEvent(this, event.copyFor(event.getSource(), this)));
 
         VBox.setVgrow(canvasRoot, Priority.ALWAYS);
 

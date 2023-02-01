@@ -7,6 +7,7 @@ import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.A
 import LogisimFX.newgui.MainFrame.CustomMenuBar;
 import LogisimFX.newgui.MainFrame.EditorTabs.EditorBase;
 import LogisimFX.proj.Project;
+import javafx.event.Event;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
@@ -36,6 +37,7 @@ public class AppearanceEditor extends EditorBase {
         canvasRoot.getChildren().add(appearanceCanvas);
 
         toolBar = new AppearanceEditorToolBar(proj, this);
+        toolBar.setOnMousePressed(event -> Event.fireEvent(this, event.copyFor(event.getSource(), this)));
 
         VBox.setVgrow(canvasRoot, Priority.ALWAYS);
 

@@ -21,7 +21,7 @@ public class FrameLayout {
         public double width, height, x, y;
         public boolean isFullScreen;
         public ArrayList<SideBarDescriptor> sideBarDescriptors = new ArrayList<>();
-        public ArrayList<EditorTabDescriptor> editorTabDescriptors = new ArrayList<>();
+        public ArrayList<TabPaneLayoutDescriptor> tabPaneLayoutDescriptors = new ArrayList<>();
 
         public MainWindowDescriptor(double width, double height, double x, double y, boolean isFullScreen){
             this.width = width;
@@ -35,8 +35,8 @@ public class FrameLayout {
             sideBarDescriptors.add(descriptor);
         }
 
-        public void addEditorTabDescriptor(EditorTabDescriptor descriptor){
-            editorTabDescriptors.add(descriptor);
+        public void addTabPaneDescriptor(TabPaneLayoutDescriptor descriptor){
+            tabPaneLayoutDescriptors.add(descriptor);
         }
 
     }
@@ -66,16 +66,6 @@ public class FrameLayout {
         public SystemTabDescriptor(String side, String type){
             this.side = side;
             this.type = type;
-        }
-    }
-
-    public static class WorkspaceDescriptor {
-        public String circ, type;
-        public boolean isSelected;
-        public WorkspaceDescriptor(String circ, String type, boolean isSelected){
-            this.circ = circ;
-            this.type = type;
-            this.isSelected = isSelected;
         }
     }
 

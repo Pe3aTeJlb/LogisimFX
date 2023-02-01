@@ -245,7 +245,7 @@ public class ProjectExplorerTreeView extends AbstractTreeExplorer {
 
                                 proj.setTool(prevTool);
 
-                                proj.getFrameController().selectCircLayoutEditor(((SubcircuitFactory) fact).getSubcircuit());
+                                proj.getFrameController().addCircLayoutEditor(((SubcircuitFactory) fact).getSubcircuit());
 
                             }
 
