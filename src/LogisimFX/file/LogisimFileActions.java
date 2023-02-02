@@ -156,7 +156,7 @@ public class LogisimFileActions {
 		@Override
 		public Action append(Action other) {
 			MoveCircuit ret = new MoveCircuit(tool, ((MoveCircuit) other).toIndex);
-			ret.fromIndex = this.fromIndex;
+			ret.fromIndex = this.toIndex;
 			return ret.fromIndex == ret.toIndex ? null : ret;
 		}
 	}

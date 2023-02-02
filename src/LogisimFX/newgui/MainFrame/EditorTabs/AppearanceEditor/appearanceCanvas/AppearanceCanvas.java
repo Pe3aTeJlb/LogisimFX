@@ -24,6 +24,7 @@ import LogisimFX.proj.ProjectEvent;
 import LogisimFX.proj.ProjectListener;
 
 import javafx.animation.AnimationTimer;
+import javafx.event.Event;
 import javafx.scene.CacheHint;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
@@ -236,6 +237,8 @@ public class AppearanceCanvas extends Canvas {
       //  this.addEventFilter(KeyEvent.ANY, (e) -> this.requestFocus());
 
         this.setOnMousePressed(event -> {
+
+            Event.fireEvent(appearanceEditor, event.copyFor(event.getSource(), appearanceEditor));
 
             dragScreenX = event.getX();
             dragScreenY = event.getY();

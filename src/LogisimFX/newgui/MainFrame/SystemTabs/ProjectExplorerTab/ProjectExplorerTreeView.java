@@ -25,12 +25,16 @@ import javafx.scene.input.MouseButton;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Collections;
 
-public class ProjectExplorerTreeView extends AbstractTreeExplorer {
+import static LogisimFX.file.LibraryEvent.REMOVE_TOOL;
+
+public class ProjectExplorerTreeView extends AbstractTreeExplorer<Object> {
 
     private Project proj;
 
     private Tool prevTool;
+    private TreeView<Object> treeView;
 
     private MyListener myListener = new MyListener();
     private SubListener subListener = new SubListener();
@@ -52,9 +56,9 @@ public class ProjectExplorerTreeView extends AbstractTreeExplorer {
             if (act == ProjectEvent.ACTION_SET_FILE) {
                 setFile(event.getLogisimFile());
             } else if (act == ProjectEvent.ACTION_SET_CURRENT) {
-                updateTree();
+                treeView.refresh();
             }else if (act == ProjectEvent.ACTION_SET_STATE) {
-                updateTree();
+                treeView.refresh();
             }
         }
 
@@ -66,38 +70,43 @@ public class ProjectExplorerTreeView extends AbstractTreeExplorer {
                     if (tool.getFactory() instanceof SubcircuitFactory) {
                         SubcircuitFactory fact = (SubcircuitFactory) tool.getFactory();
                         fact.getSubcircuit().addCircuitListener(this);
+                        treeView.getRoot().getChildren().add(proj.getLogisimFile().getTools().size()-1, new TreeItem<>(tool));
                     }
                 }
-            } else if (act == LibraryEvent.REMOVE_TOOL) {
+            } else if (act == REMOVE_TOOL) {
                 if (event.getData() instanceof AddTool) {
                     AddTool tool = (AddTool) event.getData();
                     if (tool.getFactory() instanceof SubcircuitFactory) {
                         SubcircuitFactory fact = (SubcircuitFactory) tool.getFactory();
                         fact.getSubcircuit().removeCircuitListener(this);
+                        TreeItem<Object> item = treeView.getRoot().getChildren().stream().filter(c -> c.getValue().equals(tool)).findFirst().get();
+                        treeView.getRoot().getChildren().remove(item);
                     }
                 }
             } else if (act == LibraryEvent.ADD_LIBRARY) {
                 if (event.getData() instanceof LibraryEventSource) {
                     ((LibraryEventSource) event.getData()).addLibraryListener(subListener);
                 }
+                updateTree();
             } else if (act == LibraryEvent.REMOVE_LIBRARY) {
                 if (event.getData() instanceof LibraryEventSource) {
                     ((LibraryEventSource) event.getData()).removeLibraryListener(subListener);
                 }
+                updateTree();
+            } else if (act == LibraryEvent.DIRTY_STATE || act == LibraryEvent.SET_NAME){
+                treeView.refresh();
+            } else if (act == LibraryEvent.MOVE_TOOL){
+                TreeItem<Object> item = treeView.getRoot().getChildren().stream().filter(c -> c.getValue().equals(event.getData())).findFirst().get();
+                Collections.swap(treeView.getRoot().getChildren(), treeView.getRoot().getChildren().indexOf(item), proj.getLogisimFile().getTools().indexOf(item.getValue()));
+                treeView.getSelectionModel().select(item);
+                refresh();
+                //updateTree();
+            } else if (act == LibraryEvent.SET_MAIN){
+
+            } else {
+                updateTree();
             }
-            switch (act) {
-                case LibraryEvent.DIRTY_STATE:
-                case LibraryEvent.SET_NAME:
-                    updateTree();
-                    break;
-                case LibraryEvent.MOVE_TOOL:
-                    updateTree();
-                    break;
-                case LibraryEvent.SET_MAIN:
-                    break;
-                default:
-                    updateTree();
-            }
+
         }
 
         public void circuitChanged(CircuitEvent event) {
@@ -142,13 +151,14 @@ public class ProjectExplorerTreeView extends AbstractTreeExplorer {
         super();
 
         this.proj = project;
+        treeView = this;
 
         proj.addProjectListener(myListener);
         proj.addLibraryListener(myListener);
         AppPreferences.GATE_SHAPE.addPropertyChangeListener(myListener);
         myListener.setFile(proj.getLogisimFile());
 
-        MultipleSelectionModel<TreeItem> selectionModel = this.getSelectionModel();
+        MultipleSelectionModel<TreeItem<Object>> selectionModel = this.getSelectionModel();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
 
         this.setCellFactory(tree -> {

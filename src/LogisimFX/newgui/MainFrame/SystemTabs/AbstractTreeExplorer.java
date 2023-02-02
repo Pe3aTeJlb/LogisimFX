@@ -8,7 +8,7 @@ package LogisimFX.newgui.MainFrame.SystemTabs;
 import LogisimFX.proj.Project;
 import javafx.scene.control.TreeView;
 
-public abstract class AbstractTreeExplorer extends TreeView {
+public abstract class AbstractTreeExplorer<T> extends TreeView<T> {
 
     private Project proj;
 

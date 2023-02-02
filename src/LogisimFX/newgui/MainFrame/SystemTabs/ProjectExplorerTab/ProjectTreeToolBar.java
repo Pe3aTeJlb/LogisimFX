@@ -38,7 +38,6 @@ public class ProjectTreeToolBar extends ToolBar {
         AddCircuitBtn.setTooltip(new ToolTip("projectAddCircuitTip"));
         AddCircuitBtn.setOnAction(event -> {
             ProjectCircuitActions.doAddCircuit(proj);
-            treeView.updateTree();
         });
 
 
@@ -49,7 +48,6 @@ public class ProjectTreeToolBar extends ToolBar {
         );
         PullCircuitUpBtn.setOnAction(event -> {
             ProjectCircuitActions.doMoveCircuit(proj,proj.getCurrentCircuit(),-1);
-            treeView.updateTree();
         });
 
         CustomButton PullCircuitDownIBtn = new CustomButton(prefWidth,prefHeight,"projdown.gif");
@@ -59,7 +57,6 @@ public class ProjectTreeToolBar extends ToolBar {
         );
         PullCircuitDownIBtn.setOnAction(event -> {
             ProjectCircuitActions.doMoveCircuit(proj,proj.getCurrentCircuit(),1);
-            treeView.updateTree();
         });
 
         CustomButton DeleteCircuitBtn = new CustomButton(prefWidth,prefHeight,"projdel.gif");
@@ -69,7 +66,6 @@ public class ProjectTreeToolBar extends ToolBar {
         );
         DeleteCircuitBtn.setOnAction(event -> {
             ProjectCircuitActions.doRemoveCircuit(proj,proj.getCurrentCircuit());
-            treeView.updateTree();
         });
 
         this.getItems().addAll(

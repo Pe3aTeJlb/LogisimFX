@@ -26,6 +26,7 @@ import com.sun.javafx.tk.FontMetrics;
 import javafx.animation.AnimationTimer;
 import javafx.animation.PauseTransition;
 import javafx.beans.binding.StringBinding;
+import javafx.event.Event;
 import javafx.scene.CacheHint;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
@@ -599,6 +600,9 @@ public class LayoutCanvas extends Canvas {
         //this.addEventFilter(KeyEvent.ANY, (e) -> {this.requestFocus();});
 
         this.setOnMousePressed(event -> {
+
+            //Accidentally press on canvas happens before press on tab content, so copy it for tab content
+            Event.fireEvent(layoutEditor, event.copyFor(event.getSource(), layoutEditor));
 
             pauseTransition.stop();
             if(tooltip != null && tooltip.isShowing())tooltip.hide();
