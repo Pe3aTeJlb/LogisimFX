@@ -68,6 +68,7 @@ public class AppearanceCanvas extends Canvas {
     private SelectTool selectTool;
     private Selection selection;
     private CircuitState circuitState;
+    private boolean mouseOver = false;
 
     private Circuit circ;
 
@@ -188,13 +189,11 @@ public class AppearanceCanvas extends Canvas {
             g.toDefault();
         }
 
-        if (appearanceEditor.isSelected()) {
-            tool = proj.getAbstractTool();
+        tool = proj.getAbstractTool();
 
-            if (tool != null) {
-                tool.draw(this);
-                g.toDefault();
-            }
+        if (tool != null && mouseOver) {
+            tool.draw(this);
+            g.toDefault();
         }
 
     }
@@ -283,10 +282,10 @@ public class AppearanceCanvas extends Canvas {
                 dragScreenX = event.getX();
                 dragScreenY = event.getY();
 
-                if (tool != null) {
-                    tool.mouseDragged(this, new AppearanceCanvas.CME(event));
-                }
+            }
 
+            if (tool != null) {
+                tool.mouseDragged(this, new AppearanceCanvas.CME(event));
             }
 
         });
@@ -323,6 +322,8 @@ public class AppearanceCanvas extends Canvas {
 
         this.setOnMouseMoved(event -> {
 
+            mouseOver = true;
+
             if (tool != null) tool.mouseMoved(this, new AppearanceCanvas.CME(event));
 
         });
@@ -337,12 +338,16 @@ public class AppearanceCanvas extends Canvas {
 
         this.setOnMouseEntered(event -> {
 
+            mouseOver = true;
+
             if (tool != null) tool.mouseEntered(this, new AppearanceCanvas.CME(event));
             this.requestFocus();
 
         });
 
         this.setOnMouseExited(event -> {
+
+            mouseOver = false;
 
             if (tool != null) tool.mouseExited(this, new AppearanceCanvas.CME(event));
             this.requestFocus();

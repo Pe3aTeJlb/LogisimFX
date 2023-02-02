@@ -1,16 +1,12 @@
 package LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor;
 
 import LogisimFX.file.ToolbarData;
-import LogisimFX.newgui.MainFrame.EditorTabs.EditorBase;
-import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.LayoutEditor;
 import LogisimFX.prefs.AppPreferences;
 import LogisimFX.proj.Project;
 import LogisimFX.proj.ProjectEvent;
 import LogisimFX.proj.ProjectListener;
 import LogisimFX.tools.Tool;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
@@ -32,8 +28,6 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
 public class LayoutEditorToolBar extends ToolBar {
-
-    private Tool currTool;
 
     private ObservableList<Node> EditCircuitBtnsList;
 
@@ -71,9 +65,8 @@ public class LayoutEditorToolBar extends ToolBar {
             int action = event.getAction();
 
             if (action == ProjectEvent.ACTION_SET_TOOL) {
-                if(event.getTool() != null && layoutEditor.isSelected()) {
+                if(event.getTool() != null) {
                     highlightCurTool(event.getTool());
-                    currTool = event.getTool();
                 }
             }
         }
@@ -153,8 +146,6 @@ public class LayoutEditorToolBar extends ToolBar {
         proj.getFrameController().editorProperty().addListener((observableValue, editorBase, t1) -> {
             if (layoutEditor.isSelected()){
                 recalculateAccelerators();
-                if (currTool != null)
-                proj.setTool(currTool);
             }
         });
 

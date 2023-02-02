@@ -27,8 +27,6 @@ import java.beans.PropertyChangeListener;
 
 public class AppearanceEditorToolBar extends ToolBar {
 
-    private AbstractTool currTool;
-
     private ObservableList<ToolButton> EditAppearanceBtnsList;
 
     private final int prefWidth = 15;
@@ -66,9 +64,8 @@ public class AppearanceEditorToolBar extends ToolBar {
             int action = event.getAction();
 
             if (action == ProjectEvent.ACTION_SET_TOOL) {
-                if(event.getAbstractTool() != null && appearanceEditor.isSelected()) {
+                if(event.getAbstractTool() != null) {
                     highlightCurTool(event.getAbstractTool());
-                    currTool = event.getAbstractTool();
                 }
             }
         }
@@ -152,8 +149,6 @@ public class AppearanceEditorToolBar extends ToolBar {
         proj.getFrameController().editorProperty().addListener((observableValue, editorBase, t1) -> {
             if (appearanceEditor.isSelected()){
                 recalculateAccelerators();
-                if (currTool != null)
-                proj.setAbstractTool(currTool);
             }
         });
 

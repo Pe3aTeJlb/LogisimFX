@@ -104,6 +104,7 @@ public class LayoutCanvas extends Canvas {
 
     private Tool dragTool;
     private Selection selection;
+    private boolean mouseOver = false;
 
     //Objects of canvas mouse events
     private ContextMenu contextMenu;
@@ -441,20 +442,14 @@ public class LayoutCanvas extends Canvas {
         context.setHighlightedWires(highlightedWires);
         circ.draw(context, hidden, inverseTransformX(0),inverseTransformY(0),
                 inverseTransformX(this.getWidth()),inverseTransformY(this.getHeight()));
-        //circ.draw(context, hidden);
 
-        if (layoutEditor.isSelected()) {
-            selection.draw(context, hidden);
+        selection.draw(context, hidden);
 
-
-            // draw tool
-            Tool tool = dragTool != null ? dragTool : proj.getTool();
-            //if (tool != null && !canvas.isPopupMenuUp()) {
-            if (tool != null) {
-                tool.draw(this, context);
-                g.toDefault();
-            }
-
+        // draw tool
+        Tool tool = dragTool != null ? dragTool : proj.getTool();
+        if (tool != null && mouseOver) {
+            tool.draw(this, context);
+            g.toDefault();
         }
 
     }
@@ -716,11 +711,11 @@ public class LayoutCanvas extends Canvas {
 
         this.setOnMouseMoved(event -> {
 
+            mouseOver = true;
+
             Tool tool = proj.getTool();
             if (tool != null) {
-                if (layoutEditor.isSelected()) {
-                    tool.mouseMoved(this, g, new CME(event));
-                }
+                tool.mouseMoved(this, g, new CME(event));
             }
 
             pauseTransition.stop();
@@ -748,6 +743,8 @@ public class LayoutCanvas extends Canvas {
 
         this.setOnMouseEntered(event -> {
 
+            mouseOver = true;
+
             this.requestFocus();
 
             if (dragTool != null) {
@@ -762,6 +759,8 @@ public class LayoutCanvas extends Canvas {
         });
 
         this.setOnMouseExited(event -> {
+
+            mouseOver = false;
 
             pauseTransition.stop();
             if(tooltip != null && tooltip.isShowing())tooltip.hide();
