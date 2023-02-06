@@ -9,6 +9,7 @@ import LogisimFX.newgui.MainFrame.LC;
 import LogisimFX.proj.Project;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -49,6 +50,7 @@ public class CodeEditor extends EditorBase {
 
 
     //Find&Searc bar
+    private ToolBar codeEditorToolBar;
     private ToolBar findBar, replaceBar;
     private TextField findTxtFld, replaceTxtFld;
     private SimpleStringProperty currFindIndex, totalFindIndex;
@@ -72,7 +74,10 @@ public class CodeEditor extends EditorBase {
         initCodeArea("java");
         initInfoBar();
 
-        this.getChildren().addAll(findBar, replaceBar, virtualizedScrollPane, infoBar);
+        codeEditorToolBar = new CodeEditorToolBar();
+        codeEditorToolBar.setOnMousePressed(event -> Event.fireEvent(this, event.copyFor(event.getSource(), this)));
+
+        this.getChildren().addAll(codeEditorToolBar, findBar, replaceBar, virtualizedScrollPane, infoBar);
 
         proj.getFrameController().editorProperty().addListener((observableValue, editorBase, t1) -> {
             if (this.isSelected()){

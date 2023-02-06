@@ -90,7 +90,6 @@ public class MainFrameController extends AbstractController {
     private DockPane dockPane;
     private DoubleSidedTabPane systemTabPaneLeft, systemTabPaneRight, systemTabPaneBottom;
     private DockPane workSpaceDockPane;
-    private DraggableTabPane workspaceTabPane;
 
     MyProjectListener myProjectListener = new MyProjectListener();
 
@@ -222,7 +221,13 @@ public class MainFrameController extends AbstractController {
 
         restoreLayout(proj.getLogisimFile().getOptions().getMainFrameLayout());
 
-        //workspaceTabPane.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> computeTitle((DraggableTab) n));
+        workspaceProperty().addListener(change -> {
+            workspaceProperty().get().getSelectionModel().selectedIndexProperty().addListener(ch ->
+            computeTitle((DraggableTab) getWorkspace().getSelectionModel().getSelectedItem()));
+        });
+
+        workspaceProperty().get().getSelectionModel().selectedItemProperty().addListener((v,o,n) -> computeTitle((DraggableTab)n));
+
         computeTitle();
 
     }
@@ -230,20 +235,20 @@ public class MainFrameController extends AbstractController {
     private void computeTitle(){
 
         stage.titleProperty().unbind();
-/*
-        if (!workspaceTabPane.getTabs().isEmpty()){
-            stage.titleProperty().bind(((DraggableTab)workspaceTabPane.getSelectionModel().getSelectedItem()).getStageTitle());
+
+        if (!getWorkspace().getTabs().isEmpty()){
+            stage.titleProperty().bind(((DraggableTab) getWorkspace().getSelectionModel().getSelectedItem()).getStageTitle());
         } else {
             stage.setTitle("LogisimFX");
         }
-*/
+
     }
 
     private void computeTitle(DraggableTab tab){
 
         stage.titleProperty().unbind();
 
-        if (!workspaceTabPane.getTabs().isEmpty()){
+        if (!getWorkspace().getTabs().isEmpty()){
             stage.titleProperty().bind(tab.getStageTitle());
         } else {
             stage.setTitle("LogisimFX");
@@ -310,8 +315,7 @@ public class MainFrameController extends AbstractController {
 
             //Restore workspace tabs
 
-            restoreTabPaneLayout(mainWindowDescriptor.tabPaneLayoutDescriptors, workSpaceDockPane);
-
+            restoreTabPaneLayout(mainWindowDescriptor.tabPaneLayoutDescriptors, workSpaceDockPane, true);
 
             //SubWindows
             DockPane dockPane;
@@ -320,7 +324,7 @@ public class MainFrameController extends AbstractController {
                 dockPane = new DockPane();
                 DraggableTab lastTab = null;
 
-                restoreTabPaneLayout(subWindowDescriptor.tabpanes, dockPane);
+                restoreTabPaneLayout(subWindowDescriptor.tabpanes, dockPane, false);
 
                 final Stage newFloatStage = new Stage();
                 newFloatStage.getIcons().add(IconsManager.LogisimFX);
@@ -357,7 +361,7 @@ public class MainFrameController extends AbstractController {
 
     }
 
-    private void restoreTabPaneLayout(ArrayList<FrameLayout.TabPaneLayoutDescriptor> descriptors, DockPane dockPane){
+    private void restoreTabPaneLayout(ArrayList<FrameLayout.TabPaneLayoutDescriptor> descriptors, DockPane dockPane, boolean setWorkspace){
 
         Circuit selectedTab;
         String selectedTabType;
@@ -416,6 +420,9 @@ public class MainFrameController extends AbstractController {
 
         }
 
+        if (setWorkspace){
+            setWorkspace(prevTabPane);
+        }
 
     }
 
@@ -426,14 +433,16 @@ public class MainFrameController extends AbstractController {
 
         systemTabPaneBottom.setPrefExpandedSize(300);
 
-        workspaceTabPane = new DraggableTabPane(stage, TabGroup.WorkSpace);
+        DraggableTabPane workspaceTabPane = new DraggableTabPane(stage, TabGroup.WorkSpace);
         workspaceTabPane.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
         workspaceTabPane.setSide(Side.TOP);
         workspaceTabPane.setRotateGraphic(true);
         //workspaceTabPane.setUnDockable(false);
         workspaceTabPane.setProject(proj);
 
-        workSpaceDockPane.dock(workspaceTabPane, DockAnchor.CENTER);
+        setWorkspace(workspaceTabPane);
+
+        workSpaceDockPane.dock(getWorkspace(), DockAnchor.CENTER);
 
         addToolsTab();
         addSimulationTab();
@@ -732,7 +741,7 @@ public class MainFrameController extends AbstractController {
     public void addCircLayoutEditor(Circuit circ){
         DraggableTab tab = createCircLayoutEditor(circ);
         if (tab != null) {
-            workspaceTabPane.addTab(tab);
+            getWorkspace().addTab(tab);
             selectCircLayoutEditor(circ);
         }
     }
@@ -743,7 +752,7 @@ public class MainFrameController extends AbstractController {
 
         if (openedLayoutEditors.containsKey(circ)){
             if (openedLayoutEditors.get(circ).getTabPane() == null){
-                workspaceTabPane.addTab(openedLayoutEditors.get(circ));
+                getWorkspace().addTab(openedLayoutEditors.get(circ));
             }
             selectCircLayoutEditor(circ);
             return null;
@@ -760,6 +769,7 @@ public class MainFrameController extends AbstractController {
 
         tab.getContent().setOnMousePressed(event -> {
             setEditor(layoutEditor);
+            setWorkspace((DraggableTabPane) tab.getTabPane());
             currLayoutCanvas = layoutEditor.getLayoutCanvas();
             proj.setCurrentCircuit(circ);
         });
@@ -767,6 +777,7 @@ public class MainFrameController extends AbstractController {
         tab.setOnSelectionChanged(event -> {
             if (tab.isSelected()) {
                 setEditor(layoutEditor);
+                setWorkspace((DraggableTabPane) tab.getTabPane());
                 currLayoutCanvas = layoutEditor.getLayoutCanvas();
                 layoutEditor.getLayoutCanvas().updateResume();
                 proj.setCurrentCircuit(circ);
@@ -801,7 +812,7 @@ public class MainFrameController extends AbstractController {
     public void addCircAppearanceEditor(Circuit circ){
         DraggableTab tab = createCircAppearanceEditor(circ);
         if (tab != null) {
-            workspaceTabPane.addTab(tab);
+            getWorkspace().addTab(tab);
             selectCircAppearanceEditor(circ);
         }
     }
@@ -812,7 +823,7 @@ public class MainFrameController extends AbstractController {
 
         if (openedAppearanceEditors.containsKey(circ)){
             if (openedAppearanceEditors.get(circ).getTabPane() == null){
-                workspaceTabPane.addTab(openedAppearanceEditors.get(circ));
+                getWorkspace().addTab(openedAppearanceEditors.get(circ));
             }
             selectCircAppearanceEditor(circ);
             return null;
@@ -829,6 +840,7 @@ public class MainFrameController extends AbstractController {
 
         tab.getContent().setOnMousePressed(event -> {
             setEditor(appearanceEditor);
+            setWorkspace((DraggableTabPane) tab.getTabPane());
             currAppearanceCanvas = appearanceEditor.getAppearanceCanvas();
             proj.setCurrentCircuit(circ);
         });
@@ -836,6 +848,7 @@ public class MainFrameController extends AbstractController {
         tab.setOnSelectionChanged(event -> {
             if (tab.isSelected()) {
                 setEditor(appearanceEditor);
+                setWorkspace((DraggableTabPane) tab.getTabPane());
                 currAppearanceCanvas = appearanceEditor.getAppearanceCanvas();
                 appearanceEditor.getAppearanceCanvas().updateResume();
                 proj.setCurrentCircuit(circ);
@@ -870,7 +883,7 @@ public class MainFrameController extends AbstractController {
     public void addVerilogModelEditor(Circuit circ){
         DraggableTab tab = createVerilogModelEditor(circ);
         if (tab != null) {
-            workspaceTabPane.addTab(tab);
+            getWorkspace().addTab(tab);
             selectVerilogModelEditor(circ);
         }
     }
@@ -881,7 +894,7 @@ public class MainFrameController extends AbstractController {
 
         if (openedVerilogModelEditors.containsKey(circ)){
             if (openedVerilogModelEditors.get(circ).getTabPane() == null){
-                workspaceTabPane.addTab(openedVerilogModelEditors.get(circ));
+                getWorkspace().addTab(openedVerilogModelEditors.get(circ));
             }
             selectVerilogModelEditor(circ);
             return null;
@@ -896,12 +909,14 @@ public class MainFrameController extends AbstractController {
 
         tab.getContent().setOnMousePressed(event -> {
             setEditor(codeEditor);
+            setWorkspace((DraggableTabPane) tab.getTabPane());
             proj.setCurrentCircuit(circ);
         });
 
         tab.setOnSelectionChanged(event -> {
             if (tab.isSelected()) {
                 setEditor(codeEditor);
+                setWorkspace((DraggableTabPane) tab.getTabPane());
                 proj.setCurrentCircuit(circ);
             }
         });
@@ -936,6 +951,39 @@ public class MainFrameController extends AbstractController {
 
     public void selectVerilogModelEditor(Circuit circ){
         openedVerilogModelEditors.get(circ).getTabPane().getSelectionModel().select(openedVerilogModelEditors.get(circ));
+    }
+
+
+    private ObjectProperty<DraggableTabPane> currWorkspaceTabPane;
+
+    private void setWorkspace(DraggableTabPane value) {
+        if (value != null && workspaceProperty().get() != value) {
+            workspaceProperty().set(value);
+        }
+    }
+
+    public DraggableTabPane getWorkspace() {
+        return workspaceProperty().get();
+    }
+
+    public ObjectProperty<DraggableTabPane> workspaceProperty() {
+        if (currWorkspaceTabPane == null) {
+            currWorkspaceTabPane = new ObjectPropertyBase<>(null) {
+                @Override protected void invalidated() {
+                }
+
+                @Override
+                public Object getBean() {
+                    return MainFrameController.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "workspace";
+                }
+            };
+        }
+        return currWorkspaceTabPane;
     }
 
 
