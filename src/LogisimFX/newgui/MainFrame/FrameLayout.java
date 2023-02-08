@@ -156,22 +156,12 @@ public class FrameLayout {
     }
 
     public void copyFrom(FrameLayout other, LogisimFile file) {
-        /*
-        if (this == other) return;
-        cache_mods = -1;
-        this.map.clear();
-        for (Integer mods : other.map.keySet()) {
-            Tool srcTool = other.map.get(mods);
-            Tool dstTool = file.findTool(srcTool);
-            if (dstTool != null) {
-                dstTool = dstTool.cloneTool();
-                AttributeSets.copy(srcTool.getAttributeSet(),
-                        dstTool.getAttributeSet());
-                this.map.put(mods, dstTool);
-            }
-        }
-        fireMouseMappingsChanged();
-         */
+
+        other.proj = proj;
+        other.mainWindowDescriptor = mainWindowDescriptor;
+        other.subWindowDescriptors = new ArrayList<>(subWindowDescriptors);
+        other.defaultLayout = true;
+
     }
 
 }

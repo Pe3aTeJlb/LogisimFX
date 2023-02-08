@@ -13,6 +13,7 @@ import LogisimFX.comp.ComponentUserEvent;
 import LogisimFX.data.*;
 import LogisimFX.file.LibraryEvent;
 import LogisimFX.file.LibraryListener;
+import LogisimFX.instance.Instance;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.LayoutEditor;
 import LogisimFX.newgui.MainFrame.LC;
@@ -327,14 +328,14 @@ public class LayoutCanvas extends Canvas {
             drawGrid();
         }
 
+        circState = proj.getCircuitState(circ);
+        proj.getSimulator().setCircuitState(circState);
+
         drawWithUserState();
 
         drawWidthIncompatibilityData();
 
-        //Circuit circ = proj.getCurrentCircuit();
-        //CircuitState circState = proj.getCircuitState();
-
-        //ptContext = new ComponentDrawContext(circ, circState, g);
+        ptContext = new ComponentDrawContext(circ, circState, g);
         ptContext.setHighlightedWires(highlightedWires);
 
         g.setColor(Color.RED);
@@ -437,7 +438,6 @@ public class LayoutCanvas extends Canvas {
         }
 
         // draw circuit and selection
-        circState = proj.getCircuitState();
         boolean printerView = AppPreferences.PRINTER_VIEW.getBoolean();
         context = new ComponentDrawContext(circ, circState, g, printerView);
         context.setHighlightedWires(highlightedWires);
@@ -537,6 +537,10 @@ public class LayoutCanvas extends Canvas {
 
         }
 
+    }
+
+    public void setCircState(CircuitState circState){
+        this.circState = circState;
     }
 
     //Tools

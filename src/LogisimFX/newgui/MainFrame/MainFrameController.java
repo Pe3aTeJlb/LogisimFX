@@ -359,6 +359,8 @@ public class MainFrameController extends AbstractController {
 
         }
 
+        proj.setCurrentCircuit(proj.getLogisimFile().getMainCircuit());
+
     }
 
     private void restoreTabPaneLayout(ArrayList<FrameLayout.TabPaneLayoutDescriptor> descriptors, DockPane dockPane, boolean setWorkspace){

@@ -1,10 +1,7 @@
 package LogisimFX.newgui.MainFrame.SystemTabs.ProjectExplorerTab;
 
 import LogisimFX.IconsManager;
-import LogisimFX.circuit.Circuit;
-import LogisimFX.circuit.CircuitEvent;
-import LogisimFX.circuit.CircuitListener;
-import LogisimFX.circuit.SubcircuitFactory;
+import LogisimFX.circuit.*;
 import LogisimFX.comp.ComponentFactory;
 import LogisimFX.file.LibraryEvent;
 import LogisimFX.file.LibraryEventSource;
@@ -251,11 +248,9 @@ public class ProjectExplorerTreeView extends AbstractTreeExplorer<Object> {
                             ComponentFactory fact = ((AddTool) treeItem.getValue()).getFactory(false);
                             if (fact instanceof SubcircuitFactory) {
 
-                                proj.setCurrentCircuit(((SubcircuitFactory) fact).getSubcircuit());
-
                                 proj.setTool(prevTool);
-
                                 proj.getFrameController().addCircLayoutEditor(((SubcircuitFactory) fact).getSubcircuit());
+                                proj.setCircuitState(new CircuitState(proj, ((SubcircuitFactory) fact).getSubcircuit()));
 
                             }
 

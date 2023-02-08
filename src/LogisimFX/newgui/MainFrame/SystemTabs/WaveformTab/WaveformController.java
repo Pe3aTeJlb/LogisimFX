@@ -322,7 +322,18 @@ public class WaveformController extends AbstractController {
 
                         if(item instanceof  Component){
 
-                            textProperty().bind(((Component) item).getFactory().getDisplayName());
+                            if (((Component) item).getFactory() instanceof SubcircuitFactory){
+
+                                String label = ((Component) item).getAttributeSet().getValue(StdAttr.LABEL);
+                                if (!label.equals("")){
+                                    setText(label);
+                                } else {
+                                    setText(((Component) item).getFactory().getName() + " " + ((Component) item).getLocation().toString());
+                                }
+
+                            } else {
+                                setText(((Component) item).getFactory().getDisplayName().get() + " " + ((Component) item).getLocation().toString());
+                            }
                             setGraphic(new ImageView(((Component) item).getFactory().getIcon().getImage()));
 
                         }else {

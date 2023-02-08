@@ -7,6 +7,7 @@ import LogisimFX.file.LibraryEvent;
 import LogisimFX.file.LibraryEventSource;
 import LogisimFX.file.LibraryListener;
 import LogisimFX.file.LogisimFile;
+import LogisimFX.instance.StdAttr;
 import LogisimFX.newgui.MainFrame.SystemTabs.AbstractTreeExplorer;
 import LogisimFX.prefs.AppPreferences;
 import LogisimFX.proj.Project;
@@ -163,20 +164,29 @@ public class SimulationExplorerTreeView extends AbstractTreeExplorer<Object> {
 
                     }else{
 
-                        if(item instanceof CircuitState){
+                        if(item instanceof Component){
 
-                            SubcircuitFactory buff = ((CircuitState) item).getCircuit().getSubcircuitFactory();
+                            String label = ((Component) item).getAttributeSet().getValue(StdAttr.LABEL);
+                            if (!label.equals("")){
+                                setText(label);
+                            } else {
+                                setText(((Component) item).getFactory().getName() + " " + ((Component) item).getLocation().toString());
+                            }
 
-                            setText(buff.getName());
-
-                            if(proj.getCircuitState() == item){
+                            if(proj.getCircuitState() == ((SubcircuitFactory)((Component) item).getFactory()).getSubstate(superState, (Component) item)){
                                 setGraphic(IconsManager.getIcon("currsubcirc.gif"));
                             }else {
                                 setGraphic(IconsManager.getIcon("subcirc.gif"));
                             }
 
-                        }
-                        else{
+                        } else if (item instanceof CircuitState){
+                            setText(((CircuitState) item).getCircuit().getName());
+                            if(proj.getCircuitState() == item){
+                                setGraphic(IconsManager.getIcon("currsubcirc.gif"));
+                            }else {
+                                setGraphic(IconsManager.getIcon("subcirc.gif"));
+                            }
+                        } else{
                             setText("you fucked up2");
                         }
 
@@ -197,10 +207,19 @@ public class SimulationExplorerTreeView extends AbstractTreeExplorer<Object> {
 
                         event.consume();
 
-                        if(treeItem.getValue() instanceof CircuitState){
+                        if(treeItem.getValue() instanceof Component){
                             //project.setCircuitState((CircuitState) treeItem.getValue());
                             //project.getFrameController().selectCircLayoutEditor(((CircuitState) treeItem.getValue()).getCircuit(), (CircuitState) treeItem.getValue());
-                            project.setCurrentCircuit(((CircuitState) treeItem.getValue()).getCircuit());
+                            //project.setCurrentCircuit(((CircuitState) treeItem.getValue()).getCircuit());
+                            Circuit oldCirc = project.getCurrentCircuit();
+                            project.getFrameController().addCircLayoutEditor(((SubcircuitFactory)((Component) treeItem.getValue()).getFactory()).getSubcircuit());
+                            project.setCurrentCircuit(oldCirc);
+                            proj.setCircuitState(((SubcircuitFactory)((Component) treeItem.getValue()).getFactory()).getSubstate(superState, (Component) treeItem.getValue()));
+                        } else {
+                            Circuit oldCirc = project.getCurrentCircuit();
+                            project.getFrameController().addCircLayoutEditor(((CircuitState) treeItem.getValue()).getCircuit());
+                            project.setCurrentCircuit(oldCirc);
+                            proj.setCircuitState((CircuitState) treeItem.getValue());
                         }
 
                     }
@@ -222,34 +241,45 @@ public class SimulationExplorerTreeView extends AbstractTreeExplorer<Object> {
         while (superState.getParentState() != null){
             superState = superState.getParentState();
         }
-        //superState = proj.getCircuitState(proj.getCurrentCircuit());
 
         TreeItem<Object> root = new TreeItem<>(superState);
         this.setRoot(root);
         root.setExpanded(true);
 
-        getChildren(root);
-
-    }
-
-    private void getChildren(TreeItem root){
-
-        for (Component comp : ((CircuitState)root.getValue()).getCircuit().getNonWires()) {
+        for (Component comp : superState.getCircuit().getNonWires()){
 
             if (comp.getFactory() instanceof SubcircuitFactory) {
 
-                SubcircuitFactory factory = (SubcircuitFactory) comp.getFactory();
-                CircuitState state = factory.getSubstate(superState, comp);
-
-                TreeItem<Object> subRoot = new TreeItem<>(state);
+                TreeItem<Object> subRoot = new TreeItem<>(comp);
                 root.getChildren().add(subRoot);
-                root.setExpanded(true);
-
-                getChildren(subRoot);
+                TreeItem<Object> child = getChildren(subRoot);
+                if (child != null) subRoot.getChildren().add(child);
+                subRoot.setExpanded(true);
 
             }
 
         }
+
+    }
+
+    private TreeItem<Object> getChildren(TreeItem<Object> root){
+
+        TreeItem<Object> subRoot = null;
+
+        for (Component comp: ((SubcircuitFactory)((Component) root.getValue()).getFactory()).getSubcircuit().getNonWires()){
+
+            if (comp.getFactory() instanceof SubcircuitFactory) {
+
+                subRoot = new TreeItem<>(comp);
+                root.getChildren().add(subRoot);
+                subRoot.getChildren().add(getChildren(subRoot));
+                subRoot.setExpanded(true);
+
+            }
+
+        }
+
+        return subRoot;
 
     }
 
