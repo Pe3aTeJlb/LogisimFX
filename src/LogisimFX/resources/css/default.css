@@ -29,9 +29,12 @@
     -rtfx-background-color: #A07C61 !important;
 }
 
-
+.preprocessor {
+    -fx-fill: #8000FF !important;
+    -fx-font-weight: bold;
+}
 .keyword {
-    -fx-fill: #0026FF !important;
+    -fx-fill: #0000FF !important;
     -fx-font-weight: bold;
 }
 .data-types {
@@ -44,23 +47,23 @@
 }
 .semicolon {
     -fx-font-weight: bold !important;
-    -fx-fill: #fff  !important;
+    -fx-fill: #000000  !important;
 }
 .paren {
-    -fx-fill: #fff !important;
+    -fx-fill: #000000 !important;
     -fx-font-weight: bold !important;
 }
 .bracket {
-    -fx-fill: #fff !important;
+    -fx-fill: #000000 !important;
     -fx-font-weight: bold !important;
 }
 .brace {
-    -fx-fill: #fff !important;
+    -fx-fill: #000000 !important;
     -fx-font-weight: bold !important;
 }
 .string {
-    -fx-fill: #F1FA8C !important;
+    -fx-fill: #E6DB74 !important;
 }
 .comment {
-	-fx-fill: #62677D !important;
+	-fx-fill: #75715E !important;
 }

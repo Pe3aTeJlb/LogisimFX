@@ -71,7 +71,7 @@ public class CodeEditor extends EditorBase {
         this.ext = ext;
 
         initFindReplaceBar();
-        initCodeArea("java");
+        initCodeArea("verilog");
         initInfoBar();
 
         codeEditorToolBar = new CodeEditorToolBar();

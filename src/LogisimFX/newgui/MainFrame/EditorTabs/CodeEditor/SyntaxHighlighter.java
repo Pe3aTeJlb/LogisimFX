@@ -1,5 +1,6 @@
 package LogisimFX.newgui.MainFrame.EditorTabs.CodeEditor;
 
+import LogisimFX.verilog.VerilogKeywordHighlighter;
 import org.fxmisc.richtext.StyleClassedTextArea;
 
 public class SyntaxHighlighter {
@@ -12,9 +13,7 @@ public class SyntaxHighlighter {
 
     public void start(String ext) {
         switch (ext) {
-            case "java" : new JavaKeywordHighlighter().start(codeArea); break;
-            //case "verilog" : new VerilogKeywordHighlighter().start(codeArea); break;
-           // case "vhdl" : new VHDLKeywordHighLighter().start(codeArea); break;
+            case "verilog" : new VerilogKeywordHighlighter().start(codeArea); break;
         }
     }
 
