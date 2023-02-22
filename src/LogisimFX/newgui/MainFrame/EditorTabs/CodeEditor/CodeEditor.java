@@ -58,7 +58,7 @@ public class CodeEditor extends EditorBase {
 
 
     //Bottom info bar
-    private HBox infoBar;
+    private HBox footBar;
     private Label selectTextLabel;
     private SimpleStringProperty lineNum, colNum, selectedTextNum;
     private AtomicInteger currWordIndex = new AtomicInteger(0);
@@ -72,12 +72,12 @@ public class CodeEditor extends EditorBase {
 
         initFindReplaceBar();
         initCodeArea("verilog");
-        initInfoBar();
+        initFootBar();
 
         codeEditorToolBar = new CodeEditorToolBar();
         codeEditorToolBar.setOnMousePressed(event -> Event.fireEvent(this, event.copyFor(event.getSource(), this)));
 
-        this.getChildren().addAll(codeEditorToolBar, findBar, replaceBar, virtualizedScrollPane, infoBar);
+        this.getChildren().addAll(codeEditorToolBar, findBar, replaceBar, virtualizedScrollPane, footBar);
 
         proj.getFrameController().editorProperty().addListener((observableValue, editorBase, t1) -> {
             if (this.isSelected()){
@@ -247,15 +247,15 @@ public class CodeEditor extends EditorBase {
 
 
 
-    private void initInfoBar(){
+    private void initFootBar(){
 
         lineNum = new SimpleStringProperty("1");
         colNum = new SimpleStringProperty("1");
         selectedTextNum = new SimpleStringProperty("");
 
-        infoBar = new HBox();
-        infoBar.setAlignment(Pos.CENTER_RIGHT);
-        infoBar.setSpacing(5);
+        footBar = new HBox();
+        footBar.setAlignment(Pos.CENTER_RIGHT);
+        footBar.setSpacing(5);
 
         selectTextLabel = new Label();
         HBox.setHgrow(selectTextLabel, Priority.ALWAYS);
@@ -270,7 +270,7 @@ public class CodeEditor extends EditorBase {
         HBox.setHgrow(tabInfo, Priority.ALWAYS);
         tabInfo.textProperty().bind(LC.createComplexStringBinding("codeAreaIndentInfo", Integer.toString(4)));
 
-        infoBar.getChildren().addAll(selectTextLabel, lineColInfo, tabInfo);
+        footBar.getChildren().addAll(selectTextLabel, lineColInfo, tabInfo);
 
     }
 

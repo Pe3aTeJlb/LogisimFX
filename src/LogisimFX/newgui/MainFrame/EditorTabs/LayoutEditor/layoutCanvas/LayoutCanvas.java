@@ -27,6 +27,9 @@ import com.sun.javafx.tk.FontMetrics;
 import javafx.animation.AnimationTimer;
 import javafx.animation.PauseTransition;
 import javafx.beans.binding.StringBinding;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.Event;
 import javafx.scene.CacheHint;
 import javafx.scene.Cursor;
@@ -64,6 +67,9 @@ public class LayoutCanvas extends Canvas {
     private double dragScreenX, dragScreenY;
     private double[] transform;
 
+    public SimpleStringProperty mouseXProperty;
+    public SimpleStringProperty mouseYProperty;
+    public SimpleStringProperty zoomProperty;
 
 
     private AnimationTimer update;
@@ -251,6 +257,10 @@ public class LayoutCanvas extends Canvas {
         this.circ = layoutEditor.getCirc();
         circState = proj.getCircuitState(circ);
         ptContext = new ComponentDrawContext(circ, circState, g);
+
+        mouseXProperty = new SimpleStringProperty("0");
+        mouseYProperty = new SimpleStringProperty("0");
+        zoomProperty = new SimpleStringProperty("100");
 
         update = new AnimationTimer() {
 
@@ -703,6 +713,7 @@ public class LayoutCanvas extends Canvas {
             // inverse transform = (x-t4)/t0
 
             zoom = newScale;
+            zoomProperty.set(Double.toString(Math.round(zoom*100)));
 
             dx = width / 2 - cx * newScale;
             dy = height / 2 - cy * newScale;
@@ -718,6 +729,9 @@ public class LayoutCanvas extends Canvas {
         });
 
         this.setOnMouseMoved(event -> {
+
+            mouseXProperty.set(Integer.toString(inverseTransformX(event.getX())));
+            mouseYProperty.set(Integer.toString(inverseTransformY(event.getY())));
 
             mouseOver = true;
 
@@ -767,6 +781,9 @@ public class LayoutCanvas extends Canvas {
         });
 
         this.setOnMouseExited(event -> {
+
+            mouseXProperty.set("0");
+            mouseYProperty.set("0");
 
             mouseOver = false;
 

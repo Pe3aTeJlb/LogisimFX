@@ -2,14 +2,19 @@ package LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor;
 
 import LogisimFX.circuit.Circuit;
 import LogisimFX.newgui.MainFrame.EditorTabs.CodeEditor.CodeEditorEditMenu;
+import LogisimFX.newgui.MainFrame.LC;
 import LogisimFX.newgui.MainFrame.SystemTabs.AttributesTab.AttributeTable;
 import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.AppearanceCanvas;
 import LogisimFX.newgui.MainFrame.CustomMenuBar;
 import LogisimFX.newgui.MainFrame.EditorTabs.EditorBase;
 import LogisimFX.proj.Project;
+import javafx.beans.binding.Bindings;
 import javafx.event.Event;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
@@ -19,6 +24,7 @@ public class AppearanceEditor extends EditorBase {
 
     private AppearanceCanvas appearanceCanvas;
     private AppearanceEditorToolBar toolBar;
+    private HBox footBar;
 
     private AppearanceEditorEditMenu menu;
 
@@ -44,7 +50,29 @@ public class AppearanceEditor extends EditorBase {
         menu = new AppearanceEditorEditMenu(this);
         appearanceCanvas.getSelection().addSelectionListener(menu);
 
-        this.getChildren().addAll(toolBar, canvasRoot);
+        footBar = new HBox();
+        footBar.setAlignment(Pos.CENTER_RIGHT);
+        footBar.setSpacing(5);
+
+        Label info = new Label();
+        HBox.setHgrow(info, Priority.ALWAYS);
+        info.textProperty().bind(
+                Bindings.concat(
+                        LC.createStringBinding("canvasX"),
+                        appearanceCanvas.mouseXProperty,
+                        " ",
+                        LC.createStringBinding("canvasY"),
+                        appearanceCanvas.mouseYProperty,
+                        " ",
+                        LC.createStringBinding("canvasZoom"),
+                        appearanceCanvas.zoomProperty,
+                        "%"
+                )
+        );
+
+        footBar.getChildren().add(info);
+
+        this.getChildren().addAll(toolBar, canvasRoot, footBar);
 
     }
 

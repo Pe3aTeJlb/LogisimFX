@@ -24,6 +24,8 @@ import LogisimFX.proj.ProjectEvent;
 import LogisimFX.proj.ProjectListener;
 
 import javafx.animation.AnimationTimer;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.Event;
 import javafx.scene.CacheHint;
 import javafx.scene.Cursor;
@@ -53,6 +55,10 @@ public class AppearanceCanvas extends Canvas {
     private double zoom;
     private double dragScreenX, dragScreenY;
     private double[] transform;
+
+    public DoubleProperty mouseXProperty = new SimpleDoubleProperty(0);
+    public DoubleProperty mouseYProperty = new SimpleDoubleProperty(0);
+    public DoubleProperty zoomProperty = new SimpleDoubleProperty(100);
 
     private AnimationTimer update;
 
@@ -314,6 +320,7 @@ public class AppearanceCanvas extends Canvas {
             // inverse transform = (x-t4)/t0
 
             zoom = newScale;
+            zoomProperty.set(Math.round(zoom*100));
 
             transform[4] = width / 2 - cx * newScale;
             transform[5] = height / 2 - cy * newScale;
@@ -324,6 +331,9 @@ public class AppearanceCanvas extends Canvas {
         });
 
         this.setOnMouseMoved(event -> {
+
+            mouseXProperty.set(inverseTransformX(event.getX()));
+            mouseYProperty.set(inverseTransformY(event.getY()));
 
             mouseOver = true;
 
@@ -349,6 +359,9 @@ public class AppearanceCanvas extends Canvas {
         });
 
         this.setOnMouseExited(event -> {
+
+            mouseXProperty.set(0);
+            mouseYProperty.set(0);
 
             mouseOver = false;
 
