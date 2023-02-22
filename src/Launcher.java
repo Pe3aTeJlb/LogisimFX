@@ -2,7 +2,7 @@
  * This file is part of LogisimFX by Pplos Studio.
  *
  * https://github.com/Pe3aTeJlb/LogisimFX
- * https://sites.google.com/view/pplosstudio/%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F
+ * https://sites.google.com/view/pplosstudio
  *
  * LogisimFX is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by the
@@ -24,7 +24,8 @@ import LogisimFX.Main;
 
 public class Launcher {
     public static void main(String[] args) {
-//-Dprism.order=sw -Dprism.dirtyopts=false -Djavafx.pulseLogger=true
+
+        //-Dprism.order=sw -Dprism.dirtyopts=false -Djavafx.pulseLogger=true
         /*
         System.setProperty("prism.vsync", "true");
         System.setProperty("quantum.multithreading", "true");

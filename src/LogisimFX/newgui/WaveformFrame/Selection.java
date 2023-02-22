@@ -6,7 +6,6 @@
 
 package LogisimFX.newgui.WaveformFrame;
 
-
 import LogisimFX.circuit.CircuitState;
 
 import java.util.ArrayList;

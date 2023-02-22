@@ -6,7 +6,6 @@
 
 package LogisimFX.newgui.AnalyzeFrame;
 
-
 import javafx.beans.binding.StringBinding;
 
 import java.util.ArrayList;

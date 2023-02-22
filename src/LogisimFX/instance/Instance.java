@@ -6,7 +6,6 @@
 
 package LogisimFX.instance;
 
-
 import java.util.List;
 
 import LogisimFX.comp.Component;

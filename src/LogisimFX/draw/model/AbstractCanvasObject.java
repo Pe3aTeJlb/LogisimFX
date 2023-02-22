@@ -3,6 +3,7 @@
 * Original code by Carl Burch (http://www.cburch.com), 2011.
 * License information is located in the Launch file
 */
+
 package LogisimFX.draw.model;
 
 import LogisimFX.draw.shapes.DrawAttr;

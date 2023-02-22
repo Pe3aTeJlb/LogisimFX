@@ -1,5 +1,9 @@
-package LogisimFX.newgui;
+/*
+ * This file is part of LogisimFX. Copyright (c) 2022, Pplos Studio
+ * License information is located in the Launch file
+ */
 
+package LogisimFX.newgui;
 
 import LogisimFX.IconsManager;
 import LogisimFX.localization.LC_null;

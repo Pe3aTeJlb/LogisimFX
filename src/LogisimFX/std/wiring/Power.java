@@ -4,7 +4,7 @@
  * License information is located in the Launch file
  */
 
-/**
+/*
  * Based on PUCTools (v0.9 beta) by CRC - PUC - Minas (pucmg.crc at gmail.com)
  */
 

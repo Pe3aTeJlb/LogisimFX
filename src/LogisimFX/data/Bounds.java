@@ -6,8 +6,6 @@
 
 package LogisimFX.data;
 
-
-import LogisimFX.circuit.Wire;
 import LogisimFX.util.Cache;
 import javafx.scene.shape.Rectangle;
 

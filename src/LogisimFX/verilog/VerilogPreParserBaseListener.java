@@ -1,4 +1,10 @@
+/*
+ * This file is part of LogisimFX. Copyright (c) 2023, Pplos Studio
+ * License information is located in the Launch file
+ */
+
 // Generated from java-escape by ANTLR 4.11.1
+
 package LogisimFX.verilog;
 
 import org.antlr.v4.runtime.ParserRuleContext;

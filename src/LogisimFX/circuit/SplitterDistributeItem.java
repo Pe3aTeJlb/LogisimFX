@@ -1,6 +1,8 @@
-/* Copyright (c) 2010, Carl Burch.
- *  Copyright (c) 2022, Pplos Studio
- *  License information is located in the Launch file */
+/*
+ * This file is part of LogisimFX. Copyright (c) 2022, Pplos Studio
+ * Original code by Carl Burch (http://www.cburch.com), 2011.
+ * License information is located in the Launch file
+ */
 
 package LogisimFX.circuit;
 
