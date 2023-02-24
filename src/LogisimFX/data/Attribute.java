@@ -39,6 +39,7 @@ public abstract class Attribute<V> {
 	public Node getCell(V value){
 
 		TextField field = new TextField(toDisplayString(value));
+		field.setMaxWidth(Double.MAX_VALUE);
 		field.setOnAction(event -> {
 			try {
 				AttributeTable.setValueRequested(this, field.getText());

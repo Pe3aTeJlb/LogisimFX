@@ -46,6 +46,7 @@ public class BitWidth implements Comparable<BitWidth> {
 		public Node getCell(BitWidth value){
 
 			ComboBox<Object> cell = new ComboBox<>();
+			cell.setMaxWidth(Double.MAX_VALUE);
 			cell.getItems().addAll(choices);
 			cell.setValue(value);
 			cell.setOnAction(event -> {

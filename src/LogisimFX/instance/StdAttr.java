@@ -15,6 +15,8 @@ import javafx.scene.text.FontWeight;
 
 public interface StdAttr {
 
+	Attribute<Boolean> FPGA_SUPPORTED = Attributes.forFPGASupported("fpga", LC.createStringBinding("stdFPGASupportAttr"));
+
 	Attribute<Direction> FACING = Attributes.forDirection("facing", LC.createStringBinding("stdFacingAttr"));
 
 	Attribute<BitWidth> WIDTH = Attributes.forBitWidth("width", LC.createStringBinding("stdDataWidthAttr"));

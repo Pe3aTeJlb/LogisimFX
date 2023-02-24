@@ -62,6 +62,7 @@ public class DurationAttribute extends Attribute<Integer> {
 		TextField field = new TextField();
 
 		field.setText(toDisplayString(value));
+		field.setMaxWidth(Double.MAX_VALUE);
 
 		field.focusedProperty().addListener((observable, oldValue, newValue) -> {
 			if(newValue){

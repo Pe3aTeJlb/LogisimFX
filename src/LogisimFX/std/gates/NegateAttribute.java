@@ -90,6 +90,7 @@ class NegateAttribute extends Attribute<Boolean> {
 		};
 
 		ComboBox<Boolean> cell = new ComboBox<>();
+		cell.setMaxWidth(Double.MAX_VALUE);
 		cell.getItems().addAll(vals);
 		cell.setConverter(converter);
 		cell.setValue(value);

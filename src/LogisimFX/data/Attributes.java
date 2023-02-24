@@ -13,10 +13,14 @@ import LogisimFX.newgui.MainFrame.SystemTabs.AttributesTab.AttributeTable;
 import javafx.beans.binding.StringBinding;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 
 public class Attributes {
@@ -140,6 +144,9 @@ public class Attributes {
 		return new ColorAttribute(name, disp);
 	}
 
+	public static Attribute<Boolean> forFPGASupported(String name, StringBinding disp) {
+		return new PrecalculatedBoolean(name, disp);
+	}
 
 	//Implementation
 
@@ -204,6 +211,7 @@ public class Attributes {
 			};
 
 			ComboBox<Object> cell = new ComboBox<>();
+			cell.setMaxWidth(Double.MAX_VALUE);
 			cell.setConverter(converter);
 			cell.getItems().addAll(vals);
 			cell.setValue(value);
@@ -474,6 +482,7 @@ public class Attributes {
 		public Node getCell(Font value){
 
 			Button fontSelector = new Button(value.getName());
+			fontSelector.setMaxWidth(Double.MAX_VALUE);
 			fontSelector.setOnAction(event -> {
 
 				Font f = DialogManager.CreateFontSelectorDialog(value);
@@ -547,6 +556,7 @@ public class Attributes {
 			Color init = value == null ? Color.BLACK : value;
 
 			ColorPicker picker = new ColorPicker(init);
+			picker.setMaxWidth(Double.MAX_VALUE);
 			picker.setOnAction(event -> {
 				Color c = picker.getValue();
 				try {
@@ -556,6 +566,44 @@ public class Attributes {
 				}
 			});
 			return picker;
+		}
+
+	}
+
+	private static class PrecalculatedBoolean extends Attribute<Boolean> {
+
+		private PrecalculatedBoolean(String name, StringBinding disp) {
+			super(name, disp);
+		}
+
+		@Override
+		public String toDisplayString(Boolean value) {
+			if (value){
+				return LC.get("FPGASupportYes");
+			} else {
+				return LC.get("FPGASupportNo");
+			}
+		}
+
+		@Override
+		public Boolean parse(String value) {
+			return Boolean.parseBoolean(value);
+		}
+
+		@Override
+		public Node getCell(Boolean value){
+
+			Label cell = new Label();
+			cell.setText(toDisplayString(value));
+			cell.setMaxWidth(Double.MAX_VALUE);
+			if (value) {
+				cell.setStyle("-fx-background-color: green ;");
+			} else {
+				cell.setStyle("-fx-background-color: red ;");
+			}
+
+			return cell;
+
 		}
 
 	}

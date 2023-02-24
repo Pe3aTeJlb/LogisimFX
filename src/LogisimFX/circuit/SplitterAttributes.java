@@ -143,6 +143,7 @@ class SplitterAttributes extends AbstractAttributeSet {
 			};
 
 			ComboBox<Object> cell = new ComboBox<>();
+			cell.setMaxWidth(Double.MAX_VALUE);
 			cell.getItems().addAll(options);
 			cell.getSelectionModel().select(value);
 			//cell.setConverter(converter);
