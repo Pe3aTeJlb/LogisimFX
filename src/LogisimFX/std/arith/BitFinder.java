@@ -32,9 +32,9 @@ public class BitFinder extends InstanceFactory {
 
 		super("BitFinder", LC.createStringBinding("bitFinderComponent"));
 		setAttributes(new Attribute[] {
-				StdAttr.WIDTH, TYPE
+				StdAttr.FPGA_SUPPORTED, StdAttr.WIDTH, TYPE
 			}, new Object[] {
-				BitWidth.create(8), LOW_ONE
+				Boolean.FALSE, BitWidth.create(8), LOW_ONE
 			});
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
 		setIcon("bitfindr.gif");

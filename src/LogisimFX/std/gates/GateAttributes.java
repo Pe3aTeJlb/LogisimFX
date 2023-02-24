@@ -54,6 +54,7 @@ class GateAttributes extends AbstractAttributeSet {
 			new AttributeOption[] { OUTPUT_01, OUTPUT_0Z, OUTPUT_Z1 });
 	
 
+	Boolean fpga = Boolean.FALSE;
 	Direction facing = Direction.EAST;
 	BitWidth width = BitWidth.ONE;
 	AttributeOption size = SIZE_MEDIUM;
@@ -82,6 +83,7 @@ class GateAttributes extends AbstractAttributeSet {
 	@SuppressWarnings("unchecked")
 	public <V> V getValue(Attribute<V> attr) {
 
+		if (attr == 	StdAttr.FPGA_SUPPORTED) return (V) fpga;
 		if (attr == StdAttr.FACING) return (V) facing;
 		if (attr == StdAttr.WIDTH) return (V) width;
 		if (attr == StdAttr.LABEL) return (V) label;
@@ -107,6 +109,8 @@ class GateAttributes extends AbstractAttributeSet {
 			int bits = width.getWidth();
 			int mask = bits >= 32 ? -1 : ((1 << inputs) - 1);
 			negated &= mask;
+		} else if (attr == StdAttr.FPGA_SUPPORTED) {
+			fpga = (Boolean) value;
 		} else if (attr == StdAttr.FACING) {
 			facing = (Direction) value;
 		} else if (attr == StdAttr.LABEL) {

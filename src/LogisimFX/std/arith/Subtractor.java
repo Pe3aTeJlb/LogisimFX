@@ -25,8 +25,8 @@ public class Subtractor extends InstanceFactory {
 	public Subtractor() {
 
 		super("Subtractor", LC.createStringBinding("subtractorComponent"));
-		setAttributes(new Attribute[] { StdAttr.WIDTH },
-				new Object[] { BitWidth.create(8) });
+		setAttributes(new Attribute[] { StdAttr.FPGA_SUPPORTED, StdAttr.WIDTH },
+				new Object[] { Boolean.FALSE, BitWidth.create(8) });
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
 		setOffsetBounds(Bounds.create(-40, -20, 40, 40));
 		setIcon("subtractor.gif");

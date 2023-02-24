@@ -19,8 +19,8 @@ public class Negator extends InstanceFactory {
 	public Negator() {
 
 		super("Negator", LC.createStringBinding("negatorComponent"));
-		setAttributes(new Attribute[] { StdAttr.WIDTH },
-					new Object[] { BitWidth.create(8) });
+		setAttributes(new Attribute[] { StdAttr.FPGA_SUPPORTED, StdAttr.WIDTH },
+					new Object[] { Boolean.FALSE, BitWidth.create(8) });
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
 		setOffsetBounds(Bounds.create(-40, -20, 40, 40));
 		setIcon("negator.gif");

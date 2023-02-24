@@ -45,8 +45,8 @@ public class Keyboard extends InstanceFactory {
 	public Keyboard() {
 
 		super("Keyboard", LC.createStringBinding("keyboardComponent"));
-		setAttributes(new Attribute[] { ATTR_BUFFER, StdAttr.EDGE_TRIGGER },
-				new Object[] { Integer.valueOf(32), StdAttr.TRIG_RISING });
+		setAttributes(new Attribute[] { StdAttr.FPGA_SUPPORTED, ATTR_BUFFER, StdAttr.EDGE_TRIGGER },
+				new Object[] { Boolean.FALSE, Integer.valueOf(32), StdAttr.TRIG_RISING });
 		setOffsetBounds(Bounds.create(0, -15, WIDTH, HEIGHT));
 		setIcon("keyboard.gif");
 		setInstancePoker(Poker.class);

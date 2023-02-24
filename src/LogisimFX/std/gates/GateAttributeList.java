@@ -15,6 +15,7 @@ import LogisimFX.instance.StdAttr;
 class GateAttributeList extends AbstractList<Attribute<?>> {
 
 	private static final Attribute<?>[] BASE_ATTRIBUTES = {
+			StdAttr.FPGA_SUPPORTED,
 			StdAttr.FACING, StdAttr.WIDTH,
 			GateAttributes.ATTR_SIZE, GateAttributes.ATTR_INPUTS,
 			GateAttributes.ATTR_OUTPUT, StdAttr.LABEL, StdAttr.LABEL_FONT,

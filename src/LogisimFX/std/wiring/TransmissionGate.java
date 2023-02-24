@@ -29,8 +29,8 @@ public class TransmissionGate extends InstanceFactory {
 
 		super("Transmission Gate", LC.createStringBinding("transmissionGateComponent"));
 		setIcon("transmis.gif");
-		setAttributes(new Attribute[] { StdAttr.FACING, Wiring.ATTR_GATE, StdAttr.WIDTH },
-				new Object[] { Direction.EAST, Wiring.GATE_TOP_LEFT, BitWidth.ONE });
+		setAttributes(new Attribute[] { StdAttr.FPGA_SUPPORTED, StdAttr.FACING, Wiring.ATTR_GATE, StdAttr.WIDTH },
+				new Object[] { Boolean.FALSE, Direction.EAST, Wiring.GATE_TOP_LEFT, BitWidth.ONE });
 		setFacingAttribute(StdAttr.FACING);
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
 

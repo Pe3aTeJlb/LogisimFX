@@ -25,8 +25,10 @@ public class BitSelector extends InstanceFactory {
 
 		super("BitSelector", LC.createStringBinding("bitSelectorComponent"));
 		setAttributes(new Attribute[] {
+				StdAttr.FPGA_SUPPORTED,
 				StdAttr.FACING, StdAttr.WIDTH, GROUP_ATTR
 			}, new Object[] {
+				Boolean.FALSE,
 				Direction.EAST, BitWidth.create(8), BitWidth.ONE
 			});
 		setKeyConfigurator(JoinedConfigurator.create(

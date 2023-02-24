@@ -27,8 +27,8 @@ public class Divider extends InstanceFactory {
 	public Divider() {
 
 		super("Divider", LC.createStringBinding("dividerComponent"));
-		setAttributes(new Attribute[] { StdAttr.WIDTH },
-				new Object[] { BitWidth.create(8) });
+		setAttributes(new Attribute[] { StdAttr.FPGA_SUPPORTED, StdAttr.WIDTH },
+				new Object[] { Boolean.FALSE, BitWidth.create(8) });
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
 		setOffsetBounds(Bounds.create(-40, -20, 40, 40));
 		setIcon("divider.gif");

@@ -35,8 +35,8 @@ public class PullResistor extends InstanceFactory {
 
 	public PullResistor() {
 		super("Pull Resistor", LC.createStringBinding("pullComponent"));
-		setAttributes(new Attribute[] { StdAttr.FACING, ATTR_PULL_TYPE },
-				new Object[] { Direction.SOUTH, ATTR_PULL_TYPE.parse("0") });
+		setAttributes(new Attribute[] { StdAttr.FPGA_SUPPORTED, StdAttr.FACING, ATTR_PULL_TYPE },
+				new Object[] { Boolean.FALSE, Direction.SOUTH, ATTR_PULL_TYPE.parse("0") });
 		setFacingAttribute(StdAttr.FACING);
 	}
 

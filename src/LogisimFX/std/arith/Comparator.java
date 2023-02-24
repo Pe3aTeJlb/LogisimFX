@@ -30,8 +30,8 @@ public class Comparator extends InstanceFactory {
 	public Comparator() {
 
 		super("Comparator", LC.createStringBinding("comparatorComponent"));
-		setAttributes(new Attribute[] { StdAttr.WIDTH, MODE_ATTRIBUTE },
-				new Object[] { BitWidth.create(8), SIGNED_OPTION });
+		setAttributes(new Attribute[] { StdAttr.FPGA_SUPPORTED, StdAttr.WIDTH, MODE_ATTRIBUTE },
+				new Object[] { Boolean.FALSE, BitWidth.create(8), SIGNED_OPTION });
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
 		setOffsetBounds(Bounds.create(-40, -20, 40, 40));
 		setIcon("comparator.gif");

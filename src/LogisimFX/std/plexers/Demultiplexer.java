@@ -23,9 +23,11 @@ public class Demultiplexer extends InstanceFactory {
 
 		super("Demultiplexer", LC.createStringBinding("demultiplexerComponent"));
 		setAttributes(new Attribute[] {
+				StdAttr.FPGA_SUPPORTED,
 				StdAttr.FACING, Plexers.ATTR_SELECT_LOC, Plexers.ATTR_SELECT, StdAttr.WIDTH,
 				Plexers.ATTR_TRISTATE, Plexers.ATTR_DISABLED, Plexers.ATTR_ENABLE
 			}, new Object[] {
+				Boolean.FALSE,
 				Direction.EAST, Plexers.SELECT_BOTTOM_LEFT, Plexers.DEFAULT_SELECT, BitWidth.ONE,
 				Plexers.DEFAULT_TRISTATE, Plexers.DISABLED_FLOATING, Boolean.TRUE
 			});

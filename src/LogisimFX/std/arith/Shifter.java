@@ -41,9 +41,9 @@ public class Shifter extends InstanceFactory {
 
 		super("Shifter", LC.createStringBinding("shifterComponent"));
 		setAttributes(new Attribute[] {
-				StdAttr.WIDTH, ATTR_SHIFT
+				StdAttr.FPGA_SUPPORTED, StdAttr.WIDTH, ATTR_SHIFT
 			}, new Object[] {
-				BitWidth.create(8), SHIFT_LOGICAL_LEFT
+				Boolean.FALSE, BitWidth.create(8), SHIFT_LOGICAL_LEFT
 			});
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
 		setOffsetBounds(Bounds.create(-40, -20, 40, 40));

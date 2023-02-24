@@ -46,10 +46,12 @@ class NotGate extends InstanceFactory {
 
 		super("NOT Gate", LC.createStringBinding("notGateComponent"));
 		setAttributes(new Attribute[] {
+				StdAttr.FPGA_SUPPORTED,
 				StdAttr.FACING, StdAttr.WIDTH, ATTR_SIZE,
 				GateAttributes.ATTR_OUTPUT,
 				StdAttr.LABEL, StdAttr.LABEL_FONT,
 			}, new Object[] {
+				Boolean.FALSE,
 				Direction.EAST, BitWidth.ONE, SIZE_WIDE,
 				GateAttributes.OUTPUT_01,
 				"", StdAttr.DEFAULT_LABEL_FONT,

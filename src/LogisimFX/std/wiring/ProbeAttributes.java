@@ -21,11 +21,11 @@ class ProbeAttributes extends AbstractAttributeSet {
 	public static ProbeAttributes instance = new ProbeAttributes();
 
 	private static final List<Attribute<?>> ATTRIBUTES
-		= Arrays.asList(new Attribute<?>[] {
+		= Arrays.asList(StdAttr.FPGA_SUPPORTED,
 			StdAttr.FACING, RadixOption.ATTRIBUTE,
-			StdAttr.LABEL, Pin.ATTR_LABEL_LOC, StdAttr.LABEL_FONT,
-		});
+			StdAttr.LABEL, Pin.ATTR_LABEL_LOC, StdAttr.LABEL_FONT);
 
+	Boolean fpga = false;
 	Direction facing = Direction.EAST;
 	String label = "";
 	Direction labelloc = Direction.WEST;
@@ -49,6 +49,7 @@ class ProbeAttributes extends AbstractAttributeSet {
 	@SuppressWarnings("unchecked")
 	public <E> E getValue(Attribute<E> attr) {
 
+		if (attr == StdAttr.FPGA_SUPPORTED) return (E) fpga;
 		if (attr == StdAttr.FACING) return (E) facing;
 		if (attr == StdAttr.LABEL) return (E) label;
 		if (attr == Pin.ATTR_LABEL_LOC) return (E) labelloc;
@@ -71,6 +72,8 @@ class ProbeAttributes extends AbstractAttributeSet {
 			labelfont = (Font) value;
 		} else if (attr == RadixOption.ATTRIBUTE) {
 			radix = (RadixOption) value;
+		} else if (attr == StdAttr.FPGA_SUPPORTED) {
+			fpga = (Boolean) value;
 		} else {
 			throw new IllegalArgumentException("unknown attribute");
 		}

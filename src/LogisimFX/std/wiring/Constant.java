@@ -33,12 +33,12 @@ public class Constant extends InstanceFactory {
 	private static final Color BACKGROUND_COLOR = Color.color(0.902, 0.902, 0.902);
 
 	private static final List<Attribute<?>> ATTRIBUTES
-		= Arrays.asList(new Attribute<?>[] {
-				StdAttr.FACING, StdAttr.WIDTH, ATTR_VALUE
-		});
+		= Arrays.asList(StdAttr.FPGA_SUPPORTED,
+			StdAttr.FACING, StdAttr.WIDTH, ATTR_VALUE);
 	
 	private static class ConstantAttributes extends AbstractAttributeSet {
 
+		private Boolean fpga = false;
 		private Direction facing = Direction.EAST;;
 		private BitWidth width = BitWidth.ONE;
 		private Value value = Value.TRUE;
@@ -50,6 +50,7 @@ public class Constant extends InstanceFactory {
 			dest.facing = this.facing;
 			dest.width = this.width;
 			dest.value = this.value;
+			dest.fpga = this.fpga;
 
 		}
 
@@ -62,6 +63,7 @@ public class Constant extends InstanceFactory {
 		@SuppressWarnings("unchecked")
 		public <V> V getValue(Attribute<V> attr) {
 
+			if (attr == StdAttr.FPGA_SUPPORTED) return (V) fpga;
 			if (attr == StdAttr.FACING) return (V) facing;
 			if (attr == StdAttr.WIDTH) return (V) width;
 			if (attr == ATTR_VALUE) return (V) Integer.valueOf(value.toIntValue());
@@ -80,12 +82,14 @@ public class Constant extends InstanceFactory {
 						this.value.get(this.value.getWidth() - 1));
 			} else if (attr == ATTR_VALUE) {
 				int val = 0;
-				if(value instanceof String) {
-					val = Integer.decode((String)value);
-				}else{
+				if (value instanceof String) {
+					val = Integer.decode((String) value);
+				} else {
 					val = ((Integer) value).intValue();
 				}
 				this.value = Value.createKnown(width, val);
+			} else if (attr == StdAttr.FPGA_SUPPORTED){
+				this.fpga = (Boolean) value;
 			} else {
 				throw new IllegalArgumentException("unknown attribute " + attr);
 			}

@@ -29,9 +29,11 @@ public class Register extends InstanceFactory {
 
 		super("Register", LC.createStringBinding("registerComponent"));
 		setAttributes(new Attribute[] {
+				StdAttr.FPGA_SUPPORTED,
 				StdAttr.WIDTH, StdAttr.TRIGGER,
 				StdAttr.LABEL, StdAttr.LABEL_FONT
 			}, new Object[] {
+				Boolean.FALSE,
 				BitWidth.create(8), StdAttr.TRIG_RISING,
 				"", StdAttr.DEFAULT_LABEL_FONT
 			});

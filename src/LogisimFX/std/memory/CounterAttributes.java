@@ -18,10 +18,12 @@ public class CounterAttributes extends AbstractAttributeSet {
 	public CounterAttributes() {
 
 		base = AttributeSets.fixedSet(new Attribute<?>[] {
+				StdAttr.FPGA_SUPPORTED,
 				StdAttr.WIDTH, Counter.ATTR_MAX, Counter.ATTR_ON_GOAL,
 				StdAttr.EDGE_TRIGGER,
 				StdAttr.LABEL, StdAttr.LABEL_FONT
 			}, new Object[] {
+				Boolean.FALSE,
 				BitWidth.create(8), Integer.valueOf(0xFF),
 				Counter.ON_GOAL_WRAP,
 				StdAttr.TRIG_RISING,

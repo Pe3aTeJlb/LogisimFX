@@ -37,8 +37,10 @@ public class BitExtender extends InstanceFactory {
 		super("Bit Extender", LC.createStringBinding("extenderComponent"));
 		setIcon("extender.gif");
 		setAttributes(new Attribute[] {
+				StdAttr.FPGA_SUPPORTED,
 				ATTR_IN_WIDTH, ATTR_OUT_WIDTH, ATTR_TYPE
 			}, new Object[] {
+				Boolean.FALSE,
 				BitWidth.create(8), BitWidth.create(16), ATTR_TYPE.parse("zero")
 			});
 		setKeyConfigurator(JoinedConfigurator.create(

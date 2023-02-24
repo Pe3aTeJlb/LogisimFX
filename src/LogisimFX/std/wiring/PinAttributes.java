@@ -19,10 +19,9 @@ class PinAttributes extends ProbeAttributes {
 	public static PinAttributes instance = new PinAttributes();
 
 	private static final List<Attribute<?>> ATTRIBUTES
-		= Arrays.asList(new Attribute<?>[] {
+		= Arrays.asList(StdAttr.FPGA_SUPPORTED,
 			StdAttr.FACING, Pin.ATTR_TYPE, StdAttr.WIDTH, Pin.ATTR_TRISTATE,
-			Pin.ATTR_PULL, StdAttr.LABEL, Pin.ATTR_LABEL_LOC, StdAttr.LABEL_FONT
-		});
+			Pin.ATTR_PULL, StdAttr.LABEL, Pin.ATTR_LABEL_LOC, StdAttr.LABEL_FONT);
 
 	BitWidth width = BitWidth.ONE;
 	boolean threeState = true;
@@ -40,6 +39,7 @@ class PinAttributes extends ProbeAttributes {
 	@SuppressWarnings("unchecked")
 	public <V> V getValue(Attribute<V> attr) {
 
+		if (attr == StdAttr.FPGA_SUPPORTED) return (V) fpga;
 		if (attr == StdAttr.WIDTH) return (V) width;
 		if (attr == Pin.ATTR_TRISTATE) return (V) Boolean.valueOf(threeState);
 		if (attr == Pin.ATTR_TYPE) return (V) Boolean.valueOf(type == EndData.OUTPUT_ONLY);
@@ -67,6 +67,8 @@ class PinAttributes extends ProbeAttributes {
 			type = ((Boolean) value).booleanValue() ? EndData.OUTPUT_ONLY : EndData.INPUT_ONLY;
 		} else if (attr == Pin.ATTR_PULL) {
 			pull = value;
+		} else if (attr == StdAttr.FPGA_SUPPORTED){
+			fpga = (Boolean) value;
 		} else {
 			super.setValue(attr, value);
 			return;

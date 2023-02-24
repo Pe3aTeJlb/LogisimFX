@@ -18,10 +18,9 @@ import javafx.scene.text.Font;
 class TunnelAttributes extends AbstractAttributeSet {
 
 	private static final List<Attribute<?>> ATTRIBUTES
-		= Arrays.asList(new Attribute<?>[] {
-			StdAttr.FACING, StdAttr.WIDTH, StdAttr.LABEL, StdAttr.LABEL_FONT
-		});
+		= Arrays.asList(StdAttr.FPGA_SUPPORTED, StdAttr.FACING, StdAttr.WIDTH, StdAttr.LABEL, StdAttr.LABEL_FONT);
 
+	private Boolean fpga;
 	private Direction facing;
 	private BitWidth width;
 	private String label;
@@ -34,6 +33,7 @@ class TunnelAttributes extends AbstractAttributeSet {
 	
 	public TunnelAttributes() {
 
+		fpga = false;
 		facing = Direction.WEST;
 		width = BitWidth.ONE;
 		label = "";
@@ -90,6 +90,7 @@ class TunnelAttributes extends AbstractAttributeSet {
 	@SuppressWarnings("unchecked")
 	public <V> V getValue(Attribute<V> attr) {
 
+		if (attr == StdAttr.FPGA_SUPPORTED) return (V) fpga;
 		if (attr == StdAttr.FACING) return (V) facing;
 		if (attr == StdAttr.WIDTH) return (V) width;
 		if (attr == StdAttr.LABEL) return (V) label;
@@ -111,6 +112,8 @@ class TunnelAttributes extends AbstractAttributeSet {
 			label = (String) value;
 		} else if (attr == StdAttr.LABEL_FONT) {
 			labelFont = (Font) value;
+		} else if (attr == StdAttr.FPGA_SUPPORTED) {
+			fpga = (Boolean) value;
 		} else {
 			throw new IllegalArgumentException("unknown attribute");
 		}

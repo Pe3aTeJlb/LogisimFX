@@ -29,10 +29,13 @@ public class Adder extends InstanceFactory {
 
 		super("Adder", LC.createStringBinding("adderComponent"));
 		setAttributes(new Attribute[] {
+				StdAttr.FPGA_SUPPORTED,
 				StdAttr.WIDTH
 			}, new Object[] {
-				BitWidth.create(8)
+					Boolean.FALSE,
+					BitWidth.create(8)
 			});
+
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
 		setOffsetBounds(Bounds.create(-40, -20, 40, 40));
 		setIcon("adder.gif");

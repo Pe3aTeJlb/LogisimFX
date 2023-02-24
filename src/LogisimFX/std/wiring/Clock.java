@@ -97,9 +97,11 @@ public class Clock extends InstanceFactory {
 
 		super("Clock", LC.createStringBinding("clockComponent"));
 		setAttributes(new Attribute[] {
+					StdAttr.FPGA_SUPPORTED,
 					StdAttr.FACING, ATTR_HIGH, ATTR_LOW,
 					StdAttr.LABEL, Pin.ATTR_LABEL_LOC, StdAttr.LABEL_FONT
 				}, new Object[] {
+					Boolean.FALSE,
 					Direction.EAST, Integer.valueOf(1), Integer.valueOf(1),
 					"", Direction.WEST, StdAttr.DEFAULT_LABEL_FONT
 				});

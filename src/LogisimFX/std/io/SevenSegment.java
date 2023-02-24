@@ -23,9 +23,9 @@ public class SevenSegment extends InstanceFactory {
 	public SevenSegment() {
 
 		super("7-Segment Display", LC.createStringBinding("sevenSegmentComponent"));
-		setAttributes(new Attribute[] { Io.ATTR_ON_COLOR, Io.ATTR_OFF_COLOR,
+		setAttributes(new Attribute[] { StdAttr.FPGA_SUPPORTED, Io.ATTR_ON_COLOR, Io.ATTR_OFF_COLOR,
 					Io.ATTR_BACKGROUND, Io.ATTR_ACTIVE },
-				new Object[] { Color.color(0.941, 0, 0), DEFAULT_OFF,
+				new Object[] { Boolean.FALSE, Color.color(0.941, 0, 0), DEFAULT_OFF,
 					Io.DEFAULT_BACKGROUND, Boolean.TRUE });
 		setOffsetBounds(Bounds.create(-5, 0, 40, 60));
 		setIcon("7seg.gif");

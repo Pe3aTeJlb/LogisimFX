@@ -29,8 +29,10 @@ public abstract class AbstractFlipFlop extends InstanceFactory {
 		setIcon(iconName);
 		triggerAttribute = allowLevelTriggers ? StdAttr.TRIGGER : StdAttr.EDGE_TRIGGER;
 		setAttributes(new Attribute[] {
+				StdAttr.FPGA_SUPPORTED,
 				triggerAttribute, StdAttr.LABEL, StdAttr.LABEL_FONT
 			}, new Object[] {
+				Boolean.FALSE,
 				StdAttr.TRIG_RISING, "", StdAttr.DEFAULT_LABEL_FONT
 			});
 		setOffsetBounds(Bounds.create(-40, -10, 40, 40));

@@ -25,9 +25,11 @@ class Buffer extends InstanceFactory {
 	private Buffer() {
 
 		super("Buffer", LC.createStringBinding("bufferComponent"));
-		setAttributes(new Attribute[] { StdAttr.FACING, StdAttr.WIDTH,
+		setAttributes(new Attribute[] {
+				StdAttr.FPGA_SUPPORTED,
+				StdAttr.FACING, StdAttr.WIDTH,
 					GateAttributes.ATTR_OUTPUT, StdAttr.LABEL, StdAttr.LABEL_FONT },
-				new Object[] { Direction.EAST, BitWidth.ONE,
+				new Object[] { Boolean.FALSE, Direction.EAST, BitWidth.ONE,
 					GateAttributes.OUTPUT_01, "", StdAttr.DEFAULT_LABEL_FONT });
 		setIcon("bufferGate.gif");
 		setFacingAttribute(StdAttr.FACING);

@@ -43,9 +43,7 @@ class SplitterAttributes extends AbstractAttributeSet {
 			= Attributes.forBoolean("tunnelview", LC.createStringBinding("splitterTunnelViewAttr"));
 
 	private static final List<Attribute<?>> INIT_ATTRIBUTES
-		= Arrays.asList(new Attribute<?>[] {
-			StdAttr.FACING, ATTR_TUNNELVIEW, ATTR_FANOUT, ATTR_WIDTH, ATTR_APPEARANCE,
-		});
+		= Arrays.asList(StdAttr.FPGA_SUPPORTED, StdAttr.FACING, ATTR_TUNNELVIEW, ATTR_FANOUT, ATTR_WIDTH, ATTR_APPEARANCE);
 
 	private static final String unchosen_val = "none";
 
@@ -163,6 +161,7 @@ class SplitterAttributes extends AbstractAttributeSet {
 	private ArrayList<Attribute<?>> attrs = new ArrayList<Attribute<?>>(INIT_ATTRIBUTES);
 	private SplitterParameters parameters;
 	AttributeOption appear = APPEAR_LEFT;
+	Boolean fpga = false;
 	Direction facing = Direction.EAST;
 	Boolean tunnelView = false;
 	byte fanout = 2;                 // number of ends this splits into
@@ -192,6 +191,7 @@ class SplitterAttributes extends AbstractAttributeSet {
 			dest.attrs.add(attr.createCopy());
 		}
 
+		dest.fpga = this.fpga;
 		dest.facing = this.facing;
 		dest.tunnelView = this.tunnelView;
 		dest.fanout = this.fanout;
@@ -230,6 +230,8 @@ class SplitterAttributes extends AbstractAttributeSet {
 			return (V) Integer.valueOf(bit_end[bitOut.which]);
 		} else if (attr == ATTR_TUNNELVIEW) {
 			return (V) tunnelView;
+		} else if (attr == StdAttr.FPGA_SUPPORTED) {
+			return (V) fpga;
 		} else {
 			return null;
 		}
@@ -273,8 +275,9 @@ class SplitterAttributes extends AbstractAttributeSet {
 		}else if (attr == ATTR_TUNNELVIEW) {
 			tunnelView = (Boolean) value;
 			parameters = null;
-		}
-		else {
+		} else if (attr == StdAttr.FPGA_SUPPORTED) {
+			fpga = (Boolean) value;
+		} else {
 			throw new IllegalArgumentException("unknown attribute " + attr);
 		}
 		fireAttributeValueChanged(attr, value);

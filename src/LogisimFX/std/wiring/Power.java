@@ -23,8 +23,8 @@ public class Power extends InstanceFactory {
 
 		super("Power", LC.createStringBinding("powerComponent"));
 		setIcon("power.gif");
-		setAttributes(new Attribute[] { StdAttr.FACING, StdAttr.WIDTH },
-				new Object[] { Direction.NORTH, BitWidth.ONE });
+		setAttributes(new Attribute[] { StdAttr.FPGA_SUPPORTED, StdAttr.FACING, StdAttr.WIDTH },
+				new Object[] { Boolean.FALSE, Direction.NORTH, BitWidth.ONE });
 		setFacingAttribute(StdAttr.FACING);
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
 		setPorts(new Port[] { new Port(0, 0, Port.OUTPUT, StdAttr.WIDTH) });

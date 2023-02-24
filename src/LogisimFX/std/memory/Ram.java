@@ -28,9 +28,11 @@ public class Ram extends Mem {
 			new AttributeOption[] { BUS_COMBINED, BUS_ASYNCH, BUS_SEPARATE });
 
 	private static Attribute<?>[] ATTRIBUTES = {
+		StdAttr.FPGA_SUPPORTED,
 		Mem.ADDR_ATTR, Mem.DATA_ATTR, ATTR_BUS
 	};
 	private static Object[] DEFAULTS = {
+		Boolean.FALSE,
 		BitWidth.create(8), BitWidth.create(8), BUS_COMBINED
 	};
 	

@@ -42,9 +42,11 @@ public class Tty extends InstanceFactory {
 	public Tty() {
 		super("TTY", LC.createStringBinding("ttyComponent"));
 		setAttributes(new Attribute[] {
+				StdAttr.FPGA_SUPPORTED,
 				ATTR_ROWS, ATTR_COLUMNS, StdAttr.EDGE_TRIGGER,
 				Io.ATTR_COLOR, Io.ATTR_BACKGROUND
 			}, new Object[] {
+				Boolean.FALSE,
 				Integer.valueOf(8), Integer.valueOf(32), StdAttr.TRIG_RISING,
 				Color.BLACK, DEFAULT_BACKGROUND
 			});

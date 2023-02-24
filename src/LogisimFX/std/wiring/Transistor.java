@@ -42,9 +42,9 @@ public class Transistor extends InstanceFactory {
 
 		super("Transistor", LC.createStringBinding("transistorComponent"));
 		setAttributes(
-				new Attribute[] { ATTR_TYPE, StdAttr.FACING,
+				new Attribute[] { StdAttr.FPGA_SUPPORTED, ATTR_TYPE, StdAttr.FACING,
 						Wiring.ATTR_GATE, StdAttr.WIDTH },
-				new Object[] { TYPE_P, Direction.EAST,
+				new Object[] { Boolean.FALSE, TYPE_P, Direction.EAST,
 						Wiring.GATE_TOP_LEFT, BitWidth.ONE });
 		setFacingAttribute(StdAttr.FACING);
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));

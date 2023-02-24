@@ -20,11 +20,13 @@ public class Led extends InstanceFactory {
 
 		super("LED", LC.createStringBinding("ledComponent"));
 		setAttributes(new Attribute[] {
+				StdAttr.FPGA_SUPPORTED,
 				StdAttr.FACING, Io.ATTR_ON_COLOR, Io.ATTR_OFF_COLOR,
 				Io.ATTR_ACTIVE,
 				StdAttr.LABEL, Io.ATTR_LABEL_LOC,
 				StdAttr.LABEL_FONT, Io.ATTR_LABEL_COLOR
 			}, new Object[] {
+				Boolean.FALSE,
 				Direction.WEST, Color.color(0.941, 0, 0), Color.DARKGRAY,
 				Boolean.TRUE,
 				"", Io.LABEL_CENTER,

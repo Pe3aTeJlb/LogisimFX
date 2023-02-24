@@ -30,6 +30,7 @@ public class FactoryDescription {
 		Tool[] tools = new Tool[descriptions.length];
 		for (int i = 0; i < tools.length; i++) {
 			tools[i] = new AddTool(base, descriptions[i]);
+			//tools[i].checkForFPGASupport();
 		}
 		return Arrays.asList(tools);
 	}
@@ -49,7 +50,7 @@ public class FactoryDescription {
 		this(name, displayName, factoryClassName);
 		this.iconName = iconName;
 		this.iconLoadAttempted = false;
-		this.icon = null;
+		this.icon = IconsManager.getIcon(iconName);
 	}
 	
 	public FactoryDescription(String name, StringBinding displayName,
@@ -89,14 +90,12 @@ public class FactoryDescription {
 
 		ImageView ret = icon;
 
-		if (ret != null || iconLoadAttempted) {
-			return ret;
-		} else {
+		if (ret == null && !iconLoadAttempted) {
 			ret = IconsManager.getIcon(iconName);
 			icon = ret;
 			iconLoadAttempted = true;
-			return ret;
 		}
+		return ret;
 
 	}
 	

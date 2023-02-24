@@ -44,17 +44,18 @@ class ControlledBuffer extends InstanceFactory {
 					: LC.createStringBinding("controlledBufferComponent"));
 		this.isInverter = isInverter;
 		if (isInverter) {
-			setAttributes(new Attribute[] { StdAttr.FACING, StdAttr.WIDTH,
+			setAttributes(new Attribute[] { StdAttr.FPGA_SUPPORTED, StdAttr.FACING, StdAttr.WIDTH,
 					NotGate.ATTR_SIZE, ATTR_CONTROL,
 					StdAttr.LABEL, StdAttr.LABEL_FONT },
-				new Object[] { Direction.EAST, BitWidth.ONE,
+				new Object[] { Boolean.FALSE, Direction.EAST, BitWidth.ONE,
 					NotGate.SIZE_WIDE, RIGHT_HANDED,
 					"", StdAttr.DEFAULT_LABEL_FONT });
 		} else {
 			setAttributes(new Attribute[] {
+					StdAttr.FPGA_SUPPORTED,
 					StdAttr.FACING, StdAttr.WIDTH, ATTR_CONTROL,
 					StdAttr.LABEL, StdAttr.LABEL_FONT },
-				new Object[] { Direction.EAST, BitWidth.ONE, RIGHT_HANDED,
+				new Object[] { Boolean.FALSE, Direction.EAST, BitWidth.ONE, RIGHT_HANDED,
 					"", StdAttr.DEFAULT_LABEL_FONT });
 		}
 		setFacingAttribute(StdAttr.FACING);

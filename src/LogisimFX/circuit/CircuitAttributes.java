@@ -40,6 +40,7 @@ public class CircuitAttributes extends AbstractAttributeSet {
 	};
 	private static final List<Attribute<?>> INSTANCE_ATTRS
 		= Arrays.asList(new Attribute<?>[] {
+				StdAttr.FPGA_SUPPORTED,
 				StdAttr.FACING, StdAttr.LABEL, LABEL_LOCATION_ATTR,
 				StdAttr.LABEL_FONT,
 				CircuitAttributes.NAME_ATTR, CIRCUIT_LABEL_ATTR,
@@ -89,6 +90,7 @@ public class CircuitAttributes extends AbstractAttributeSet {
 		return ret;
 	}
 
+	private Boolean fpga = false;
 	private Circuit source;
 	private Instance subcircInstance;
 	private Direction facing;
@@ -99,6 +101,7 @@ public class CircuitAttributes extends AbstractAttributeSet {
 	private Instance[] pinInstances;
 	
 	public CircuitAttributes(Circuit source) {
+		this.fpga = false;
 		this.source = source;
 		subcircInstance = null;
 		facing = source.getAppearance().getFacing();
@@ -153,6 +156,7 @@ public class CircuitAttributes extends AbstractAttributeSet {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <E> E getValue(Attribute<E> attr) {
+		if (attr == StdAttr.FPGA_SUPPORTED) return (E) fpga;
 		if (attr == StdAttr.FACING) return (E) facing;
 		if (attr == StdAttr.LABEL) return (E) label;
 		if (attr == StdAttr.LABEL_FONT) return (E) labelFont;
@@ -179,6 +183,8 @@ public class CircuitAttributes extends AbstractAttributeSet {
 			Direction val = (Direction) value;
 			labelLocation = val;
 			fireAttributeValueChanged(LABEL_LOCATION_ATTR, val);
+		} else if (attr == StdAttr.FPGA_SUPPORTED) {
+			fpga = (Boolean)value;
 		} else {
 			source.getStaticAttributes().setValue(attr, value);
 			if (attr == NAME_ATTR) {

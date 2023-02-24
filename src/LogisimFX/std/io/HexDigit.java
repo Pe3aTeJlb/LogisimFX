@@ -19,9 +19,11 @@ public class HexDigit extends InstanceFactory {
 	public HexDigit() {
 
 		super("Hex Digit Display", LC.createStringBinding("hexDigitComponent"));
-		setAttributes(new Attribute[] { Io.ATTR_ON_COLOR, Io.ATTR_OFF_COLOR,
+		setAttributes(new Attribute[] {
+						StdAttr.FPGA_SUPPORTED,
+				Io.ATTR_ON_COLOR, Io.ATTR_OFF_COLOR,
 					Io.ATTR_BACKGROUND },
-				new Object[] { Color.color(0.941, 0, 0), SevenSegment.DEFAULT_OFF,
+				new Object[] { Boolean.FALSE, Color.color(0.941, 0, 0), SevenSegment.DEFAULT_OFF,
 					Io.DEFAULT_BACKGROUND });
 		setPorts(new Port[] {
 				new Port( 0, 0, Port.INPUT, 4),

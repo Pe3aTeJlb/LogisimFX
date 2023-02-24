@@ -9,6 +9,7 @@ package LogisimFX.std.memory;
 import LogisimFX.data.AbstractAttributeSet;
 import LogisimFX.data.Attribute;
 import LogisimFX.data.BitWidth;
+import LogisimFX.instance.StdAttr;
 import LogisimFX.newgui.FrameManager;
 import LogisimFX.proj.Project;
 
@@ -18,9 +19,7 @@ import java.util.WeakHashMap;
 
 public class RomAttributes extends AbstractAttributeSet {
 
-	private static List<Attribute<?>> ATTRIBUTES = Arrays.asList(new Attribute<?>[] {
-			Mem.ADDR_ATTR, Mem.DATA_ATTR, Rom.CONTENTS_ATTR
-		});
+	private static List<Attribute<?>> ATTRIBUTES = Arrays.asList(StdAttr.FPGA_SUPPORTED, Mem.ADDR_ATTR, Mem.DATA_ATTR, Rom.CONTENTS_ATTR);
 	
 	private static WeakHashMap<MemContents,RomContentsListener> listenerRegistry
 		= new WeakHashMap<MemContents,RomContentsListener>();
@@ -51,6 +50,7 @@ public class RomAttributes extends AbstractAttributeSet {
 
 	}
 
+	private Boolean fpga = Boolean.FALSE;
 	private BitWidth addrBits = BitWidth.create(8);
 	private BitWidth dataBits = BitWidth.create(8);
 	private MemContents contents;
@@ -67,6 +67,7 @@ public class RomAttributes extends AbstractAttributeSet {
 	protected void copyInto(AbstractAttributeSet dest) {
 
 		RomAttributes d = (RomAttributes) dest;
+		d.fpga = fpga;
 		d.addrBits = addrBits;
 		d.dataBits = dataBits;
 		d.contents = contents.clone();
@@ -82,6 +83,7 @@ public class RomAttributes extends AbstractAttributeSet {
 	@SuppressWarnings("unchecked")
 	public <V> V getValue(Attribute<V> attr) {
 
+		if (attr == StdAttr.FPGA_SUPPORTED) return (V) fpga;
 		if (attr == Mem.ADDR_ATTR) return (V) addrBits;
 		if (attr == Mem.DATA_ATTR) return (V) dataBits;
 		if (attr == Rom.CONTENTS_ATTR) return (V) contents;
@@ -100,6 +102,8 @@ public class RomAttributes extends AbstractAttributeSet {
 			contents.setDimensions(addrBits.getWidth(), dataBits.getWidth());
 		} else if (attr == Rom.CONTENTS_ATTR) {
 			contents = (MemContents) value;
+		} else if (attr == StdAttr.FPGA_SUPPORTED){
+			fpga = (Boolean) value;
 		}
 		fireAttributeValueChanged(attr, value);
 

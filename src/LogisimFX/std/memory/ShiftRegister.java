@@ -34,9 +34,11 @@ public class ShiftRegister extends InstanceFactory {
 
 		super("Shift Register", LC.createStringBinding("shiftRegisterComponent"));
 		setAttributes(new Attribute[] {
+				StdAttr.FPGA_SUPPORTED,
 				StdAttr.WIDTH, ATTR_LENGTH, ATTR_LOAD, StdAttr.EDGE_TRIGGER,
 				StdAttr.LABEL, StdAttr.LABEL_FONT
 			}, new Object[] {
+				Boolean.FALSE,
 				BitWidth.ONE, Integer.valueOf(8), Boolean.TRUE,
 				StdAttr.TRIG_RISING, "", StdAttr.DEFAULT_LABEL_FONT
 			});

@@ -23,8 +23,8 @@ public class Ground extends InstanceFactory {
 
 		super("Ground", LC.createStringBinding("groundComponent"));
 		setIcon("ground.gif");
-		setAttributes(new Attribute[] { StdAttr.FACING, StdAttr.WIDTH },
-				new Object[] { Direction.SOUTH, BitWidth.ONE });
+		setAttributes(new Attribute[] { StdAttr.FPGA_SUPPORTED, StdAttr.FACING, StdAttr.WIDTH },
+				new Object[] { Boolean.FALSE, Direction.SOUTH, BitWidth.ONE });
 		setFacingAttribute(StdAttr.FACING);
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
 		setPorts(new Port[] { new Port(0, 0, Port.OUTPUT, StdAttr.WIDTH) });

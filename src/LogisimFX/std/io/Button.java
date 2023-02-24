@@ -24,10 +24,12 @@ public class Button extends InstanceFactory {
 
 		super("Button", LC.createStringBinding("buttonComponent"));
 		setAttributes(new Attribute[] {
+				StdAttr.FPGA_SUPPORTED,
 				StdAttr.FACING, Io.ATTR_COLOR,
 				StdAttr.LABEL, Io.ATTR_LABEL_LOC,
 				StdAttr.LABEL_FONT, Io.ATTR_LABEL_COLOR
 			}, new Object[] {
+				Boolean.FALSE,
 				Direction.EAST, Color.WHITE,
 				"", Io.LABEL_CENTER,
 				StdAttr.DEFAULT_LABEL_FONT, Color.BLACK

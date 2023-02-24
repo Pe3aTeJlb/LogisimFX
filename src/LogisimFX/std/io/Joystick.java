@@ -23,8 +23,8 @@ public class Joystick extends InstanceFactory {
 	public Joystick() {
 
 		super("Joystick", LC.createStringBinding("joystickComponent"));
-		setAttributes(new Attribute[] { ATTR_WIDTH, Io.ATTR_COLOR },
-				new Object[] { BitWidth.create(4), Color.RED });
+		setAttributes(new Attribute[] {StdAttr.FPGA_SUPPORTED, ATTR_WIDTH, Io.ATTR_COLOR },
+				new Object[] { Boolean.FALSE, BitWidth.create(4), Color.RED });
 		setKeyConfigurator(new BitWidthConfigurator(ATTR_WIDTH, 2, 5));
 		setOffsetBounds(Bounds.create(-30, -10, 30, 30));
 		setIcon("joystick.gif");

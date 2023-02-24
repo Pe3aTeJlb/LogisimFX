@@ -27,8 +27,8 @@ public class Multiplier extends InstanceFactory {
 	public Multiplier() {
 
 		super("Multiplier", LC.createStringBinding("multiplierComponent"));
-		setAttributes(new Attribute[] { StdAttr.WIDTH },
-				new Object[] { BitWidth.create(8) });
+		setAttributes(new Attribute[] { StdAttr.FPGA_SUPPORTED, StdAttr.WIDTH },
+				new Object[] { Boolean.FALSE, BitWidth.create(8) });
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
 		setOffsetBounds(Bounds.create(-40, -20, 40, 40));
 		setIcon("multiplier.gif");

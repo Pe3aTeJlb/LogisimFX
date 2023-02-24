@@ -25,8 +25,10 @@ public class PriorityEncoder extends InstanceFactory {
 
 		super("Priority Encoder", LC.createStringBinding("priorityEncoderComponent"));
 		setAttributes(new Attribute[] {
+				StdAttr.FPGA_SUPPORTED,
 				StdAttr.FACING, Plexers.ATTR_SELECT, Plexers.ATTR_DISABLED
 			}, new Object[] {
+				Boolean.FALSE,
 				Direction.EAST, BitWidth.create(3), Plexers.DISABLED_FLOATING
 			});
 		setKeyConfigurator(new BitWidthConfigurator(Plexers.ATTR_SELECT, 1, 5, null));

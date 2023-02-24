@@ -28,9 +28,11 @@ public class Random extends InstanceFactory {
 
 		super("Random", LC.createStringBinding("randomComponent"));
 		setAttributes(new Attribute[] {
+				StdAttr.FPGA_SUPPORTED,
 				StdAttr.WIDTH, ATTR_SEED, StdAttr.EDGE_TRIGGER,
 				StdAttr.LABEL, StdAttr.LABEL_FONT
 			}, new Object[] {
+				Boolean.FALSE,
 				BitWidth.create(8), Integer.valueOf(0), StdAttr.TRIG_RISING,
 				"", StdAttr.DEFAULT_LABEL_FONT
 			});
