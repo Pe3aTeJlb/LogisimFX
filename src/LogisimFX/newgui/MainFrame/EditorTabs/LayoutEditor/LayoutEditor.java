@@ -6,8 +6,12 @@
 package LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor;
 
 import LogisimFX.circuit.Circuit;
+import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.AppearanceEditorEditMenu;
+import LogisimFX.newgui.MainFrame.EditorTabs.CodeEditor.CodeEditorEditMenu;
 import LogisimFX.newgui.MainFrame.LC;
+import LogisimFX.newgui.MainFrame.SystemTabs.AttributesTab.AttributeTable;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutCanvas;
+import LogisimFX.newgui.MainFrame.CustomMenuBar;
 import LogisimFX.newgui.MainFrame.EditorTabs.EditorBase;
 import LogisimFX.proj.Project;
 import javafx.beans.binding.Bindings;
@@ -15,6 +19,7 @@ import javafx.event.Event;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;

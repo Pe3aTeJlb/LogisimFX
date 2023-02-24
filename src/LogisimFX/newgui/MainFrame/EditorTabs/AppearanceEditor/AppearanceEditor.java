@@ -6,8 +6,11 @@
 package LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor;
 
 import LogisimFX.circuit.Circuit;
+import LogisimFX.newgui.MainFrame.EditorTabs.CodeEditor.CodeEditorEditMenu;
 import LogisimFX.newgui.MainFrame.LC;
+import LogisimFX.newgui.MainFrame.SystemTabs.AttributesTab.AttributeTable;
 import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.AppearanceCanvas;
+import LogisimFX.newgui.MainFrame.CustomMenuBar;
 import LogisimFX.newgui.MainFrame.EditorTabs.EditorBase;
 import LogisimFX.proj.Project;
 import javafx.beans.binding.Bindings;
