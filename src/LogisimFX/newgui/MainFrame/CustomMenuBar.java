@@ -13,7 +13,6 @@ import LogisimFX.localization.LC_menu;
 import LogisimFX.newgui.FrameManager;
 import LogisimFX.file.LogisimFile;
 import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.RevertAppearanceAction;
-import LogisimFX.newgui.MainFrame.EditorTabs.CodeEditor.CodeEditor;
 import LogisimFX.prefs.AppPreferences;
 import LogisimFX.proj.Project;
 import LogisimFX.proj.ProjectActions;
@@ -343,12 +342,6 @@ public class CustomMenuBar extends MenuBar {
         EditCircuitAppearance.textProperty().bind(localizer.createStringBinding("projectEditCircuitAppearanceItem"));
         EditCircuitAppearance.setOnAction(event -> proj.getFrameController().addCircAppearanceEditor(proj.getCurrentCircuit()));
 
-        MenuItem EditVerilogModel = new MenuItem();
-        //EditVerilogModel.disableProperty().bind(proj.getFrameController().editorProperty() instanceof CodeEditor);
-        EditVerilogModel.textProperty().bind(localizer.createStringBinding("projectEditVerilogModelItem"));
-        EditVerilogModel.setOnAction(event -> proj.getFrameController().addVerilogModelEditor(proj.getCurrentCircuit()));
-
-
         SeparatorMenuItem sp4 = new SeparatorMenuItem();
 
         MenuItem AnalyzeCircuit = new MenuItem();
@@ -382,7 +375,6 @@ public class CustomMenuBar extends MenuBar {
                 sp3,
                 EditCircuitLayout,
                 EditCircuitAppearance,
-                EditVerilogModel,
                 sp4,
                 AnalyzeCircuit,
                 GetCircuitStatistics,
