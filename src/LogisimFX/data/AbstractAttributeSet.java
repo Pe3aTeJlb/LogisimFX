@@ -74,7 +74,7 @@ public abstract class AbstractAttributeSet implements Cloneable, AttributeSet {
 		throw new UnsupportedOperationException();
 	}
 	public boolean isToSave(Attribute<?> attr) {
-		return true;
+		return attr.isToSave();
 	}
 
 	protected abstract void copyInto(AbstractAttributeSet dest);

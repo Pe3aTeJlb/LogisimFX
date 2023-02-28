@@ -98,9 +98,11 @@ public class AttributeTable extends GridPane
         }
 
         for (Attribute attr: attrModel.getAttributeSet().getAttributes()) {
-            currRow += 1;
-            this.add(new Label(attr.getDisplayName()),0,currRow);
-            this.add(attr.getCell(attrModel.getAttributeSet().getValue(attr)), 1, currRow);
+            if (!attr.isHidden()) {
+                currRow += 1;
+                this.add(new Label(attr.getDisplayName()), 0, currRow);
+                this.add(attr.getCell(attrModel.getAttributeSet().getValue(attr)), 1, currRow);
+            }
         }
 
     }

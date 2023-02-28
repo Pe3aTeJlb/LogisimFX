@@ -165,7 +165,7 @@ public abstract class AbstractCanvasObject
 	}
 	
 	public boolean isToSave(Attribute<?> attr) {
-		return true;
+		return attr.isToSave();
 	}
 
 	public final <V> void setValue(Attribute<V> attr, V value) {

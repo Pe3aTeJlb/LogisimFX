@@ -157,7 +157,7 @@ public class DrawingAttributeSet implements AttributeSet, Cloneable {
 	}
 	
 	public boolean isToSave(Attribute<?> attr) {
-		return true;
+		return attr.isToSave();
 	}
 	
 	public <V> V getValue(Attribute<V> attr) {

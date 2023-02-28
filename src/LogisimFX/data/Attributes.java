@@ -13,14 +13,10 @@ import LogisimFX.newgui.MainFrame.SystemTabs.AttributesTab.AttributeTable;
 import javafx.beans.binding.StringBinding;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 
 public class Attributes {
@@ -145,7 +141,15 @@ public class Attributes {
 	}
 
 	public static Attribute<Boolean> forFPGASupported(String name, StringBinding disp) {
-		return new PrecalculatedBoolean(name, disp);
+		return new NoSaveBooleanAttribute(name, disp);
+	}
+
+	public static Attribute<Integer> integerForNoSave() {
+		return new NoSaveIntegerAttribute();
+	}
+
+	public static Attribute<Integer> booleanForNoSave() {
+		return new NoSaveIntegerAttribute();
 	}
 
 	//Implementation
@@ -570,10 +574,29 @@ public class Attributes {
 
 	}
 
-	private static class PrecalculatedBoolean extends Attribute<Boolean> {
+	private static class NoSaveIntegerAttribute extends Attribute<Integer> {
 
-		private PrecalculatedBoolean(String name, StringBinding disp) {
+		@Override
+		public Integer parse(String value) {
+			return Integer.valueOf(value);
+		}
+
+		@Override
+		public boolean isToSave() {
+			return false;
+		}
+
+	}
+
+	private static class NoSaveBooleanAttribute extends Attribute<Boolean> {
+
+		private NoSaveBooleanAttribute(String name, StringBinding disp) {
 			super(name, disp);
+		}
+
+		@Override
+		public boolean isToSave() {
+			return false;
 		}
 
 		@Override

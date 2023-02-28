@@ -17,10 +17,20 @@ public abstract class Attribute<V> {
 
 	private String name;
 	private StringBinding disp;
+	private boolean hidden;
+
+	public Attribute() {
+		this("dummy", null, true);
+	}
 
 	public Attribute(String name, StringBinding disp) {
+		this(name, disp, false);
+	}
+
+	public Attribute(String name, StringBinding disp, boolean hidden) {
 		this.name = name;
 		this.disp = disp;
+		this.hidden = hidden;
 	}
 
 	@Override
@@ -60,5 +70,13 @@ public abstract class Attribute<V> {
 	}
 
 	public abstract V parse(String value);
+
+	public boolean isHidden() {
+		return hidden;
+	}
+
+	public boolean isToSave() {
+		return true;
+	}
 
 }

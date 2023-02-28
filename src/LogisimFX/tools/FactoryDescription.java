@@ -30,7 +30,6 @@ public class FactoryDescription {
 		Tool[] tools = new Tool[descriptions.length];
 		for (int i = 0; i < tools.length; i++) {
 			tools[i] = new AddTool(base, descriptions[i]);
-			//tools[i].checkForFPGASupport();
 		}
 		return Arrays.asList(tools);
 	}

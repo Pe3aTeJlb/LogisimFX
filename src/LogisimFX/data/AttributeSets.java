@@ -30,7 +30,7 @@ public class AttributeSets {
 		public void setReadOnly(Attribute<?> attr, boolean value) {
 			throw new UnsupportedOperationException();
 		}
-		public boolean isToSave(Attribute<?> attr) { return true; }
+		public boolean isToSave(Attribute<?> attr) { return attr.isToSave(); }
 
 		public <V> V getValue(Attribute<V> attr) { return null; }
 		public <V> void setValue(Attribute<V> attr, V value) { }
