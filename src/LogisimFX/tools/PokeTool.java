@@ -140,6 +140,10 @@ public class PokeTool extends Tool {
 		}
 	}
 
+	public boolean hasPokedComponent(){
+		return pokedComponent != null;
+	}
+
 	@Override
 	public StringBinding getDescription() {
 		return LC.createStringBinding("pokeToolDesc");

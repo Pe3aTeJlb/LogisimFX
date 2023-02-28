@@ -651,7 +651,12 @@ public class LayoutCanvas extends Canvas {
 
         this.setOnMouseDragged(event -> {
 
-            if (event.getButton() == MouseButton.MIDDLE || (event.getButton() == MouseButton.PRIMARY && dragTool instanceof PokeTool)) {
+            if (dragTool != null) {
+                dragTool.mouseDragged(this, getGraphics(), new CME(event));
+            }
+
+            if (event.getButton() == MouseButton.MIDDLE ||
+                    (event.getButton() == MouseButton.PRIMARY && dragTool instanceof PokeTool && !((PokeTool)dragTool).hasPokedComponent())) {
 
                 dx = (event.getX() - dragScreenX);
                 dy = (event.getY() - dragScreenY);
@@ -680,10 +685,6 @@ public class LayoutCanvas extends Canvas {
 
                 requestUpdate = true;
 
-            }
-
-            if (dragTool != null) {
-                dragTool.mouseDragged(this, getGraphics(), new CME(event));
             }
 
         });
