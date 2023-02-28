@@ -13,7 +13,7 @@ public class Main extends Application{
 
     public static final LogisimVersion VERSION = LogisimVersion.get(1, 0, 0);
     public static final String VERSION_NAME = VERSION.toString();
-    public static final int COPYRIGHT_YEAR = 2022;
+    public static final int COPYRIGHT_YEAR = 2023;
 
     private static String[] arguments;
 
