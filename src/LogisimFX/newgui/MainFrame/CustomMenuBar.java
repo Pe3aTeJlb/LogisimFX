@@ -8,6 +8,7 @@ package LogisimFX.newgui.MainFrame;
 import LogisimFX.circuit.Circuit;
 import LogisimFX.circuit.CircuitState;
 import LogisimFX.circuit.Simulator;
+import LogisimFX.fpga.FPGA;
 import LogisimFX.newgui.DialogManager;
 import LogisimFX.localization.LC_menu;
 import LogisimFX.newgui.FrameManager;
@@ -70,6 +71,7 @@ public class CustomMenuBar extends MenuBar {
         initViewMenu();
         initProjectMenu();
         this.getMenus().add(new SimulateMenu());
+        initFPGAMenu();
         this.getMenus().add(new WindowMenu());
         initHelpMenu();
 
@@ -727,6 +729,28 @@ public class CustomMenuBar extends MenuBar {
             }
 
         }
+
+    }
+
+    private void initFPGAMenu(){
+
+        Menu FPGAMenu = new Menu();
+        FPGAMenu.textProperty().bind(localizer.createStringBinding("fpgaMenu"));
+
+        MenuItem exportFiles = new MenuItem();
+        exportFiles.textProperty().bind(localizer.createStringBinding("fpgaExportFilesItem"));
+        exportFiles.setOnAction(event -> FPGA.writeHDL());
+
+        MenuItem generateBit = new MenuItem();
+        generateBit.textProperty().bind(localizer.createStringBinding("fpgaGenerateBitFile"));
+        generateBit.setOnAction(event -> FPGA.writeHDL());
+
+        FPGAMenu.getItems().addAll(
+                exportFiles,
+                generateBit
+        );
+
+        this.getMenus().add(FPGAMenu);
 
     }
 
