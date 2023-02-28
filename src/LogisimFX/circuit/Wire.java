@@ -9,6 +9,7 @@ package LogisimFX.circuit;
 import LogisimFX.comp.Component;
 import LogisimFX.comp.*;
 import LogisimFX.data.*;
+import LogisimFX.instance.StdAttr;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.tools.CustomHandles;
 import LogisimFX.util.Cache;
@@ -39,10 +40,11 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 			= Attributes.forDouble("rotation", LC.createStringBinding("wireRotationAttr"));
 
 	private static final List<Attribute<?>> ATTRIBUTES
-			= Arrays.asList(new Attribute<?>[] { dir_attr, len_attr, rot_attr });
+			= Arrays.asList(new Attribute<?>[] {StdAttr.FPGA_SUPPORTED, dir_attr, len_attr, rot_attr });
 	private static final Cache cache = new Cache();
 
 	public static Wire create(Location e0, Location e1) {
+
 		return (Wire) cache.get(new Wire(e0, e1));
 	}
 
@@ -57,6 +59,7 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 
 	final Location e0;
 	final Location e1;
+	final boolean fpga = true;
 	final boolean is_x_equal;
 	final boolean is_diagonal;
 	final double rot;
@@ -303,6 +306,8 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 			return (V) Integer.valueOf(getLength());
 		} else if (attr == rot_attr) {
 			return (V) Double.valueOf(getRotation());
+		} else if (attr == StdAttr.FPGA_SUPPORTED) {
+			return (V) Boolean.valueOf(fpga);
 		} else {
 			return null;
 		}
