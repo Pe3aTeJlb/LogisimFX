@@ -72,6 +72,11 @@ public class Splitter extends ManagedComponent
 
 		SplitterAttributes attrs = (SplitterAttributes) getAttributeSet();
 		SplitterParameters parms = attrs.getParameters();
+
+		if (attrs.containsAttribute(StdAttr.FPGA_SUPPORTED)) {
+			attrs.setValue(StdAttr.FPGA_SUPPORTED, getFactory().isHDLSupportedComponent(attrs));
+		}
+
 		int fanout = attrs.fanout;
 		byte[] bit_end = attrs.bit_end;
 

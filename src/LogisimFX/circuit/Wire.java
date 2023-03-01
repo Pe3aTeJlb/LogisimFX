@@ -44,7 +44,6 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 	private static final Cache cache = new Cache();
 
 	public static Wire create(Location e0, Location e1) {
-
 		return (Wire) cache.get(new Wire(e0, e1));
 	}
 

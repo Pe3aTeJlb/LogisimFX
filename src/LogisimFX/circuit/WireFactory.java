@@ -12,13 +12,13 @@ import LogisimFX.comp.ComponentDrawContext;
 import LogisimFX.data.AttributeSet;
 import LogisimFX.data.Bounds;
 import LogisimFX.data.Location;
+import LogisimFX.instance.StdAttr;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 
 import javafx.beans.binding.StringBinding;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
-
 
 class WireFactory extends AbstractComponentFactory {
 
@@ -46,6 +46,8 @@ class WireFactory extends AbstractComponentFactory {
 
 	@Override
 	public Component createComponent(Location loc, AttributeSet attrs) {
+
+		attrs.setValue(StdAttr.FPGA_SUPPORTED, Boolean.TRUE);
 
 		Object dir = attrs.getValue(Wire.dir_attr);
 		int len = attrs.getValue(Wire.len_attr).intValue();
@@ -101,6 +103,12 @@ class WireFactory extends AbstractComponentFactory {
 			g.c.strokeLine(x, y, x + Math.round(len * Math.sin(rot)), y + Math.round(len * -Math.cos(rot)));
 		}
 
+	}
+
+
+	@Override
+	public boolean isHDLSupportedComponent(AttributeSet attrs) {
+		return true;
 	}
 
 }

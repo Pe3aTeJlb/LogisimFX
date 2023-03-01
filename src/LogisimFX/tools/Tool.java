@@ -43,7 +43,6 @@ public abstract class Tool implements AttributeDefaultProvider {
 	public Object getDefaultAttributeValue(Attribute<?> attr, LogisimVersion ver) {
 		return null;
 	}
-	public void checkForFPGASupport(){}
 	public void setAttributeSet(AttributeSet attrs) { }
 	public void paintIcon(ComponentDrawContext c, int x, int y) { }
 

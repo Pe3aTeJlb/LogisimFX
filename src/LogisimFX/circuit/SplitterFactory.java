@@ -51,11 +51,7 @@ public class SplitterFactory extends AbstractComponentFactory {
 	@Override
 	public Object getDefaultAttributeValue(Attribute<?> attr, LogisimVersion ver) {
 		if (attr == SplitterAttributes.ATTR_APPEARANCE) {
-			if (ver.compareTo(LogisimVersion.get(2, 6, 3, 202)) < 0) {
-				return SplitterAttributes.APPEAR_LEGACY;
-			} else {
-				return SplitterAttributes.APPEAR_LEFT;
-			}
+			return SplitterAttributes.APPEAR_LEFT;
 		} else if (attr instanceof SplitterAttributes.BitOutAttribute) {
 			SplitterAttributes.BitOutAttribute a;
 			a = (SplitterAttributes.BitOutAttribute) attr;
@@ -118,6 +114,12 @@ public class SplitterFactory extends AbstractComponentFactory {
 				altConfig);
 		}
 		return super.getFeature(key, attrs);
+	}
+
+
+	@Override
+	public boolean isHDLSupportedComponent(AttributeSet attrs) {
+		return true;
 	}
 
 }

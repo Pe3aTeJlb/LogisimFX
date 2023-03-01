@@ -11,6 +11,7 @@ import java.util.List;
 
 import LogisimFX.comp.ComponentFactory;
 import LogisimFX.data.*;
+import LogisimFX.instance.StdAttr;
 
 class FactoryAttributes implements AttributeSet, AttributeListener, Cloneable {
 	private Class<? extends Library> descBase;
@@ -53,6 +54,9 @@ class FactoryAttributes implements AttributeSet, AttributeListener, Cloneable {
 			} else {
 				ret = fact.createAttributeSet();
 				ret.addAttributeListener(this);
+				if (ret.containsAttribute(StdAttr.FPGA_SUPPORTED)) {
+					ret.setValue(StdAttr.FPGA_SUPPORTED, factory.isHDLSupportedComponent(ret));
+				}
 			}
 			baseAttrs = ret;
 		}

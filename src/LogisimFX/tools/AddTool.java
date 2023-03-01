@@ -10,7 +10,6 @@ import LogisimFX.comp.Component;
 import LogisimFX.comp.ComponentDrawContext;
 import LogisimFX.comp.ComponentFactory;
 import LogisimFX.data.*;
-import LogisimFX.instance.StdAttr;
 import LogisimFX.newgui.DialogManager;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutCanvas;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
@@ -77,7 +76,6 @@ public class AddTool extends Tool {
 		this.attrs = new FactoryAttributes(base, description);
 		attrs.addAttributeListener(new MyAttributeListener());
 		this.keyHandlerTried = false;
-		checkForFPGASupport();
 	}
 
 	public AddTool(ComponentFactory source) {
@@ -89,7 +87,6 @@ public class AddTool extends Tool {
 		attrs.addAttributeListener(new MyAttributeListener());
 		Boolean value = (Boolean) source.getFeature(ComponentFactory.SHOULD_SNAP, attrs);
 		this.shouldSnap = value == null ? true : value.booleanValue();
-		checkForFPGASupport();
 	}
 
 	private AddTool(AddTool base) {
@@ -101,7 +98,6 @@ public class AddTool extends Tool {
 		this.shouldSnap = base.shouldSnap;
 		this.attrs = (AttributeSet) base.attrs.clone();
 		attrs.addAttributeListener(new MyAttributeListener());
-		checkForFPGASupport();
 	}
 
 	@Override
@@ -230,13 +226,6 @@ public class AddTool extends Tool {
 	@Override
 	public Object getDefaultAttributeValue(Attribute<?> attr, LogisimVersion ver) {
 		return getFactory().getDefaultAttributeValue(attr, ver);
-	}
-
-	@Override
-	public void checkForFPGASupport() {
-		if (attrs.containsAttribute(StdAttr.FPGA_SUPPORTED)) {
-			attrs.setValue(StdAttr.FPGA_SUPPORTED, getFactory().isHDLSupportedComponent(attrs));
-		}
 	}
 
 	@Override
