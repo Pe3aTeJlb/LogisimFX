@@ -601,6 +601,7 @@ public class Attributes {
 
 		@Override
 		public String toDisplayString(Boolean value) {
+			if (value == null) return LC.get("FPGASupportUndef");
 			if (value){
 				return LC.get("FPGASupportYes");
 			} else {
@@ -619,7 +620,9 @@ public class Attributes {
 			Label cell = new Label();
 			cell.setText(toDisplayString(value));
 			cell.setMaxWidth(Double.MAX_VALUE);
-			if (value) {
+			if (value == null){
+				cell.setStyle("-fx-background-color: gray ;");
+			} else if (value){
 				cell.setStyle("-fx-background-color: green ;");
 			} else {
 				cell.setStyle("-fx-background-color: red ;");
