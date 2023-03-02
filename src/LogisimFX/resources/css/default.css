@@ -19,6 +19,11 @@
 
 /*CodeEditor*/
 
+.styled-text-area {
+    -fx-font-size: 12px;
+    -fx-font-family: 'JetBrains Mono' !important;
+}
+
 .find
 {
     -rtfx-background-color: #F8E71C !important;
