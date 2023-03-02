@@ -38,7 +38,7 @@ public class Instance {
 		this.comp = comp;
 	}
 
-	InstanceComponent getComponent() {
+	public InstanceComponent getComponent() {
 		return comp;
 	}
 

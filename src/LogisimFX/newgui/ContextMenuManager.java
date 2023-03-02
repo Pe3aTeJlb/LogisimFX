@@ -8,6 +8,7 @@ package LogisimFX.newgui;
 import LogisimFX.FileSelector;
 import LogisimFX.circuit.CircuitMutation;
 import LogisimFX.circuit.CircuitState;
+import LogisimFX.circuit.SubcircuitFactory;
 import LogisimFX.comp.Component;
 import LogisimFX.newgui.WaveformFrame.WaveformController;
 import LogisimFX.newgui.WaveformFrame.SelectionItem;
@@ -204,6 +205,17 @@ public class ContextMenuManager {
 
         contextMenu.getItems().addAll(del,attrs);
 
+        if (comp.getFactory().isHDLSupportedComponent(comp.getAttributeSet())
+                && comp.getFactory().isHDLGeneratorAvailable()
+        ){
+
+            MenuItem verilog = new MenuItem("Verilog");
+            verilog.textProperty().bind(LC_tools.getInstance().createStringBinding("compViewVerilogModel"));
+            verilog.setOnAction(event -> proj.getFrameController().addVerilogModelEditor(circ, comp));
+
+            contextMenu.getItems().add(verilog);
+        }
+
         return contextMenu;
 
     }
@@ -273,6 +285,20 @@ public class ContextMenuManager {
             });
 
             menu.getItems().add(item);
+
+            if (instance.getFactory().isHDLSupportedComponent(instance.getAttributeSet())){
+
+                lc.changeBundle("menu");
+
+                MenuItem EditVerilogModel = new MenuItem();
+                EditVerilogModel.textProperty().bind(lc.createStringBinding("projectEditVerilogModelItem"));
+                EditVerilogModel.setOnAction(event ->
+                        proj.getFrameController().addVerilogModelEditor(((SubcircuitFactory)instance.getFactory()).getSubcircuit())
+                );
+
+                menu.getItems().add(EditVerilogModel);
+
+            }
 
         }
 
@@ -386,6 +412,20 @@ public class ContextMenuManager {
                     load,
                     save
             );
+
+            if (instance.getFactory().isHDLSupportedComponent(instance.getAttributeSet())
+                    && instance.getFactory().isHDLGeneratorAvailable()
+            ){
+                lc.changeBundle("tools");
+
+                MenuItem verilog = new MenuItem("Verilog");
+                verilog.textProperty().bind(LC_tools.getInstance().createStringBinding("compViewVerilogModel"));
+                verilog.setOnAction(event -> proj.getFrameController().addVerilogModelEditor(proj.getCurrentCircuit(),instance.getComponent()));
+
+
+                menu.getItems().add(verilog);
+
+            }
 
         }
 

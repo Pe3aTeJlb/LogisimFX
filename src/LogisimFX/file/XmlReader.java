@@ -457,12 +457,19 @@ class XmlReader {
 
 							String circ = tab.getAttribute("circ");
 							String type = tab.getAttribute("type");
+							String loc 	= tab.getAttribute("loc");
+							String comp 	= tab.getAttribute("comp");
 							String selected = tab.getAttribute("selected");
 							boolean isSelected = false;
 							if (selected != null && !selected.equals("")) isSelected = Boolean.parseBoolean(selected);
 
+							Location location = null;
+							if (loc != null && !loc.equals("")) location = Location.parse(loc);
+
 							tabPaneLayoutDescriptor.addTabDescriptor(new FrameLayout.EditorTabDescriptor(
 									circ,
+									comp,
+									location,
 									type,
 									isSelected
 							));
@@ -515,12 +522,19 @@ class XmlReader {
 
 						String circ = tab.getAttribute("circ");
 						String type = tab.getAttribute("type");
+						String loc 	= tab.getAttribute("loc");
+						String comp 	= tab.getAttribute("comp");
 						String selected = tab.getAttribute("selected");
 						boolean isSelected = false;
 						if (selected != null && !selected.equals("")) isSelected = Boolean.parseBoolean(selected);
 
+						Location location = null;
+						if (loc != null && !loc.equals("")) location = Location.parse(loc);
+
 						tabPaneLayoutDescriptor.addTabDescriptor(new FrameLayout.EditorTabDescriptor(
 								circ,
+								comp,
+								location,
 								type,
 								isSelected
 						));

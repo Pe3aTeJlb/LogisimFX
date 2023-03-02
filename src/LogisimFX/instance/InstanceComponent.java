@@ -23,7 +23,7 @@ import LogisimFX.circuit.CircuitState;
 import javafx.beans.binding.StringBinding;
 import javafx.scene.text.Font;
 
-class InstanceComponent implements Component, AttributeListener, ToolTipMaker {
+public class InstanceComponent implements Component, AttributeListener, ToolTipMaker {
 
 	private EventSourceWeakSupport<ComponentListener> listeners;
 	private InstanceFactory factory;
