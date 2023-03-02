@@ -8,6 +8,7 @@ package LogisimFX;
 import LogisimFX.prefs.AppPreferences;
 import docklib.dock.DockPane;
 import javafx.application.Application;
+import javafx.scene.text.Font;
 
 import java.util.Map;
 
@@ -27,6 +28,7 @@ public class StyleManager {
     }
 
     public static void initializeDefaultUserAgentStylesheet(){
+        Font.loadFont(String.valueOf(StyleManager.class.getResource("/LogisimFX/resources/css/JetBrainsMono-Regular.ttf")), 12);
         //firstly init default javafx default stylesheet
         Application.setUserAgentStylesheet(Application.STYLESHEET_MODENA);
         //Set app preference stylesheet
