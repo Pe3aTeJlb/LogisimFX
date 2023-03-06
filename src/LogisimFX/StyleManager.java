@@ -28,7 +28,7 @@ public class StyleManager {
     }
 
     public static void initializeDefaultUserAgentStylesheet(){
-        Font.loadFont(String.valueOf(StyleManager.class.getResource("/LogisimFX/resources/css/JetBrainsMono-Regular.ttf")), 12);
+        Font.loadFont(String.valueOf(StyleManager.class.getResource("/LogisimFX/resources/css/JetBrainsMono-Regular.ttf")), 10);
         //firstly init default javafx default stylesheet
         Application.setUserAgentStylesheet(Application.STYLESHEET_MODENA);
         //Set app preference stylesheet

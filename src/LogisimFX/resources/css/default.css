@@ -20,7 +20,7 @@
 /*CodeEditor*/
 
 .styled-text-area {
-    -fx-font-size: 12px;
+    -fx-font-size: 10px;
     -fx-font-family: 'JetBrains Mono' !important;
 }
 
