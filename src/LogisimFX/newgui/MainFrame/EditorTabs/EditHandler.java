@@ -9,6 +9,9 @@ package LogisimFX.newgui.MainFrame.EditorTabs;
 public abstract class EditHandler {
 
 	public abstract boolean computeEnabled(String from);
+	public abstract void zoomIn();
+	public abstract void zoomOut();
+	public abstract void toDefaultZoom();
 	public abstract void undo();
 	public abstract void redo();
 	public abstract void cut();
@@ -17,11 +20,5 @@ public abstract class EditHandler {
 	public abstract void delete();
 	public abstract void duplicate();
 	public abstract void selectAll();
-	public abstract void raise();
-	public abstract void lower();
-	public abstract void raiseTop();
-	public abstract void lowerBottom();
-	public abstract void addControlPoint();
-	public abstract void removeControlPoint();
 
 }

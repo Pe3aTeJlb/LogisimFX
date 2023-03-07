@@ -6,7 +6,9 @@
 package LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor;
 
 import LogisimFX.circuit.Circuit;
+import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.AppearanceEditHandler;
 import LogisimFX.newgui.MainFrame.EditorTabs.CodeEditor.CodeEditorEditMenu;
+import LogisimFX.newgui.MainFrame.EditorTabs.EditHandler;
 import LogisimFX.newgui.MainFrame.LC;
 import LogisimFX.newgui.MainFrame.SystemTabs.AttributesTab.AttributeTable;
 import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.AppearanceCanvas;
@@ -31,6 +33,7 @@ public class AppearanceEditor extends EditorBase {
     private AppearanceEditorToolBar toolBar;
     private HBox footBar;
 
+    private AppearanceEditHandler editHandler;
     private AppearanceEditorEditMenu menu;
 
     private Circuit circ;
@@ -52,6 +55,7 @@ public class AppearanceEditor extends EditorBase {
 
         VBox.setVgrow(canvasRoot, Priority.ALWAYS);
 
+        editHandler = new AppearanceEditHandler(getAppearanceCanvas());
         menu = new AppearanceEditorEditMenu(this);
         appearanceCanvas.getSelection().addSelectionListener(menu);
 
@@ -83,6 +87,10 @@ public class AppearanceEditor extends EditorBase {
 
     public List<MenuItem> getEditMenuItems(){
         return menu.getMenuItems();
+    }
+
+    public EditHandler getEditHandler(){
+        return editHandler;
     }
 
     public AppearanceCanvas getAppearanceCanvas(){

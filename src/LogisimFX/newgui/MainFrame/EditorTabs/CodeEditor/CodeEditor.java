@@ -7,11 +7,17 @@ package LogisimFX.newgui.MainFrame.EditorTabs.CodeEditor;
 
 import LogisimFX.IconsManager;
 import LogisimFX.circuit.Circuit;
+import LogisimFX.circuit.CircuitHdlGeneratorFactory;
+import LogisimFX.circuit.SubcircuitFactory;
+import LogisimFX.comp.Component;
+import LogisimFX.fpga.hdlgenerator.InlinedHdlGeneratorFactory;
 import LogisimFX.newgui.MainFrame.EditorTabs.CodeEditor.AutoCompletion.AutoCompletion;
 import LogisimFX.newgui.MainFrame.EditorTabs.CodeEditor.AutoCompletion.AutoCompletionWords;
+import LogisimFX.newgui.MainFrame.EditorTabs.EditHandler;
 import LogisimFX.newgui.MainFrame.EditorTabs.EditorBase;
 import LogisimFX.newgui.MainFrame.LC;
 import LogisimFX.proj.Project;
+import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.Event;
@@ -19,14 +25,13 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.transform.Scale;
 import javafx.stage.Popup;
+import org.fxmisc.flowless.ScaledVirtualized;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.LineNumberFactory;
 import org.fxmisc.richtext.StyleClassedTextArea;
@@ -42,12 +47,11 @@ import java.util.regex.Pattern;
 
 public class CodeEditor extends EditorBase {
 
-    private Circuit circ;
-    private String ext;
-
+    private CodeEditHandler editHandler;
     private CodeEditorEditMenu menu;
 
-    private VirtualizedScrollPane virtualizedScrollPane;
+    private VirtualizedScrollPane<?> virtualizedScrollPane;
+    private ScaledVirtualized<StyleClassedTextArea> scaleVirtualized;
     private StyleClassedTextArea codeArea;
 
     private Popup autoCompletionPopup;
@@ -55,6 +59,7 @@ public class CodeEditor extends EditorBase {
 
 
     //Find&Searc bar
+    private InvalidationListener sceneListener;
     private ToolBar codeEditorToolBar;
     private ToolBar findBar, replaceBar;
     private TextField findTxtFld, replaceTxtFld;
@@ -68,15 +73,14 @@ public class CodeEditor extends EditorBase {
     private SimpleStringProperty lineNum, colNum, selectedTextNum;
     private AtomicInteger currWordIndex = new AtomicInteger(0);
 
-    public CodeEditor(Project project, Circuit circ, String ext){
+    private Component comp;
+
+    public CodeEditor(Project project, Circuit circ){
 
         super(project, circ);
 
-        this.circ = circ;
-        this.ext = ext;
-
         initFindReplaceBar();
-        initCodeArea("verilog");
+        initCodeArea();
         initFootBar();
 
         codeEditorToolBar = new CodeEditorToolBar();
@@ -90,24 +94,89 @@ public class CodeEditor extends EditorBase {
             }
         });
 
-        this.recalculateAccelerators();
+        //this.sceneProperty().addListener(sceneListener = (change) -> this.recalculateAccelerators());
+
+        editHandler = new CodeEditHandler(this);
+        menu = new CodeEditorEditMenu(this);
+
+        codeArea.requestFocus();
+
+        StringBuilder builder = new StringBuilder();
+        SubcircuitFactory factory = circ.getSubcircuitFactory();
+        for(String s: ((CircuitHdlGeneratorFactory)factory.getHDLGenerator(circ.getStaticAttributes())).getModuleFunctionality(
+                circ.getNetList(), circ.getStaticAttributes()
+        ).get()) {
+            builder.append(s).append("\n");
+        }
+
+        codeArea.insertText(0, builder.toString());
+
+    }
+
+    public CodeEditor(Project project, Circuit circ, Component comp){
+
+        super(project, circ);
+
+        this.comp = comp;
+
+        initFindReplaceBar();
+        initCodeArea();
+        initFootBar();
+
+        codeEditorToolBar = new CodeEditorToolBar();
+        codeEditorToolBar.setOnMousePressed(event -> Event.fireEvent(this, event.copyFor(event.getSource(), this)));
+
+        this.getChildren().addAll(codeEditorToolBar, findBar, replaceBar, virtualizedScrollPane, footBar);
+
+        proj.getFrameController().editorProperty().addListener((observableValue, editorBase, t1) -> {
+            if (this.isSelected()){
+                recalculateAccelerators();
+            }
+        });
+
+        //this.sceneProperty().addListener(sceneListener = (change) -> this.recalculateAccelerators());
 
         menu = new CodeEditorEditMenu(this);
 
         codeArea.requestFocus();
 
+
+        StringBuilder builder = new StringBuilder();
+
+        if (comp.getFactory().getHDLGenerator(comp.getAttributeSet()).isOnlyInlined()){
+
+            builder.append(
+                    comp.getFactory().getHDLGenerator(
+                            comp.getAttributeSet()).getInlinedCode(
+                            circ.getNetList(), 0L, null, circ.getName()
+                            ).toString()
+            ).append("\n");
+
+            codeArea.setEditable(false);
+
+        } else {
+
+            for(String s: comp.getFactory().getHDLGenerator(comp.getAttributeSet()).getArchitecture(
+                    circ.getNetList(), comp.getAttributeSet(), comp.getFactory().getHDLName(comp.getAttributeSet()))) {
+                builder.append(s).append("\n");
+            }
+
+        }
+
+        codeArea.insertText(0, builder.toString());
+
     }
 
 
-
-    private void initCodeArea(String ext){
+    private void initCodeArea(){
 
         autoCompletionPopup = new Popup();
         autoCompletionPopup.setAutoHide(true);
         autoCompletionPopup.setHideOnEscape(true);
 
         codeArea = new StyleClassedTextArea();
-        virtualizedScrollPane = new VirtualizedScrollPane(codeArea);
+        scaleVirtualized = new ScaledVirtualized<>(codeArea);
+        virtualizedScrollPane = new VirtualizedScrollPane<>(scaleVirtualized);
         IntFunction<Node> noFactory = LineNumberFactory.get(codeArea);
         IntFunction<Node> graphicFactory = line -> {
             HBox lineBox = new HBox(noFactory.apply(line));
@@ -118,11 +187,11 @@ public class CodeEditor extends EditorBase {
         UndoManager<List<PlainTextChange>> um = UndoUtils.plainTextUndoManager(codeArea);
         codeArea.setUndoManager(um);
 
-        new SyntaxHighlighter(codeArea).start(ext);
+        new SyntaxHighlighter(codeArea).start("verilog");
         autoIndent(codeArea);  // auto-indent: insert previous line's indents on enter
-        configureAllShortcuts(ext, codeArea);
+        configureAllShortcuts(codeArea);
         codeArea.richChanges().filter(ch -> !ch.getInserted().equals(ch.getRemoved())).subscribe(x -> {
-            autoCompletion(getCurrWord(codeArea), ext, codeArea);
+            autoCompletion(getCurrWord(codeArea), codeArea);
             //fileModified(tab, codeArea);
         });
 
@@ -132,8 +201,38 @@ public class CodeEditor extends EditorBase {
 
         VBox.setVgrow(virtualizedScrollPane, Priority.ALWAYS);
 
+        codeArea.getStyleClass().add("styled-text-area");
+
+        codeArea.addEventFilter(ScrollEvent.ANY, e -> {
+            if (e.isControlDown()) {
+                zoom(e.getDeltaY());
+            }
+        });
+
     }
 
+    private void zoom(double delta){
+
+        double scaleAmount = 0.9;
+        Scale zoom = scaleVirtualized.getZoom();
+
+        if (delta != 0) {
+
+            double zoomVal =  delta > 0 ? zoom.getY() / scaleAmount : zoom.getY() * scaleAmount;
+            if (zoomVal > 3) zoomVal = 3;
+            if (zoomVal < 0.5) zoomVal = 0.5;
+            zoom.setY(zoomVal);
+            zoom.setX(zoomVal);
+
+        }
+
+    }
+
+
+
+    public Component getComp(){
+        return comp;
+    }
 
 
     private void autoIndent(StyleClassedTextArea area) {
@@ -142,12 +241,12 @@ public class CodeEditor extends EditorBase {
         });
     }
 
-    private void configureAllShortcuts(String fileName, StyleClassedTextArea codeArea) {
+    private void configureAllShortcuts(StyleClassedTextArea codeArea) {
         final KeyCombination showCompletionComb = new KeyCodeCombination(KeyCode.SPACE, KeyCombination.CONTROL_DOWN);
         final KeyCombination ctrlEnterComb = new KeyCodeCombination(KeyCode.ENTER, KeyCombination.CONTROL_DOWN);
         codeArea.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
             if (showCompletionComb.match(event)) {
-                autoCompletion(getCurrWord(codeArea), fileName, codeArea);
+                autoCompletion(getCurrWord(codeArea), codeArea);
             } else if (ctrlEnterComb.match(event)) {
                 codeArea.selectLine();
                 IndexRange range = codeArea.getCaretSelectionBind().getRange();
@@ -175,12 +274,12 @@ public class CodeEditor extends EditorBase {
 
 
 
-    private void autoCompletion(String toSearch, String fileName, StyleClassedTextArea currCodeArea) {
+    private void autoCompletion(String toSearch, StyleClassedTextArea currCodeArea) {
         if (toSearch.length()==0) {
             autoCompletionPopup.hide();
             return;
         }
-        List<String> words = new AutoCompletionWords().getWords(fileName);
+        List<String> words = new AutoCompletionWords().getWords("verilog");
         if (words==null) return;
         AutoCompletion completion = new AutoCompletion(words);
         showCompletion(completion.suggest(toSearch), currCodeArea, toSearch.length());
@@ -454,6 +553,43 @@ public class CodeEditor extends EditorBase {
         codeArea.selectAll();
     }
 
+    void openFindBar(){
+
+        findBar.setVisible(true);
+        replaceBar.setVisible(false);
+        findBar.setMinHeight(-1);
+        findBar.setMaxHeight(-1);
+        replaceBar.setMinHeight(0);
+        replaceBar.setMaxHeight(0);
+
+    }
+
+    void openReplaceBar(){
+
+        findBar.setVisible(true);
+        replaceBar.setVisible(true);
+        findBar.setMinHeight(-1);
+        findBar.setMaxHeight(-1);
+        replaceBar.setMinHeight(-1);
+        replaceBar.setMaxHeight(-1);
+
+    }
+
+
+    public void zoomIn(){
+        zoom(40);
+    }
+
+    public void zoomOut(){
+        zoom(-40);
+    }
+
+    public void toDefaultZoom(){
+        Scale zoom = scaleVirtualized.getZoom();
+        zoom.setY(1);
+        zoom.setX(1);
+    }
+
 
     public StyleClassedTextArea getCodeArea(){
         return codeArea;
@@ -463,39 +599,13 @@ public class CodeEditor extends EditorBase {
         return menu.getMenuItems();
     }
 
+    public EditHandler getEditHandler(){
+        return editHandler;
+    }
+
     public void recalculateAccelerators(){
 
         if (this.getScene() == null) return;
-
-        this.getScene().getAccelerators().put(
-                new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN),
-                new Runnable() {
-                    @FXML
-                    public void run() {
-                        findBar.setVisible(true);
-                        replaceBar.setVisible(false);
-                        findBar.setMinHeight(-1);
-                        findBar.setMaxHeight(-1);
-                        replaceBar.setMinHeight(0);
-                        replaceBar.setMaxHeight(0);
-                    }
-                }
-        );
-
-        this.getScene().getAccelerators().put(
-                new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN),
-                new Runnable() {
-                    @FXML
-                    public void run() {
-                        findBar.setVisible(true);
-                        replaceBar.setVisible(true);
-                        findBar.setMinHeight(-1);
-                        findBar.setMaxHeight(-1);
-                        replaceBar.setMinHeight(-1);
-                        replaceBar.setMaxHeight(-1);
-                    }
-                }
-        );
 
         this.getScene().getAccelerators().put(
                 new KeyCodeCombination(KeyCode.ESCAPE),

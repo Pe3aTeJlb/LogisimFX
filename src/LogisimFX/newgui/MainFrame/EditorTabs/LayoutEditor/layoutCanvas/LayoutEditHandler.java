@@ -52,13 +52,29 @@ public class LayoutEditHandler extends EditHandler {
 	}
 
 	@Override
+	public void zoomIn() {
+		canvas.zoomIn();
+	}
+
+	@Override
+	public void zoomOut() {
+		canvas.zoomOut();
+	}
+
+	@Override
+	public void toDefaultZoom() {
+		canvas.toDefaultZoom();
+	}
+
+
+	@Override
 	public void undo() {
 		canvas.getProject().undoAction();
 	}
 
 	@Override
 	public void redo() {
-
+		canvas.getProject().redoAction();
 	}
 
 	@Override
@@ -120,36 +136,6 @@ public class LayoutEditHandler extends EditHandler {
 		sel.addAll(circ.getWires());
 		sel.addAll(circ.getNonWires());
 
-	}
-	
-	@Override
-	public void raise() {
-		; // not yet supported in layout mode
-	}
-	
-	@Override
-	public void lower() {
-		; // not yet supported in layout mode
-	}
-	
-	@Override
-	public void raiseTop() {
-		; // not yet supported in layout mode
-	}
-	
-	@Override
-	public void lowerBottom() {
-		; // not yet supported in layout mode
-	}
-
-	@Override
-	public void addControlPoint() {
-		; // not yet supported in layout mode
-	}
-	
-	@Override
-	public void removeControlPoint() {
-		; // not yet supported in layout mode
 	}
 	
 	private void selectSelectTool(Project proj) {

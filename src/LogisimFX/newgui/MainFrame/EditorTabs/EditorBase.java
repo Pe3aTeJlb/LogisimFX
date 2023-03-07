@@ -197,6 +197,10 @@ public class EditorBase extends VBox {
         return null;
     }
 
+    public EditHandler getEditHandler(){
+        return null;
+    }
+
     public void terminateListeners(){
         proj.removeProjectListener(projectListener);
     }

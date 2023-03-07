@@ -609,6 +609,55 @@ public class AppearanceCanvas extends Canvas {
     }
 
 
+    public void zoomIn(){
+        zoom(40);
+    }
+
+    public void zoomOut(){
+        zoom(-40);
+    }
+
+    private void zoom(double delta){
+
+        clearRect40K(transform[4], transform[5]);
+
+        double newScale;
+        double oldScale = transform[0];
+        double val = delta*.005;
+
+        newScale = Math.max(oldScale+val, MAX_ZOOM);
+        newScale = Math.min(newScale, MIN_ZOOM);
+
+        int cx = inverseTransformX(width / 2);
+        int cy = inverseTransformY(height / 2);
+
+        transform[0] = newScale;
+        transform[3] = newScale;
+
+        // adjust translation to keep center of screen constant
+        // inverse transform = (x-t4)/t0
+
+        zoom = newScale;
+        zoomProperty.set(Math.round(zoom*100));
+
+        transform[4] = width / 2 - cx * newScale;
+        transform[5] = height / 2 - cy * newScale;
+
+        if(transform[4] > 0) transform[4] = 0;
+        if(transform[5] > 0) transform[5] = 0;
+
+    }
+
+    public void toDefaultZoom(){
+
+        clearRect40K(transform[4], transform[5]);
+
+        transform[0] = transform[3] = 1;
+
+        zoomProperty.set(100);
+
+    }
+
 
     public class CME{
 

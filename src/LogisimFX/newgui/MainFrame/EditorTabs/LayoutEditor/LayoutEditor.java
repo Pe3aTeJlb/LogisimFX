@@ -8,6 +8,8 @@ package LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor;
 import LogisimFX.circuit.Circuit;
 import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.AppearanceEditorEditMenu;
 import LogisimFX.newgui.MainFrame.EditorTabs.CodeEditor.CodeEditorEditMenu;
+import LogisimFX.newgui.MainFrame.EditorTabs.EditHandler;
+import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutEditHandler;
 import LogisimFX.newgui.MainFrame.LC;
 import LogisimFX.newgui.MainFrame.SystemTabs.AttributesTab.AttributeTable;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutCanvas;
@@ -33,6 +35,7 @@ public class LayoutEditor extends EditorBase {
     private LayoutEditorToolBar toolBar;
     private HBox footBar;
 
+    private LayoutEditHandler editHandler;
     private LayoutEditorEditMenu menu;
 
     private Circuit circ;
@@ -54,6 +57,7 @@ public class LayoutEditor extends EditorBase {
 
         VBox.setVgrow(canvasRoot, Priority.ALWAYS);
 
+        editHandler = new LayoutEditHandler(getLayoutCanvas());
         menu = new LayoutEditorEditMenu(this);
         layoutCanvas.getSelection().addListener(menu);
 
@@ -85,6 +89,10 @@ public class LayoutEditor extends EditorBase {
 
     public List<MenuItem> getEditMenuItems(){
         return menu.getMenuItems();
+    }
+
+    public EditHandler getEditHandler(){
+        return editHandler;
     }
 
     public LayoutCanvas getLayoutCanvas(){

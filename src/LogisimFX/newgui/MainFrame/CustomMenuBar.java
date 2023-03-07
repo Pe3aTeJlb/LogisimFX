@@ -14,7 +14,7 @@ import LogisimFX.localization.LC_menu;
 import LogisimFX.newgui.FrameManager;
 import LogisimFX.file.LogisimFile;
 import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.RevertAppearanceAction;
-import LogisimFX.newgui.MainFrame.EditorTabs.CodeEditor.CodeEditor;
+import LogisimFX.newgui.MainFrame.EditorTabs.EditHandler;
 import LogisimFX.prefs.AppPreferences;
 import LogisimFX.proj.Project;
 import LogisimFX.proj.ProjectActions;
@@ -25,6 +25,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -40,6 +42,7 @@ public class CustomMenuBar extends MenuBar {
     private LogisimFile logisimFile;
 
     private EditMenu editMenu;
+    private EditHandler editHandler;
 
     public CustomMenuBar(Stage s, Project project){
 
@@ -52,6 +55,7 @@ public class CustomMenuBar extends MenuBar {
         proj.getFrameController().editorProperty().addListener((observableValue, handler, t1) -> {
             editMenu.getItems().clear();
             editMenu.getItems().addAll(t1.getEditMenuItems());
+            editHandler = t1.getEditHandler();
         });
 
         prefHeight(prefHeight);
@@ -178,6 +182,23 @@ public class CustomMenuBar extends MenuBar {
         Menu View = new Menu();
         View.textProperty().bind(localizer.createStringBinding("viewMenu"));
 
+        MenuItem zoomInItem = new MenuItem();
+        zoomInItem.textProperty().bind(localizer.createStringBinding("viewZoomIn"));
+        zoomInItem.setAccelerator(new KeyCodeCombination(KeyCode.ADD, KeyCombination.CONTROL_DOWN));
+        zoomInItem.setOnAction(event -> editHandler.zoomIn());
+
+        MenuItem zoomOutItem = new MenuItem();
+        zoomOutItem.textProperty().bind(localizer.createStringBinding("viewZoomOut"));
+        zoomOutItem.setAccelerator(new KeyCodeCombination(KeyCode.SUBTRACT, KeyCombination.CONTROL_DOWN));
+        zoomOutItem.setOnAction(event -> editHandler.zoomOut());
+
+        MenuItem zoomDefItem = new MenuItem();
+        zoomDefItem.textProperty().bind(localizer.createStringBinding("viewZoomDef"));
+        zoomDefItem.setAccelerator(new KeyCodeCombination(KeyCode.DIVIDE, KeyCombination.CONTROL_DOWN));
+        zoomDefItem.setOnAction(event -> editHandler.toDefaultZoom());
+
+        SeparatorMenuItem sp1 = new SeparatorMenuItem();
+
         Menu tabMenu = new Menu();
         tabMenu.textProperty().bind(localizer.createStringBinding("viewToolsWindow"));
 
@@ -208,13 +229,19 @@ public class CustomMenuBar extends MenuBar {
                 addWaveformTab
         );
 
+        SeparatorMenuItem sp2 = new SeparatorMenuItem();
 
         MenuItem changeTheme = new MenuItem();
         changeTheme.textProperty().bind(localizer.createStringBinding("viewChangeTheme"));
         changeTheme.setOnAction(event -> new ThemeChangePopup(stage));
 
         View.getItems().addAll(
+                zoomInItem,
+                zoomOutItem,
+                zoomDefItem,
+                sp1,
                 tabMenu,
+                sp2,
                 changeTheme
         );
 

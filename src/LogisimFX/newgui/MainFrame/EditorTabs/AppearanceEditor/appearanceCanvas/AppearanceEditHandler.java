@@ -113,13 +113,28 @@ public class AppearanceEditHandler extends EditHandler {
 	}
 
 	@Override
+	public void zoomIn() {
+		canvas.zoomIn();
+	}
+
+	@Override
+	public void zoomOut() {
+		canvas.zoomOut();
+	}
+
+	@Override
+	public void toDefaultZoom() {
+		canvas.toDefaultZoom();
+	}
+
+	@Override
 	public void undo() {
 		canvas.getProject().undoAction();
 	}
 
 	@Override
 	public void redo() {
-
+		canvas.getProject().redoAction();
 	}
 
 	@Override
@@ -248,8 +263,7 @@ public class AppearanceEditHandler extends EditHandler {
 		sel.setSelected(canvas.getModel().getObjectsFromBottom(), true);
 
 	}
-	
-	@Override
+
 	public void raise() {
 
 		ModelReorderAction act = ModelReorderAction.createRaise(canvas.getModel(),
@@ -259,8 +273,7 @@ public class AppearanceEditHandler extends EditHandler {
 		}
 
 	}
-	
-	@Override
+
 	public void lower() {
 
 		ModelReorderAction act = ModelReorderAction.createLower(canvas.getModel(),
@@ -270,8 +283,7 @@ public class AppearanceEditHandler extends EditHandler {
 		}
 
 	}
-	
-	@Override
+
 	public void raiseTop() {
 
 		ModelReorderAction act = ModelReorderAction.createRaiseTop(canvas.getModel(),
@@ -281,8 +293,7 @@ public class AppearanceEditHandler extends EditHandler {
 		}
 
 	}
-	
-	@Override
+
 	public void lowerBottom() {
 
 		ModelReorderAction act = ModelReorderAction.createLowerBottom(canvas.getModel(),
@@ -293,7 +304,6 @@ public class AppearanceEditHandler extends EditHandler {
 
 	}
 
-	@Override
 	public void addControlPoint() {
 
 		Selection sel = canvas.getSelection();
@@ -301,8 +311,7 @@ public class AppearanceEditHandler extends EditHandler {
 		canvas.doAction(new ModelInsertHandleAction(canvas.getModel(), handle));
 
 	}
-	
-	@Override
+
 	public void removeControlPoint() {
 
 		Selection sel = canvas.getSelection();

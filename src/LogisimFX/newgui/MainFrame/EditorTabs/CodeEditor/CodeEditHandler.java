@@ -32,6 +32,21 @@ public class CodeEditHandler extends EditHandler {
     }
 
     @Override
+    public void zoomIn() {
+        codeEditor.zoomIn();
+    }
+
+    @Override
+    public void zoomOut() {
+        codeEditor.zoomOut();
+    }
+
+    @Override
+    public void toDefaultZoom() {
+        codeEditor.toDefaultZoom();
+    }
+
+    @Override
     public void undo() {
         codeEditor.undo();
     }
@@ -71,34 +86,12 @@ public class CodeEditHandler extends EditHandler {
         codeEditor.selectAll();
     }
 
-    @Override
-    public void raise() {
-
+    public void find(){
+        codeEditor.openFindBar();
     }
 
-    @Override
-    public void lower() {
-
-    }
-
-    @Override
-    public void raiseTop() {
-
-    }
-
-    @Override
-    public void lowerBottom() {
-
-    }
-
-    @Override
-    public void addControlPoint() {
-
-    }
-
-    @Override
-    public void removeControlPoint() {
-
+    public void replace(){
+        codeEditor.openReplaceBar();
     }
 
 }

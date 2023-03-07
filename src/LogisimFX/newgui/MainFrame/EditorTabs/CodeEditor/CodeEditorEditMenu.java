@@ -5,10 +5,8 @@
 
 package LogisimFX.newgui.MainFrame.EditorTabs.CodeEditor;
 
-import LogisimFX.circuit.Circuit;
 import LogisimFX.localization.LC_menu;
 import LogisimFX.localization.Localizer;
-import LogisimFX.proj.Project;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.input.KeyCombination;
@@ -20,13 +18,12 @@ public class CodeEditorEditMenu {
     private static Localizer localizer = LC_menu.getInstance();
 
     private List<MenuItem> menuItems;
-    private CodeEditor codeEditor;
     private CodeEditHandler editHandler;
-    private Project proj;
-    private Circuit circ;
 
     private final MenuItem Undo,
                             Redo,
+                            Find,
+                            Replace,
                             Cut,
                             Copy,
                             Paste,
@@ -36,10 +33,7 @@ public class CodeEditorEditMenu {
 
     public CodeEditorEditMenu(CodeEditor codeEditor){
 
-        this.codeEditor = codeEditor;
-        this.proj = codeEditor.getProj();
-        this.circ = codeEditor.getCirc();
-        editHandler = new CodeEditHandler(codeEditor);
+        editHandler = (CodeEditHandler) codeEditor.getEditHandler();
 
         codeEditor.getCodeArea().getCaretSelectionBind().selectedTextProperty().addListener(change -> calculateEnabled());
 
@@ -48,7 +42,7 @@ public class CodeEditorEditMenu {
         Undo.textProperty().bind(localizer.createStringBinding("editCantUndoItem"));
         Undo.setDisable(editHandler == null || !editHandler.computeEnabled("UNDO"));
         Undo.setOnAction(event -> {
-            codeEditor.undo();
+            editHandler.undo();
             calculateEnabled();
         });
 
@@ -57,10 +51,25 @@ public class CodeEditorEditMenu {
         Redo.textProperty().bind(localizer.createStringBinding("editCantRedoItem"));
         Redo.setDisable(editHandler == null || !editHandler.computeEnabled("REDO"));
         Redo.setOnAction(event -> {
-            codeEditor.redo();
+            editHandler.redo();
             calculateEnabled();
         });
 
+        SeparatorMenuItem sp = new SeparatorMenuItem();
+
+        Find = new MenuItem();
+        Find.setAccelerator(KeyCombination.keyCombination("Ctrl+F"));
+        Find.textProperty().bind(localizer.createStringBinding("editFindItem"));
+        Find.setOnAction(event -> {
+            editHandler.find();
+        });
+
+        Replace = new MenuItem();
+        Replace.setAccelerator(KeyCombination.keyCombination("Ctrl+R"));
+        Replace.textProperty().bind(localizer.createStringBinding("editReplaceItem"));
+        Replace.setOnAction(event -> {
+            editHandler.replace();
+        });
 
         SeparatorMenuItem sp1 = new SeparatorMenuItem();
 
@@ -126,6 +135,9 @@ public class CodeEditorEditMenu {
         menuItems = List.of(
                 Undo,
                 Redo,
+                sp,
+                Find,
+                Replace,
                 sp1,
                 Cut,
                 Copy,

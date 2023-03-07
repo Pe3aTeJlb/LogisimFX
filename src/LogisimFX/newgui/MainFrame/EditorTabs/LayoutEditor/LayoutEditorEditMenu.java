@@ -23,10 +23,7 @@ public class LayoutEditorEditMenu implements Selection.Listener{
     private static Localizer localizer = LC_menu.getInstance();
 
     private List<MenuItem> menuItems;
-    private LayoutEditor layoutEditor;
     private LayoutEditHandler editHandler;
-    private Project proj;
-    private Circuit circ;
 
     private final MenuItem Undo,
                             Redo,
@@ -39,10 +36,7 @@ public class LayoutEditorEditMenu implements Selection.Listener{
 
     public LayoutEditorEditMenu(LayoutEditor layoutEditor){
 
-        this.layoutEditor = layoutEditor;
-        this.proj = layoutEditor.getProj();
-        this.circ = layoutEditor.getCirc();
-        editHandler = new LayoutEditHandler(layoutEditor.getLayoutCanvas());
+        editHandler = (LayoutEditHandler) layoutEditor.getEditHandler();
 
         Undo = new MenuItem();
         Undo.setAccelerator(KeyCombination.keyCombination("Ctrl+Z"));

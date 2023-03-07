@@ -5,14 +5,11 @@
 
 package LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor;
 
-import LogisimFX.circuit.Circuit;
 import LogisimFX.localization.LC_menu;
 import LogisimFX.localization.Localizer;
 import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.AppearanceEditHandler;
 import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.SelectionEvent;
 import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.SelectionListener;
-import LogisimFX.proj.Action;
-import LogisimFX.proj.Project;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.input.KeyCombination;
@@ -24,10 +21,7 @@ public class AppearanceEditorEditMenu implements SelectionListener {
     private static Localizer localizer = LC_menu.getInstance();
 
     private List<MenuItem> menuItems;
-    private AppearanceEditor appearanceEditor;
     private AppearanceEditHandler editHandler;
-    private Project proj;
-    private Circuit circ;
 
     private final MenuItem Undo,
                             Redo,
@@ -46,10 +40,7 @@ public class AppearanceEditorEditMenu implements SelectionListener {
 
     public AppearanceEditorEditMenu(AppearanceEditor appearanceEditor){
 
-        this.appearanceEditor = appearanceEditor;
-        this.proj = appearanceEditor.getProj();
-        this.circ = appearanceEditor.getCirc();
-        editHandler = new AppearanceEditHandler(appearanceEditor.getAppearanceCanvas());
+        editHandler = (AppearanceEditHandler) appearanceEditor.getEditHandler();
 
         Undo = new MenuItem();
         Undo.setAccelerator(KeyCombination.keyCombination("Ctrl+Z"));
