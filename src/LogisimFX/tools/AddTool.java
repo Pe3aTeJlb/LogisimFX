@@ -219,8 +219,10 @@ public class AddTool extends Tool {
 
 	@Override
 	public boolean isAllDefaultValues(AttributeSet attrs, LogisimVersion ver) {
+		return this.attrs == attrs;
+		/*
 		return this.attrs == attrs && attrs instanceof FactoryAttributes
-			&& !((FactoryAttributes) attrs).isFactoryInstantiated();
+			&& !((FactoryAttributes) attrs).isFactoryInstantiated();*/
 	}
 
 	@Override
