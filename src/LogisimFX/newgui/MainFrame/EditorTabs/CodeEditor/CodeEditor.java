@@ -136,6 +136,7 @@ public class CodeEditor extends EditorBase {
 
         //this.sceneProperty().addListener(sceneListener = (change) -> this.recalculateAccelerators());
 
+        editHandler = new CodeEditHandler(this);
         menu = new CodeEditorEditMenu(this);
 
         codeArea.requestFocus();
@@ -392,7 +393,13 @@ public class CodeEditor extends EditorBase {
         findTxtFld.textProperty().addListener(change -> find());
 
         Label findResultLbl = new Label();
-        findResultLbl.textProperty().bind(currFindIndex.concat("/").concat(totalFindIndex));
+        findResultLbl.textProperty().bind(
+                Bindings.concat(
+                        currFindIndex,
+                        "/",
+                        totalFindIndex
+                )
+        );
 
         Button prevWordBt = new Button();
         //prevWordBt.disableProperty().bind(coordinateList.s);
@@ -474,6 +481,7 @@ public class CodeEditor extends EditorBase {
         if (coordinateList.size()==0) return;
         codeArea.replaceText(coordinateList.get(currWordIndex.get()).get(0), coordinateList.get(currWordIndex.get()).get(1), replaceTxtFld.getText());
         highlightText(findTxtFld, coordinateList, currWordIndex, codeArea);
+        totalFindIndex.set(String.valueOf(coordinateList.size()));
     }
 
     private void replaceAll() {
@@ -556,6 +564,8 @@ public class CodeEditor extends EditorBase {
     void openFindBar(){
 
         findBar.setVisible(true);
+        if (codeArea.getSelectedText() != null) findTxtFld.setText(codeArea.getSelectedText());
+
         replaceBar.setVisible(false);
         findBar.setMinHeight(-1);
         findBar.setMaxHeight(-1);
@@ -567,6 +577,10 @@ public class CodeEditor extends EditorBase {
     void openReplaceBar(){
 
         findBar.setVisible(true);
+        if (codeArea.getSelectedText() != null && findTxtFld.getText().equals("")){
+            findTxtFld.setText(codeArea.getSelectedText());
+        }
+
         replaceBar.setVisible(true);
         findBar.setMinHeight(-1);
         findBar.setMaxHeight(-1);
