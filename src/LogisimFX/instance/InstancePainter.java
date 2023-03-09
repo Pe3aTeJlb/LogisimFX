@@ -99,7 +99,7 @@ public class InstancePainter implements InstanceState {
 		return context.getCircuitState().getProject();
 	}
 	
-	public Value getPort(int portIndex) {
+	public Value getPortValue(int portIndex) {
 		InstanceComponent c = comp;
 		CircuitState s = context.getCircuitState();
 		if (c != null && s != null) {

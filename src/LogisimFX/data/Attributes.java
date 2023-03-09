@@ -6,6 +6,7 @@
 
 package LogisimFX.data;
 
+import LogisimFX.fpga.data.ComponentMapInformationContainer;
 import LogisimFX.newgui.DialogManager;
 import LogisimFX.newgui.MainFrame.SystemTabs.AttributesTab.AttrTableSetException;
 import LogisimFX.newgui.MainFrame.SystemTabs.AttributesTab.AttributeTable;
@@ -150,6 +151,10 @@ public class Attributes {
 
 	public static Attribute<Integer> booleanForNoSave() {
 		return new NoSaveIntegerAttribute();
+	}
+
+	public static Attribute<ComponentMapInformationContainer> forMap() {
+		return new IOMapAttribute();
 	}
 
 	//Implementation
@@ -630,6 +635,25 @@ public class Attributes {
 
 			return cell;
 
+		}
+
+	}
+
+	private static class IOMapAttribute extends Attribute<ComponentMapInformationContainer> {
+
+		@Override
+		public ComponentMapInformationContainer parse(String value) {
+			return null;
+		}
+
+		@Override
+		public boolean isToSave() {
+			return false;
+		}
+
+		@Override
+		public boolean isHidden() {
+			return true;
 		}
 
 	}

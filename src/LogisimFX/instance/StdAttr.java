@@ -7,6 +7,7 @@
 package LogisimFX.instance;
 
 import LogisimFX.data.*;
+import LogisimFX.fpga.data.ComponentMapInformationContainer;
 import LogisimFX.std.LC;
 
 import javafx.scene.text.Font;
@@ -16,6 +17,8 @@ import javafx.scene.text.FontWeight;
 public interface StdAttr {
 
 	Attribute<Boolean> FPGA_SUPPORTED = Attributes.forFPGASupported("fpga", LC.createStringBinding("stdFPGASupportAttr"));
+
+	Attribute<ComponentMapInformationContainer> MAPINFO = Attributes.forMap();
 
 	Attribute<Direction> FACING = Attributes.forDirection("facing", LC.createStringBinding("stdFacingAttr"));
 
@@ -44,5 +47,26 @@ public interface StdAttr {
 	Attribute<AttributeOption> ACCESS_MODE =
 			Attributes.forOption("accessmode", LC.createStringBinding("stdAccessModeAttr"),
 					new AttributeOption[]{EDITING_MODE, PROTECTION_MODE});
+
+
+	AttributeOption LABEL_CENTER =
+			new AttributeOption("center", "center", LC.createStringBinding("stdLabelCenter"));
+	Attribute<Object> LABEL_LOC =
+			Attributes.forOption(
+					"labelloc",
+					LC.createStringBinding("stdLabelLocAttr"),
+					new Object[] {
+							LABEL_CENTER, Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST
+					});
+
+	AttributeOption SELECT_BOTTOM_LEFT =
+			new AttributeOption("bl", LC.createStringBinding("stdSelectBottomLeftOption"));
+	AttributeOption SELECT_TOP_RIGHT =
+			new AttributeOption("tr", LC.createStringBinding("stdSelectTopRightOption"));
+	Attribute<AttributeOption> SELECT_LOC =
+			Attributes.forOption(
+					"selloc",
+					LC.createStringBinding("stdSelectLocAttr"),
+					new AttributeOption[] {SELECT_BOTTOM_LEFT, SELECT_TOP_RIGHT});
 
 }

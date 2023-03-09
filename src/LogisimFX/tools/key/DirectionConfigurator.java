@@ -12,10 +12,10 @@ import javafx.scene.input.KeyEvent;
 
 public class DirectionConfigurator implements KeyConfigurator, Cloneable {
 
-	private Attribute<Direction> attr;
+	private Attribute<?> attr;
 	private KeyEvent modsEx;
 	
-	public DirectionConfigurator(Attribute<Direction> attr, KeyEvent modifiersEx) {
+	public DirectionConfigurator(Attribute<?> attr, KeyEvent modifiersEx) {
 		this.attr = attr;
 		this.modsEx = modifiersEx;
 	}

@@ -20,6 +20,9 @@ public class BitWidth implements Comparable<BitWidth> {
 
 	private static BitWidth[] prefab = null;
 
+	public static final int MAXWIDTH = Value.MAX_WIDTH;
+	public static final int MINWIDTH = 1;
+
 	public static class Attribute extends LogisimFX.data.Attribute<BitWidth> {
 		private BitWidth[] choices;
 
