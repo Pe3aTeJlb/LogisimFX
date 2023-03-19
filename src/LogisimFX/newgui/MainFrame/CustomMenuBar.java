@@ -235,6 +235,20 @@ public class CustomMenuBar extends MenuBar {
         changeTheme.textProperty().bind(localizer.createStringBinding("viewChangeTheme"));
         changeTheme.setOnAction(event -> new ThemeChangePopup(stage));
 
+        SeparatorMenuItem sp3 = new SeparatorMenuItem();
+
+        MenuItem systemTabsToDefault = new MenuItem();
+        systemTabsToDefault.textProperty().bind(localizer.createStringBinding("viewResetSystemTabs"));
+        systemTabsToDefault.setOnAction(event -> proj.getFrameController().toDefaultSystemTabs());
+
+        MenuItem workspaceToDefault = new MenuItem();
+        workspaceToDefault.textProperty().bind(localizer.createStringBinding("viewResetWorkspace"));
+        workspaceToDefault.setOnAction(event -> proj.getFrameController().toDefaultWorkspace());
+
+        MenuItem layoutToDefault = new MenuItem();
+        layoutToDefault.textProperty().bind(localizer.createStringBinding("viewResetLayout"));
+        layoutToDefault.setOnAction(event -> proj.getFrameController().toDefaultLayout());
+
         View.getItems().addAll(
                 zoomInItem,
                 zoomOutItem,
@@ -242,7 +256,11 @@ public class CustomMenuBar extends MenuBar {
                 sp1,
                 tabMenu,
                 sp2,
-                changeTheme
+                changeTheme,
+                sp3,
+                systemTabsToDefault,
+                workspaceToDefault,
+                layoutToDefault
         );
 
         this.getMenus().add(View);

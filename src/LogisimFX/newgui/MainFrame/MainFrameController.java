@@ -265,7 +265,7 @@ public class MainFrameController extends AbstractController {
 
         stage.titleProperty().unbind();
 
-        if (!getWorkspace().getTabs().isEmpty()){
+        if (!getWorkspace().getTabs().isEmpty() && tab != null){
             stage.titleProperty().bind(tab.getStageTitle());
         } else {
             stage.setTitle("LogisimFX");
@@ -473,14 +473,7 @@ public class MainFrameController extends AbstractController {
 
         systemTabPaneBottom.setPrefExpandedSize(300);
 
-        DraggableTabPane workspaceTabPane = new DraggableTabPane(stage, TabGroup.WorkSpace);
-        workspaceTabPane.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
-        workspaceTabPane.setSide(Side.TOP);
-        workspaceTabPane.setRotateGraphic(true);
-        //workspaceTabPane.setUnDockable(false);
-        workspaceTabPane.setProject(proj);
-
-        setWorkspace(workspaceTabPane);
+        createWorkspace();
 
         workSpaceDockPane.dock(getWorkspace(), DockAnchor.CENTER);
 
@@ -494,6 +487,101 @@ public class MainFrameController extends AbstractController {
         addVerilogModelEditor(proj.getCurrentCircuit());
 
         selectCircLayoutEditor(proj.getCurrentCircuit());
+
+    }
+
+    public void toDefaultSystemTabs(){
+
+        ArrayList<DraggableTab> tabs = new ArrayList<>(openedSystemTabs.values());
+        for (DraggableTab tab: tabs) {
+            tab.close();
+        }
+        openedSystemTabs.clear();
+
+        tabs = new ArrayList<>(openedWaveforms.keySet());
+        for (DraggableTab tab: tabs){
+            openedWaveforms.get(tab).onClose();
+            tab.close();
+        }
+        openedWaveforms.clear();
+
+        systemTabPaneLeft.setCollapseOnInit(false);
+        systemTabPaneLeft.setPrefExpandedSize(200);
+
+        systemTabPaneBottom.setPrefExpandedSize(300);
+
+        addToolsTab();
+        addSimulationTab();
+        addAttributesTab();
+        addWaveformTab();
+
+    }
+
+    public void toDefaultWorkspace(){
+
+
+
+        ArrayList<DraggableTab> tabs = new ArrayList<>(openedLayoutEditors.values());
+        for (DraggableTab tab: tabs){
+            ((LayoutEditor) tab.getContent()).terminateListeners();
+            if (tab.getTabPane() != null)tab.close();
+        }
+        openedLayoutEditors.clear();
+
+
+        tabs = new ArrayList<>(openedAppearanceEditors.values());
+        for (DraggableTab tab: tabs){
+            ((AppearanceEditor) tab.getContent()).terminateListeners();
+            if (tab.getTabPane() != null)tab.close();
+        }
+        openedAppearanceEditors.clear();
+
+        tabs = new ArrayList<>(openedCircuitVerilogModelEditors.values());
+        for (DraggableTab tab: tabs){
+            ((CodeEditor) tab.getContent()).terminateListeners();
+            if (tab.getTabPane() != null)tab.close();
+        }
+        openedCircuitVerilogModelEditors.clear();
+
+        tabs = new ArrayList<>(openedComponentVerilogModelEditors.values());
+        for (DraggableTab tab: tabs){
+            ((CodeEditor) tab.getContent()).terminateListeners();
+            if (tab.getTabPane() != null)tab.close();
+        }
+        openedComponentVerilogModelEditors.clear();
+
+        createWorkspace();
+
+        workSpaceDockPane.dock(getWorkspace(), DockAnchor.RIGHT);
+
+        addCircAppearanceEditor(proj.getCurrentCircuit());
+
+        addCircLayoutEditor(proj.getCurrentCircuit());
+        addVerilogModelEditor(proj.getCurrentCircuit());
+
+        selectCircLayoutEditor(proj.getCurrentCircuit());
+
+
+    }
+
+    private void drawTree(Node parent, String dash){
+
+        System.out.println(dash + parent);
+        ObservableList<Node> children;
+        if (parent instanceof SplitPane) {
+            SplitPane split = (SplitPane) parent;
+            children = split.getItems();
+            for (Node n: children){
+                drawTree(n, dash+"    ");
+            }
+        }
+
+    }
+
+    public void toDefaultLayout(){
+
+        toDefaultSystemTabs();
+        toDefaultWorkspace();
 
     }
 
@@ -835,9 +923,11 @@ public class MainFrameController extends AbstractController {
 
         tab.setOnIntoSeparatedWindow(event -> {
             layoutEditor.copyAccelerators();
-            lastSelectedTabInWindow.put(tab.getTabPane().getScene().getWindow(), tab);
-            tab.getTabPane().getScene().getWindow().addEventHandler(WindowEvent.WINDOW_HIDING, windowEvent -> lastSelectedTabInWindow.remove(tab.getTabPane().getScene().getWindow()));
-            tab.getTabPane().getScene().getWindow().focusedProperty().addListener(change -> {
+            Window win = tab.getTabPane().getScene().getWindow();
+            lastSelectedTabInWindow.put(win, tab);
+            win.addEventHandler(WindowEvent.WINDOW_HIDING, windowEvent -> lastSelectedTabInWindow.remove(win));
+            win.focusedProperty().addListener(change -> {
+            	if (tab.getTabPane() == null) return;
                 Window tabWin = tab.getTabPane().getScene().getWindow();
                 if (tabWin.isFocused() && lastSelectedTabInWindow.get(tabWin).getTabPane() != null) {
                     lastSelectedTabInWindow.get(tabWin).getTabPane().getSelectionModel().select(lastSelectedTabInWindow.get(tabWin));
@@ -907,9 +997,11 @@ public class MainFrameController extends AbstractController {
 
         tab.setOnIntoSeparatedWindow(event -> {
             appearanceEditor.copyAccelerators();
-            lastSelectedTabInWindow.put(tab.getTabPane().getScene().getWindow(), tab);
-            tab.getTabPane().getScene().getWindow().addEventHandler(WindowEvent.WINDOW_HIDING, windowEvent -> lastSelectedTabInWindow.remove(tab.getTabPane().getScene().getWindow()));
-            tab.getTabPane().getScene().getWindow().focusedProperty().addListener(change -> {
+			Window win = tab.getTabPane().getScene().getWindow();
+            lastSelectedTabInWindow.put(win, tab);
+			win.addEventHandler(WindowEvent.WINDOW_HIDING, windowEvent -> lastSelectedTabInWindow.remove(win));
+			win.focusedProperty().addListener(change -> {
+				if (tab.getTabPane() == null) return;
                 Window tabWin = tab.getTabPane().getScene().getWindow();
                 if (tabWin.isFocused() && lastSelectedTabInWindow.get(tabWin).getTabPane() != null) {
                     lastSelectedTabInWindow.get(tabWin).getTabPane().getSelectionModel().select(lastSelectedTabInWindow.get(tabWin));
@@ -972,9 +1064,11 @@ public class MainFrameController extends AbstractController {
 
         tab.setOnIntoSeparatedWindow(event -> {
             codeEditor.copyAccelerators();
-            lastSelectedTabInWindow.put(tab.getTabPane().getScene().getWindow(), tab);
-            tab.getTabPane().getScene().getWindow().addEventHandler(WindowEvent.WINDOW_HIDING, windowEvent -> lastSelectedTabInWindow.remove(tab.getTabPane().getScene().getWindow()));
-            tab.getTabPane().getScene().getWindow().focusedProperty().addListener(change -> {
+			Window win = tab.getTabPane().getScene().getWindow();
+            lastSelectedTabInWindow.put(win, tab);
+            win.addEventHandler(WindowEvent.WINDOW_HIDING, windowEvent -> lastSelectedTabInWindow.remove(win));
+            win.focusedProperty().addListener(change -> {
+				if (tab.getTabPane() == null) return;
                 Window tabWin = tab.getTabPane().getScene().getWindow();
                 if (tabWin.isFocused() && lastSelectedTabInWindow.get(tabWin).getTabPane() != null) {
                     lastSelectedTabInWindow.get(tabWin).getTabPane().getSelectionModel().select(lastSelectedTabInWindow.get(tabWin));
@@ -1035,9 +1129,11 @@ public class MainFrameController extends AbstractController {
 
         tab.setOnIntoSeparatedWindow(event -> {
             codeEditor.copyAccelerators();
-            lastSelectedTabInWindow.put(tab.getTabPane().getScene().getWindow(), tab);
-            tab.getTabPane().getScene().getWindow().addEventHandler(WindowEvent.WINDOW_HIDING, windowEvent -> lastSelectedTabInWindow.remove(tab.getTabPane().getScene().getWindow()));
-            tab.getTabPane().getScene().getWindow().focusedProperty().addListener(change -> {
+			Window win = tab.getTabPane().getScene().getWindow();
+            lastSelectedTabInWindow.put(win, tab);
+            win.addEventHandler(WindowEvent.WINDOW_HIDING, windowEvent -> lastSelectedTabInWindow.remove(win));
+            win.focusedProperty().addListener(change -> {
+				if (tab.getTabPane() == null) return;
                 Window tabWin = tab.getTabPane().getScene().getWindow();
                 if (tabWin.isFocused() && lastSelectedTabInWindow.get(tabWin).getTabPane() != null) {
                     lastSelectedTabInWindow.get(tabWin).getTabPane().getSelectionModel().select(lastSelectedTabInWindow.get(tabWin));
@@ -1074,6 +1170,19 @@ public class MainFrameController extends AbstractController {
 
 
     private ObjectProperty<DraggableTabPane> currWorkspaceTabPane;
+
+    private void createWorkspace(){
+
+        DraggableTabPane workspaceTabPane = new DraggableTabPane(stage, TabGroup.WorkSpace);
+        workspaceTabPane.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
+        workspaceTabPane.setSide(Side.TOP);
+        workspaceTabPane.setRotateGraphic(true);
+        //workspaceTabPane.setUnDockable(false);
+        workspaceTabPane.setProject(proj);
+
+        setWorkspace(workspaceTabPane);
+
+    }
 
     private void setWorkspace(DraggableTabPane value) {
         if (value != null && workspaceProperty().get() != value) {
