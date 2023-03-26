@@ -6,6 +6,7 @@
 
 package LogisimFX;
 
+import LogisimFX.fpga.Reporter;
 import LogisimFX.localization.LC_start;
 import LogisimFX.localization.Localizer;
 import LogisimFX.newgui.FrameManager;
@@ -74,7 +75,7 @@ public class Startup {
 	 */
 
     // based on command line
-    boolean isTty;
+    public static boolean isTty;
     private File templFile = null;
     private boolean templEmpty = false;
     private boolean templPlain = false;
@@ -116,7 +117,7 @@ public class Startup {
 
         if (isTty) {
             try {
-                TtyAnalyzer.run(this);
+                TtyInterface.run(this);
                 return;
             } catch (Throwable t) {
                 t.printStackTrace();
@@ -303,15 +304,15 @@ public class Startup {
                     for (int j = 0; j < fmts.length; j++) {
                         String fmt = fmts[j].trim();
                         if (fmt.equals("table")) {
-                            ret.ttyFormat |= TtyAnalyzer.FORMAT_TABLE;
+                            ret.ttyFormat |= TtyInterface.FORMAT_TABLE;
                         } else if (fmt.equals("speed")) {
-                            ret.ttyFormat |= TtyAnalyzer.FORMAT_SPEED;
+                            ret.ttyFormat |= TtyInterface.FORMAT_SPEED;
                         } else if (fmt.equals("tty")) {
-                            ret.ttyFormat |= TtyAnalyzer.FORMAT_TTY;
+                            ret.ttyFormat |= TtyInterface.FORMAT_TTY;
                         } else if (fmt.equals("halt")) {
-                            ret.ttyFormat |= TtyAnalyzer.FORMAT_HALT;
+                            ret.ttyFormat |= TtyInterface.FORMAT_HALT;
                         } else if (fmt.equals("stats")) {
-                            ret.ttyFormat |= TtyAnalyzer.FORMAT_STATISTICS;
+                            ret.ttyFormat |= TtyInterface.FORMAT_STATISTICS;
                         } else {
                             System.err.println(lc.get("ttyFormatError")); //OK
                         }
