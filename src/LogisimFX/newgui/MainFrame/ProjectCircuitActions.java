@@ -21,6 +21,7 @@ import LogisimFX.proj.Project;
 import LogisimFX.std.wiring.Pin;
 import LogisimFX.tools.AddTool;
 import LogisimFX.util.StringUtil;
+import LogisimFX.util.SyntaxChecker;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -32,7 +33,9 @@ public class ProjectCircuitActions {
 
 		String circuitName = DialogManager.CreateInputDialog(proj.getLogisimFile());
 
-		if (circuitName != null) {
+		boolean goodName = SyntaxChecker.isVariableNameAcceptable(circuitName, true);
+
+		if (circuitName != null && goodName) {
 			Circuit circuit = new Circuit(circuitName);
 			proj.doAction(LogisimFileActions.addCircuit(circuit));
 			proj.setCurrentCircuit(circuit);
