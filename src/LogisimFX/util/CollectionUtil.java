@@ -66,4 +66,15 @@ public class CollectionUtil {
 			List<? extends E> b) {
 		return new UnionList<E>(a, b);
 	}
+
+	/** Checks if given collection is either null or empty. */
+	public static boolean isNullOrEmpty(Collection<?> collection) {
+		return collection == null || collection.isEmpty();
+	}
+
+	/** Checks if given collection is not empty and not null. */
+	public static boolean isNotEmpty(Collection<?> collection) {
+		return collection != null && !collection.isEmpty();
+	}
+
 }

@@ -86,4 +86,20 @@ public class StringUtil {
 		return ret.toString();
 	}
 
+	/** Checks if given char sequence is either null or empty. */
+	public static boolean isNullOrEmpty(CharSequence str) {
+		return str == null || str.length() == 0;
+	}
+
+	/** Checks if given char sequence is not null and not empty. */
+	public static boolean isNotEmpty(CharSequence seq) {
+		return seq != null && seq.length() != 0;
+	}
+
+	/** Null safe version of `String.startsWith()` */
+	public static boolean startsWith(String seq, String prefix) {
+		return seq != null && seq.startsWith(prefix);
+	}
+
+
 }

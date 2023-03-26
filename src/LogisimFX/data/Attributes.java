@@ -11,6 +11,7 @@ import LogisimFX.newgui.DialogManager;
 import LogisimFX.newgui.MainFrame.SystemTabs.AttributesTab.AttrTableSetException;
 import LogisimFX.newgui.MainFrame.SystemTabs.AttributesTab.AttributeTable;
 
+import LogisimFX.util.SyntaxChecker;
 import javafx.beans.binding.StringBinding;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -93,6 +94,10 @@ public class Attributes {
 		return new StringAttribute(name, disp);
 	}
 
+	public static Attribute<String> forLabel(String name, StringBinding disp) {
+		return new LabelAttribute(name, disp);
+	}
+
 	public static <V> Attribute<V> forOption(String name, StringBinding disp, V[] vals) {
 		return new OptionAttribute<V>(name, disp, vals);
 	}
@@ -163,6 +168,41 @@ public class Attributes {
 
 		private StringAttribute(String name, StringBinding disp) {
 			super(name, disp);
+		}
+
+		@Override
+		public String parse(String value) {
+			return value;
+		}
+
+	}
+
+	private static class LabelAttribute extends Attribute<String> {
+
+		private LabelAttribute(String name, StringBinding disp) {
+			super(name, disp);
+		}
+
+		@Override
+		public Node getCell(String value){
+
+			TextField field = new TextField(toDisplayString(value));
+			field.setMaxWidth(Double.MAX_VALUE);
+			field.setOnAction(event -> {
+				try {
+
+					boolean goodLabel = SyntaxChecker.isVariableNameAcceptable(field.getText(), true);
+
+					if (goodLabel) {
+						AttributeTable.setValueRequested(this, field.getText());
+					}
+
+				} catch (AttrTableSetException e) {
+					e.printStackTrace();
+				}
+			});
+			return field;
+
 		}
 
 		@Override

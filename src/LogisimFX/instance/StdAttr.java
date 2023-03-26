@@ -36,7 +36,7 @@ public interface StdAttr {
 		= Attributes.forOption("trigger", LC.createStringBinding("stdTriggerAttr"),
 			new AttributeOption[] { TRIG_RISING, TRIG_FALLING });
 
-	Attribute<String> LABEL = Attributes.forString("label", LC.createStringBinding("stdLabelAttr"));
+	Attribute<String> LABEL = Attributes.forLabel("label", LC.createStringBinding("stdLabelAttr"));
 
 	Attribute<Font> LABEL_FONT = Attributes.forFont("labelfont", LC.createStringBinding("stdLabelFontAttr"));
 	Font DEFAULT_LABEL_FONT = Font.font("SansSerif", FontWeight.NORMAL, FontPosture.REGULAR, 12);
