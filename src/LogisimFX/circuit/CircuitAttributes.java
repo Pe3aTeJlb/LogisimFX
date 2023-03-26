@@ -18,7 +18,7 @@ import java.util.List;
 
 public class CircuitAttributes extends AbstractAttributeSet {
 	public static final Attribute<String> NAME_ATTR
-		= Attributes.forString("circuit", LC.createStringBinding("circuitName"));
+		= Attributes.forLabel("circuit", LC.createStringBinding("circuitName"));
 	
 	public static final Attribute<Direction> LABEL_LOCATION_ATTR
 		= Attributes.forDirection("labelloc", LC.createStringBinding("circuitLabelLocAttr"));
@@ -120,7 +120,7 @@ public class CircuitAttributes extends AbstractAttributeSet {
 		}
 	}
 	
-	Instance[] getPinInstances() {
+	public Instance[] getPinInstances() {
 		return pinInstances;
 	}
 	
