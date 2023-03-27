@@ -216,8 +216,9 @@ public class Selection {
 		if (state == MOVING_HANDLE) {
 			shape.paint(g, curHandleGesture);
 		} else if (state == TRANSLATING) {
-			g.translate(moveDx, moveDy);
+			g.c.translate(moveDx, moveDy);
 			shape.paint(g, null);
+			g.c.translate(-moveDx, -moveDy);
 		}
 	}
 

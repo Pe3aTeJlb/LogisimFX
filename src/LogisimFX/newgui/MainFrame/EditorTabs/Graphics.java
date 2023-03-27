@@ -152,6 +152,7 @@ public class Graphics{
 
     public void toDefaultFont(){
         if(c.getFont() == DEFAULT_FONT) return;
+        fm = Toolkit.getToolkit().getFontLoader().getFontMetrics(DEFAULT_FONT);
         c.setFont(DEFAULT_FONT);
     }
 
@@ -183,24 +184,6 @@ public class Graphics{
 
 
 
-    public void translate(double x, double y){
-
-        xTranslate += x;
-        yTranslate += y;
-
-        c.translate(x,y);
-
-    }
-
-    public void toDefaultCoords(){
-
-        c.translate(-xTranslate, -yTranslate);
-        xTranslate = 0;
-        yTranslate = 0;
-
-    }
-
-
 
     public void toDefault(){
 
@@ -210,7 +193,6 @@ public class Graphics{
         toDefaultColor();
 
         toDefaultRotation();
-        toDefaultCoords();
 
     }
 

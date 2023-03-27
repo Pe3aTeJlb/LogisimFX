@@ -129,6 +129,7 @@ public class ComponentDrawContext {
 		Bounds bds = comp.getBounds();
 		g.c.strokeRect(bds.getX(), bds.getY(),
 				bds.getWidth(), bds.getHeight());
+		g.toDefault();
 
 	}
 
@@ -139,13 +140,11 @@ public class ComponentDrawContext {
 	public void drawRectangle(Component comp, String label) {
 
 		Bounds bds = comp.getBounds(g);
-		drawRectangle(bds.getX(), bds.getY(), bds.getWidth(),
-			bds.getHeight(), label);
+		drawRectangle(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight(), label);
 
 	}
 
-	public void drawRectangle(int x, int y,
-			int width, int height, String label) {
+	public void drawRectangle(int x, int y, int width, int height, String label) {
 
 		g.setLineWidth(2);
 		g.c.strokeRect(x, y, width, height);
@@ -160,6 +159,7 @@ public class ComponentDrawContext {
 					y + (height + fm.getAscent()) / 2 - 1);
 			}
 		}
+		g.toDefault();
 
 	}
 
@@ -188,6 +188,7 @@ public class ComponentDrawContext {
 					y + (height + fm.getAscent()) / 2 - 1);
 			}
 		}
+		g.toDefault();
 
 	}
 
@@ -195,6 +196,7 @@ public class ComponentDrawContext {
 
 		g.setLineWidth(2);
 		g.c.strokeOval(x - 4, y - 4, 9, 9);
+		g.toDefault();
 
 	}
 
@@ -228,6 +230,7 @@ public class ComponentDrawContext {
 			GraphicsUtil.drawText(g, label, x, y + 3,
 					GraphicsUtil.H_CENTER, GraphicsUtil.V_TOP);
 		}
+		g.toDefault();
 
 	}
 
@@ -235,7 +238,7 @@ public class ComponentDrawContext {
 
 		EndData e = comp.getEnd(i);
 		Location pt = e.getLocation();
-		Color curColor = g.getColor();
+
 		if (getShowState()) {
 			CircuitState state = getCircuitState();
 			g.setColor(state.getValueColor(pt));
@@ -244,13 +247,13 @@ public class ComponentDrawContext {
 		}
 		g.c.fillOval(pt.getX() - PIN_OFFS, pt.getY() - PIN_OFFS, PIN_RAD, PIN_RAD);
 
-		g.setColor(curColor);
+		g.toDefault();
 
 	}
 
 	public void drawPins(Component comp) {
 
-		Color curColor = g.getColor();
+
 		for (EndData e : comp.getEnds()) {
 			Location pt = e.getLocation();
 			if (getShowState()) {
@@ -262,14 +265,13 @@ public class ComponentDrawContext {
 			g.c.fillOval(pt.getX() - PIN_OFFS, pt.getY() - PIN_OFFS, PIN_RAD, PIN_RAD);
 		}
 
-		g.setColor(curColor);
+		g.toDefault();
 
 	}
 
-	public void drawClock(Component comp, int i,
-                          Direction dir) {
+	public void drawClock(Component comp, int i, Direction dir) {
 
-		Color curColor = g.getColor();
+
 		g.setColor(Color.BLACK);
 		g.setLineWidth(2);
 
@@ -293,7 +295,7 @@ public class ComponentDrawContext {
 			g.c.strokeLine(x - 1, y + CLK_SZD, x - CLK_SZ, y);
 		}
 
-		g.setColor(curColor);
+		g.toDefault();
 
 	}
 
@@ -321,6 +323,7 @@ public class ComponentDrawContext {
 		g.c.fillRect(x - 3, y - 3, 7, 7);
 		g.setColor(Color.BLACK);
 		g.c.strokeRect(x - 3, y - 3, 7, 7);
+		g.toDefault();
 
 	}
 
