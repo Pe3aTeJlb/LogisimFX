@@ -301,7 +301,7 @@ public class SelectionActions {
 					}
 					dropped.add(compFactory.getDisplayName().getValue());
 				} else {
-					String msg = LC.get("pasteCloneQuery",
+					String msg = LC.getFormatted("pasteCloneQuery",
 							compFactory.getName());
 					Object[] opts = { LC.get("pasteCloneReplace"),
 							LC.get("pasteCloneIgnore"),

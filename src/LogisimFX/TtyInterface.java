@@ -66,7 +66,7 @@ public class TtyInterface {
 		try {
 			file = loader.openLogisimFile(fileToOpen, args.getSubstitutions());
 		} catch (LoadFailedException e) {
-			System.err.println(lc.get("ttyLoadError", fileToOpen.getName())); //OK
+			System.err.println(lc.getFormatted("ttyLoadError", fileToOpen.getName())); //OK
 			System.exit(-1);
 			return;
 		}
