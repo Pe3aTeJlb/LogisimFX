@@ -140,15 +140,15 @@ public class XmlCircuitReader extends CircuitTransaction {
 		String libName = elt.getAttribute("lib");
 		Library lib = reader.findLibrary(libName);
 		if (lib == null) {
-			throw new XmlReaderException(LC.get("compUnknownError", "no-lib"));
+			throw new XmlReaderException(LC.getFormatted("compUnknownError", "no-lib"));
 		}
 
 		Tool tool = lib.getTool(name);
 		if (tool == null || !(tool instanceof AddTool)) {
 			if (libName == null || libName.equals("")) {
-				throw new XmlReaderException(LC.get("compUnknownError", name));
+				throw new XmlReaderException(LC.getFormatted("compUnknownError", name));
 			} else {
-				throw new XmlReaderException(LC.get("compAbsentError", name, libName));
+				throw new XmlReaderException(LC.getFormatted("compAbsentError", name, libName));
 			}
 		}
 		ComponentFactory source = ((AddTool) tool).getFactory();

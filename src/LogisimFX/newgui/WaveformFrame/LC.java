@@ -18,8 +18,8 @@ public class LC {
 
     private static Localizer lc = LC_log.getInstance();
 
-    public static StringBinding createStringBinding(final String key, Object... args) {
-        return lc.createStringBinding(key, args);
+    public static StringBinding createStringBinding(final String key) {
+        return lc.createStringBinding(key);
     }
 
     public static StringBinding createComplexStringBinding(final String key, String... strings) {
@@ -30,8 +30,8 @@ public class LC {
         return lc.castToBind(string);
     }
 
-    public static String get(final String key, final Object... args) {
-        return lc.get(key, args);
+    public static String get(final String key) {
+        return lc.get(key);
     }
 
     public static String getFormatted(final String key, String... strings) {

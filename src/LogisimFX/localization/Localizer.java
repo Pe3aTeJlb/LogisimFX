@@ -46,8 +46,8 @@ public class Localizer implements LocaleListener{
     }
 
 
-    public StringBinding createStringBinding(final String key, Object... args) {
-        return Bindings.createStringBinding(() -> get(key, args), LocaleManager.localeProperty());
+    public StringBinding createStringBinding(final String key) {
+        return Bindings.createStringBinding(() -> get(key), LocaleManager.localeProperty());
     }
 
     public StringBinding createComplexStringBinding(final String key, String... strings) {
@@ -58,7 +58,7 @@ public class Localizer implements LocaleListener{
         return Bindings.createStringBinding(() -> string);
     }
 
-    public String get(final String key, final Object... args) {
+    public String get(final String key) {
 
         //System.out.println("from "+this.hashCode()+" find key " + key + " in " + bundle.getBaseBundleName() + " " + bundleName);
 
