@@ -52,6 +52,8 @@ public class SplitterFactory extends AbstractComponentFactory {
 	public Object getDefaultAttributeValue(Attribute<?> attr, LogisimVersion ver) {
 		if (attr == SplitterAttributes.ATTR_APPEARANCE) {
 			return SplitterAttributes.APPEAR_LEFT;
+		} else if (attr == StdAttr.FPGA_SUPPORTED){
+			return this.isHDLSupportedComponent(null);
 		} else if (attr instanceof SplitterAttributes.BitOutAttribute) {
 			SplitterAttributes.BitOutAttribute a;
 			a = (SplitterAttributes.BitOutAttribute) attr;
