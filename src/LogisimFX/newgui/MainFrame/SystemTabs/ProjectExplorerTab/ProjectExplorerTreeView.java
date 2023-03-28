@@ -23,6 +23,7 @@ import LogisimFX.tools.Library;
 import LogisimFX.tools.Tool;
 import javafx.application.Platform;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 
 import java.beans.PropertyChangeEvent;
@@ -207,7 +208,9 @@ public class ProjectExplorerTreeView extends AbstractTreeExplorer<Object> {
                             tip.textProperty().bind(((Tool) item).getDescription());
                             setTooltip(tip);
 
-                            setGraphic(((Tool) item).getIcon());
+                            setGraphic(new ImageView(((Tool) item).getIcon().getImage()));
+                            //setGraphic(((Tool) item).getIcon());
+
 
                             if (item instanceof AddTool) {
 

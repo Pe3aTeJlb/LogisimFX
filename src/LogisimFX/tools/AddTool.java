@@ -197,7 +197,7 @@ public class AddTool extends Tool {
 			return description.getIcon();
 		}
 
-		ComponentFactory source = getFactory(false);
+		ComponentFactory source = getFactory();
 
 		if (source != null) {
 			return source.getIcon();
