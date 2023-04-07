@@ -113,7 +113,7 @@ class FactoryAttributes implements AttributeSet, AttributeListener, Cloneable {
 		for (AttributeListener l : listeners) {
 			if (e == null) {
 				e = new AttributeEvent(this, baseEvent.getAttribute(),
-						baseEvent.getValue());
+						baseEvent.getValue(), baseEvent.getOldValue());
 			}
 			l.attributeListChanged(e);
 		}
@@ -124,7 +124,7 @@ class FactoryAttributes implements AttributeSet, AttributeListener, Cloneable {
 		for (AttributeListener l : listeners) {
 			if (e == null) {
 				e = new AttributeEvent(this, baseEvent.getAttribute(),
-						baseEvent.getValue());
+						baseEvent.getValue(), baseEvent.getOldValue());
 			}
 			l.attributeValueChanged(e);
 		}

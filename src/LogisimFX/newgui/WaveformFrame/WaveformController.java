@@ -1697,7 +1697,7 @@ public class WaveformController extends AbstractController {
 
         });
 
-        DialogManager.CreateProgressDialog(exportPngTask);
+        DialogManager.createProgressDialog(exportPngTask);
 
         if(dest != null) {
 
@@ -1807,7 +1807,7 @@ public class WaveformController extends AbstractController {
                         ImageIO.write(bufferedImage, "PNG", where);
 
                     } catch (Exception e) {
-                        DialogManager.CreateErrorDialog(LogisimFX.newgui.ExportImageFrame.LC.get("couldNotCreateFile"), LogisimFX.newgui.ExportImageFrame.LC.get("couldNotCreateFile"));
+                        DialogManager.createErrorDialog(LogisimFX.newgui.ExportImageFrame.LC.get("couldNotCreateFile"), LogisimFX.newgui.ExportImageFrame.LC.get("couldNotCreateFile"));
                     }
 
                 } catch (Exception e) {
@@ -1831,7 +1831,7 @@ public class WaveformController extends AbstractController {
 
         if (file != null && file.exists() && (!file.canWrite() || file.isDirectory())) {
 
-            DialogManager.CreateErrorDialog(LC.get("fileCannotWriteTitle"),
+            DialogManager.createErrorDialog(LC.get("fileCannotWriteTitle"),
                     LC.getFormatted("fileCannotWriteMessage", file.getName()));
 
             return;

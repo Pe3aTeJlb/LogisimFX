@@ -10,6 +10,7 @@ import LogisimFX.circuit.Analyze;
 import LogisimFX.circuit.AnalyzeException;
 import LogisimFX.circuit.Circuit;
 import LogisimFX.file.LogisimFileActions;
+import LogisimFX.fpga.designrulecheck.CorrectLabel;
 import LogisimFX.instance.Instance;
 import LogisimFX.instance.StdAttr;
 import LogisimFX.localization.LC_menu;
@@ -20,6 +21,7 @@ import LogisimFX.newgui.FrameManager;
 import LogisimFX.proj.Project;
 import LogisimFX.std.wiring.Pin;
 import LogisimFX.tools.AddTool;
+import LogisimFX.tools.Library;
 import LogisimFX.util.StringUtil;
 import LogisimFX.util.SyntaxChecker;
 
@@ -31,17 +33,49 @@ public class ProjectCircuitActions {
 
 	public static void doAddCircuit(Project proj) {
 
-		String circuitName = DialogManager.CreateInputDialog(proj.getLogisimFile());
+		String circuitName = DialogManager.createInputDialog(proj.getLogisimFile());
 
-		boolean goodName = SyntaxChecker.isVariableNameAcceptable(circuitName, true);
+		String error = null;
 
-		if (circuitName != null && goodName) {
+		if (circuitName == null || circuitName.isEmpty()) {
+			error = LC_menu.getInstance().get("circuitNameMissingError");
+		} else if (CorrectLabel.isKeyword(circuitName, false)) {
+			error = circuitName + "\": " + LC_menu.getInstance().get("circuitNameKeyword");
+		} else if (!SyntaxChecker.isVariableNameAcceptable(circuitName, false)) {
+			error = circuitName + "\": " + LC_menu.getInstance().get("circuitNameInvalidName");
+		} else if (nameIsInUse(proj, circuitName)) {
+			error = circuitName + "\": " + LC_menu.getInstance().get("circuitNameExists");
+		}
+		if (error != null) {
+			DialogManager.createErrorDialog("Error", error);
+		} else {
 			Circuit circuit = new Circuit(circuitName);
 			proj.doAction(LogisimFileActions.addCircuit(circuit));
 			proj.setCurrentCircuit(circuit);
 		}
 
 	}
+
+	private static boolean nameIsInUse(Project proj, String name) {
+		for (Library mylib : proj.getLogisimFile().getLibraries()) {
+			if (nameIsInLibraries(mylib, name)) return true;
+		}
+		for (AddTool mytool : proj.getLogisimFile().getTools()) {
+			if (name.equalsIgnoreCase(mytool.getName())) return true;
+		}
+		return false;
+	}
+
+	private static boolean nameIsInLibraries(Library lib, String name) {
+		for (final var myLib : lib.getLibraries()) {
+			if (nameIsInLibraries(myLib, name)) return true;
+		}
+		for (final var myTool : lib.getTools()) {
+			if (name.equalsIgnoreCase(myTool.getName())) return true;
+		}
+		return false;
+	}
+
 
 	public static void doMoveCircuit(Project proj, Circuit cur, int delta) {
 		AddTool tool = proj.getLogisimFile().getAddTool(cur);
@@ -62,9 +96,9 @@ public class ProjectCircuitActions {
 	public static void doRemoveCircuit(Project proj, Circuit circuit) {
 
 		if (proj.getLogisimFile().getTools().size() == 1) {
-			DialogManager.CreateErrorDialog(LC_menu.getInstance().get("circuitRemoveErrorTitle"),LC_menu.getInstance().get("circuitRemoveLastError"));
+			DialogManager.createErrorDialog(LC_menu.getInstance().get("circuitRemoveErrorTitle"),LC_menu.getInstance().get("circuitRemoveLastError"));
 		} else if (!proj.getDependencies().canRemove(circuit)) {
-			DialogManager.CreateErrorDialog(LC_menu.getInstance().get("circuitRemoveErrorTitle"),LC_menu.getInstance().get("circuitRemoveUsedError"));
+			DialogManager.createErrorDialog(LC_menu.getInstance().get("circuitRemoveErrorTitle"),LC_menu.getInstance().get("circuitRemoveUsedError"));
 		} else {
 			proj.doAction(LogisimFileActions.removeCircuit(circuit));
 		}
@@ -113,7 +147,7 @@ public class ProjectCircuitActions {
 			Analyze.computeExpression(model, circuit, pinNames);
 			return;
 		} catch (AnalyzeException ex) {
-			DialogManager.CreateScrollError(LC_menu.getInstance().get("analyzeNoExpressionTitle"),ex.getMessage());
+			DialogManager.createScrollError(LC_menu.getInstance().get("analyzeNoExpressionTitle"),ex.getMessage());
 		}
 
 		Analyze.computeTable(model, proj, circuit, pinNames);
@@ -121,7 +155,7 @@ public class ProjectCircuitActions {
 	}
 		
 	private static void analyzeError(Project proj, String message) {
-		DialogManager.CreateErrorDialog(LC_menu.getInstance().get("analyzeErrorTitle"), message);
+		DialogManager.createErrorDialog(LC_menu.getInstance().get("analyzeErrorTitle"), message);
 	}
 
 }

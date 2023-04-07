@@ -201,7 +201,7 @@ public class Probe extends InstanceFactory {
 
 		StateData oldData = (StateData) state.getData();
 		Value oldValue = oldData == null ? Value.NIL : oldData.curValue;
-		Value newValue = state.getPort(0);
+		Value newValue = state.getPortValue(0);
 		boolean same = oldValue == null ? newValue == null : oldValue.equals(newValue);
 		if (!same) {
 			if (oldData == null) {
@@ -387,6 +387,12 @@ public class Probe extends InstanceFactory {
 		instance.setTextField(StdAttr.LABEL, StdAttr.LABEL_FONT,
 				x, y, halign, valign);
 
+	}
+
+
+	@Override
+	public boolean isHDLSupportedComponent(AttributeSet attrs) {
+		return true;
 	}
 
 }

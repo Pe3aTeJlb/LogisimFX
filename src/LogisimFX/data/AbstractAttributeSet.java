@@ -36,9 +36,9 @@ public abstract class AbstractAttributeSet implements Cloneable, AttributeSet {
 		listeners.remove(l);
 		if (listeners.isEmpty()) listeners = null;
 	}
-	protected <V> void fireAttributeValueChanged(Attribute<? super V> attr, V value) {
+	protected <V> void fireAttributeValueChanged(Attribute<? super V> attr, V value, V oldValue) {
 		if (listeners != null) {
-			AttributeEvent event = new AttributeEvent(this, attr, value);
+			AttributeEvent event = new AttributeEvent(this, attr, value, oldValue);
 			List<AttributeListener> ls = new ArrayList<AttributeListener>(listeners);
 			for (AttributeListener l : ls) {
 				l.attributeValueChanged(event);

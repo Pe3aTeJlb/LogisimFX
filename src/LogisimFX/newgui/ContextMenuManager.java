@@ -53,7 +53,7 @@ public class ContextMenuManager {
         AddCircuit.textProperty().bind(lc.createStringBinding("projectAddCircuitItem"));
         AddCircuit.setOnAction(event -> {
 
-            String circuitName = DialogManager.CreateInputDialog(proj.getLogisimFile());
+            String circuitName = DialogManager.createInputDialog(proj.getLogisimFile());
 
             if (circuitName != null) {
                 Circuit circuit = new Circuit(circuitName);
@@ -192,8 +192,8 @@ public class ContextMenuManager {
             Circuit c = proj.getCurrentCircuit();
             CircuitMutation xn = new CircuitMutation(c);
             xn.remove(comp);
-            proj.doAction(xn.toAction(LC_tools.getInstance().createStringBinding("removeComponentAction",
-                    comp.getFactory().getDisplayGetter())));
+            proj.doAction(xn.toAction(LC_tools.getInstance().createComplexStringBinding("removeComponentAction",
+                    comp.getFactory().getDisplayGetter().getValue())));
 
         });
 
@@ -206,7 +206,7 @@ public class ContextMenuManager {
         contextMenu.getItems().addAll(del,attrs);
 
         if (comp.getFactory().isHDLSupportedComponent(comp.getAttributeSet())
-                && comp.getFactory().isHDLGeneratorAvailable()
+                && comp.getFactory().isHDLGeneratorAvailable() && !comp.getFactory().getHDLGenerator(comp.getAttributeSet()).isOnlyInlined()
         ){
 
             MenuItem verilog = new MenuItem("Verilog");
@@ -286,7 +286,9 @@ public class ContextMenuManager {
 
             menu.getItems().add(item);
 
-            if (instance.getFactory().isHDLSupportedComponent(instance.getAttributeSet())){
+            if (instance.getFactory().isHDLSupportedComponent(instance.getAttributeSet()) &&
+                    !instance.getFactory().getHDLGenerator(instance.getAttributeSet()).isOnlyInlined()
+            ){
 
                 lc.changeBundle("menu");
 
@@ -354,7 +356,7 @@ public class ContextMenuManager {
                 boolean isAllZero = s.getContents().isClear();
                 if (isAllZero) return;
 
-                int choice = DialogManager.CreateConfirmWarningDialog(
+                int choice = DialogManager.createConfirmWarningDialog(
                         LC_std.getInstance().get("ramConfirmClearTitle"),
                         LC_std.getInstance().get("ramConfirmClearMsg")
                 );
@@ -377,7 +379,7 @@ public class ContextMenuManager {
                 try {
                     if(f!=null)factory.loadImage(circState.getInstanceState(instance), f);
                 } catch (IOException e) {
-                    DialogManager.CreateErrorDialog(LC_std.getInstance().get("ramLoadErrorTitle"),e.getMessage());
+                    DialogManager.createErrorDialog(LC_std.getInstance().get("ramLoadErrorTitle"),e.getMessage());
                 }
 
 
@@ -401,7 +403,7 @@ public class ContextMenuManager {
                     }
 
                 } catch (IOException e) {
-                    DialogManager.CreateErrorDialog(LC_std.getInstance().get("ramSaveErrorTitle"),e.getMessage());
+                    DialogManager.createErrorDialog(LC_std.getInstance().get("ramSaveErrorTitle"),e.getMessage());
                 }
 
             });
@@ -414,7 +416,7 @@ public class ContextMenuManager {
             );
 
             if (instance.getFactory().isHDLSupportedComponent(instance.getAttributeSet())
-                    && instance.getFactory().isHDLGeneratorAvailable()
+                    && instance.getFactory().isHDLGeneratorAvailable() && !instance.getFactory().getHDLGenerator(instance.getAttributeSet()).isOnlyInlined()
             ){
                 lc.changeBundle("tools");
 

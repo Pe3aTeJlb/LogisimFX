@@ -8,7 +8,6 @@ package LogisimFX.newgui.MainFrame;
 import LogisimFX.circuit.Circuit;
 import LogisimFX.circuit.CircuitState;
 import LogisimFX.circuit.Simulator;
-import LogisimFX.fpga.FPGA;
 import LogisimFX.newgui.DialogManager;
 import LogisimFX.localization.LC_menu;
 import LogisimFX.newgui.FrameManager;
@@ -546,7 +545,7 @@ public class CustomMenuBar extends MenuBar {
 
                 if(event.getSource() != event.getTarget()) return;
 
-                String ticks = DialogManager.CreateInputDialog(localizer.get("simulateInputTicksCountHeader"),
+                String ticks = DialogManager.createInputDialog(localizer.get("simulateInputTicksCountHeader"),
                         localizer.get("simulateInputTicksCountBody"),
                         "^([1-9]{0,1}[0-9]{0,2}$){0,1}");
 
@@ -782,17 +781,55 @@ public class CustomMenuBar extends MenuBar {
         Menu FPGAMenu = new Menu();
         FPGAMenu.textProperty().bind(localizer.createStringBinding("fpgaMenu"));
 
+        MenuItem annotate = new MenuItem();
+        annotate.textProperty().bind(localizer.createStringBinding("fpgaAnnotate"));
+        annotate.setOnAction(event -> proj.getFpgaToolchainOrchestrator().annotate(false));
+
+        MenuItem annotateClearExisting = new MenuItem();
+        annotateClearExisting.textProperty().bind(localizer.createStringBinding("fpgaAnnotateClearExisting"));
+        annotateClearExisting.setOnAction(event -> proj.getFpgaToolchainOrchestrator().annotate(true));
+
+        SeparatorMenuItem sp1 = new SeparatorMenuItem();
+
+        MenuItem chooseBoard = new MenuItem();
+        chooseBoard.textProperty().bind(localizer.createStringBinding("fpgaChooseBoard"));
+        chooseBoard.setOnAction(event -> proj.getFpgaToolchainOrchestrator().selectBoard());
+
+        MenuItem openProjectConstrains = new MenuItem();
+        openProjectConstrains.textProperty().bind(localizer.createStringBinding("fpgaOpenConstrainsFile"));
+        //openProjectConstrains.setOnAction(event -> proj.getFpgaToolchainOrchestrator().annotate(false));
+
+        SeparatorMenuItem sp2 = new SeparatorMenuItem();
+
         MenuItem exportFiles = new MenuItem();
         exportFiles.textProperty().bind(localizer.createStringBinding("fpgaExportFilesItem"));
-        exportFiles.setOnAction(event -> FPGA.writeHDL());
+        exportFiles.setOnAction(event -> proj.getFpgaToolchainOrchestrator().exportHDLFiles(0, 0));
 
         MenuItem generateBit = new MenuItem();
         generateBit.textProperty().bind(localizer.createStringBinding("fpgaGenerateBitFile"));
-        generateBit.setOnAction(event -> FPGA.writeHDL());
+        generateBit.setOnAction(event -> proj.getFpgaToolchainOrchestrator().exportHDLFiles(0, 0));
+
+        SeparatorMenuItem sp3 = new SeparatorMenuItem();
+
+        MenuItem uploadToBoard = new MenuItem();
+        uploadToBoard.textProperty().bind(localizer.createStringBinding("fpgaUploadToBoard"));
+        //uploadToBoard.setOnAction(event -> proj.getFpgaToolchainOrchestrator().exportHDLFiles(0, 0));
+
+        SeparatorMenuItem sp4 = new SeparatorMenuItem();
+
 
         FPGAMenu.getItems().addAll(
+                annotate,
+                annotateClearExisting,
+                sp1,
+                chooseBoard,
+                openProjectConstrains,
+                sp2,
                 exportFiles,
-                generateBit
+                generateBit,
+                sp3,
+                uploadToBoard,
+                sp4
         );
 
         this.getMenus().add(FPGAMenu);

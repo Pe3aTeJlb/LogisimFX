@@ -7,6 +7,9 @@
 package LogisimFX.std.memory;
 
 import LogisimFX.data.*;
+import LogisimFX.fpga.designrulecheck.Netlist;
+import LogisimFX.fpga.designrulecheck.netlistComponent;
+import LogisimFX.fpga.hdlgenerator.HdlGeneratorFactory;
 import LogisimFX.instance.*;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutCanvas;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
@@ -19,13 +22,15 @@ import javafx.scene.paint.Color;
 public abstract class AbstractFlipFlop extends InstanceFactory {
 
 	private static final int STD_PORTS = 6;
+	private final int numInputs;
 	
 	private Attribute<AttributeOption> triggerAttribute;
 	
 	protected AbstractFlipFlop(String name, String iconName, StringBinding desc,
-			int numInputs, boolean allowLevelTriggers) {
+			int numInputs, boolean allowLevelTriggers, HdlGeneratorFactory generator) {
 
-		super(name, desc);
+		super(name, desc, generator);
+		this.numInputs = numInputs;
 		setIcon(iconName);
 		triggerAttribute = allowLevelTriggers ? StdAttr.TRIGGER : StdAttr.EDGE_TRIGGER;
 		setAttributes(new Attribute[] {
@@ -99,19 +104,19 @@ public abstract class AbstractFlipFlop extends InstanceFactory {
 
 		int n = getPorts().size() - STD_PORTS;
 		Object triggerType = state.getAttributeValue(triggerAttribute);
-		boolean triggered = data.updateClock(state.getPort(n), triggerType);
+		boolean triggered = data.updateClock(state.getPortValue(n), triggerType);
 		
-		if (state.getPort(n + 3) == Value.TRUE) { // clear requested
+		if (state.getPortValue(n + 3) == Value.TRUE) { // clear requested
 			changed |= data.curValue != Value.FALSE;
 			data.curValue = Value.FALSE;
-		} else if (state.getPort(n + 4) == Value.TRUE) { // preset requested
+		} else if (state.getPortValue(n + 4) == Value.TRUE) { // preset requested
 			changed |= data.curValue != Value.TRUE;
 			data.curValue = Value.TRUE;
-		} else if (triggered && state.getPort(n + 5) != Value.FALSE) {
+		} else if (triggered && state.getPortValue(n + 5) != Value.FALSE) {
 			// Clock has triggered and flip-flop is enabled: Update the state
 			Value[] inputs = new Value[n];
 			for (int i = 0; i < n; i++) {
-				inputs[i] = state.getPort(i);
+				inputs[i] = state.getPortValue(i);
 			}
 
 			Value newVal = computeValue(inputs, data.curValue);
@@ -224,6 +229,40 @@ public abstract class AbstractFlipFlop extends InstanceFactory {
 
 		}
 
+	}
+
+
+
+	@Override
+	public String getHDLName(AttributeSet attrs) {
+		final var completeName = new StringBuilder();
+		final var parts = this.getName().split(" ");
+		completeName.append(parts[0].replace("-", "_").toUpperCase());
+		completeName.append("_");
+		if (attrs.containsAttribute(StdAttr.EDGE_TRIGGER)) {
+			completeName.append("FlipFlop".toUpperCase());
+		} else {
+			if (attrs.containsAttribute(StdAttr.TRIGGER)) {
+				if ((attrs.getValue(StdAttr.TRIGGER) == StdAttr.TRIG_FALLING)
+						|| (attrs.getValue(StdAttr.TRIGGER) == StdAttr.TRIG_RISING)) {
+					completeName.append("FlipFlop".toUpperCase());
+				} else {
+					completeName.append("Latch".toUpperCase());
+				}
+			} else {
+				completeName.append("FlipFlop".toUpperCase());
+			}
+		}
+		return completeName.toString();
+	}
+
+	@Override
+	public boolean checkForGatedClocks(netlistComponent comp) {
+		return Netlist.isFlipFlop(comp.getComponent().getAttributeSet());
+	}
+	@Override
+	public int[] clockPinIndex(netlistComponent comp) {
+		return new int[] {numInputs};
 	}
 
 }

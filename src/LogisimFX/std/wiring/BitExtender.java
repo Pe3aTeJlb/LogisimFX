@@ -21,7 +21,7 @@ public class BitExtender extends InstanceFactory {
 		= Attributes.forBitWidth("in_width", LC.createStringBinding("extenderInAttr"));
 	private static final Attribute<BitWidth> ATTR_OUT_WIDTH
 		= Attributes.forBitWidth("out_width", LC.createStringBinding("extenderOutAttr"));
-	private static final Attribute<AttributeOption> ATTR_TYPE
+	static final Attribute<AttributeOption> ATTR_TYPE
 		= Attributes.forOption("type", LC.createStringBinding("extenderTypeAttr"),
 			new AttributeOption[] {
 				new AttributeOption("zero", "zero", LC.createStringBinding("extenderZeroType")),
@@ -34,7 +34,7 @@ public class BitExtender extends InstanceFactory {
 
 	public BitExtender() {
 
-		super("Bit Extender", LC.createStringBinding("extenderComponent"));
+		super("Bit Extender", LC.createStringBinding("extenderComponent"), new BitExtenderHdlGeneratorFactory());
 		setIcon("extender.gif");
 		setAttributes(new Attribute[] {
 				StdAttr.FPGA_SUPPORTED,
@@ -78,7 +78,7 @@ public class BitExtender extends InstanceFactory {
 				GraphicsUtil.H_CENTER, GraphicsUtil.V_BASELINE);
 		GraphicsUtil.drawText(g, s1, x, y1,
 				GraphicsUtil.H_CENTER, GraphicsUtil.V_BASELINE);
-		
+
 		BitWidth w0 = painter.getAttributeValue(ATTR_OUT_WIDTH);
 		BitWidth w1 = painter.getAttributeValue(ATTR_IN_WIDTH);
 		painter.drawPort(0, "" + w0.getWidth(), Direction.WEST);
@@ -128,7 +128,7 @@ public class BitExtender extends InstanceFactory {
 	@Override
 	public void propagate(InstanceState state) {
 
-		Value in = state.getPort(1);
+		Value in = state.getPortValue(1);
 		BitWidth wout = state.getAttributeValue(ATTR_OUT_WIDTH);
 		String type = getType(state.getAttributeSet());
 		Value extend;
@@ -138,7 +138,7 @@ public class BitExtender extends InstanceFactory {
 			int win = in.getWidth();
 			extend = win > 0 ? in.get(win - 1) : Value.ERROR;
 		} else if (type.equals("input")) {
-			extend = state.getPort(2);
+			extend = state.getPortValue(2);
 			if (extend.getWidth() != 1) extend = Value.ERROR;
 		} else {
 			extend = Value.FALSE;

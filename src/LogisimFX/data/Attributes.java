@@ -11,7 +11,6 @@ import LogisimFX.newgui.DialogManager;
 import LogisimFX.newgui.MainFrame.SystemTabs.AttributesTab.AttrTableSetException;
 import LogisimFX.newgui.MainFrame.SystemTabs.AttributesTab.AttributeTable;
 
-import LogisimFX.util.SyntaxChecker;
 import javafx.beans.binding.StringBinding;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -190,13 +189,7 @@ public class Attributes {
 			field.setMaxWidth(Double.MAX_VALUE);
 			field.setOnAction(event -> {
 				try {
-
-					boolean goodLabel = SyntaxChecker.isVariableNameAcceptable(field.getText(), true);
-
-					if (goodLabel) {
-						AttributeTable.setValueRequested(this, field.getText());
-					}
-
+					AttributeTable.setValueRequested(this, field.getText());
 				} catch (AttrTableSetException e) {
 					e.printStackTrace();
 				}
@@ -534,12 +527,16 @@ public class Attributes {
 			fontSelector.setMaxWidth(Double.MAX_VALUE);
 			fontSelector.setOnAction(event -> {
 
-				Font f = DialogManager.CreateFontSelectorDialog(value);
+				Font f = DialogManager.createFontSelectorDialog(value);
 
-				try {
-					AttributeTable.setValueRequested( this, f);
-				} catch (AttrTableSetException e) {
-					e.printStackTrace();
+				if (f != null) {
+
+					try {
+						AttributeTable.setValueRequested(this, f);
+					} catch (AttrTableSetException e) {
+						e.printStackTrace();
+					}
+
 				}
 
 			});

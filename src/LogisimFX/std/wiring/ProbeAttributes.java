@@ -61,10 +61,11 @@ class ProbeAttributes extends AbstractAttributeSet {
 
 	@Override
 	public <V> void setValue(Attribute<V> attr, V value) {
-
+		V Oldvalue = null;
 		if (attr == StdAttr.FACING) {
 			facing = (Direction) value;
 		} else if (attr == StdAttr.LABEL) {
+			Oldvalue = (V) label;
 			label = (String) value;
 		} else if (attr == Pin.ATTR_LABEL_LOC) {
 			labelloc = (Direction) value;
@@ -77,7 +78,7 @@ class ProbeAttributes extends AbstractAttributeSet {
 		} else {
 			throw new IllegalArgumentException("unknown attribute");
 		}
-		fireAttributeValueChanged(attr, value);
+		fireAttributeValueChanged(attr, value, Oldvalue);
 
 	}
 

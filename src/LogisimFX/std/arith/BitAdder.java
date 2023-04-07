@@ -109,7 +109,7 @@ public class BitAdder extends InstanceFactory {
 		int minCount = 0; // number that are definitely 1
 		int maxCount = 0; // number that are definitely not 0 (incl X/Z)
 		for (int i = 1; i <= inputs; i++) {
-			Value v = state.getPort(i);
+			Value v = state.getPortValue(i);
 			Value[] bits = v.getAll();
 			for (int j = 0; j < bits.length; j++) {
 				Value b = bits[j];

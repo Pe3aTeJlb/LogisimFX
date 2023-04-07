@@ -7,6 +7,7 @@
 package LogisimFX.std.memory;
 
 import java.util.List;
+import java.util.Objects;
 
 import LogisimFX.data.*;
 import LogisimFX.instance.StdAttr;
@@ -47,50 +48,34 @@ public class CounterAttributes extends AbstractAttributeSet {
 		return base.getValue(attr);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <V> void setValue(Attribute<V> attr, V value) {
+		V oldValue = base.getValue(attr);
+		if (Objects.equals(oldValue, value)) {
+			return;
+		}
+		V newValue = value;
 
-		Object oldValue = base.getValue(attr);
-		if (oldValue == null ? value == null : oldValue.equals(value)) return;
-
-		Integer newMax = null;
 		if (attr == StdAttr.WIDTH) {
-			BitWidth oldWidth = base.getValue(StdAttr.WIDTH);
-			BitWidth newWidth = (BitWidth) value;
-			int oldW = oldWidth.getWidth();
-			int newW = newWidth.getWidth();
-			Integer oldValObj = base.getValue(Counter.ATTR_MAX);
-			int oldVal = oldValObj.intValue();
-			base.setValue(StdAttr.WIDTH, newWidth);
-			if (newW > oldW) {
-				newMax = Integer.valueOf(newWidth.getMask());
-			} else {
-				int v = oldVal & newWidth.getMask();
-				if (v != oldVal) {
-					Integer newValObj = Integer.valueOf(v);
-					base.setValue(Counter.ATTR_MAX, newValObj);
-					fireAttributeValueChanged(Counter.ATTR_MAX, newValObj);
-				}
+			final var oldWidth = (BitWidth) oldValue;
+			final var newWidth = (BitWidth) newValue;
+			final var mask = newWidth.getMask();
+			final var oldMax = base.getValue(Counter.ATTR_MAX);
+			final var newMax = (newWidth.getWidth() < oldWidth.getWidth()) ? (mask & oldMax) : mask;
+			if (oldMax != newMax) {
+				base.setValue(Counter.ATTR_MAX, newMax);
+				fireAttributeValueChanged(Counter.ATTR_MAX, newMax, oldMax);
 			}
-			fireAttributeValueChanged(StdAttr.WIDTH, newWidth);
 		} else if (attr == Counter.ATTR_MAX) {
-			int oldVal = Integer.decode(value.toString());
-			//Integer.parseInt(value.toString(), 16);
-			BitWidth width = base.getValue(StdAttr.WIDTH);
-			int newVal = oldVal & width.getMask();
-			if (newVal != oldVal) {
-				@SuppressWarnings("unchecked")
-				V val = (V) Integer.valueOf(newVal);
-				value = val;
+			final var width = base.getValue(StdAttr.WIDTH);
+			newValue = (V) Long.valueOf(width.getMask() & (Long) newValue);
+			if (Objects.equals(oldValue, newValue)) {
+				return;
 			}
-			fireAttributeValueChanged(attr, value);
 		}
-		base.setValue(attr, value);
-		if (newMax != null) {
-			base.setValue(Counter.ATTR_MAX, newMax);
-			fireAttributeValueChanged(Counter.ATTR_MAX, newMax);
-		}
-
+		base.setValue(attr, newValue);
+		fireAttributeValueChanged(attr, newValue, oldValue);
 	}
 
 	@Override

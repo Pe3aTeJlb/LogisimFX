@@ -14,6 +14,7 @@ import LogisimFX.comp.AbstractComponentFactory;
 import LogisimFX.comp.Component;
 import LogisimFX.comp.ComponentDrawContext;
 import LogisimFX.data.*;
+import LogisimFX.fpga.hdlgenerator.HdlGeneratorFactory;
 import LogisimFX.newgui.WaveformFrame.Loggable;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.std.LC;
@@ -52,10 +53,23 @@ public abstract class InstanceFactory extends AbstractComponentFactory {
 	private Class<? extends InstanceLogger> loggerClass;
 
 	public InstanceFactory(String name) {
-		this(name, LC.createStringBinding(name));
+		this(name, LC.castToBind(name));
 	}
 
 	public InstanceFactory(String name, StringBinding displayName) {
+		this(name, displayName, null, false, false);
+	}
+
+	public InstanceFactory(String name, StringBinding displayName, HdlGeneratorFactory generator) {
+		this(name, displayName, generator, false, false);
+	}
+
+	public InstanceFactory(String name, StringBinding displayName, HdlGeneratorFactory generator, boolean requiresGlobalClock) {
+		this(name, displayName, generator, requiresGlobalClock, false);
+	}
+
+	public InstanceFactory(String name, StringBinding displayName, HdlGeneratorFactory generator, boolean requiresLabel, boolean requiresGlobalClock) {
+		super(generator, requiresLabel, requiresGlobalClock);
 		this.name = name;
 		this.displayName = displayName;
 		this.icon = null;
@@ -95,6 +109,11 @@ public abstract class InstanceFactory extends AbstractComponentFactory {
 	@Override
 	public final Component createComponent(Location loc, AttributeSet attrs) {
 		InstanceComponent ret = new InstanceComponent(this, loc, attrs);
+
+		if (attrs.containsAttribute(StdAttr.FPGA_SUPPORTED)) {
+			attrs.setValue(StdAttr.FPGA_SUPPORTED, ret.getFactory().isHDLSupportedComponent(attrs));
+		}
+
 		configureNewInstance(ret.getInstance());
 		return ret;
 	}

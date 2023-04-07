@@ -7,29 +7,30 @@
 package LogisimFX.std.arith;
 
 import LogisimFX.data.*;
+import LogisimFX.fpga.designrulecheck.CorrectLabel;
 import LogisimFX.instance.*;
 import LogisimFX.std.LC;
 import LogisimFX.tools.key.BitWidthConfigurator;
 
 public class Comparator extends InstanceFactory {
 
-	private static final AttributeOption SIGNED_OPTION
+	static final AttributeOption SIGNED_OPTION
 		= new AttributeOption("twosComplement", "twosComplement", LC.createStringBinding("twosComplementOption"));
-	private static final AttributeOption UNSIGNED_OPTION
+	static final AttributeOption UNSIGNED_OPTION
 		= new AttributeOption("unsigned", "unsigned", LC.createStringBinding("unsignedOption"));
-	private static final Attribute<AttributeOption> MODE_ATTRIBUTE
+	static final Attribute<AttributeOption> MODE_ATTRIBUTE
 		= Attributes.forOption("mode", LC.createStringBinding("comparatorType"),
 				new AttributeOption[] { SIGNED_OPTION, UNSIGNED_OPTION });
 	
-	private static final int IN0   = 0;
-	private static final int IN1   = 1;
-	private static final int GT    = 2;
-	private static final int EQ    = 3;
-	private static final int LT    = 4;
+	static final int IN0   = 0;
+	static final int IN1   = 1;
+	static final int GT    = 2;
+	static final int EQ    = 3;
+	static final int LT    = 4;
 
 	public Comparator() {
 
-		super("Comparator", LC.createStringBinding("comparatorComponent"));
+		super("Comparator", LC.createStringBinding("comparatorComponent"), new ComparatorHdlGeneratorFactory());
 		setAttributes(new Attribute[] { StdAttr.FPGA_SUPPORTED, StdAttr.WIDTH, MODE_ATTRIBUTE },
 				new Object[] { Boolean.FALSE, BitWidth.create(8), SIGNED_OPTION });
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
@@ -62,8 +63,8 @@ public class Comparator extends InstanceFactory {
 		Value eq = Value.TRUE;
 		Value lt = Value.FALSE;
 
-		Value a = state.getPort(IN0);
-		Value b = state.getPort(IN1);
+		Value a = state.getPortValue(IN0);
+		Value b = state.getPortValue(IN1);
 		Value[] ax = a.getAll();
 		Value[] bx = b.getAll();
 		int maxlen = Math.max(ax.length, bx.length);
@@ -129,6 +130,15 @@ public class Comparator extends InstanceFactory {
 	@Override
 	protected void instanceAttributeChanged(Instance instance, Attribute<?> attr) {
 		instance.fireInvalidated();
+	}
+
+
+	@Override
+	public String getHDLName(AttributeSet attrs) {
+		final var completeName = new StringBuilder();
+		if (attrs.getValue(StdAttr.WIDTH).getWidth() == 1) completeName.append("BitComparator");
+		else completeName.append(CorrectLabel.getCorrectLabel(this.getName()));
+		return completeName.toString();
 	}
 
 }

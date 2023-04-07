@@ -17,7 +17,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.util.StringConverter;
 
-class NegateAttribute extends Attribute<Boolean> {
+public class NegateAttribute extends Attribute<Boolean> {
 
 	private static Attribute<Boolean> BOOLEAN_ATTR = Attributes.forBoolean("negateDummy");
 	

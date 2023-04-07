@@ -306,7 +306,7 @@ public class SelectionActions {
 					Object[] opts = { LC.get("pasteCloneReplace"),
 							LC.get("pasteCloneIgnore"),
 							LC.get("pasteCloneCancel") };
-					int select = DialogManager.CreateConfirmWarningDialog(LC.get("pasteCloneTitle"),"");
+					int select = DialogManager.createConfirmWarningDialog(LC.get("pasteCloneTitle"),"");
 					if (select == 0) {
 						copyFactory = candidate;
 					} else if (select == 1) {
@@ -352,7 +352,7 @@ public class SelectionActions {
 				}
 			}
 			
-			DialogManager.CreateScrollWarning(LC.get("pasteDropTitle"),droppedStr.toString());
+			DialogManager.createScrollWarning(LC.get("pasteDropTitle"),droppedStr.toString());
 
 		}
 		

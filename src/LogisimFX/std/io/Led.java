@@ -18,19 +18,25 @@ public class Led extends InstanceFactory {
 
 	public Led() {
 
-		super("LED", LC.createStringBinding("ledComponent"));
+		super("LED", LC.createStringBinding("ledComponent"), new AbstractSimpleIoHdlGeneratorFactory(false), true);
 		setAttributes(new Attribute[] {
 				StdAttr.FPGA_SUPPORTED,
-				StdAttr.FACING, Io.ATTR_ON_COLOR, Io.ATTR_OFF_COLOR,
+				StdAttr.FACING,
+				Io.ATTR_ON_COLOR,
+				Io.ATTR_OFF_COLOR,
 				Io.ATTR_ACTIVE,
-				StdAttr.LABEL, Io.ATTR_LABEL_LOC,
-				StdAttr.LABEL_FONT, Io.ATTR_LABEL_COLOR
+				StdAttr.LABEL,
+				Io.ATTR_LABEL_LOC,
+				StdAttr.LABEL_FONT,
+				Io.ATTR_LABEL_COLOR,
+				StdAttr.LABEL_VISIBILITY
 			}, new Object[] {
 				Boolean.FALSE,
 				Direction.WEST, Color.color(0.941, 0, 0), Color.DARKGRAY,
 				Boolean.TRUE,
 				"", Io.LABEL_CENTER,
-				StdAttr.DEFAULT_LABEL_FONT, Color.BLACK
+				StdAttr.DEFAULT_LABEL_FONT, Color.BLACK,
+				Boolean.FALSE
 			});
 		setFacingAttribute(StdAttr.FACING);
 		setIcon("led.gif");
@@ -108,7 +114,7 @@ public class Led extends InstanceFactory {
 	@Override
 	public void propagate(InstanceState state) {
 
-		Value val = state.getPort(0);
+		Value val = state.getPortValue(0);
 		InstanceDataSingleton data = (InstanceDataSingleton) state.getData();
 		if (data == null) {
 			state.setData(new InstanceDataSingleton(val));
@@ -172,6 +178,12 @@ public class Led extends InstanceFactory {
 			return data.getValue() == Value.TRUE ? Value.TRUE : Value.FALSE;
 		}
 
+	}
+
+
+	@Override
+	public boolean activeOnHigh(AttributeSet attrs) {
+		return attrs.getValue(Io.ATTR_ACTIVE);
 	}
 
 }

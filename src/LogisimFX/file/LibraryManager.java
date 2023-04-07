@@ -197,7 +197,7 @@ class LibraryManager {
 	public void reload(Loader loader, LoadedLibrary lib) {
 		LibraryDescriptor descriptor = invMap.get(lib);
 		if (descriptor == null) {
-			DialogManager.CreateErrorDialog("Error",
+			DialogManager.createErrorDialog("Error",
 					LC.getFormatted("unknownLibraryFileError",lib.getDisplayName().getValue()));
 		} else {
 			try {

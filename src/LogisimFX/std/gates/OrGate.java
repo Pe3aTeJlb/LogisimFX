@@ -7,6 +7,7 @@
 package LogisimFX.std.gates;
 
 import LogisimFX.data.Value;
+import LogisimFX.fpga.hdlgenerator.Hdl;
 import LogisimFX.instance.Instance;
 import LogisimFX.instance.InstancePainter;
 import LogisimFX.instance.InstanceState;
@@ -14,14 +15,40 @@ import LogisimFX.newgui.AnalyzeFrame.Expression;
 import LogisimFX.newgui.AnalyzeFrame.Expressions;
 import LogisimFX.std.LC;
 import LogisimFX.tools.WireRepairData;
+import LogisimFX.util.LineBuffer;
 
 class OrGate extends AbstractGate {
 
 	public static OrGate FACTORY = new OrGate();
 
+	private static class OrGateHdlGeneratorFactory extends AbstractGateHdlGenerator {
+		@Override
+		public LineBuffer getLogicFunction(int nrOfInputs, int bitwidth, boolean isOneHot) {
+			final var contents = LineBuffer.getHdlBuffer();
+			final var oneLine = new StringBuilder();
+			oneLine.append(Hdl.assignPreamble()).append("result").append(Hdl.assignOperator());
+			final var tabWidth = oneLine.length();
+			var first = true;
+			for (int i = 0; i < nrOfInputs; i++) {
+				if (!first) {
+					oneLine.append(Hdl.orOperator());
+					contents.add(oneLine.toString());
+					oneLine.setLength(0);
+					oneLine.append(" ".repeat(tabWidth));
+				} else {
+					first = false;
+				}
+				oneLine.append("s_realInput").append(i + 1);
+			}
+			oneLine.append(";");
+			contents.add(oneLine.toString());
+			return contents;
+		}
+	}
+
 	private OrGate() {
 
-		super("OR Gate", LC.createStringBinding("orGateComponent"));
+		super("OR Gate", LC.createStringBinding("orGateComponent"), new OrGateHdlGeneratorFactory());
 		setRectangularLabel("\u2265" + "1");
 		setIconNames("orGate.gif", "orGateRect.gif", "dinOrGate.gif");
 		setPaintInputLines(true);

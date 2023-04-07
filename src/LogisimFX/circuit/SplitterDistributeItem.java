@@ -25,7 +25,7 @@ class SplitterDistributeItem extends MenuItem {
 		this.order = order;
 		
 		SplitterAttributes attrs = (SplitterAttributes) splitter.getAttributeSet();
-		byte[] actual = attrs.bit_end;
+		byte[] actual = attrs.bitEnd;
 		byte[] desired = SplitterAttributes.computeDistribution(attrs.fanout,
 				actual.length, order);
 		boolean same = actual.length == desired.length;

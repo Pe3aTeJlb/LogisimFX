@@ -102,13 +102,14 @@ class TunnelAttributes extends AbstractAttributeSet {
 
 	@Override
 	public <V> void setValue(Attribute<V> attr, V value) {
-
+		V Oldvalue = null;
 		if (attr == StdAttr.FACING) {
 			facing = (Direction) value;
 			configureLabel();
 		} else if (attr == StdAttr.WIDTH) {
 			width = (BitWidth) value;
 		} else if (attr == StdAttr.LABEL) {
+			Oldvalue = (V) label;
 			label = (String) value;
 		} else if (attr == StdAttr.LABEL_FONT) {
 			labelFont = (Font) value;
@@ -118,7 +119,7 @@ class TunnelAttributes extends AbstractAttributeSet {
 			throw new IllegalArgumentException("unknown attribute");
 		}
 		offsetBounds = null;
-		fireAttributeValueChanged(attr, value);
+		fireAttributeValueChanged(attr, value, Oldvalue);
 
 	}
 

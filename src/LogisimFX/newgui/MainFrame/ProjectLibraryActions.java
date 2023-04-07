@@ -46,11 +46,11 @@ public class ProjectLibraryActions {
 		builtins.removeAll(file.getLibraries());
 
 		if (builtins.isEmpty()) {
-			DialogManager.CreateInfoDialog(lc.get("loadBuiltinErrorTitle"),lc.get("loadBuiltinNoneError"));
+			DialogManager.createInfoDialog(lc.get("loadBuiltinErrorTitle"),lc.get("loadBuiltinNoneError"));
 			return;
 		}
 
-		Library[] libs = DialogManager.CreateLibSelectionDialog(builtins);
+		Library[] libs = DialogManager.createLibSelectionDialog(builtins);
 		if (libs != null) proj.doAction(LogisimFileActions.loadLibraries(libs));
 
 		/*
@@ -117,7 +117,7 @@ public class ProjectLibraryActions {
 
 		// if the class name was not found, go back to the good old dialog
 		if (className == null) {
-			className = DialogManager.CreateInputDialog(lc.get("jarClassNameTitle"),
+			className = DialogManager.createInputDialog(lc.get("jarClassNameTitle"),
 					lc.get("jarClassNamePrompt"));
 			// if user canceled selection, abort
 			if (className == null) return;
@@ -141,11 +141,11 @@ public class ProjectLibraryActions {
 		}
 
 		if (canUnload.isEmpty()) {
-			DialogManager.CreateErrorDialog(lc.get("unloadErrorTitle"),lc.get("unloadNoneError"));
+			DialogManager.createErrorDialog(lc.get("unloadErrorTitle"),lc.get("unloadNoneError"));
 			return;
 		}
 
-		Library[] libs = DialogManager.CreateLibSelectionDialog(canUnload);
+		Library[] libs = DialogManager.createLibSelectionDialog(canUnload);
 
 		if (libs != null) proj.doAction(LogisimFileActions.unloadLibraries(libs));
 
@@ -155,7 +155,7 @@ public class ProjectLibraryActions {
 
 		String message = proj.getLogisimFile().getUnloadLibraryMessage(lib);
 		if (message != null) {
-			DialogManager.CreateErrorDialog(lc.get("unloadErrorTitle"),message);
+			DialogManager.createErrorDialog(lc.get("unloadErrorTitle"),message);
 		} else {
 			proj.doAction(LogisimFileActions.unloadLibrary(lib));
 		}

@@ -12,14 +12,22 @@ import LogisimFX.instance.InstanceState;
 import LogisimFX.newgui.AnalyzeFrame.Expression;
 import LogisimFX.newgui.AnalyzeFrame.Expressions;
 import LogisimFX.std.LC;
+import LogisimFX.util.LineBuffer;
 
 class OddParityGate extends AbstractGate {
 
 	public static OddParityGate FACTORY = new OddParityGate();
 
+	private static class XorGateHdlGeneratorFactory extends AbstractGateHdlGenerator {
+		@Override
+		public LineBuffer getLogicFunction(int nrOfInputs, int bitwidth, boolean isOneHot) {
+			return LineBuffer.getBuffer().add(getParity(false, nrOfInputs, bitwidth > 1));
+		}
+	}
+
 	private OddParityGate() {
 
-		super("Odd Parity", LC.createStringBinding("oddParityComponent"));
+		super("Odd Parity", LC.createStringBinding("oddParityComponent"), new XorGateHdlGeneratorFactory());
 		setRectangularLabel("2k+1");
 		setIconNames("parityOddGate.gif");
 

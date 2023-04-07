@@ -7,6 +7,7 @@
 package LogisimFX.std.gates;
 
 import LogisimFX.data.Value;
+import LogisimFX.fpga.hdlgenerator.Hdl;
 import LogisimFX.instance.Instance;
 import LogisimFX.instance.InstancePainter;
 import LogisimFX.instance.InstanceState;
@@ -14,14 +15,46 @@ import LogisimFX.newgui.AnalyzeFrame.Expression;
 import LogisimFX.newgui.AnalyzeFrame.Expressions;
 import LogisimFX.std.LC;
 import LogisimFX.tools.WireRepairData;
+import LogisimFX.util.LineBuffer;
 
 class NorGate extends AbstractGate {
 
 	public static NorGate FACTORY = new NorGate();
 
+	private static class NorGateHdlGeneratorFactory extends AbstractGateHdlGenerator {
+		@Override
+		public LineBuffer getLogicFunction(int nrOfInputs, int bitwidth, boolean isOneHot) {
+			final var contents = LineBuffer.getHdlBuffer();
+			final var oneLine = new StringBuilder();
+			oneLine
+					.append(Hdl.assignPreamble())
+					.append("result")
+					.append(Hdl.assignOperator())
+					.append(Hdl.notOperator())
+					.append("(");
+			final var tabWidth = oneLine.length();
+			var first = true;
+			for (var i = 0; i < nrOfInputs; i++) {
+				if (!first) {
+					oneLine.append(Hdl.orOperator());
+					contents.add(oneLine.toString());
+					oneLine.setLength(0);
+					oneLine.append(" ".repeat(tabWidth));
+				} else {
+					first = false;
+				}
+				oneLine.append("s_realInput").append(i + 1);
+			}
+			oneLine.append(");");
+			contents.add(oneLine.toString());
+			return contents;
+		}
+	}
+
+
 	private NorGate() {
 
-		super("NOR Gate", LC.createStringBinding("norGateComponent"));
+		super("NOR Gate", LC.createStringBinding("norGateComponent"), new NorGateHdlGeneratorFactory());
 		setNegateOutput(true);
 		setRectangularLabel(OrGate.FACTORY.getRectangularLabel(null));
 		setIconNames("norGate.gif", "norGateRect.gif", "dinNorGate.gif");

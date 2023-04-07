@@ -16,14 +16,14 @@ import javafx.scene.paint.Color;
 
 public class PriorityEncoder extends InstanceFactory {
 
-	private static final int OUT = 0;
-	private static final int EN_IN = 1;
-	private static final int EN_OUT = 2;
-	private static final int GS = 3;
+	static final int OUT = 0;
+	static final int EN_IN = 1;
+	static final int EN_OUT = 2;
+	static final int GS = 3;
 	
 	public PriorityEncoder() {
 
-		super("Priority Encoder", LC.createStringBinding("priorityEncoderComponent"));
+		super("Priority Encoder", LC.createStringBinding("priorityEncoderComponent"), new PriorityEncoderHdlGeneratorFactory());
 		setAttributes(new Attribute[] {
 				StdAttr.FPGA_SUPPORTED,
 				StdAttr.FACING, Plexers.ATTR_SELECT, Plexers.ATTR_DISABLED
@@ -124,14 +124,14 @@ public class PriorityEncoder extends InstanceFactory {
 
 		BitWidth select = state.getAttributeValue(Plexers.ATTR_SELECT);
 		int n = 1 << select.getWidth();
-		boolean enabled = state.getPort(n + EN_IN) != Value.FALSE;
+		boolean enabled = state.getPortValue(n + EN_IN) != Value.FALSE;
 		
 		int out = -1;
 		Value outDefault;
 		if (enabled) {
 			outDefault = Value.createUnknown(select);
 			for (int i = n - 1; i >= 0; i--) {
-				if (state.getPort(i) == Value.TRUE) {
+				if (state.getPortValue(i) == Value.TRUE) {
 					out = i;
 					break;
 				}
@@ -191,6 +191,12 @@ public class PriorityEncoder extends InstanceFactory {
 
 		g.toDefault();
 
+	}
+
+
+	@Override
+	public boolean hasThreeStateDrivers(AttributeSet attrs) {
+		return (attrs.getValue(Plexers.ATTR_DISABLED) == Plexers.DISABLED_FLOATING);
 	}
 
 }

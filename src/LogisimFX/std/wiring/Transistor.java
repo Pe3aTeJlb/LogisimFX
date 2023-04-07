@@ -144,8 +144,8 @@ public class Transistor extends InstanceFactory {
 	private Value computeOutput(InstanceState state) {
 
 		BitWidth width = state.getAttributeValue(StdAttr.WIDTH);
-		Value gate = state.getPort(GATE);
-		Value input = state.getPort(INPUT);
+		Value gate = state.getPortValue(GATE);
+		Value input = state.getPortValue(INPUT);
 		Value desired = state.getAttributeValue(ATTR_TYPE) == TYPE_P
 			? Value.FALSE : Value.TRUE;
 
@@ -198,7 +198,7 @@ public class Transistor extends InstanceFactory {
 
 		Graphics g = painter.getGraphics();
 		Location loc = painter.getLocation();
-		g.translate(loc.getX(), loc.getY());
+		g.c.translate(loc.getX(), loc.getY());
 		g.rotate(degrees);
 
 		Paint gate;
@@ -206,9 +206,9 @@ public class Transistor extends InstanceFactory {
 		Paint output;
 		Paint platform;
 		if (!isGhost && painter.getShowState()) {
-			gate = painter.getPort(GATE).getColor();
-			input = painter.getPort(INPUT).getColor();
-			output = painter.getPort(OUTPUT).getColor();
+			gate = painter.getPortValue(GATE).getColor();
+			input = painter.getPortValue(INPUT).getColor();
+			output = painter.getPortValue(OUTPUT).getColor();
 			Value out = computeOutput(painter);
 			platform = out.isUnknown() ? Value.UNKNOWN.getColor() : out.getColor();
 		} else {
@@ -250,6 +250,7 @@ public class Transistor extends InstanceFactory {
 		g.c.strokeLine(-21, 0, -18, m * 3);
 
 		g.toDefault();
+		g.c.translate(-loc.getX(), -loc.getY());
 
 	}
 

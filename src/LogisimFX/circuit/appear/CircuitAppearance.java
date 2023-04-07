@@ -187,14 +187,14 @@ public class CircuitAppearance extends Drawing {
 		}
 
 		Location offset = findAnchorLocation();
-		g.translate(-offset.getX(), -offset.getY());
+		g.c.translate(-offset.getX(), -offset.getY());
 		for (CanvasObject shape : getObjectsFromBottom()) {
 			if (!(shape instanceof AppearanceElement)) {
 				shape.paint(g, null);
 			}
 		}
 
-		g.translate(offset.getX(), offset.getY());
+		g.c.translate(offset.getX(), offset.getY());
 		g.toDefault();
 
 		//g.translate(offset.getX(), offset.getY());

@@ -138,7 +138,7 @@ public class Loader implements LibraryLoader {
 	public boolean save(LogisimFile file, File dest) {
 		Library reference = LibraryManager.instance.findReference(file, dest);
 		if (reference != null) {
-			DialogManager.CreateErrorDialog(
+			DialogManager.createErrorDialog(
 					StringUtil.format(lc.get("fileCircularError"), reference.getDisplayName().getValue()),
 							lc.get("fileSaveErrorTitle"));
 			return false;
@@ -159,7 +159,7 @@ public class Loader implements LibraryLoader {
 		} catch (IOException e) {
 			if (backupCreated) recoverBackup(backup, dest);
 			if (dest.exists() && dest.length() == 0) dest.delete();
-			DialogManager.CreateStackTraceDialog(lc.get("fileSaveErrorTitle"),StringUtil.format(lc.get("fileSaveError"),
+			DialogManager.createStackTraceDialog(lc.get("fileSaveErrorTitle"),StringUtil.format(lc.get("fileSaveError"),
 					e.toString()),e);
 			return false;
 		} finally {
@@ -169,7 +169,7 @@ public class Loader implements LibraryLoader {
 				} catch (IOException e) {
 					if (backupCreated) recoverBackup(backup, dest);
 					if (dest.exists() && dest.length() == 0) dest.delete();
-					DialogManager.CreateStackTraceDialog(lc.get("fileSaveErrorTitle"),LC.getFormatted("fileSaveCloseError",
+					DialogManager.createStackTraceDialog(lc.get("fileSaveErrorTitle"),LC.getFormatted("fileSaveCloseError",
 							e.toString()),e);
 					return false;
 				}
@@ -182,7 +182,7 @@ public class Loader implements LibraryLoader {
 			} else {
 				dest.delete();
 			}
-			DialogManager.CreateErrorDialog(lc.get("fileSaveErrorTitle"),lc.get("fileSaveZeroError"));
+			DialogManager.createErrorDialog(lc.get("fileSaveErrorTitle"),lc.get("fileSaveZeroError"));
 			return false;
 		}
 
@@ -311,10 +311,10 @@ public class Loader implements LibraryLoader {
 
 		if (description.contains("\n") || description.length() > 60) {
 
-			DialogManager.CreateScrollError(lc.get("fileErrorTitle"),description);
+			DialogManager.createScrollError(lc.get("fileErrorTitle"),description);
 
 		} else {
-			DialogManager.CreateScrollError(lc.get("fileErrorTitle"),description);
+			DialogManager.createScrollError(lc.get("fileErrorTitle"),description);
 		}
 	}
 
@@ -322,7 +322,7 @@ public class Loader implements LibraryLoader {
 		if (source == null) return;
 		String message = source.getMessage();
 		while (message != null) {
-			DialogManager.CreateInfoDialog(lc.get("fileMessageTitle"),message);
+			DialogManager.createInfoDialog(lc.get("fileMessageTitle"),message);
 			message = source.getMessage();
 		}
 	}
@@ -344,7 +344,7 @@ public class Loader implements LibraryLoader {
 		while (!file.canRead()) {
 
 			// It doesn't exist. Figure it out from the user.
-			DialogManager.CreateInfoDialog("File missing", StringUtil.format(lc.get("fileLibraryMissingError"),
+			DialogManager.createInfoDialog("File missing", StringUtil.format(lc.get("fileLibraryMissingError"),
 					file.getName()));
 
 			//Todo

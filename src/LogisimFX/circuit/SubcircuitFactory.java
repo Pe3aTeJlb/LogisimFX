@@ -27,7 +27,7 @@ public class SubcircuitFactory extends InstanceFactory {
 	private Circuit source;
 
 	public SubcircuitFactory(Circuit source) {
-		super("", null);
+		super("", null, new CircuitHdlGeneratorFactory(source), true);
 		this.source = source;
 		setFacingAttribute(StdAttr.FACING);
 		setInstancePoker(SubcircuitPoker.class);
@@ -177,14 +177,14 @@ public class SubcircuitFactory extends InstanceFactory {
 			Instance pin = pins[i];
 			InstanceState pinState = subState.getInstanceState(pin);
 			if (Pin.FACTORY.isInputPin(pin)) {
-				Value newVal = superState.getPort(i);
+				Value newVal = superState.getPortValue(i);
 				Value oldVal = Pin.FACTORY.getValue(pinState);
 				if (!newVal.equals(oldVal)) {
 					Pin.FACTORY.setValue(pinState, newVal);
 					Pin.FACTORY.propagate(pinState);
 				}
 			} else { // it is output-only
-				Value val = pinState.getPort(0);
+				Value val = pinState.getPortValue(0);
 				superState.setPort(i, val, 1);
 			}
 		}

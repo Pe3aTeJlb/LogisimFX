@@ -15,14 +15,26 @@ import LogisimFX.newgui.AnalyzeFrame.Expression;
 import LogisimFX.newgui.AnalyzeFrame.Expressions;
 import LogisimFX.std.LC;
 import LogisimFX.tools.WireRepairData;
+import LogisimFX.util.LineBuffer;
 
 class XnorGate extends AbstractGate {
 
 	public static XnorGate FACTORY = new XnorGate();
 
+	private static class XNorGateHdlGeneratorFactory extends AbstractGateHdlGenerator {
+		@Override
+		public LineBuffer getLogicFunction(int nrOfInputs, int bitwidth, boolean isOneHot) {
+			return LineBuffer.getBuffer()
+					.add(
+							isOneHot
+									? getOneHot(true, nrOfInputs, bitwidth > 1)
+									: getParity(true, nrOfInputs, bitwidth > 1));
+		}
+	}
+
 	private XnorGate() {
 
-		super("XNOR Gate", LC.createStringBinding("xnorGateComponent"), true);
+		super("XNOR Gate", LC.createStringBinding("xnorGateComponent"), true, new XNorGateHdlGeneratorFactory());
 		setNegateOutput(true);
 		setAdditionalWidth(10);
 		setIconNames("xnorGate.gif", "xnorGateRect.gif", "dinXnorGate.gif");

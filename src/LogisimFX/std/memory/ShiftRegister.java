@@ -7,6 +7,7 @@
 package LogisimFX.std.memory;
 
 import LogisimFX.data.*;
+import LogisimFX.fpga.designrulecheck.netlistComponent;
 import LogisimFX.instance.*;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.std.LC;
@@ -22,17 +23,17 @@ public class ShiftRegister extends InstanceFactory {
 	static final Attribute<Boolean> ATTR_LOAD = Attributes.forBoolean("parallel",
 			LC.createStringBinding("shiftRegParallelAttr"));
 
-	private static final int IN  = 0;
-	private static final int SH  = 1;
-	private static final int CK  = 2;
-	private static final int CLR = 3;
-	private static final int OUT = 4;
-	private static final int LD  = 6;
-	private static final int DIR  = 5;
+	static final int IN  = 0;
+	static final int SH  = 1;
+	static final int CK  = 2;
+	static final int CLR = 3;
+	static final int OUT = 4;
+	static final int LD  = 6;
+	static final int DIR  = 5;
 
 	public ShiftRegister() {
 
-		super("Shift Register", LC.createStringBinding("shiftRegisterComponent"));
+		super("Shift Register", LC.createStringBinding("shiftRegisterComponent"), new ShiftRegisterHdlGeneratorFactory());
 		setAttributes(new Attribute[] {
 				StdAttr.FPGA_SUPPORTED,
 				StdAttr.WIDTH, ATTR_LENGTH, ATTR_LOAD, StdAttr.EDGE_TRIGGER,
@@ -132,10 +133,10 @@ public class ShiftRegister extends InstanceFactory {
 		int length = lenObj == null ? 8 : lenObj.intValue();
 		ShiftRegisterData data = (ShiftRegisterData) state.getData();
 		if (data == null) {
-			data = new ShiftRegisterData(width, length, state.getPort(DIR));
+			data = new ShiftRegisterData(width, length, state.getPortValue(DIR));
 			state.setData(data);
 		} else {
-			data.setDimensions(width, length, state.getPort(DIR));
+			data.setDimensions(width, length, state.getPortValue(DIR));
 		}
 		return data;
 
@@ -149,21 +150,21 @@ public class ShiftRegister extends InstanceFactory {
 		ShiftRegisterData data = getData(state);
 		int len = data.getLength();
 
-		boolean triggered = data.updateClock(state.getPort(CK), triggerType);
-		if (state.getPort(CLR) == Value.TRUE) {
+		boolean triggered = data.updateClock(state.getPortValue(CK), triggerType);
+		if (state.getPortValue(CLR) == Value.TRUE) {
 			data.clear();
 		} else if (triggered) {
-			if (parallel && state.getPort(LD) == Value.TRUE) {
+			if (parallel && state.getPortValue(LD) == Value.TRUE) {
 				data.clear();
 				for (int i = len - 1; i >= 0; i--) {
-					data.push(state.getPort(7 + 2 * i));
+					data.push(state.getPortValue(7 + 2 * i));
 				}
-			} else if (state.getPort(SH) != Value.FALSE) {
-				data.push(state.getPort(IN));
+			} else if (state.getPortValue(SH) != Value.FALSE) {
+				data.push(state.getPortValue(IN));
 			}
 		}
 
-		if(state.getPort(DIR) == Value.TRUE) {
+		if(state.getPortValue(DIR) == Value.TRUE) {
 			state.setPort(OUT, data.get(0), 4);
 		}else{
 			state.setPort(OUT, data.get(len-1), 4);
@@ -235,6 +236,16 @@ public class ShiftRegister extends InstanceFactory {
 		painter.drawClock(CK, Direction.EAST);
 		painter.getGraphics().toDefault();
 
+	}
+
+
+	@Override
+	public boolean checkForGatedClocks(netlistComponent comp) {
+		return true;
+	}
+	@Override
+	public int[] clockPinIndex(netlistComponent comp) {
+		return new int[] {CK};
 	}
 
 }

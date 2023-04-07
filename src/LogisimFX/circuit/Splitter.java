@@ -1,8 +1,8 @@
 /*
-* This file is part of LogisimFX. Copyright (c) 2022, Pplos Studio
-* Original code by Carl Burch (http://www.cburch.com), 2011.
-* License information is located in the Launch file
-*/
+ * This file is part of LogisimFX. Copyright (c) 2022, Pplos Studio
+ * Original code by Carl Burch (http://www.cburch.com), 2011.
+ * License information is located in the Launch file
+ */
 
 package LogisimFX.circuit;
 
@@ -48,7 +48,7 @@ public class Splitter extends ManagedComponent
 	public void propagate(CircuitState state) {
 		; // handled by CircuitWires, nothing to do
 	}
-	
+
 	@Override
 	public boolean contains(Location loc) {
 
@@ -57,10 +57,10 @@ public class Splitter extends ManagedComponent
 			Direction facing = getAttributeSet().getValue(StdAttr.FACING);
 			if (facing == Direction.EAST || facing == Direction.WEST) {
 				return Math.abs(loc.getX() - myLoc.getX()) > 5
-					|| loc.manhattanDistanceTo(myLoc) <= 5; 
-			} else {                
+						|| loc.manhattanDistanceTo(myLoc) <= 5;
+			} else {
 				return Math.abs(loc.getY() - myLoc.getY()) > 5
-					|| loc.manhattanDistanceTo(myLoc) <= 5; 
+						|| loc.manhattanDistanceTo(myLoc) <= 5;
 			}
 		} else {
 			return false;
@@ -73,12 +73,8 @@ public class Splitter extends ManagedComponent
 		SplitterAttributes attrs = (SplitterAttributes) getAttributeSet();
 		SplitterParameters parms = attrs.getParameters();
 
-		if (attrs.containsAttribute(StdAttr.FPGA_SUPPORTED)) {
-			attrs.setValue(StdAttr.FPGA_SUPPORTED, getFactory().isHDLSupportedComponent(attrs));
-		}
-
 		int fanout = attrs.fanout;
-		byte[] bit_end = attrs.bit_end;
+		byte[] bit_end = attrs.bitEnd;
 
 		// compute width of each end
 		bit_thread = new byte[bit_end.length];
@@ -130,7 +126,12 @@ public class Splitter extends ManagedComponent
 			SplitterPainter.drawLabels(context, attrs, loc);
 			context.drawPins(this);
 		}
+		context.getGraphics().toDefault();
 
+	}
+
+	public byte[] getEndpoints() {
+		return ((SplitterAttributes) getAttributeSet()).bitEnd;
 	}
 
 	@Override
@@ -156,11 +157,11 @@ public class Splitter extends ManagedComponent
 
 		if (end == 0) {
 			return LC.createStringBinding("splitterCombinedTip");
-		} else if (end > 0){
+		} else if (end > 0) {
 			int bits = 0;
 			StringBuilder buf = new StringBuilder();
 			SplitterAttributes attrs = (SplitterAttributes) getAttributeSet();
-			byte[] bit_end = attrs.bit_end;
+			byte[] bit_end = attrs.bitEnd;
 			boolean inString = false;
 			int beginString = 0;
 			for (int i = 0; i < bit_end.length; i++) {
@@ -180,9 +181,15 @@ public class Splitter extends ManagedComponent
 			if (inString) appendBuf(buf, beginString, bit_end.length - 1);
 			String base;
 			switch (bits) {
-			case 0:  base = LC.get("splitterSplit0Tip"); break;
-			case 1:  base = LC.get("splitterSplit1Tip"); break;
-			default: base = LC.get("splitterSplitManyTip"); break;
+				case 0:
+					base = LC.get("splitterSplit0Tip");
+					break;
+				case 1:
+					base = LC.get("splitterSplit1Tip");
+					break;
+				default:
+					base = LC.get("splitterSplitManyTip");
+					break;
 			}
 			return LC.castToBind(StringUtil.format(base, buf.toString()));
 		} else {
@@ -212,8 +219,9 @@ public class Splitter extends ManagedComponent
 	//
 	// AttributeListener methods
 	//
-	public void attributeListChanged(AttributeEvent e) { }
-	
+	public void attributeListChanged(AttributeEvent e) {
+	}
+
 	public void attributeValueChanged(AttributeEvent e) {
 		configureComponent();
 	}

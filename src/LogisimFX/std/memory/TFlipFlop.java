@@ -7,14 +7,30 @@
 package LogisimFX.std.memory;
 
 import LogisimFX.data.Value;
+import LogisimFX.instance.Port;
+import LogisimFX.instance.StdAttr;
 import LogisimFX.std.LC;
+import LogisimFX.util.LineBuffer;
 
 public class TFlipFlop extends AbstractFlipFlop {
+
+	private static class TFFHDLGeneratorFactory extends AbstractFlipFlopHdlGeneratorFactory {
+
+		public TFFHDLGeneratorFactory() {
+			super(1, StdAttr.EDGE_TRIGGER);
+			myPorts.add(Port.INPUT, "t", 1, 0);
+		}
+
+		@Override
+		public LineBuffer getUpdateLogic() {
+			return LineBuffer.getHdlBuffer().add("{{assign}}s_nextState{{=}}s_currentState{{xor}}t;");
+		}
+	}
 
 	public TFlipFlop() {
 
 		super("T Flip-Flop", "tFlipFlop.gif",
-				LC.createStringBinding("tFlipFlopComponent"), 1, false);
+				LC.createStringBinding("tFlipFlopComponent"), 1, false, new TFFHDLGeneratorFactory());
 
 	}
 

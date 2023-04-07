@@ -14,7 +14,6 @@ import LogisimFX.std.memory.MemContents;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -85,7 +84,7 @@ public class HexEditorController extends AbstractController {
             try {
                 HexFile.open(hexModel,f);
             }catch(IOException e) {
-                DialogManager.CreateErrorDialog(LC.get("hexOpenErrorTitle"),e.getMessage());
+                DialogManager.createErrorDialog(LC.get("hexOpenErrorTitle"),e.getMessage());
             }
 
         });
@@ -100,7 +99,7 @@ public class HexEditorController extends AbstractController {
             try {
                 HexFile.save(f, hexModel);
             }catch(IOException e) {
-                DialogManager.CreateErrorDialog(LC.get("hexSaveErrorTitle"),e.getMessage());
+                DialogManager.createErrorDialog(LC.get("hexSaveErrorTitle"),e.getMessage());
             }
 
         });

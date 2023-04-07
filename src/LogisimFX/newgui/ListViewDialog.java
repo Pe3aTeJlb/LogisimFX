@@ -13,10 +13,12 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.util.Callback;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.function.Consumer;
 
 public class ListViewDialog<T> extends Dialog<T> {
 
@@ -121,6 +123,10 @@ public class ListViewDialog<T> extends Dialog<T> {
 
         Platform.runLater(() -> listView.requestFocus());
 
+    }
+
+    public void setCellFactory(Callback<ListView<T>, ListCell<T>> cellFactory){
+        listView.setCellFactory(cellFactory);
     }
 
 }

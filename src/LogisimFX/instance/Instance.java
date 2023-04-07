@@ -9,11 +9,9 @@ package LogisimFX.instance;
 import java.util.List;
 
 import LogisimFX.comp.Component;
-import LogisimFX.data.Attribute;
-import LogisimFX.data.AttributeSet;
-import LogisimFX.data.Bounds;
-import LogisimFX.data.Location;
+import LogisimFX.data.*;
 import LogisimFX.circuit.CircuitState;
+import LogisimFX.util.GraphicsUtil;
 import javafx.scene.text.Font;
 
 public class Instance {
@@ -102,4 +100,70 @@ public class Instance {
 	public void fireInvalidated() {
 		comp.fireInvalidated();
 	}
+
+	public static final int AVOID_TOP = 1;
+	public static final int AVOID_RIGHT = 2;
+	public static final int AVOID_BOTTOM = 4;
+	public static final int AVOID_LEFT = 8;
+	public static final int AVOID_SIDES = AVOID_LEFT | AVOID_RIGHT;
+	public static final int AVOID_CENTER = 16;
+
+	public void computeLabelTextField(int avoid) {
+		Object labelLoc = getAttributeValue(StdAttr.LABEL_LOC);
+		computeLabelTextField(avoid, labelLoc);
+	}
+
+	public void computeLabelTextField(int avoid, Object labelLoc) {
+		if (avoid != 0) {
+			final var facing = getAttributeValue(StdAttr.FACING);
+			if (facing == Direction.NORTH)
+				avoid = (avoid & 0x10) | ((avoid << 1) & 0xf) | ((avoid & 0xf) >> 3);
+			else if (facing == Direction.EAST)
+				avoid = (avoid & 0x10) | ((avoid << 2) & 0xf) | ((avoid & 0xf) >> 2);
+			else if (facing == Direction.SOUTH)
+				avoid = (avoid & 0x10) | ((avoid << 3) & 0xf) | ((avoid & 0xf) >> 1);
+		}
+
+		final var bds = getBounds();
+		var x = bds.getX() + bds.getWidth() / 2;
+		var y = bds.getY() + bds.getHeight() / 2;
+		var hAlign = GraphicsUtil.H_CENTER;
+		var vAlign = GraphicsUtil.V_CENTER;
+		if (labelLoc == StdAttr.LABEL_CENTER) {
+			var offset = 0;
+			if ((avoid & AVOID_CENTER) != 0) offset = 3;
+			x = bds.getX() + (bds.getWidth() - offset) / 2;
+			y = bds.getY() + (bds.getHeight() - offset) / 2;
+		} else if (labelLoc == Direction.NORTH) {
+			y = bds.getY() - 2;
+			vAlign = GraphicsUtil.V_BOTTOM;
+			if ((avoid & AVOID_TOP) != 0) {
+				x += 2;
+				hAlign = GraphicsUtil.H_LEFT;
+			}
+		} else if (labelLoc == Direction.SOUTH) {
+			y = bds.getY() + bds.getHeight() + 2;
+			vAlign = GraphicsUtil.V_TOP;
+			if ((avoid & AVOID_BOTTOM) != 0) {
+				x += 2;
+				hAlign = GraphicsUtil.H_LEFT;
+			}
+		} else if (labelLoc == Direction.EAST) {
+			x = bds.getX() + bds.getWidth() + 2;
+			hAlign = GraphicsUtil.H_LEFT;
+			if ((avoid & AVOID_RIGHT) != 0) {
+				y -= 2;
+				vAlign = GraphicsUtil.V_BOTTOM;
+			}
+		} else if (labelLoc == Direction.WEST) {
+			x = bds.getX() - 2;
+			hAlign = GraphicsUtil.H_RIGHT;
+			if ((avoid & AVOID_LEFT) != 0) {
+				y -= 2;
+				vAlign = GraphicsUtil.V_BOTTOM;
+			}
+		}
+		setTextField(StdAttr.LABEL, StdAttr.LABEL_FONT, x, y, hAlign, vAlign);
+	}
+
 }

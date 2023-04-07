@@ -93,7 +93,7 @@ public class Constant extends InstanceFactory {
 			} else {
 				throw new IllegalArgumentException("unknown attribute " + attr);
 			}
-			fireAttributeValueChanged(attr, value);
+			fireAttributeValueChanged(attr, value, null);
 
 		}
 
@@ -116,10 +116,17 @@ public class Constant extends InstanceFactory {
 		}
 
 	}
-	
+
+	private static class ConstantHdlGeneratorFactory extends AbstractConstantHdlGeneratorFactory {
+		@Override
+		public long getConstant(AttributeSet attrs) {
+			return attrs.getValue(Constant.ATTR_VALUE);
+		}
+	}
+
 	public Constant() {
 
-		super("Constant", LC.createStringBinding("constantComponent"));
+		super("Constant", LC.createStringBinding("constantComponent"), new ConstantHdlGeneratorFactory());
 		setFacingAttribute(StdAttr.FACING);
 		setKeyConfigurator(JoinedConfigurator.create(
 				new ConstantConfigurator(),

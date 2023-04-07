@@ -18,15 +18,15 @@ public class Multiplier extends InstanceFactory {
 
 	static final int PER_DELAY = 1;
 
-	private static final int IN0   = 0;
-	private static final int IN1   = 1;
-	private static final int OUT   = 2;
-	private static final int C_IN  = 3;
-	private static final int C_OUT = 4;
+	static final int IN0   = 0;
+	static final int IN1   = 1;
+	static final int OUT   = 2;
+	static final int C_IN  = 3;
+	static final int C_OUT = 4;
 
 	public Multiplier() {
 
-		super("Multiplier", LC.createStringBinding("multiplierComponent"));
+		super("Multiplier", LC.createStringBinding("multiplierComponent"), new MultiplierHdlGeneratorFactory());
 		setAttributes(new Attribute[] { StdAttr.FPGA_SUPPORTED, StdAttr.WIDTH },
 				new Object[] { Boolean.FALSE, BitWidth.create(8) });
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
@@ -55,9 +55,9 @@ public class Multiplier extends InstanceFactory {
 		BitWidth dataWidth = state.getAttributeValue(StdAttr.WIDTH);
 
 		// compute outputs
-		Value a = state.getPort(IN0);
-		Value b = state.getPort(IN1);
-		Value c_in = state.getPort(C_IN);
+		Value a = state.getPortValue(IN0);
+		Value b = state.getPortValue(IN1);
+		Value c_in = state.getPortValue(C_IN);
 		Value[] outs = Multiplier.computeProduct(dataWidth, a, b, c_in);
 
 		// propagate them

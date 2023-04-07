@@ -78,7 +78,7 @@ public class ProjectActions {
 		String msg = StringUtil.format(LC.get("templateOpenError"),
 				ex.toString());
 		String ttl = LC.get("templateOpenErrorTitle");
-		DialogManager.CreateErrorDialog(ttl,msg);
+		DialogManager.createErrorDialog(ttl,msg);
 	}
 
 	private static LogisimFile createEmptyFile(Loader loader) {
@@ -217,7 +217,7 @@ public class ProjectActions {
 
 			if (proj.isFileDirty()) {
 
-				int type = DialogManager.CreateFileReloadDialog(proj);
+				int type = DialogManager.createFileReloadDialog(proj);
 
 				if(type == 2){
 					FrameManager.ReloadFrame(proj);
@@ -280,7 +280,7 @@ public class ProjectActions {
 
 		} catch (LoadFailedException ex) {
 			if (!ex.isShown()) {
-				DialogManager.CreateStackTraceDialog(LC.get("fileOpenErrorTitle"),StringUtil.format(LC.get("fileOpenError"),
+				DialogManager.createStackTraceDialog(LC.get("fileOpenErrorTitle"),StringUtil.format(LC.get("fileOpenError"),
 						ex.toString()),ex);
 			}
 			return null;

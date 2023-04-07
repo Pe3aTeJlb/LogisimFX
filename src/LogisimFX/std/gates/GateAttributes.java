@@ -13,7 +13,7 @@ import javafx.scene.text.Font;
 
 import java.util.List;
 
-class GateAttributes extends AbstractAttributeSet {
+public class GateAttributes extends AbstractAttributeSet {
 
 	static final int MAX_INPUTS = 32;
 	static final int DELAY = 1;
@@ -103,7 +103,7 @@ class GateAttributes extends AbstractAttributeSet {
 
 	@Override
 	public <V> void setValue(Attribute<V> attr, V value) {
-
+		String oldvalue = "";
 		if (attr == StdAttr.WIDTH) {
 			width = (BitWidth) value;
 			int bits = width.getWidth();
@@ -114,6 +114,7 @@ class GateAttributes extends AbstractAttributeSet {
 		} else if (attr == StdAttr.FACING) {
 			facing = (Direction) value;
 		} else if (attr == StdAttr.LABEL) {
+			oldvalue = label;
 			label = (String) value;
 		} else if (attr == StdAttr.LABEL_FONT) {
 			labelFont = (Font) value;
@@ -136,7 +137,7 @@ class GateAttributes extends AbstractAttributeSet {
 		} else {
 			throw new IllegalArgumentException("unrecognized argument");
 		}
-		fireAttributeValueChanged(attr, value);
+		fireAttributeValueChanged(attr, value, attr == StdAttr.LABEL ? (V) oldvalue : null);
 
 	}
 

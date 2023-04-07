@@ -7,6 +7,7 @@
 package LogisimFX.std.plexers;
 
 import LogisimFX.data.*;
+import LogisimFX.fpga.designrulecheck.CorrectLabel;
 import LogisimFX.instance.*;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.std.LC;
@@ -20,16 +21,18 @@ public class BitSelector extends InstanceFactory {
 
 	public static final Attribute<BitWidth> GROUP_ATTR
 		= Attributes.forBitWidth("group", LC.createStringBinding("bitSelectorGroupAttr"));
+	public static final Attribute<Integer> SELECT_ATTR = Attributes.integerForNoSave();
+	public static final Attribute<Integer> EXTENDED_ATTR = Attributes.integerForNoSave();
 
 	public BitSelector() {
 
-		super("BitSelector", LC.createStringBinding("bitSelectorComponent"));
+		super("BitSelector", LC.createStringBinding("bitSelectorComponent"), new BitSelectorHdlGeneratorFactory());
 		setAttributes(new Attribute[] {
 				StdAttr.FPGA_SUPPORTED,
-				StdAttr.FACING, StdAttr.WIDTH, GROUP_ATTR
+				StdAttr.FACING, StdAttr.WIDTH, GROUP_ATTR, SELECT_ATTR, EXTENDED_ATTR
 			}, new Object[] {
 				Boolean.FALSE,
-				Direction.EAST, BitWidth.create(8), BitWidth.ONE
+				Direction.EAST, BitWidth.create(8), BitWidth.ONE, 3, 9
 			});
 		setKeyConfigurator(JoinedConfigurator.create(
 				new BitWidthConfigurator(GROUP_ATTR, 1, Value.MAX_WIDTH, null),
@@ -111,8 +114,8 @@ public class BitSelector extends InstanceFactory {
 	@Override
 	public void propagate(InstanceState state) {
 
-		Value data = state.getPort(1);
-		Value select = state.getPort(2);
+		Value data = state.getPortValue(1);
+		Value select = state.getPortValue(2);
 		BitWidth groupBits = state.getAttributeValue(GROUP_ATTR);
 		Value group;
 		if (!select.isFullyDefined()) {
@@ -163,6 +166,14 @@ public class BitSelector extends InstanceFactory {
 
 		g.toDefault();
 
+	}
+
+	@Override
+	public String getHDLName(AttributeSet attrs) {
+		final var completeName = new StringBuilder();
+		completeName.append(CorrectLabel.getCorrectLabel(this.getName()));
+		if (attrs.getValue(GROUP_ATTR).getWidth() > 1) completeName.append("_bus");
+		return completeName.toString();
 	}
 
 }

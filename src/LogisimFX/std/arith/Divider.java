@@ -18,11 +18,11 @@ public class Divider extends InstanceFactory {
 
 	static final int PER_DELAY = 1;
 
-	private static final int IN0   = 0;
-	private static final int IN1   = 1;
-	private static final int OUT   = 2;
-	private static final int UPPER = 3;
-	private static final int REM   = 4;
+	static final int IN0   = 0;
+	static final int IN1   = 1;
+	static final int OUT   = 2;
+	static final int UPPER = 3;
+	static final int REM   = 4;
 
 	public Divider() {
 
@@ -55,9 +55,9 @@ public class Divider extends InstanceFactory {
 		BitWidth dataWidth = state.getAttributeValue(StdAttr.WIDTH);
 
 		// compute outputs
-		Value a = state.getPort(IN0);
-		Value b = state.getPort(IN1);
-		Value upper = state.getPort(UPPER);
+		Value a = state.getPortValue(IN0);
+		Value b = state.getPortValue(IN1);
+		Value upper = state.getPortValue(UPPER);
 		Value[] outs = Divider.computeResult(dataWidth, a, b, upper);
 
 		// propagate them

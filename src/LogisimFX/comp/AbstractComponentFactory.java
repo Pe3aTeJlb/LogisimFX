@@ -8,6 +8,9 @@ package LogisimFX.comp;
 
 import LogisimFX.IconsManager;
 import LogisimFX.data.*;
+import LogisimFX.fpga.designrulecheck.CorrectLabel;
+import LogisimFX.fpga.designrulecheck.netlistComponent;
+import LogisimFX.fpga.hdlgenerator.HdlGeneratorFactory;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.std.LC;
 import LogisimFX.LogisimVersion;
@@ -21,9 +24,20 @@ public abstract class AbstractComponentFactory implements ComponentFactory {
 	public ImageView icon = IconsManager.getIcon("subcirc.gif");
 
 	private AttributeSet defaultSet;
-	
+	private final HdlGeneratorFactory myHDLGenerator;
+	private final boolean requiresLabel;
+	private final boolean requiresGlobalClockConnection;
+
 	protected AbstractComponentFactory() {
+		this(null, false, false);
+	}
+
+	protected AbstractComponentFactory(
+			HdlGeneratorFactory generator, boolean requiresLabel, boolean requiresGlobalClock) {
 		defaultSet = null;
+		myHDLGenerator = generator;
+		this.requiresLabel = requiresLabel;
+		requiresGlobalClockConnection = requiresGlobalClock;
 	}
 
 	@Override
@@ -71,6 +85,59 @@ public abstract class AbstractComponentFactory implements ComponentFactory {
 
 	public Object getFeature(Object key, AttributeSet attrs) {
 		return null;
+	}
+
+
+	@Override
+	public HdlGeneratorFactory getHDLGenerator(AttributeSet attrs) {
+		if (isHDLSupportedComponent(attrs)) return myHDLGenerator;
+		else return null;
+	}
+
+	@Override
+	public String getHDLName(AttributeSet attrs) {
+		return CorrectLabel.getCorrectLabel(this.getName());
+	}
+
+	@Override
+	public boolean activeOnHigh(AttributeSet attrs) {
+		return true;
+	}
+
+	@Override
+	public boolean checkForGatedClocks(netlistComponent comp) {
+		return false;
+	}
+
+	@Override
+	public int[] clockPinIndex(netlistComponent comp) {
+		return new int[] {0};
+	}
+
+	@Override
+	public boolean hasThreeStateDrivers(AttributeSet attrs) {
+		return false;
+	}
+
+	@Override
+	public boolean isHDLSupportedComponent(AttributeSet attrs) {
+		if (myHDLGenerator != null) return myHDLGenerator.isHdlSupportedTarget(attrs);
+		return false;
+	}
+
+	@Override
+	public boolean isHDLGeneratorAvailable() {
+		return myHDLGenerator != null;
+	}
+
+	@Override
+	public boolean requiresGlobalClock() {
+		return requiresGlobalClockConnection;
+	}
+
+	@Override
+	public boolean requiresNonZeroLabel() {
+		return requiresLabel;
 	}
 
 }

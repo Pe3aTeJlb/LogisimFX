@@ -33,17 +33,19 @@ public class Shifter extends InstanceFactory {
 				new AttributeOption[] { SHIFT_LOGICAL_LEFT, SHIFT_LOGICAL_RIGHT,
 					SHIFT_ARITHMETIC_RIGHT, SHIFT_ROLL_LEFT, SHIFT_ROLL_RIGHT });
 
-	private static final int IN0   = 0;
-	private static final int IN1   = 1;
-	private static final int OUT   = 2;
+	public static final Attribute<Integer> SHIFT_BITS_ATTR = Attributes.integerForNoSave();
+
+	static final int IN0   = 0;
+	static final int IN1   = 1;
+	static final int OUT   = 2;
 
 	public Shifter() {
 
-		super("Shifter", LC.createStringBinding("shifterComponent"));
+		super("Shifter", LC.createStringBinding("shifterComponent"), new ShifterHdlGeneratorFactory());
 		setAttributes(new Attribute[] {
-				StdAttr.FPGA_SUPPORTED, StdAttr.WIDTH, ATTR_SHIFT
+				StdAttr.FPGA_SUPPORTED, StdAttr.WIDTH, ATTR_SHIFT, SHIFT_BITS_ATTR
 			}, new Object[] {
-				Boolean.FALSE, BitWidth.create(8), SHIFT_LOGICAL_LEFT
+				Boolean.FALSE, BitWidth.create(8), SHIFT_LOGICAL_LEFT, 4
 			});
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
 		setOffsetBounds(Bounds.create(-40, -20, 40, 40));
@@ -74,6 +76,7 @@ public class Shifter extends InstanceFactory {
 		int data = dataWid == null ? 32 : dataWid.getWidth();
 		int shift = 1;
 		while ((1 << shift) < data) shift++;
+		instance.getAttributeSet().setValue(SHIFT_BITS_ATTR, shift);
 
 		Port[] ps = new Port[3];
 		ps[IN0]   = new Port(-40, -10, Port.INPUT,  data);
@@ -92,8 +95,8 @@ public class Shifter extends InstanceFactory {
 		// compute output
 		BitWidth dataWidth = state.getAttributeValue(StdAttr.WIDTH);
 		int bits = dataWidth == null ? 32 : dataWidth.getWidth();
-		Value vx = state.getPort(IN0);
-		Value vd = state.getPort(IN1);
+		Value vx = state.getPortValue(IN0);
+		Value vd = state.getPortValue(IN1);
 		Value vy; // y will by x shifted by d
 		if (vd.isFullyDefined() && vx.getWidth() == bits) {
 			int d = vd.toIntValue();
@@ -201,6 +204,11 @@ public class Shifter extends InstanceFactory {
 		double[] py = { y + d, y, y - d };
 		g.c.fillPolygon(px, py, 3);
 
+	}
+
+	@Override
+	public String getHDLName(AttributeSet attrs) {
+		return "Shifter_" + attrs.getValue(StdAttr.WIDTH).getWidth() + "_bit";
 	}
 
 }

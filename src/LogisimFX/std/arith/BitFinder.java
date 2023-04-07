@@ -109,7 +109,7 @@ public class BitFinder extends InstanceFactory {
 		int outWidth = computeOutputBits(width - 1);
 		Object type = state.getAttributeValue(TYPE);
 
-		Value[] bits = state.getPort(2).getAll();
+		Value[] bits = state.getPortValue(2).getAll();
 		Value want;
 		int i;
 		if (type == HIGH_ZERO) {

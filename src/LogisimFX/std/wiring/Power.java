@@ -19,9 +19,21 @@ import LogisimFX.circuit.Wire;
 
 public class Power extends InstanceFactory {
 
+	private static class PowerHdlGeneratorFactory extends AbstractConstantHdlGeneratorFactory {
+		@Override
+		public long getConstant(AttributeSet attrs) {
+			long ConstantValue = 0;
+			for (int bit = 0; bit < attrs.getValue(StdAttr.WIDTH).getWidth(); bit++) {
+				ConstantValue <<= 1;
+				ConstantValue |= 1;
+			}
+			return ConstantValue;
+		}
+	}
+
 	public Power() {
 
-		super("Power", LC.createStringBinding("powerComponent"));
+		super("Power", LC.createStringBinding("powerComponent"), new PowerHdlGeneratorFactory());
 		setIcon("power.gif");
 		setAttributes(new Attribute[] { StdAttr.FPGA_SUPPORTED, StdAttr.FACING, StdAttr.WIDTH },
 				new Object[] { Boolean.FALSE, Direction.NORTH, BitWidth.ONE });
@@ -80,7 +92,7 @@ public class Power extends InstanceFactory {
 
 		Graphics g = painter.getGraphics();
 		Location loc = painter.getLocation();
-		g.translate(loc.getX(), loc.getY());
+		g.c.translate(loc.getX(), loc.getY());
 
 		Direction from = painter.getAttributeValue(StdAttr.FACING);
 		int degrees = Direction.EAST.toDegrees() - from.toDegrees();
@@ -89,7 +101,7 @@ public class Power extends InstanceFactory {
 
 		g.setLineWidth(Wire.WIDTH);
 		if (!isGhost && painter.getShowState()) {
-			g.setColor(painter.getPort(0).getColor());
+			g.setColor(painter.getPortValue(0).getColor());
 		}
 		g.c.strokeLine(0, 0, 5, 0);
 
@@ -101,6 +113,7 @@ public class Power extends InstanceFactory {
 		g.c.strokePolygon(new double[] { 6, 14, 6 }, new double[] { -8, 0, 8 }, 3);
 
 		g.toDefault();
+		g.c.translate(-loc.getX(), -loc.getY());
 
 	}
 

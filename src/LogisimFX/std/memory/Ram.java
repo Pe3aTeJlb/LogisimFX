@@ -7,6 +7,8 @@
 package LogisimFX.std.memory;
 
 import LogisimFX.data.*;
+import LogisimFX.fpga.designrulecheck.CorrectLabel;
+import LogisimFX.fpga.designrulecheck.netlistComponent;
 import LogisimFX.instance.*;
 import LogisimFX.circuit.CircuitState;
 import LogisimFX.newgui.FrameManager;
@@ -28,12 +30,23 @@ public class Ram extends Mem {
 			new AttributeOption[] { BUS_COMBINED, BUS_ASYNCH, BUS_SEPARATE });
 
 	private static Attribute<?>[] ATTRIBUTES = {
-		StdAttr.FPGA_SUPPORTED,
-		Mem.ADDR_ATTR, Mem.DATA_ATTR, ATTR_BUS
+			StdAttr.FPGA_SUPPORTED,
+			Mem.ADDR_ATTR,
+			Mem.DATA_ATTR,
+			ATTR_BUS,
+			StdAttr.LABEL,
+			StdAttr.LABEL_FONT,
+			StdAttr.LABEL_VISIBILITY
+
 	};
 	private static Object[] DEFAULTS = {
-		Boolean.FALSE,
-		BitWidth.create(8), BitWidth.create(8), BUS_COMBINED
+			Boolean.FALSE,
+			BitWidth.create(8),
+			BitWidth.create(8),
+			BUS_COMBINED,
+			"",
+			StdAttr.DEFAULT_LABEL_FONT,
+			Boolean.TRUE
 	};
 	
 	private static final int OE  = MEM_INPUTS + 0;
@@ -162,11 +175,11 @@ public class Ram extends Mem {
 		boolean asynch = busVal == null ? false : busVal.equals(BUS_ASYNCH);
 		boolean separate = busVal == null ? false : busVal.equals(BUS_SEPARATE);
 
-		Value addrValue = state.getPort(ADDR);
-		boolean chipSelect = state.getPort(CS) != Value.FALSE;
-		boolean triggered = asynch || myState.setClock(state.getPort(CLK), StdAttr.TRIG_RISING);
-		boolean outputEnabled = state.getPort(OE) != Value.FALSE;
-		boolean shouldClear = state.getPort(CLR) == Value.TRUE;
+		Value addrValue = state.getPortValue(ADDR);
+		boolean chipSelect = state.getPortValue(CS) != Value.FALSE;
+		boolean triggered = asynch || myState.setClock(state.getPortValue(CLK), StdAttr.TRIG_RISING);
+		boolean outputEnabled = state.getPortValue(OE) != Value.FALSE;
+		boolean shouldClear = state.getPortValue(CLR) == Value.TRUE;
 
 		if (shouldClear) {
 			myState.getContents().clear();
@@ -189,12 +202,12 @@ public class Ram extends Mem {
 		if (!shouldClear && triggered) {
 			boolean shouldStore;
 			if (separate) {
-				shouldStore = state.getPort(WE) != Value.FALSE;
+				shouldStore = state.getPortValue(WE) != Value.FALSE;
 			} else {
 				shouldStore = !outputEnabled;
 			}
 			if (shouldStore) {
-				Value dataValue = state.getPort(separate ? DIN : DATA);
+				Value dataValue = state.getPortValue(separate ? DIN : DATA);
 				myState.getContents().set(addr, dataValue.toIntValue());
 			}
 		}
@@ -361,6 +374,24 @@ public class Ram extends Mem {
 
 		}
 
+	}
+
+
+	@Override
+	public String getHDLName(AttributeSet attrs) {
+		final var label = CorrectLabel.getCorrectLabel(attrs.getValue(StdAttr.LABEL));
+		return (label.length() == 0)
+				? "RAM"
+				: "RAMCONTENTS_" + label;
+	}
+
+	@Override
+	public boolean checkForGatedClocks(netlistComponent comp) {
+		return true;
+	}
+	@Override
+	public int[] clockPinIndex(netlistComponent comp) {
+		return new int[] {CLK};
 	}
 
 }

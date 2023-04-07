@@ -11,6 +11,9 @@ import LogisimFX.circuit.appear.CircuitAppearanceListener;
 import LogisimFX.data.*;
 import LogisimFX.instance.Instance;
 import LogisimFX.instance.StdAttr;
+import LogisimFX.newgui.DialogManager;
+import LogisimFX.std.wiring.Pin;
+import LogisimFX.util.SyntaxChecker;
 import javafx.scene.text.Font;
 
 import java.util.Arrays;
@@ -56,7 +59,37 @@ public class CircuitAttributes extends AbstractAttributeSet {
 
 		public void attributeValueChanged(AttributeEvent e) {
 			if (e.getAttribute() == NAME_ATTR) {
-				source.fireEvent(CircuitEvent.ACTION_SET_NAME, e.getValue());
+
+				final var NewName = (String) e.getValue();
+				final var OldName =
+						e.getOldValue() == null ? "ThisShouldNotHappen" : (String) e.getOldValue();
+
+				if (!NewName.equals(OldName)) {
+					if (NewName.isEmpty()) {
+						DialogManager.createErrorDialog("Error!", LC.get("EmptyNameError"));
+						e.getSource().setValue(NAME_ATTR, OldName);
+						source.fireEvent(CircuitEvent.ACTION_SET_NAME, OldName);
+						return;
+					} else if (!SyntaxChecker.isVariableNameAcceptable(NewName, true)) {
+						e.getSource().setValue(NAME_ATTR, OldName);
+						source.fireEvent(CircuitEvent.ACTION_SET_NAME, OldName);
+						return;
+					} else {
+						for (final var component : source.getNonWires()) {
+							if (component.getFactory() instanceof Pin) {
+								final var label = component.getAttributeSet().getValue(StdAttr.LABEL).toUpperCase();
+								if (!label.isEmpty() && label.equals(NewName.toUpperCase())) {
+									final var msg = LC.get("CircuitSameInputOutputLabel");
+									DialogManager.createErrorDialog("Error!", NewName + "\" : " + msg );
+									e.getSource().setValue(NAME_ATTR, OldName);
+									source.fireEvent(CircuitEvent.ACTION_SET_NAME, OldName);
+									return;
+								}
+							}
+						}
+						source.fireEvent(CircuitEvent.ACTION_SET_NAME, NewName);
+					}
+				}
 			}
 		}
 	}
@@ -67,7 +100,7 @@ public class CircuitAttributes extends AbstractAttributeSet {
 		public void attributeValueChanged(AttributeEvent e) {
 			@SuppressWarnings("unchecked")
 			Attribute<Object> a = (Attribute<Object>) e.getAttribute();
-			fireAttributeValueChanged(a, e.getValue());
+			fireAttributeValueChanged(a, e.getValue(), e.getOldValue());
 		}
 
 		public void circuitAppearanceChanged(CircuitAppearanceEvent e) {
@@ -169,20 +202,21 @@ public class CircuitAttributes extends AbstractAttributeSet {
 		if (attr == StdAttr.FACING) {
 			Direction val = (Direction) value;
 			facing = val;
-			fireAttributeValueChanged(StdAttr.FACING, val);
+			fireAttributeValueChanged(StdAttr.FACING, val, null);
 			if (subcircInstance != null) subcircInstance.recomputeBounds();
 		} else if (attr == StdAttr.LABEL) {
+			String oldval = label;
 			String val = (String) value;
 			label = val;
-			fireAttributeValueChanged(StdAttr.LABEL, val);
+			fireAttributeValueChanged(StdAttr.LABEL, val, oldval);
 		} else if (attr == StdAttr.LABEL_FONT) {
 			Font val = (Font) value;
 			labelFont = val;
-			fireAttributeValueChanged(StdAttr.LABEL_FONT, val);
+			fireAttributeValueChanged(StdAttr.LABEL_FONT, val, null);
 		} else if (attr == LABEL_LOCATION_ATTR) {
 			Direction val = (Direction) value;
 			labelLocation = val;
-			fireAttributeValueChanged(LABEL_LOCATION_ATTR, val);
+			fireAttributeValueChanged(LABEL_LOCATION_ATTR, val, null);
 		} else if (attr == StdAttr.FPGA_SUPPORTED) {
 			fpga = (Boolean)value;
 		} else {

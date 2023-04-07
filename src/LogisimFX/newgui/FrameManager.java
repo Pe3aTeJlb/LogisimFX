@@ -100,7 +100,7 @@ public class FrameManager {
 
                 if (proj.isFileDirty()){
 
-                    int type = DialogManager.CreateConfirmCloseDialog(proj);
+                    int type = DialogManager.createConfirmCloseDialog(proj);
 
                     if (type == 2) {
 
@@ -224,7 +224,7 @@ public class FrameManager {
         if(i>0){
             CreateNewFrame("LogisimFX/newgui/PrintFrame/Print.fxml", proj, Modality.APPLICATION_MODAL);
         }else{
-            DialogManager.CreateErrorDialog(LC_gui.getInstance().get("printEmptyCircuitsTitle"), LC_gui.getInstance().get("printEmptyCircuitsMessage"));
+            DialogManager.createErrorDialog(LC_gui.getInstance().get("printEmptyCircuitsTitle"), LC_gui.getInstance().get("printEmptyCircuitsMessage"));
         }
 
     }
@@ -241,7 +241,7 @@ public class FrameManager {
         if(i>0) {
             CreateNewFrame("LogisimFX/newgui/ExportImageFrame/ExportImage.fxml", proj, Modality.APPLICATION_MODAL);
         }else {
-            DialogManager.CreateErrorDialog(LC_gui.getInstance().get("exportEmptyCircuitsTitle"), LC_gui.getInstance().get("exportEmptyCircuitsMessage"));
+            DialogManager.createErrorDialog(LC_gui.getInstance().get("exportEmptyCircuitsTitle"), LC_gui.getInstance().get("exportEmptyCircuitsMessage"));
         }
 
     }

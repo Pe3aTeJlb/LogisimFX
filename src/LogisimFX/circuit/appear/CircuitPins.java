@@ -27,6 +27,11 @@ public class CircuitPins {
 		}
 		public void componentInvalidated(ComponentEvent e) { }
 
+		@Override
+		public void labelChanged(ComponentEvent e) {
+
+		}
+
 		public void attributeListChanged(AttributeEvent e) { }
 		public void attributeValueChanged(AttributeEvent e) {
 			Attribute<?> attr = e.getAttribute();

@@ -10,7 +10,6 @@ import LogisimFX.circuit.Circuit;
 import LogisimFX.circuit.CircuitHdlGeneratorFactory;
 import LogisimFX.circuit.SubcircuitFactory;
 import LogisimFX.comp.Component;
-import LogisimFX.fpga.hdlgenerator.InlinedHdlGeneratorFactory;
 import LogisimFX.newgui.MainFrame.EditorTabs.CodeEditor.AutoCompletion.AutoCompletion;
 import LogisimFX.newgui.MainFrame.EditorTabs.CodeEditor.AutoCompletion.AutoCompletionWords;
 import LogisimFX.newgui.MainFrame.EditorTabs.EditHandler;
@@ -41,6 +40,7 @@ import org.fxmisc.undo.UndoManager;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -145,11 +145,13 @@ public class CodeEditor extends EditorBase {
         StringBuilder builder = new StringBuilder();
 
         if (comp.getFactory().getHDLGenerator(comp.getAttributeSet()).isOnlyInlined()){
-
+            circ.getNetList().designRuleCheckResult(proj.getLogisimFile().getMainCircuit() == circ, new ArrayList<>());
             builder.append(
                     comp.getFactory().getHDLGenerator(
                             comp.getAttributeSet()).getInlinedCode(
-                            circ.getNetList(), 0L, null, circ.getName()
+                            circ.getNetList(), 0L,
+                            circ.getNetList().getNormalComponents().stream().filter(net -> net.getComponent() == comp).findFirst().get(),
+                            circ.getName()
                             ).toString()
             ).append("\n");
 

@@ -7,6 +7,7 @@
 package LogisimFX.std.memory;
 
 import LogisimFX.data.*;
+import LogisimFX.fpga.designrulecheck.netlistComponent;
 import LogisimFX.instance.*;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.std.LC;
@@ -16,17 +17,17 @@ import LogisimFX.util.StringUtil;
 
 public class Random extends InstanceFactory {
 
-	private static final Attribute<Integer> ATTR_SEED
+	static final Attribute<Integer> ATTR_SEED
 		= Attributes.forInteger("seed", LC.createStringBinding("randomSeedAttr"));
 
-	private static final int OUT = 0;
-	private static final int CK  = 1;
-	private static final int NXT = 2;
-	private static final int RST = 3;
+	static final int OUT = 0;
+	static final int CK  = 1;
+	static final int NXT = 2;
+	static final int RST = 3;
 
 	public Random() {
 
-		super("Random", LC.createStringBinding("randomComponent"));
+		super("Random", LC.createStringBinding("randomComponent"), new RandomHdlGeneratorFactory());
 		setAttributes(new Attribute[] {
 				StdAttr.FPGA_SUPPORTED,
 				StdAttr.WIDTH, ATTR_SEED, StdAttr.EDGE_TRIGGER,
@@ -76,11 +77,11 @@ public class Random extends InstanceFactory {
 
 		BitWidth dataWidth = state.getAttributeValue(StdAttr.WIDTH);
 		Object triggerType = state.getAttributeValue(StdAttr.EDGE_TRIGGER);
-		boolean triggered = data.updateClock(state.getPort(CK), triggerType);
+		boolean triggered = data.updateClock(state.getPortValue(CK), triggerType);
 
-		if (state.getPort(RST) == Value.TRUE) {
+		if (state.getPortValue(RST) == Value.TRUE) {
 			data.reset(state.getAttributeValue(ATTR_SEED));
-		} else if (triggered && state.getPort(NXT) != Value.FALSE) {
+		} else if (triggered && state.getPortValue(NXT) != Value.FALSE) {
 			data.step();
 		}
 
@@ -194,6 +195,21 @@ public class Random extends InstanceFactory {
 
 		}
 
+	}
+
+
+	@Override
+	public String getHDLName(AttributeSet attrs) {
+		return "LogisimFXRND";
+	}
+
+	@Override
+	public boolean checkForGatedClocks(netlistComponent comp) {
+		return true;
+	}
+	@Override
+	public int[] clockPinIndex(netlistComponent comp) {
+		return new int[] {CK};
 	}
 
 }

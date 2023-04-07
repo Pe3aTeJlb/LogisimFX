@@ -41,7 +41,7 @@ class ControlledBuffer extends InstanceFactory {
 
 		super(isInverter ? "Controlled Inverter" : "Controlled Buffer",
 			isInverter ? LC.createStringBinding("controlledInverterComponent")
-					: LC.createStringBinding("controlledBufferComponent"));
+					: LC.createStringBinding("controlledBufferComponent"), new ControlledBufferHdlGenerator());
 		this.isInverter = isInverter;
 		if (isInverter) {
 			setAttributes(new Attribute[] { StdAttr.FPGA_SUPPORTED, StdAttr.FACING, StdAttr.WIDTH,
@@ -79,6 +79,10 @@ class ControlledBuffer extends InstanceFactory {
 
 	}
 
+	public boolean isInverter(){
+		return isInverter;
+	}
+
 	//
 	// graphics methods
 	//
@@ -110,7 +114,7 @@ class ControlledBuffer extends InstanceFactory {
 			pt1 = pt0.translate(face, 0, -6);
 		}
 		if (painter.getShowState()) {
-			g.setColor(painter.getPort(2).getColor());
+			g.setColor(painter.getPortValue(2).getColor());
 		}
 		g.c.strokeLine(pt0.getX(), pt0.getY(), pt1.getX(), pt1.getY());
 
@@ -212,10 +216,10 @@ class ControlledBuffer extends InstanceFactory {
 	@Override
 	public void propagate(InstanceState state) {
 
-		Value control = state.getPort(2);
+		Value control = state.getPortValue(2);
 		BitWidth width = state.getAttributeValue(StdAttr.WIDTH);
 		if (control == Value.TRUE) {
-			Value in = state.getPort(1);
+			Value in = state.getPortValue(1);
 			state.setPort(0, isInverter ? in.not() : in, GateAttributes.DELAY);
 		} else if (control == Value.ERROR || control == Value.UNKNOWN) {
 			state.setPort(0, Value.createError(width), GateAttributes.DELAY);

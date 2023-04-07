@@ -7,19 +7,52 @@
 package LogisimFX.std.gates;
 
 import LogisimFX.data.Value;
+import LogisimFX.fpga.hdlgenerator.Hdl;
 import LogisimFX.instance.InstancePainter;
 import LogisimFX.instance.InstanceState;
 import LogisimFX.newgui.AnalyzeFrame.Expression;
 import LogisimFX.newgui.AnalyzeFrame.Expressions;
 import LogisimFX.std.LC;
+import LogisimFX.std.arith.AdderHdlGeneratorFactory;
+import LogisimFX.util.LineBuffer;
 
 class AndGate extends AbstractGate {
 
 	public static AndGate FACTORY = new AndGate();
 
+	private static class AndGateHdlGeneratorFactory extends AbstractGateHdlGenerator {
+		@Override
+		public boolean getFloatingValue(boolean isInverted) {
+			return isInverted;
+		}
+
+		@Override
+		public LineBuffer getLogicFunction(int nrOfInputs, int bitwidth, boolean isOneHot) {
+			final var contents = LineBuffer.getHdlBuffer();
+			var oneLine = new StringBuilder();
+			oneLine.append(Hdl.assignPreamble()).append("result").append(Hdl.assignOperator());
+			final var tabWidth = oneLine.length();
+			var first = true;
+			for (int i = 0; i < nrOfInputs; i++) {
+				if (!first) {
+					oneLine.append(Hdl.andOperator());
+					contents.add(oneLine.toString());
+					oneLine.setLength(0);
+					oneLine.append(" ".repeat(tabWidth));
+				} else {
+					first = false;
+				}
+				oneLine.append(String.format("s_realInput%d", i + 1));
+			}
+			oneLine.append(";");
+			contents.add(oneLine.toString());
+			return contents;
+		}
+	}
+
 	private AndGate() {
 
-		super("AND Gate", LC.createStringBinding("andGateComponent"));
+		super("AND Gate", LC.createStringBinding("andGateComponent"), new AndGateHdlGeneratorFactory());
 		setRectangularLabel("&");
 		setIconNames("andGate.gif", "andGateRect.gif", "dinAndGate.gif");
 

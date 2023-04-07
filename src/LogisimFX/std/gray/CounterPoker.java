@@ -22,7 +22,7 @@ import javafx.scene.paint.Color;
 /** When the user clicks a counter using the Poke Tool, a CounterPoker object
  * is created, and that object will handle all user events. Note that
  * CounterPoker is a class specific to GrayCounter, and that it must be a
- * subclass of InstancePoker in the com.cburch.logisim.instance package. */
+ * subclass of InstancePoker in the LogisimFX.instance package. */
 public class CounterPoker extends InstancePoker {
 
 	public CounterPoker() { }

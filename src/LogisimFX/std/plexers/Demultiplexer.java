@@ -7,6 +7,7 @@
 package LogisimFX.std.plexers;
 
 import LogisimFX.data.*;
+import LogisimFX.fpga.designrulecheck.CorrectLabel;
 import LogisimFX.instance.*;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.std.LC;
@@ -21,7 +22,7 @@ public class Demultiplexer extends InstanceFactory {
 
 	public Demultiplexer() {
 
-		super("Demultiplexer", LC.createStringBinding("demultiplexerComponent"));
+		super("Demultiplexer", LC.createStringBinding("demultiplexerComponent"), new DemultiplexerHdlGeneratorFactory());
 		setAttributes(new Attribute[] {
 				StdAttr.FPGA_SUPPORTED,
 				StdAttr.FACING, Plexers.ATTR_SELECT_LOC, Plexers.ATTR_SELECT, StdAttr.WIDTH,
@@ -41,14 +42,7 @@ public class Demultiplexer extends InstanceFactory {
 	
 	@Override
 	public Object getDefaultAttributeValue(Attribute<?> attr, LogisimVersion ver) {
-
-		if (attr == Plexers.ATTR_ENABLE) {
-			int newer = ver.compareTo(LogisimVersion.get(2, 6, 3, 220));
-			return Boolean.valueOf(newer >= 0);
-		} else {
-			return super.getDefaultAttributeValue(attr, ver);
-		}
-
+		return super.getDefaultAttributeValue(attr, ver);
 	}
 
 	@Override
@@ -185,7 +179,7 @@ public class Demultiplexer extends InstanceFactory {
 		Boolean threeState = state.getAttributeValue(Plexers.ATTR_TRISTATE);
 		boolean enable = state.getAttributeValue(Plexers.ATTR_ENABLE).booleanValue();
 		int outputs = 1 << select.getWidth();
-		Value en = enable ? state.getPort(outputs + 1) : Value.TRUE;
+		Value en = enable ? state.getPortValue(outputs + 1) : Value.TRUE;
 
 		// determine output values
 		Value others; // the default output
@@ -203,10 +197,10 @@ public class Demultiplexer extends InstanceFactory {
 		} else if (en == Value.ERROR && state.isPortConnected(outputs + 1)) {
 			others = Value.createError(data);
 		} else {
-			Value sel = state.getPort(outputs);
+			Value sel = state.getPortValue(outputs);
 			if (sel.isFullyDefined()) {
 				outIndex = sel.toIntValue();
-				out = state.getPort(outputs + (enable ? 2 : 1));
+				out = state.getPortValue(outputs + (enable ? 2 : 1));
 			} else if (sel.isErrorValue()) {
 				others = Value.createError(data);
 			} else {
@@ -251,14 +245,14 @@ public class Demultiplexer extends InstanceFactory {
 		if (outputs == 2) { // draw select wire
 			Location sel = painter.getInstance().getPortLocation(outputs);
 			if (painter.getShowState()) {
-				g.setColor(painter.getPort(outputs).getColor());
+				g.setColor(painter.getPortValue(outputs).getColor());
 			}
 			g.c.strokeLine(sel.getX(), sel.getY(), sel.getX() + 2 * dx, sel.getY() + 2 * dy);
 		}
 		if (enable) {
 			Location en = painter.getInstance().getPortLocation(outputs + 1);
 			if (painter.getShowState()) {
-				g.setColor(painter.getPort(outputs + 1).getColor());
+				g.setColor(painter.getPortValue(outputs + 1).getColor());
 			}
 			int len = outputs == 2 ? 6 : 4;
 			g.c.strokeLine(en.getX(), en.getY(), en.getX() + len * dx, en.getY() + len * dy);
@@ -303,6 +297,22 @@ public class Demultiplexer extends InstanceFactory {
 
 		g.toDefault();
 
+	}
+
+
+	@Override
+	public String getHDLName(AttributeSet attrs) {
+		final var completeName = new StringBuilder();
+		completeName.append(CorrectLabel.getCorrectLabel(this.getName()));
+		if (attrs.getValue(StdAttr.WIDTH).getWidth() > 1) completeName.append("_bus");
+		completeName.append("_").append(1 << attrs.getValue(Plexers.ATTR_SELECT).getWidth());
+		return completeName.toString();
+	}
+
+	@Override
+	public boolean hasThreeStateDrivers(AttributeSet attrs) {
+		return (attrs.getValue(Plexers.ATTR_TRISTATE)
+				|| (attrs.getValue(Plexers.ATTR_DISABLED) == Plexers.DISABLED_FLOATING));
 	}
 
 }

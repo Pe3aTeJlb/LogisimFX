@@ -71,9 +71,9 @@ public class Keyboard extends InstanceFactory {
 
 		Object trigger = circState.getAttributeValue(StdAttr.EDGE_TRIGGER);
 		KeyboardData state = getKeyboardState(circState);
-		Value clear = circState.getPort(CLR);
-		Value clock = circState.getPort(CK);
-		Value enable = circState.getPort(RE);
+		Value clear = circState.getPortValue(CLR);
+		Value clock = circState.getPortValue(CK);
+		Value enable = circState.getPortValue(RE);
 		char c;
 
 		synchronized(state) {

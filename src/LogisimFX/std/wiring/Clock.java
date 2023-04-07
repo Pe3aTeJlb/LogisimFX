@@ -30,19 +30,41 @@ public class Clock extends InstanceFactory {
 		= new DurationAttribute("lowDuration", LC.createStringBinding("clockLowAttr"),
 				1, Integer.MAX_VALUE);
 
+	public static final Attribute<Integer> ATTR_PHASE =
+			new DurationAttribute("phaseOffset", LC.createStringBinding("clockPhaseAttr"), 0, Integer.MAX_VALUE);
+
 	public static final Clock FACTORY = new Clock();
 
 	private static final ImageView icon = IconsManager.getIcon("clock.gif");
 
 	public static class ClockState implements InstanceData, Cloneable {
 
-		public Value sending = Value.FALSE;
+		public Value sending = Value.UNKNOWN;
 		public int clicks = 0;
+
+		protected ClockState(long curTick, AttributeSet attrs) {
+			updateTick(curTick, attrs);
+		}
+
+		boolean updateTick(long ticks, AttributeSet attrs) {
+			int durationHigh = attrs.getValue(ATTR_HIGH);
+			int durationLow = attrs.getValue(ATTR_LOW);
+			int cycle = durationHigh + durationLow;
+			int phase = ((attrs.getValue(ATTR_PHASE) % cycle) + cycle) % cycle;
+			boolean isLow = ((ticks + phase) % cycle) < durationLow;
+			Value desired = (isLow ? Value.FALSE : Value.TRUE);
+			if (sending.equals(desired)) return false;
+			sending = desired;
+			return true;
+		}
 
 		@Override
 		public ClockState clone() {
-			try { return (ClockState) super.clone(); }
-			catch (CloneNotSupportedException e) { return null; }
+			try {
+				return (ClockState) super.clone();
+			} catch (CloneNotSupportedException e) {
+				return null;
+			}
 		}
 
 	}
@@ -95,14 +117,14 @@ public class Clock extends InstanceFactory {
 
 	public Clock() {
 
-		super("Clock", LC.createStringBinding("clockComponent"));
+		super("Clock", LC.createStringBinding("clockComponent"), new ClockHdlGeneratorFactory());
 		setAttributes(new Attribute[] {
 					StdAttr.FPGA_SUPPORTED,
-					StdAttr.FACING, ATTR_HIGH, ATTR_LOW,
+					StdAttr.FACING, ATTR_HIGH, ATTR_LOW, ATTR_PHASE,
 					StdAttr.LABEL, Pin.ATTR_LABEL_LOC, StdAttr.LABEL_FONT
 				}, new Object[] {
 					Boolean.FALSE,
-					Direction.EAST, Integer.valueOf(1), Integer.valueOf(1),
+					Direction.EAST, 1, 1, 0,
 					"", Direction.WEST, StdAttr.DEFAULT_LABEL_FONT
 				});
 		setFacingAttribute(StdAttr.FACING);
@@ -198,7 +220,7 @@ public class Clock extends InstanceFactory {
 	@Override
 	public void propagate(InstanceState state) {
 
-		Value val = state.getPort(0);
+		Value val = state.getPortValue(0);
 		ClockState q = getState(state);
 		if (!val.equals(q.sending)) { // ignore if no change
 			state.setPort(0, q.sending, 1);
@@ -216,7 +238,7 @@ public class Clock extends InstanceFactory {
 		int durationLow = attrs.getValue(ATTR_LOW).intValue();
 		ClockState state = (ClockState) circState.getData(comp);
 		if (state == null) {
-			state = new ClockState();
+			state = new ClockState(ticks, attrs);
 			circState.setData(comp, state);
 		}
 		boolean curValue = ticks % (durationHigh + durationLow) < durationLow;
@@ -247,11 +269,17 @@ public class Clock extends InstanceFactory {
 
 		ClockState ret = (ClockState) state.getData();
 		if (ret == null) {
-			ret = new ClockState();
+			ret = new ClockState(state.getTickCount(), state.getAttributeSet());
 			state.setData(ret);
 		}
 		return ret;
 
+	}
+
+
+	@Override
+	public String getHDLName(AttributeSet attrs) {
+		return "LogisimFXClockComponent";
 	}
 
 }

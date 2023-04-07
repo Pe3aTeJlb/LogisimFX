@@ -412,7 +412,7 @@ public class AddTool extends Tool {
 				lastAddition = action;
 				added = c;
 			} catch (CircuitException ex) {
-				DialogManager.CreateStackTraceDialog("",ex.getCause().toString(),ex);
+				DialogManager.createStackTraceDialog("",ex.getCause().toString(),ex);
 			}
 			setState(canvas, SHOW_GHOST);
 		} else if (state == SHOW_ADD_NO) {

@@ -6,31 +6,44 @@
 
 package LogisimFX.std.io;
 
-import LogisimFX.data.Attribute;
-import LogisimFX.data.BitWidth;
-import LogisimFX.data.Bounds;
-import LogisimFX.data.Value;
+import LogisimFX.KeyEvents;
+import LogisimFX.data.*;
 import LogisimFX.instance.*;
 import LogisimFX.std.LC;
+import LogisimFX.tools.key.DirectionConfigurator;
 import javafx.scene.paint.Color;
 
 public class HexDigit extends InstanceFactory {
 
+	protected static final int HEX = 0;
+	protected static final int DP = 1;
+
 	public HexDigit() {
 
-		super("Hex Digit Display", LC.createStringBinding("hexDigitComponent"));
+		super("Hex Digit Display", LC.createStringBinding("hexDigitComponent"), new HexDigitHdlGeneratorFactory(), true);
 		setAttributes(new Attribute[] {
 						StdAttr.FPGA_SUPPORTED,
-				Io.ATTR_ON_COLOR, Io.ATTR_OFF_COLOR,
-					Io.ATTR_BACKGROUND },
-				new Object[] { Boolean.FALSE, Color.color(0.941, 0, 0), SevenSegment.DEFAULT_OFF,
-					Io.DEFAULT_BACKGROUND });
-		setPorts(new Port[] {
-				new Port( 0, 0, Port.INPUT, 4),
-				new Port(10, 0, Port.INPUT, 1)
-			});
+						Io.ATTR_ON_COLOR,
+						Io.ATTR_OFF_COLOR,
+						Io.ATTR_BACKGROUND,
+						StdAttr.LABEL,
+						StdAttr.LABEL_LOC,
+						StdAttr.LABEL_FONT,
+						StdAttr.LABEL_VISIBILITY
+				},
+				new Object[] {
+						Boolean.FALSE,
+						Color.color(0.941, 0, 0),
+						SevenSegment.DEFAULT_OFF,
+						Io.DEFAULT_BACKGROUND,
+						"",
+						Direction.EAST,
+						StdAttr.DEFAULT_LABEL_FONT,
+						Boolean.FALSE
+		});
 		setOffsetBounds(Bounds.create(-15, -60, 40, 60));
 		setIcon("hexdig.gif");
+		setKeyConfigurator(new DirectionConfigurator(StdAttr.LABEL_LOC, KeyEvents.ALT_DOWN));
 
 	}
 
@@ -38,7 +51,7 @@ public class HexDigit extends InstanceFactory {
 	public void propagate(InstanceState state) {
 
 		int summary = 0;
-		Value baseVal = state.getPort(0);
+		Value baseVal = state.getPortValue(0);
 		if (baseVal == null) baseVal = Value.createUnknown(BitWidth.create(4));
 		int segs; // each nibble is one segment, in top-down, left-to-right
 		  // order: middle three nibbles are the three horizontal segments
@@ -68,7 +81,7 @@ public class HexDigit extends InstanceFactory {
 		if ((segs & 0x10000) != 0) summary |= 1; // horizontal seg at top
 		if ((segs & 0x100000) != 0) summary |= 16; // vertical seg at bottom left
 		if ((segs & 0x1000000) != 0) summary |= 32; // vertical seg at top left
-		if (state.getPort(1) == Value.TRUE) summary |= 128;
+		if (state.getPortValue(1) == Value.TRUE) summary |= 128;
 		
 		Object value = Integer.valueOf(summary);
 		InstanceDataSingleton data = (InstanceDataSingleton) state.getData();
@@ -78,6 +91,32 @@ public class HexDigit extends InstanceFactory {
 			data.setValue(value);
 		}
 
+	}
+
+	@Override
+	protected void configureNewInstance(Instance instance) {
+		//instance.getAttributeSet().setValue(StdAttr.MAPINFO, new ComponentMapInformationContainer(0, 8, 0, null, SevenSegment.getLabels(), null));
+		instance.addAttributeListener();
+		updatePorts(instance);
+		SevenSegment.computeTextField(instance);
+	}
+
+	private void updatePorts(Instance instance) {
+		int nrPorts = 2;
+		Port[] ps = new Port[nrPorts];
+		ps[HEX] = new Port(0, 0, Port.INPUT, 4);
+		ps[HEX].setToolTip(LC.createStringBinding("hexDigitDataTip"));
+		ps[DP] = new Port(20, 0, Port.INPUT, 1);
+		ps[DP].setToolTip(LC.createStringBinding("hexDigitDPTip"));
+		instance.setPorts(ps);
+		//instance.getAttributeValue(StdAttr.MAPINFO).setNrOfOutports(6 + nrPorts, SevenSegment.getLabels());
+	}
+
+	@Override
+	protected void instanceAttributeChanged(Instance instance, Attribute<?> attr) {
+		if (attr == StdAttr.LABEL_LOC) {
+			SevenSegment.computeTextField(instance);
+		}
 	}
 	
 	@Override

@@ -115,8 +115,10 @@ public class AttributeSets {
 			int index = attrs.indexOf(attr);
 			if (index < 0) throw new IllegalArgumentException("attribute " + attr.getName() + " absent");
 			if (readOnly) throw new IllegalArgumentException("read only");
+			@SuppressWarnings("unchecked")
+			V oldvalue = (V) this.value;
 			this.value = value;
-			fireAttributeValueChanged(attr, value);
+			fireAttributeValueChanged(attr, value, oldvalue);
 		}
 	}
 
@@ -194,8 +196,10 @@ public class AttributeSets {
 			int index = attrs.indexOf(attr);
 			if (index < 0) throw new IllegalArgumentException("attribute " + attr.getName() + " absent");
 			if (isReadOnly(index)) throw new IllegalArgumentException("read only");
+			@SuppressWarnings("unchecked")
+			V oldvalue = (V) values[index];
 			values[index] = value;
-			fireAttributeValueChanged(attr, value);
+			fireAttributeValueChanged(attr, value, oldvalue);
 
 		}
 		

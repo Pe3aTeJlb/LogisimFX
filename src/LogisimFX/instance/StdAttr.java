@@ -18,12 +18,12 @@ public interface StdAttr {
 
 	Attribute<Boolean> FPGA_SUPPORTED = Attributes.forFPGASupported("fpga", LC.createStringBinding("stdFPGASupportAttr"));
 
-	Attribute<ComponentMapInformationContainer> MAPINFO = Attributes.forMap();
-
 	Attribute<Direction> FACING = Attributes.forDirection("facing", LC.createStringBinding("stdFacingAttr"));
 
 	Attribute<BitWidth> WIDTH = Attributes.forBitWidth("width", LC.createStringBinding("stdDataWidthAttr"));
 
+
+	//EDGE for triggers
 	AttributeOption TRIG_RISING = new AttributeOption("rising", LC.createStringBinding("stdTriggerRising"));
 	AttributeOption TRIG_FALLING = new AttributeOption("falling", LC.createStringBinding("stdTriggerFalling"));
 	AttributeOption TRIG_HIGH = new AttributeOption("high", LC.createStringBinding("stdTriggerHigh"));
@@ -36,18 +36,13 @@ public interface StdAttr {
 		= Attributes.forOption("trigger", LC.createStringBinding("stdTriggerAttr"),
 			new AttributeOption[] { TRIG_RISING, TRIG_FALLING });
 
+
+	//Label attributes
+
 	Attribute<String> LABEL = Attributes.forLabel("label", LC.createStringBinding("stdLabelAttr"));
 
 	Attribute<Font> LABEL_FONT = Attributes.forFont("labelfont", LC.createStringBinding("stdLabelFontAttr"));
 	Font DEFAULT_LABEL_FONT = Font.font("SansSerif", FontWeight.NORMAL, FontPosture.REGULAR, 12);
-
-	AttributeOption EDITING_MODE = new AttributeOption("editingmode", LC.createStringBinding("stdEditingMode"));
-	AttributeOption PROTECTION_MODE = new AttributeOption("protectionmode", LC.createStringBinding("stdProtectionMode"));
-
-	Attribute<AttributeOption> ACCESS_MODE =
-			Attributes.forOption("accessmode", LC.createStringBinding("stdAccessModeAttr"),
-					new AttributeOption[]{EDITING_MODE, PROTECTION_MODE});
-
 
 	AttributeOption LABEL_CENTER =
 			new AttributeOption("center", "center", LC.createStringBinding("stdLabelCenter"));
@@ -59,6 +54,20 @@ public interface StdAttr {
 							LABEL_CENTER, Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST
 					});
 
+	Attribute<Boolean> LABEL_VISIBILITY =
+			Attributes.forBoolean("labelvisible", LC.createStringBinding("stdLabelVisibility"));
+
+
+
+	AttributeOption EDITING_MODE = new AttributeOption("editingmode", LC.createStringBinding("stdEditingMode"));
+	AttributeOption PROTECTION_MODE = new AttributeOption("protectionmode", LC.createStringBinding("stdProtectionMode"));
+
+	Attribute<AttributeOption> ACCESS_MODE =
+			Attributes.forOption("accessmode", LC.createStringBinding("stdAccessModeAttr"),
+					new AttributeOption[]{EDITING_MODE, PROTECTION_MODE});
+
+
+
 	AttributeOption SELECT_BOTTOM_LEFT =
 			new AttributeOption("bl", LC.createStringBinding("stdSelectBottomLeftOption"));
 	AttributeOption SELECT_TOP_RIGHT =
@@ -68,5 +77,7 @@ public interface StdAttr {
 					"selloc",
 					LC.createStringBinding("stdSelectLocAttr"),
 					new AttributeOption[] {SELECT_BOTTOM_LEFT, SELECT_TOP_RIGHT});
+
+	Attribute<ComponentMapInformationContainer> MAPINFO = Attributes.forMap();
 
 }

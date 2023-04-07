@@ -34,7 +34,6 @@ import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.*;
 import java.io.File;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 public class ExportImageController extends AbstractController implements SimulatorListener{
@@ -228,7 +227,7 @@ public class ExportImageController extends AbstractController implements Simulat
 
         exportThread = new Thread(exportPngTask);
 
-        DialogManager.CreateProgressDialog(exportPngTask);
+        DialogManager.createProgressDialog(exportPngTask);
 
         exportThread.start();
 
@@ -241,7 +240,7 @@ public class ExportImageController extends AbstractController implements Simulat
 
         exportThread = new Thread(exportJpgTask);
 
-        DialogManager.CreateProgressDialog(exportJpgTask);
+        DialogManager.createProgressDialog(exportJpgTask);
 
         exportThread.start();
 
@@ -254,7 +253,7 @@ public class ExportImageController extends AbstractController implements Simulat
 
         exportThread = new Thread(exportGifTask);
 
-        DialogManager.CreateProgressDialog(exportGifTask);
+        DialogManager.createProgressDialog(exportGifTask);
 
         exportThread.start();
 
@@ -314,7 +313,7 @@ public class ExportImageController extends AbstractController implements Simulat
                     BufferedImage bImage = SwingFXUtils.fromFXImage(img.getImage(), null);
                     ImageIO.write(bImage, "PNG", where);
                 } catch (Exception e) {
-                    DialogManager.CreateErrorDialog(LC.get("couldNotCreateFile"), LC.get("couldNotCreateFile"));
+                    DialogManager.createErrorDialog(LC.get("couldNotCreateFile"), LC.get("couldNotCreateFile"));
                     stage.close();
                 }
 
@@ -381,7 +380,7 @@ public class ExportImageController extends AbstractController implements Simulat
 
                 } catch (Exception e) {
 
-                    DialogManager.CreateErrorDialog(LC.get("couldNotCreateFile"), LC.get("couldNotCreateFile"));
+                    DialogManager.createErrorDialog(LC.get("couldNotCreateFile"), LC.get("couldNotCreateFile"));
                     stage.close();
 
                 }
@@ -474,7 +473,7 @@ public class ExportImageController extends AbstractController implements Simulat
                     output.close();
 
                 } catch (Exception e) {
-                    DialogManager.CreateErrorDialog(LC.get("couldNotCreateFile"), LC.get("couldNotCreateFile"));
+                    DialogManager.createErrorDialog(LC.get("couldNotCreateFile"), LC.get("couldNotCreateFile"));
                     stage.close();
                 }
 

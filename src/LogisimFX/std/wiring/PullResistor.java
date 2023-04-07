@@ -88,7 +88,7 @@ public class PullResistor extends InstanceFactory {
 		Graphics g = painter.getGraphics();
 		g.c.translate(x, y);
 		Value pull = getPullValue(painter.getAttributeSet());
-		Value actual = painter.getPort(0);
+		Value actual = painter.getPortValue(0);
 		paintBase(painter, pull, pull.getColor(), actual.getColor());
 		g.c.translate(-x, -y);
 		painter.drawPorts();

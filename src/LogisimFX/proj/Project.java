@@ -9,6 +9,7 @@ package LogisimFX.proj;
 import LogisimFX.draw.tools.AbstractTool;
 import LogisimFX.file.*;
 import LogisimFX.circuit.*;
+import LogisimFX.fpga.FPGAToolchainOrchestrator;
 import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.AppearanceCanvas;
 import LogisimFX.newgui.MainFrame.EditorTabs.EditorBase;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutCanvas;
@@ -87,6 +88,8 @@ public class Project {
 	private Dependencies depends;
 	private MyListener myListener = new MyListener();
 
+	private FPGAToolchainOrchestrator fpgaToolchainOrchestrator = new FPGAToolchainOrchestrator(this);
+
 	public Project(LogisimFile file) {
 		addLibraryListener(myListener);
 		setLogisimFile(file);
@@ -151,6 +154,10 @@ public class Project {
 
 	public boolean isFileDirty() {
 		return undoMods != 0;
+	}
+
+	public FPGAToolchainOrchestrator getFpgaToolchainOrchestrator(){
+		return fpgaToolchainOrchestrator;
 	}
 
 

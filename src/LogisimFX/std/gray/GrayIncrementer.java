@@ -64,7 +64,7 @@ class GrayIncrementer extends InstanceFactory {
 		// First we retrieve the value being fed into the input. Note that in
 		// the setPorts invocation above, the component's input was included at
 		// index 0 in the parameter array, so we use 0 as the parameter below.
-		Value in = state.getPort(0);
+		Value in = state.getPortValue(0);
 		
 		// Now compute the output. We've farmed this out to a helper method,
 		// since the same logic is needed for the library's other components.

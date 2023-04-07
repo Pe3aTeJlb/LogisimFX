@@ -223,4 +223,10 @@ public class Tunnel extends InstanceFactory {
 
 	}
 
+
+	@Override
+	public boolean isHDLSupportedComponent(AttributeSet attrs) {
+		return true;
+	}
+
 }

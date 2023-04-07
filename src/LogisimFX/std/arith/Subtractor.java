@@ -7,6 +7,7 @@
 package LogisimFX.std.arith;
 
 import LogisimFX.data.*;
+import LogisimFX.fpga.designrulecheck.CorrectLabel;
 import LogisimFX.instance.*;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.std.LC;
@@ -16,15 +17,15 @@ import javafx.scene.paint.Color;
 
 public class Subtractor extends InstanceFactory {
 
-	private static final int IN0   = 0;
-	private static final int IN1   = 1;
-	private static final int OUT   = 2;
-	private static final int B_IN  = 3;
-	private static final int B_OUT = 4;
+	static final int IN0   = 0;
+	static final int IN1   = 1;
+	static final int OUT   = 2;
+	static final int B_IN  = 3;
+	static final int B_OUT = 4;
 
 	public Subtractor() {
 
-		super("Subtractor", LC.createStringBinding("subtractorComponent"));
+		super("Subtractor", LC.createStringBinding("subtractorComponent"), new SubtractorHdlGeneratorFactory());
 		setAttributes(new Attribute[] { StdAttr.FPGA_SUPPORTED, StdAttr.WIDTH },
 				new Object[] { Boolean.FALSE, BitWidth.create(8) });
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
@@ -53,9 +54,9 @@ public class Subtractor extends InstanceFactory {
 		BitWidth data = state.getAttributeValue(StdAttr.WIDTH);
 
 		// compute outputs
-		Value a = state.getPort(IN0);
-		Value b = state.getPort(IN1);
-		Value b_in = state.getPort(B_IN);
+		Value a = state.getPortValue(IN0);
+		Value b = state.getPortValue(IN1);
+		Value b_in = state.getPortValue(B_IN);
 		if (b_in == Value.UNKNOWN || b_in == Value.NIL) b_in = Value.FALSE;
 		Value[] outs = Adder.computeSum(data, a, b.not(), b_in.not());
 
@@ -89,6 +90,16 @@ public class Subtractor extends InstanceFactory {
 
 		g.toDefault();
 
+	}
+
+
+
+	@Override
+	public String getHDLName(AttributeSet attrs) {
+		final var fullName = new StringBuilder();
+		if (attrs.getValue(StdAttr.WIDTH).getWidth() == 1) fullName.append("FullSubtractor");
+		else fullName.append(CorrectLabel.getCorrectLabel(this.getName()));
+		return fullName.toString();
 	}
 
 }

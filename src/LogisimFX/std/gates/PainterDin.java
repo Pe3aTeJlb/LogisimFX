@@ -89,7 +89,7 @@ class PainterDin {
 		int x0 = xMid - diam / 2;
 		Paint oldColor = g.getPaint();
 		if (painter.getShowState()) {
-			Value val = painter.getPort(0);
+			Value val = painter.getPortValue(0);
 			g.setColor(val.getColor());
 
 		}

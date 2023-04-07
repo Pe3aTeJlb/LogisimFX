@@ -73,7 +73,7 @@ class PinAttributes extends ProbeAttributes {
 			super.setValue(attr, value);
 			return;
 		}
-		fireAttributeValueChanged(attr, value);
+		fireAttributeValueChanged(attr, value,null);
 
 	}
 

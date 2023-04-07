@@ -118,9 +118,9 @@ public class TransmissionGate extends InstanceFactory {
 	private Value computeOutput(InstanceState state) {
 
 		BitWidth width = state.getAttributeValue(StdAttr.WIDTH);
-		Value input = state.getPort(INPUT);
-		Value gate0 = state.getPort(GATE0);
-		Value gate1 = state.getPort(GATE1);
+		Value input = state.getPortValue(INPUT);
+		Value gate0 = state.getPortValue(GATE0);
+		Value gate1 = state.getPortValue(GATE1);
 
 		if (gate0.isFullyDefined() && gate1.isFullyDefined() && gate0 != gate1) {
 			if (gate0 == Value.TRUE) {
@@ -186,10 +186,10 @@ public class TransmissionGate extends InstanceFactory {
 		Paint output = gate0;
 		Paint platform = gate0;
 		if (!isGhost && painter.getShowState()) {
-			gate0 = painter.getPort(GATE0).getColor();
-			gate1 = painter.getPort(GATE0).getColor();
-			input = painter.getPort(INPUT).getColor();
-			output = painter.getPort(OUTPUT).getColor();
+			gate0 = painter.getPortValue(GATE0).getColor();
+			gate1 = painter.getPortValue(GATE0).getColor();
+			input = painter.getPortValue(INPUT).getColor();
+			output = painter.getPortValue(OUTPUT).getColor();
 			platform = computeOutput(painter).getColor();
 		}
 

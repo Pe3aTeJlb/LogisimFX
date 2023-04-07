@@ -86,9 +86,7 @@ public class Pin extends InstanceFactory {
 
 	@Override
 	public ImageView getIcon(){
-
 		return ICON_IN;
-
 	}
 
 	@Override
@@ -214,7 +212,7 @@ public class Pin extends InstanceFactory {
 	public void propagate(InstanceState state) {
 
 		PinAttributes attrs = (PinAttributes) state.getAttributeSet();
-		Value val = state.getPort(0);
+		Value val = state.getPortValue(0);
 
 		PinState q = getState(state);
 		if (attrs.type == EndData.OUTPUT_ONLY) {
@@ -383,7 +381,7 @@ public class Pin extends InstanceFactory {
 				LayoutCanvas canvas = (LayoutCanvas) e.event.getSource();
 				CircuitState circState = canvas.getCircuitState();
 
-				int choice = DialogManager.CreateConfirmWarningDialog(
+				int choice = DialogManager.createConfirmWarningDialog(
 						LC.get("pinFrozenTitle"),
 						LC.get("pinFrozenQuestion")
 				);
@@ -457,6 +455,26 @@ public class Pin extends InstanceFactory {
 
 		}
 
+	}
+
+
+	@Override
+	public boolean isHDLSupportedComponent(AttributeSet attrs) {
+		return true;
+	}
+
+	@Override
+	public boolean hasThreeStateDrivers(AttributeSet attrs) {
+		/*
+		 * We ignore for the moment the three-state property of the pin, as it
+		 * is not an active component, just wiring
+		 */
+		return false;
+	}
+
+	@Override
+	public boolean requiresNonZeroLabel() {
+		return true;
 	}
 
 }

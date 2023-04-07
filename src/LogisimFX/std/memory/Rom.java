@@ -36,7 +36,7 @@ public class Rom extends Mem {
 	
 	public Rom() {
 
-		super("ROM", LC.createStringBinding("romComponent"), 0);
+		super("ROM", LC.createStringBinding("romComponent"), 0,new RomHdlGeneratorFactory(), true);
 		setIcon("rom.gif");
 		memListeners = new WeakHashMap<Instance,MemListener>();
 
@@ -100,8 +100,8 @@ public class Rom extends Mem {
 		MemState myState = getState(state);
 		BitWidth dataBits = state.getAttributeValue(DATA_ATTR);
 
-		Value addrValue = state.getPort(ADDR);
-		boolean chipSelect = state.getPort(CS) != Value.FALSE;
+		Value addrValue = state.getPortValue(ADDR);
+		boolean chipSelect = state.getPortValue(CS) != Value.FALSE;
 
 		if (!chipSelect) {
 			myState.setCurrent(-1);
@@ -190,6 +190,11 @@ public class Rom extends Mem {
 			} catch (NoSuchElementException e) {
 				return null;
 			}
+		}
+
+		@Override
+		public boolean isHidden() {
+			return true;
 		}
 
 	}

@@ -7,6 +7,7 @@
 package LogisimFX.std.memory;
 
 import LogisimFX.data.*;
+import LogisimFX.fpga.designrulecheck.netlistComponent;
 import LogisimFX.instance.*;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.std.LC;
@@ -33,18 +34,20 @@ public class Counter extends InstanceFactory {
 			new AttributeOption[] { ON_GOAL_WRAP, ON_GOAL_STAY, ON_GOAL_CONT,
 				ON_GOAL_LOAD });
 
-	private static final int DELAY = 8;
-	private static final int OUT = 0;
-	private static final int IN  = 1;
-	private static final int CK  = 2;
-	private static final int CLR = 3;
-	private static final int LD  = 4;
-	private static final int CT  = 5;
-	private static final int CARRY = 6;
+	static final int DELAY = 8;
+	public static final int OUT = 0;
+	public static final int IN = 1;
+	public static final int CK = 2;
+	public static final int CLR = 3;
+	public static final int LD = 4;
+	public static final int UD = 5;
+	public static final int EN = 6;
+
+	static final int CARRY = 7;
 
 	public Counter() {
 
-		super("Counter", LC.createStringBinding("counterComponent"));
+		super("Counter", LC.createStringBinding("counterComponent"), new CounterHdlGeneratorFactory());
 		//setOffsetBounds(Bounds.create(-30, -30, 30, 60));
 		setOffsetBounds(Bounds.create(-30, -20, 30, 40));
 		setIcon("counter.gif");
@@ -52,7 +55,7 @@ public class Counter extends InstanceFactory {
 		setInstanceLogger(Logger.class);
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH, 1, Value.MAX_WIDTH_EXTENDED, null));
 		
-		Port[] ps = new Port[7];
+		Port[] ps = new Port[8];
 		/* new version. dab back compability
 		ps[OUT] = new Port(  0,   10, Port.OUTPUT, StdAttr.WIDTH);
 		ps[IN]  = new Port(-30,   10, Port.INPUT, StdAttr.WIDTH);
@@ -62,20 +65,24 @@ public class Counter extends InstanceFactory {
 		ps[CT]  = new Port(-30,  20, Port.INPUT, 1);
 		ps[CARRY] = new Port(0,  20, Port.OUTPUT, 1);
 		 */
-		ps[OUT] = new Port(  0,   0, Port.OUTPUT, StdAttr.WIDTH);
-		ps[IN]  = new Port(-30,   0, Port.INPUT, StdAttr.WIDTH);
-		ps[CK]  = new Port(-20,  20, Port.INPUT, 1);
-		ps[CLR] = new Port(-10,  20, Port.INPUT, 1);
-		ps[LD]  = new Port(-30, -10, Port.INPUT, 1);
-		ps[CT]  = new Port(-30,  10, Port.INPUT, 1);
-		ps[CARRY] = new Port(0,  10, Port.OUTPUT, 1);
+		ps[OUT] = new Port(0, 0, Port.OUTPUT, StdAttr.WIDTH);
+		ps[IN] = new Port(-30, 0, Port.INPUT, StdAttr.WIDTH);
+		ps[CK] = new Port(-20, 20, Port.INPUT, 1);
+		ps[CLR] = new Port(-10, 20, Port.INPUT, 1);
+		ps[LD] = new Port(-30, -10, Port.INPUT, 1);
+		ps[UD] = new Port(-20, -20, Port.INPUT, 1);
+		ps[EN] = new Port(-30, 10, Port.INPUT, 1);
+		ps[CARRY] = new Port(0, 10, Port.OUTPUT, 1);
+
 		ps[OUT].setToolTip(LC.createStringBinding("counterQTip"));
 		ps[IN].setToolTip(LC.createStringBinding("counterDataTip"));
 		ps[CK].setToolTip(LC.createStringBinding("counterClockTip"));
 		ps[CLR].setToolTip(LC.createStringBinding("counterResetTip"));
 		ps[LD].setToolTip(LC.createStringBinding("counterLoadTip"));
-		ps[CT].setToolTip(LC.createStringBinding("counterEnableTip"));
+		ps[UD].setToolTip(LC.createStringBinding("counterUpDownTip"));
+		ps[EN].setToolTip(LC.createStringBinding("counterEnableTip"));
 		ps[CARRY].setToolTip(LC.createStringBinding("counterCarryTip"));
+
 		setPorts(ps);
 
 	}
@@ -107,17 +114,17 @@ public class Counter extends InstanceFactory {
 		BitWidth dataWidth = state.getAttributeValue(StdAttr.WIDTH);
 		Object triggerType = state.getAttributeValue(StdAttr.EDGE_TRIGGER);
 		int max = state.getAttributeValue(ATTR_MAX).intValue();
-		Value clock = state.getPort(CK);
+		Value clock = state.getPortValue(CK);
 		boolean triggered = data.updateClock(clock, triggerType);
 
 		Value newValue;
 		boolean carry;
-		if (state.getPort(CLR) == Value.TRUE) {
+		if (state.getPortValue(CLR) == Value.TRUE) {
 			newValue = Value.createKnown(dataWidth, 0);
 			carry = false;
 		} else {
-			boolean ld = state.getPort(LD) == Value.TRUE;
-			boolean ct = state.getPort(CT) != Value.FALSE;
+			boolean ld = state.getPortValue(LD) == Value.TRUE;
+			boolean ct = state.getPortValue(EN) != Value.FALSE;
 			int oldVal = data.value;
 			int newVal;
 			if (!triggered) {
@@ -131,7 +138,7 @@ public class Counter extends InstanceFactory {
 					} else if (onGoal == ON_GOAL_STAY) {
 						newVal = oldVal;
 					} else if (onGoal == ON_GOAL_LOAD) {
-						Value in = state.getPort(IN);
+						Value in = state.getPortValue(IN);
 						newVal = in.isFullyDefined() ? in.toIntValue() : 0;
 						if (newVal > max) newVal &= max;
 					} else if (onGoal == ON_GOAL_CONT) {
@@ -144,8 +151,8 @@ public class Counter extends InstanceFactory {
 					newVal = ld ? oldVal - 1 : oldVal + 1;
 				}
 			} else if (ld) { // trigger, enable = 0, load = 1: should load
-				Value in = state.getPort(IN);
-				newVal = in.isFullyDefined() ? in.toIntValue() : 0; 
+				Value in = state.getPortValue(IN);
+				newVal = in.isFullyDefined() ? in.toIntValue() : 0;
 				if (newVal > max) newVal &= max;
 			} else { // trigger, enable = 0, load = 0: no change
 				newVal = oldVal;
@@ -229,7 +236,7 @@ public class Counter extends InstanceFactory {
 		painter.drawPort(LD);
 		painter.drawPort(CARRY);
 		painter.drawPort(CLR, "0", Direction.SOUTH);
-		painter.drawPort(CT, LC.get("counterEnableLabel"), Direction.EAST);
+		painter.drawPort(EN, LC.get("counterEnableLabel"), Direction.EAST);
 		g.setColor(Color.BLACK);
 		painter.drawClock(CK, Direction.NORTH);
 
@@ -303,6 +310,21 @@ public class Counter extends InstanceFactory {
 
 		}
 
+	}
+
+
+	@Override
+	public String getHDLName(AttributeSet attrs) {
+		return "LogisimFXCounter";
+	}
+
+	@Override
+	public boolean checkForGatedClocks(netlistComponent comp) {
+		return true;
+	}
+	@Override
+	public int[] clockPinIndex(netlistComponent comp) {
+		return new int[] {CK};
 	}
 
 }

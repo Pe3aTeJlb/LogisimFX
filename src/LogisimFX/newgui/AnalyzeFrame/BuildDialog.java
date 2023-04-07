@@ -120,17 +120,17 @@ public class BuildDialog<T extends AnalyzerModel> extends Dialog<T> {
                 boolean ok = false;
                 while (!ok) {
                     if (projectCmbBx.getValue() == null) {
-                        DialogManager.CreateErrorDialog(LC.get("buildDialogErrorTitle"), LC.get("buildNeedProjectError"));
+                        DialogManager.createErrorDialog(LC.get("buildDialogErrorTitle"), LC.get("buildNeedProjectError"));
                         continue;
                     }
 
                     if (circNameTxtfld.getText().equals("")) {
-                        DialogManager.CreateErrorDialog(LC.get("buildDialogErrorTitle"), LC.get("buildNeedCircuitError"));
+                        DialogManager.createErrorDialog(LC.get("buildDialogErrorTitle"), LC.get("buildNeedCircuitError"));
                         continue;
                     }
 
                     if (projectCmbBx.getValue().getLogisimFile().getCircuit(circNameTxtfld.getText()) != null) {
-                        int choice = DialogManager.CreateConfirmWarningDialog(LC.get("buildConfirmReplaceTitle"), LC.get("buildConfirmReplaceMessage"));
+                        int choice = DialogManager.createConfirmWarningDialog(LC.get("buildConfirmReplaceTitle"), LC.get("buildConfirmReplaceMessage"));
                         if (choice != 1) {
                             continue;
                         }
@@ -157,7 +157,7 @@ public class BuildDialog<T extends AnalyzerModel> extends Dialog<T> {
         if (replace) {
             final Circuit circuit = dest.getLogisimFile().getCircuit(name);
             if (circuit == null) {
-                DialogManager.CreateErrorDialog("Internal Error", "Internal error prevents replacing circuit.");
+                DialogManager.createErrorDialog("Internal Error", "Internal error prevents replacing circuit.");
                 return;
             }
 

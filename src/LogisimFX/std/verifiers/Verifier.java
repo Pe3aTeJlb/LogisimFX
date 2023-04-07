@@ -71,7 +71,7 @@ public class Verifier extends Clock {
     }
 
     public boolean isReadyOutput(InstanceState state){
-        return state.getPort(OUT1) == Value.TRUE;
+        return state.getPortValue(OUT1) == Value.TRUE;
     }
 
     @Override
@@ -101,7 +101,7 @@ public class Verifier extends Clock {
 
             int seqWidth = state.getAttributeValue(SEQUENCE_WIDTH).getWidth();
 
-            data = new VerifierData(seqWidth, (int)Math.pow(2, seqWidth));
+            data = new VerifierData(seqWidth, (int)Math.pow(2, seqWidth), state.getTickCount(), state.getAttributeSet());
             state.setData(data);
 
         }
@@ -137,7 +137,7 @@ public class Verifier extends Clock {
 
 
         if (oldVal < data.maxClock - 1) {
-            data.setValue(state.getPort(IN0));
+            data.setValue(state.getPortValue(IN0));
             state.setPort(OUT1, Value.FALSE, DELAY);
         }else{
             state.setPort(OUT1, Value.TRUE, DELAY);
@@ -209,7 +209,8 @@ public class Verifier extends Clock {
 
         private Value[] vals;
 
-        public VerifierData(int seqWidth, int maxClock) {
+        public VerifierData(int seqWidth, int maxClock, long curTick, AttributeSet attrs) {
+            super(curTick, attrs);
             this.seqWidth = seqWidth;
             this.maxClock = maxClock;
             clockVal = Value.createKnown(BitWidth.create(seqWidth),0);

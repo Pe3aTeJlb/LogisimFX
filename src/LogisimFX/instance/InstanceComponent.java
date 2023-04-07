@@ -13,10 +13,13 @@ import java.util.List;
 
 import LogisimFX.comp.*;
 import LogisimFX.data.*;
+import LogisimFX.fpga.designrulecheck.CorrectLabel;
+import LogisimFX.newgui.DialogManager;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.tools.TextEditable;
 import LogisimFX.tools.ToolTipMaker;
 import LogisimFX.util.EventSourceWeakSupport;
+import LogisimFX.util.SyntaxChecker;
 import LogisimFX.util.UnmodifiableList;
 import LogisimFX.circuit.CircuitState;
 
@@ -160,6 +163,17 @@ public class InstanceComponent implements Component, AttributeListener, ToolTipM
 		}
 
 	}
+
+	private void fireLabelChanged(AttributeEvent attre) {
+		final var listeners = this.listeners;
+		if (listeners != null) {
+			ComponentEvent e = null;
+			for (final var listener : listeners) {
+				if (e == null) e = new ComponentEvent(this, null, attre);
+				listener.labelChanged(e);
+			}
+		}
+	}
 	
 	void fireInvalidated() {
 
@@ -294,6 +308,8 @@ public class InstanceComponent implements Component, AttributeListener, ToolTipM
 
 	}
 
+
+
 	//
 	// AttributeListener methods
 	//
@@ -302,13 +318,34 @@ public class InstanceComponent implements Component, AttributeListener, ToolTipM
 	public void attributeValueChanged(AttributeEvent e) {
 
 		Attribute<?> attr = e.getAttribute();
+
+		if (e.getAttribute().equals(StdAttr.LABEL)) {
+			@SuppressWarnings("unchecked")
+			final var lAttr = (Attribute<String>) e.getAttribute();
+			final var value = (String) e.getSource().getValue(e.getAttribute());
+			final var oldValue = e.getOldValue() != null ? (String) e.getOldValue() : "";
+			if (!oldValue.equals(value)) {
+				if (!SyntaxChecker.isVariableNameAcceptable(value, true)) {
+					e.getSource().setValue(lAttr, oldValue);
+				} else if (getFactory().getName().equalsIgnoreCase(value)) {
+					DialogManager.createErrorDialog("Error!", LC.get("MatchedLabelNameError"));
+					e.getSource().setValue(lAttr, oldValue);
+				} else if (CorrectLabel.isKeyword(value, false)) {
+					DialogManager.createErrorDialog("Error!", value + "\": " + LC.get("KeywordNameError"));
+					e.getSource().setValue(lAttr, oldValue);
+				} else {
+					fireLabelChanged(e);
+				}
+			}
+		}
+
 		if (widthAttrs != null && widthAttrs.contains(attr)) computeEnds();
 		if (attrListenRequested) {
 			factory.instanceAttributeChanged(instance, e.getAttribute());
 		}
 
 	}
-	
+
 	//
 	// methods for InstancePainter
 	//

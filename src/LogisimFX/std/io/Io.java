@@ -46,20 +46,29 @@ public class Io extends Library {
 	private static FactoryDescription[] DESCRIPTIONS = {
 		new FactoryDescription("Button", LC.createStringBinding("buttonComponent"),
 				"button.gif", "Button"),
+		new FactoryDescription("DipSwitch", LC.createStringBinding("DipSwitchComponent"),
+				"dipswitch.gif", "DipSwitch"),
 		new FactoryDescription("Joystick", LC.createStringBinding("joystickComponent"),
 				"joystick.gif", "Joystick"),
 		new FactoryDescription("Keyboard", LC.createStringBinding("keyboardComponent"),
 				"keyboard.gif", "Keyboard"),
 		new FactoryDescription("LED", LC.createStringBinding("ledComponent"),
 				"led.gif", "Led"),
+		new FactoryDescription("RGBLED", LC.createStringBinding("RGBledComponent"),
+					"rgbled.gif", "RgbLed"),
 		new FactoryDescription("7-Segment Display", LC.createStringBinding("sevenSegmentComponent"),
 				"7seg.gif", "SevenSegment"),
 		new FactoryDescription("Hex Digit Display", LC.createStringBinding("hexDigitComponent"),
 				"hexdig.gif", "HexDigit"),
 		new FactoryDescription("DotMatrix", LC.createStringBinding("dotMatrixComponent"),
 				"dotmat.gif", "DotMatrix"),
+		new FactoryDescription("LedBar", LC.createStringBinding("ioLedBarComponent"),
+				"ledbar.gif", "LedBar"),
 		new FactoryDescription("TTY", LC.createStringBinding("ttyComponent"),
 				"tty.gif", "Tty"),
+		new FactoryDescription("PortIO", LC.createStringBinding("pioComponent"),
+				"portio.gif", "PortIO"),
+
 	};
 
 	private List<Tool> tools = null;

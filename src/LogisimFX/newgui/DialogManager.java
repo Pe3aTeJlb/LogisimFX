@@ -18,6 +18,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import org.controlsfx.dialog.FontSelectorDialog;
 import org.controlsfx.dialog.ProgressDialog;
 
@@ -32,7 +33,7 @@ public class DialogManager {
     private static final Localizer lc = LC_null.getInstance();
 
 
-    public static void CreateWarningDialog(String header, String content){
+    public static void createWarningDialog(String header, String content){
 
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("LogisimFX");
@@ -45,7 +46,7 @@ public class DialogManager {
 
     }
 
-    public static int CreateConfirmWarningDialog(String header, String content){
+    public static int createConfirmWarningDialog(String header, String content){
 
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("LogisimFX");
@@ -68,7 +69,7 @@ public class DialogManager {
 
     }
 
-    public static void CreateInfoDialog(String header, String content){
+    public static void createInfoDialog(String header, String content){
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("LogisimFX");
@@ -81,7 +82,7 @@ public class DialogManager {
 
     }
 
-    public static void CreateErrorDialog(String header, String content){
+    public static void createErrorDialog(String header, String content){
 
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("LogisimFX");
@@ -94,7 +95,7 @@ public class DialogManager {
 
     }
 
-    public static void CreateStackTraceDialog(String title, String header, Exception e){
+    public static void createStackTraceDialog(String title, String header, Exception e){
 
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("LogisimFX");
@@ -132,7 +133,7 @@ public class DialogManager {
 
     }
 
-    public static void CreateScrollWarning(String header, String content){
+    public static void createScrollWarning(String header, String content){
 
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("LogisimFX");
@@ -160,7 +161,7 @@ public class DialogManager {
 
     }
 
-    public static void CreateScrollError(String header, String content){
+    public static void createScrollError(String header, String content){
 
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("LogisimFX");
@@ -189,7 +190,7 @@ public class DialogManager {
     }
 
 
-    public static int CreateConfirmCloseDialog(Project proj){
+    public static int createConfirmCloseDialog(Project proj){
 
         lc.changeBundle("gui");
 
@@ -217,7 +218,7 @@ public class DialogManager {
 
     }
 
-    public static int CreateFileReloadDialog(Project proj){
+    public static int createFileReloadDialog(Project proj){
 
         lc.changeBundle("proj");
 
@@ -246,7 +247,7 @@ public class DialogManager {
     }
 
 
-    public static String CreateInputDialog(LogisimFile file){
+    public static String createInputDialog(LogisimFile file){
 
         lc.changeBundle("menu");
 
@@ -265,14 +266,14 @@ public class DialogManager {
             buff.trim();
 
             if (buff.equals("")) {
-                CreateErrorDialog("Error",lc.get("circuitNameMissingError"));
+                createErrorDialog("Error",lc.get("circuitNameMissingError"));
                 return null;
             } else {
 
                 if (file.getTool(buff) == null) {
                     return buff;
                 } else {
-                    CreateErrorDialog("Error",lc.get("circuitNameDuplicateError"));
+                    createErrorDialog("Error",lc.get("circuitNameDuplicateError"));
                     return null;
                 }
 
@@ -284,7 +285,7 @@ public class DialogManager {
 
     }
 
-    public static String CreateInputDialog(String title, String body){
+    public static String createInputDialog(String title, String body){
 
         //lc.changeBundle("menu");
 
@@ -305,7 +306,7 @@ public class DialogManager {
 
     }
 
-    public static String CreateInputDialog(String title, String body, String regex){
+    public static String createInputDialog(String title, String body, String regex){
 
         //lc.changeBundle("menu");
 
@@ -338,7 +339,7 @@ public class DialogManager {
     }
 
 
-    public static void CreateProgressDialog(Task task){
+    public static void createProgressDialog(Task task){
 
         ProgressDialog progressDialog = new ProgressDialog(task);
         progressDialog.setTitle("LogisimFX");
@@ -350,11 +351,11 @@ public class DialogManager {
     }
 
 
-    public static Library[] CreateLibSelectionDialog(ArrayList<Library> libs){
+    public static Library[] createLibSelectionDialog(ArrayList<Library> libs){
 
         lc.changeBundle("menu");
 
-        ListViewDialog<Library> dialog = new ListViewDialog<>(null,libs);
+        ListViewDialog<Library> dialog = new ListViewDialog<>(null, libs);
 
         dialog.setTitle("LogisimFX");
         dialog.setHeaderText(lc.get("unloadLibrariesDialogTitle"));
@@ -376,12 +377,57 @@ public class DialogManager {
 
            return  out;
 
-       }else {return null;}
+       }else {
+           return null;
+       }
+
+    }
+
+    public static String createBoardSelectionDialog(ArrayList<String> boards){
+
+        lc.changeBundle("fpga");
+
+        ListViewDialog<String> dialog = new ListViewDialog<>(null, boards);
+
+        dialog.setTitle("LogisimFX");
+        dialog.setHeaderText(lc.get("chooseBoard"));
+        dialog.setSingleSelectionModel();
+
+        dialog.setCellFactory(new Callback<>() {
+            @Override
+            public ListCell<String> call(ListView<String> param) {
+                return new ListCell<>() {
+                    @Override
+                    public void updateItem(String board, boolean empty) {
+                        super.updateItem(board, empty);
+                        if (empty || board == null) {
+                            setText(null);
+                        } else {
+                            setText(board.split("\\.")[0]);
+                        }
+                    }
+                };
+            }
+        });
+
+
+        ((Stage) dialog.getDialogPane().getScene().getWindow()).getIcons().add(IconsManager.LogisimFX);
+
+        Optional<String> result = dialog.showAndWait();
+
+        if(result.isPresent()){
+
+            return dialog.getSelectedItem();
+
+        }else {
+            return null;
+        }
 
     }
 
 
-    public static Font CreateFontSelectorDialog(Font initFont){
+
+    public static Font createFontSelectorDialog(Font initFont){
 
         lc.changeBundle("gui");
 
@@ -394,7 +440,7 @@ public class DialogManager {
 
         Optional<Font> response = fontSelectorDialog.showAndWait();
 
-        return response.get();
+        return response.orElse(null);
 
     }
 

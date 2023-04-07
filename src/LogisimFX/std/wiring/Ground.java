@@ -21,7 +21,7 @@ public class Ground extends InstanceFactory {
 
 	public Ground() {
 
-		super("Ground", LC.createStringBinding("groundComponent"));
+		super("Ground", LC.createStringBinding("groundComponent"), new AbstractConstantHdlGeneratorFactory());
 		setIcon("ground.gif");
 		setAttributes(new Attribute[] { StdAttr.FPGA_SUPPORTED, StdAttr.FACING, StdAttr.WIDTH },
 				new Object[] { Boolean.FALSE, Direction.SOUTH, BitWidth.ONE });
@@ -80,7 +80,7 @@ public class Ground extends InstanceFactory {
 
 		Graphics g = painter.getGraphics();
 		Location loc = painter.getLocation();
-		g.translate(loc.getX(), loc.getY());
+		g.c.translate(loc.getX(), loc.getY());
 
 		Direction from = painter.getAttributeValue(StdAttr.FACING);
 		int degrees = Direction.EAST.toDegrees() - from.toDegrees();
@@ -89,7 +89,7 @@ public class Ground extends InstanceFactory {
 
 		g.setLineWidth(Wire.WIDTH);
 		if (!isGhost && painter.getShowState()) {
-			g.setColor(painter.getPort(0).getColor());
+			g.setColor(painter.getPortValue(0).getColor());
 		}
 		g.c.strokeLine(0, 0, 5, 0);
 
@@ -103,6 +103,7 @@ public class Ground extends InstanceFactory {
 		g.c.strokeLine(12, -2, 12, 2);
 
 		g.toDefault();
+		g.c.translate(-loc.getX(), -loc.getY());
 
 	}
 

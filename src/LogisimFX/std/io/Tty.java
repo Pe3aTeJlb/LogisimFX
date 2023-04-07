@@ -91,10 +91,10 @@ public class Tty extends InstanceFactory {
 	public void propagate(InstanceState circState) {
 		Object trigger = circState.getAttributeValue(StdAttr.EDGE_TRIGGER);
 		TtyState state = getTtyState(circState);
-		Value clear = circState.getPort(CLR);
-		Value clock = circState.getPort(CK);
-		Value enable = circState.getPort(WE);
-		Value in = circState.getPort(IN);
+		Value clear = circState.getPortValue(CLR);
+		Value clock = circState.getPortValue(CK);
+		Value enable = circState.getPortValue(WE);
+		Value in = circState.getPortValue(IN);
 
 		synchronized(state) {
 			Value lastClock = state.setLastClock(clock);
@@ -120,7 +120,7 @@ public class Tty extends InstanceFactory {
 		Bounds bds = painter.getBounds();
 		g.c.strokeRoundRect(bds.getX(), bds.getY(), bds.getWidth(), bds.getHeight(),
 				10, 10);
-		g.toDefaultFont();
+		g.toDefault();
 
 	}
 

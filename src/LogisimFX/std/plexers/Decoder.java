@@ -7,6 +7,7 @@
 package LogisimFX.std.plexers;
 
 import LogisimFX.data.*;
+import LogisimFX.fpga.designrulecheck.CorrectLabel;
 import LogisimFX.instance.*;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.std.LC;
@@ -21,7 +22,7 @@ public class Decoder extends InstanceFactory {
 
 	public Decoder() {
 
-		super("Decoder", LC.createStringBinding("decoderComponent"));
+		super("Decoder", LC.createStringBinding("decoderComponent"), new DecoderHdlGeneratorFactory());
 		setAttributes(new Attribute[] {
 				StdAttr.FPGA_SUPPORTED,
 				StdAttr.FACING, Plexers.ATTR_SELECT_LOC, Plexers.ATTR_SELECT,
@@ -39,14 +40,7 @@ public class Decoder extends InstanceFactory {
 	
 	@Override
 	public Object getDefaultAttributeValue(Attribute<?> attr, LogisimVersion ver) {
-
-		if (attr == Plexers.ATTR_ENABLE) {
-			int newer = ver.compareTo(LogisimVersion.get(2, 6, 3, 220));
-			return Boolean.valueOf(newer >= 0);
-		} else {
-			return super.getDefaultAttributeValue(attr, ver);
-		}
-
+		return super.getDefaultAttributeValue(attr, ver);
 	}
 
 	@Override
@@ -193,7 +187,7 @@ public class Decoder extends InstanceFactory {
 		// determine selected output value
 		int outIndex = -1; // the special output
 		Value out = null;
-		Value en = enable ? state.getPort(outputs + 1) : Value.TRUE;
+		Value en = enable ? state.getPortValue(outputs + 1) : Value.TRUE;
 		if (en == Value.FALSE) {
 			Object opt = state.getAttributeValue(Plexers.ATTR_DISABLED);
 			Value base = opt == Plexers.DISABLED_ZERO ? Value.FALSE : Value.UNKNOWN;
@@ -201,7 +195,7 @@ public class Decoder extends InstanceFactory {
 		} else if (en == Value.ERROR && state.isPortConnected(outputs + 1)) {
 			others = Value.createError(data);
 		} else {
-			Value sel = state.getPort(outputs);
+			Value sel = state.getPortValue(outputs);
 			if (sel.isFullyDefined()) {
 				outIndex = sel.toIntValue();
 				out = Value.TRUE;
@@ -248,7 +242,7 @@ public class Decoder extends InstanceFactory {
 		int dy = vertical ? 0 : -selMult;
 		if (outputs == 2) { // draw select wire
 			if (painter.getShowState()) {
-				g.setColor(painter.getPort(outputs).getColor());
+				g.setColor(painter.getPortValue(outputs).getColor());
 			}
 			Location pt = painter.getInstance().getPortLocation(outputs);
 			g.c.strokeLine(pt.getX(), pt.getY(), pt.getX() + 2 * dx, pt.getY() + 2 * dy);
@@ -257,7 +251,7 @@ public class Decoder extends InstanceFactory {
 			Location en = painter.getInstance().getPortLocation(outputs + 1);
 			int len = outputs == 2 ? 6 : 4;
 			if (painter.getShowState()) {
-				g.setColor((painter.getPort(outputs + 1).getColor()));
+				g.setColor((painter.getPortValue(outputs + 1).getColor()));
 			}
 			g.c.strokeLine(en.getX(), en.getY(), en.getX() + len * dx, en.getY() + len * dy);
 		}
@@ -301,6 +295,20 @@ public class Decoder extends InstanceFactory {
 
 		g.toDefault();
 
+	}
+
+
+	@Override
+	public String getHDLName(AttributeSet attrs) {
+		return CorrectLabel.getCorrectLabel(this.getName())
+				+ "_"
+				+ (1 << attrs.getValue(Plexers.ATTR_SELECT).getWidth());
+	}
+
+	@Override
+	public boolean hasThreeStateDrivers(AttributeSet attrs) {
+		return (attrs.getValue(Plexers.ATTR_TRISTATE)
+				|| (attrs.getValue(Plexers.ATTR_DISABLED) == Plexers.DISABLED_FLOATING));
 	}
 
 }

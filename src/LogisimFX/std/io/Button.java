@@ -20,19 +20,35 @@ public class Button extends InstanceFactory {
 
 	private static final int DEPTH = 3;
 
+	public static final AttributeOption BUTTON_PRESS_ACTIVE =
+			new AttributeOption("active", LC.createStringBinding("buttonPressActive"));
+	public static final AttributeOption BUTTON_PRESS_PASSIVE =
+			new AttributeOption("passive", LC.createStringBinding("buttonPressPassive"));
+	public static final Attribute<AttributeOption> ATTR_PRESS =
+			Attributes.forOption(
+					"press",
+					LC.createStringBinding("buttonPressAttr"),
+					new AttributeOption[] {BUTTON_PRESS_ACTIVE, BUTTON_PRESS_PASSIVE});
+
 	public Button() {
 
-		super("Button", LC.createStringBinding("buttonComponent"));
+		super("Button", LC.createStringBinding("buttonComponent"), new AbstractSimpleIoHdlGeneratorFactory(true), true);
 		setAttributes(new Attribute[] {
 				StdAttr.FPGA_SUPPORTED,
-				StdAttr.FACING, Io.ATTR_COLOR,
-				StdAttr.LABEL, Io.ATTR_LABEL_LOC,
-				StdAttr.LABEL_FONT, Io.ATTR_LABEL_COLOR
+				StdAttr.FACING,
+				ATTR_PRESS,
+				Io.ATTR_COLOR,
+				StdAttr.LABEL,
+				Io.ATTR_LABEL_LOC,
+				StdAttr.LABEL_FONT,
+				Io.ATTR_LABEL_COLOR,
+				StdAttr.LABEL_VISIBILITY
 			}, new Object[] {
 				Boolean.FALSE,
-				Direction.EAST, Color.WHITE,
+				Direction.EAST, BUTTON_PRESS_ACTIVE, Color.WHITE,
 				"", Io.LABEL_CENTER,
-				StdAttr.DEFAULT_LABEL_FONT, Color.BLACK
+				StdAttr.DEFAULT_LABEL_FONT, Color.BLACK,
+				Boolean.FALSE
 			});
 		setFacingAttribute(StdAttr.FACING);
 		setIcon("button.gif");
@@ -115,13 +131,16 @@ public class Button extends InstanceFactory {
 	public void propagate(InstanceState state) {
 
 		InstanceDataSingleton data = (InstanceDataSingleton) state.getData();
-		Value val = data == null ? Value.FALSE : (Value) data.getValue();
+		Value val = data == null ? state.getAttributeValue(ATTR_PRESS) == BUTTON_PRESS_ACTIVE ? Value.FALSE : Value.TRUE : (Value) data.getValue();
 		state.setPort(0, val, 1);
 
 	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
+
+		final var defaultButtonState =
+				painter.getAttributeValue(ATTR_PRESS) == BUTTON_PRESS_ACTIVE ? Value.FALSE : Value.TRUE;
 
 		Bounds bds = painter.getBounds();
 		int x = bds.getX();
@@ -132,9 +151,9 @@ public class Button extends InstanceFactory {
 		Value val;
 		if (painter.getShowState()) {
 			InstanceDataSingleton data = (InstanceDataSingleton) painter.getData();
-			val = data == null ? Value.FALSE : (Value) data.getValue();
+			val = data == null ? defaultButtonState : (Value) data.getValue();
 		} else {
-			val = Value.FALSE;
+			val = defaultButtonState;
 		}
 
 		Color color = painter.getAttributeValue(Io.ATTR_COLOR);
@@ -145,7 +164,7 @@ public class Button extends InstanceFactory {
 
 		Graphics g = painter.getGraphics();
 		int depress;
-		if (val == Value.TRUE) {
+		if (val != defaultButtonState) {
 			x += DEPTH;
 			y += DEPTH;
 			Object labelLoc = painter.getAttributeValue(Io.ATTR_LABEL_LOC);
@@ -155,7 +174,7 @@ public class Button extends InstanceFactory {
 			} else {
 				depress = 0;
 			}
-			
+
 			Object facing = painter.getAttributeValue(StdAttr.FACING);
 			if (facing == Direction.NORTH || facing == Direction.WEST) {
 				Location p = painter.getLocation();
@@ -185,7 +204,7 @@ public class Button extends InstanceFactory {
 			g.c.strokeLine(x + w - DEPTH, y + h - DEPTH, x + w, y + h);
 			g.c.strokePolygon(xp, yp, xp.length);
 		}
-		
+
 		g.c.translate(depress, depress);
 		g.setColor(painter.getAttributeValue(Io.ATTR_LABEL_COLOR));
 		painter.drawLabel();
@@ -200,12 +219,16 @@ public class Button extends InstanceFactory {
 
 		@Override
 		public void mousePressed(InstanceState state, LayoutCanvas.CME e) {
-			setValue(state, Value.TRUE);
+			setValue(
+					state,
+					state.getAttributeValue(ATTR_PRESS) == BUTTON_PRESS_PASSIVE ? Value.FALSE : Value.TRUE);
 		}
-		
+
 		@Override
 		public void mouseReleased(InstanceState state, LayoutCanvas.CME e) {
-			setValue(state, Value.FALSE);
+			setValue(
+					state,
+					state.getAttributeValue(ATTR_PRESS) == BUTTON_PRESS_PASSIVE ? Value.TRUE : Value.FALSE);
 		}
 		
 		private void setValue(InstanceState state, Value val) {
@@ -230,7 +253,9 @@ public class Button extends InstanceFactory {
 		@Override
 		public Value getLogValue(InstanceState state, Object option) {
 			InstanceDataSingleton data = (InstanceDataSingleton) state.getData();
-			return data == null ? Value.FALSE : (Value) data.getValue();
+			final var defaultButtonState =
+					state.getAttributeValue(ATTR_PRESS) == BUTTON_PRESS_ACTIVE ? Value.FALSE : Value.TRUE;
+			return data == null ? defaultButtonState : (Value) data.getValue();
 		}
 
 	}

@@ -11,6 +11,7 @@ import java.util.Map;
 import LogisimFX.IconsManager;
 import LogisimFX.comp.TextField;
 import LogisimFX.data.*;
+import LogisimFX.fpga.designrulecheck.CorrectLabel;
 import LogisimFX.instance.*;
 import LogisimFX.newgui.AnalyzeFrame.Expression;
 import LogisimFX.newgui.AnalyzeFrame.Expressions;
@@ -44,7 +45,7 @@ class NotGate extends InstanceFactory {
 
 	private NotGate() {
 
-		super("NOT Gate", LC.createStringBinding("notGateComponent"));
+		super("NOT Gate", LC.createStringBinding("notGateComponent"), new AbstractBufferHdlGenerator(true));
 		setAttributes(new Attribute[] {
 				StdAttr.FPGA_SUPPORTED,
 				StdAttr.FACING, StdAttr.WIDTH, ATTR_SIZE,
@@ -84,7 +85,7 @@ class NotGate extends InstanceFactory {
 	@Override
 	public void propagate(InstanceState state) {
 
-		Value in = state.getPort(1);
+		Value in = state.getPortValue(1);
 		Value out = in.not();
 		out = Buffer.repair(state, out);
 		state.setPort(0, out, GateAttributes.DELAY);
@@ -265,6 +266,23 @@ class NotGate extends InstanceFactory {
 		instance.setTextField(StdAttr.LABEL, StdAttr.LABEL_FONT, x, y,
 				halign, TextField.V_BASELINE);
 
+	}
+
+
+	@Override
+	public String getHDLName(AttributeSet attrs) {
+		final var CompleteName = new StringBuilder();
+		CompleteName.append(CorrectLabel.getCorrectLabel(this.getName()).toUpperCase());
+		final var width = attrs.getValue(StdAttr.WIDTH);
+		if (width.getWidth() > 1) CompleteName.append("_BUS");
+		return CompleteName.toString();
+	}
+
+	@Override
+	public boolean hasThreeStateDrivers(AttributeSet attrs) {
+		if (attrs.containsAttribute(GateAttributes.ATTR_OUTPUT))
+			return !(attrs.getValue(GateAttributes.ATTR_OUTPUT) == GateAttributes.OUTPUT_01);
+		else return false;
 	}
 
 }

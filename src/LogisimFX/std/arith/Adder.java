@@ -7,6 +7,7 @@
 package LogisimFX.std.arith;
 
 import LogisimFX.data.*;
+import LogisimFX.fpga.designrulecheck.CorrectLabel;
 import LogisimFX.instance.*;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.std.LC;
@@ -19,15 +20,15 @@ public class Adder extends InstanceFactory {
 
 	static final int PER_DELAY = 1;
 
-	private static final int IN0   = 0;
-	private static final int IN1   = 1;
-	private static final int OUT   = 2;
-	private static final int C_IN  = 3;
-	private static final int C_OUT = 4;
+	static final int IN0   = 0;
+	static final int IN1   = 1;
+	static final int OUT   = 2;
+	static final int C_IN  = 3;
+	static final int C_OUT = 4;
 	
 	public Adder() {
 
-		super("Adder", LC.createStringBinding("adderComponent"));
+		super("Adder", LC.createStringBinding("adderComponent"), new AdderHdlGeneratorFactory());
 		setAttributes(new Attribute[] {
 				StdAttr.FPGA_SUPPORTED,
 				StdAttr.WIDTH
@@ -62,9 +63,9 @@ public class Adder extends InstanceFactory {
 		BitWidth dataWidth = state.getAttributeValue(StdAttr.WIDTH);
 
 		// compute outputs
-		Value a = state.getPort(IN0);
-		Value b = state.getPort(IN1);
-		Value c_in = state.getPort(C_IN);
+		Value a = state.getPortValue(IN0);
+		Value b = state.getPortValue(IN1);
+		Value c_in = state.getPortValue(C_IN);
 		Value[] outs = Adder.computeSum(dataWidth, a, b, c_in);
 
 		// propagate them
@@ -146,6 +147,12 @@ public class Adder extends InstanceFactory {
 			return new Value[] { Value.create(bits), carry };
 		}
 
+	}
+
+	@Override
+	public String getHDLName(AttributeSet attrs) {
+		final var nrOfBits = attrs.getValue(StdAttr.WIDTH).getWidth();
+		return (nrOfBits == 1) ? "FullAdder" : CorrectLabel.getCorrectLabel(getName());
 	}
 
 }

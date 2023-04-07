@@ -17,6 +17,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public abstract class AbstractCanvasObject
@@ -171,10 +172,10 @@ public abstract class AbstractCanvasObject
 	public final <V> void setValue(Attribute<V> attr, V value) {
 
 		Object old = getValue(attr);
-		boolean same = old == null ? value == null : old.equals(value);
+		boolean same = Objects.equals(old, value);
 		if (!same) {
 			updateValue(attr, value);
-			AttributeEvent e = new AttributeEvent(this, attr, value);
+			AttributeEvent e = new AttributeEvent(this, attr, value, old);
 			for (AttributeListener listener : listeners) {
 				listener.attributeValueChanged(e);
 			}

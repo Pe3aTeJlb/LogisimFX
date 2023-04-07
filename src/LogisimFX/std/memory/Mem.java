@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.WeakHashMap;
 
 import LogisimFX.data.*;
+import LogisimFX.fpga.hdlgenerator.HdlGeneratorFactory;
 import LogisimFX.newgui.HexEditorFrame.HexFile;
 import LogisimFX.newgui.HexEditorFrame.HexModel;
 import LogisimFX.newgui.HexEditorFrame.HexModelListener;
@@ -54,8 +55,12 @@ public abstract class Mem extends InstanceFactory {
 	private WeakHashMap<Instance,File> currentInstanceFiles;
 
 	Mem(String name, StringBinding desc, int extraPorts) {
+		this(name, desc, extraPorts, null, false);
+	}
 
-		super(name, desc);
+	Mem(String name, StringBinding desc, int extraPorts, HdlGeneratorFactory generator, boolean needsLabel) {
+
+		super(name, desc, generator, needsLabel);
 		currentInstanceFiles = new WeakHashMap<Instance,File>();
 		setInstancePoker(MemPoker.class);
 		setKeyConfigurator(JoinedConfigurator.create(
@@ -96,6 +101,14 @@ public abstract class Mem extends InstanceFactory {
 
 		Graphics g = painter.getGraphics();
 		Bounds bds = painter.getBounds();
+
+		final var Label = painter.getAttributeValue(StdAttr.LABEL);
+		if (Label != null && painter.getAttributeValue(StdAttr.LABEL_VISIBILITY)) {
+			final var font = g.getFont();
+			g.setFont(painter.getAttributeValue(StdAttr.LABEL_FONT));
+			GraphicsUtil.drawCenteredText(g, Label, bds.getX() + bds.getWidth() / 2, bds.getY() - (int)g.getFont().getSize());
+			g.setFont(font);
+		}
 
 		// draw boundary
 		painter.drawBounds();

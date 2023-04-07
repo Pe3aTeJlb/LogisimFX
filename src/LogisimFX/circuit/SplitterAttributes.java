@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-class SplitterAttributes extends AbstractAttributeSet {
+public class SplitterAttributes extends AbstractAttributeSet {
 
 	public static final AttributeOption APPEAR_LEGACY
 		= new AttributeOption("legacy", LC.createStringBinding("splitterAppearanceLegacy"));
@@ -165,7 +165,7 @@ class SplitterAttributes extends AbstractAttributeSet {
 	Direction facing = Direction.EAST;
 	Boolean tunnelView = false;
 	byte fanout = 2;                 // number of ends this splits into
-	byte[] bit_end = new byte[2];    // how each bit maps to an end (0 if nowhere);
+	byte[] bitEnd = new byte[2];    // how each bit maps to an end (0 if nowhere);
 									 //   other values will be between 1 and fanout
 	BitOutOption[] options = null;
 
@@ -174,6 +174,14 @@ class SplitterAttributes extends AbstractAttributeSet {
 		configureOptions();
 		configureDefaults();
 		parameters = new SplitterParameters(this);
+	}
+
+	public boolean isNoConnect(int index) {
+		for (final var b : bitEnd) {
+			if (b == index)
+				return false;
+		}
+		return true;
 	}
 
 	Attribute<?> getBitOutAttribute(int index) {
@@ -196,7 +204,7 @@ class SplitterAttributes extends AbstractAttributeSet {
 		dest.tunnelView = this.tunnelView;
 		dest.fanout = this.fanout;
 		dest.appear = this.appear;
-		dest.bit_end = this.bit_end.clone();
+		dest.bitEnd = this.bitEnd.clone();
 		dest.options = this.options;
 	}
 
@@ -222,12 +230,12 @@ class SplitterAttributes extends AbstractAttributeSet {
 		} else if (attr == ATTR_FANOUT) {
 			return (V) Integer.valueOf(fanout);
 		} else if (attr == ATTR_WIDTH) {
-			return (V) BitWidth.create(bit_end.length);
+			return (V) BitWidth.create(bitEnd.length);
 		} else if (attr == ATTR_APPEARANCE) {
 			return (V) appear;
 		} else if (attr instanceof BitOutAttribute) {
 			BitOutAttribute bitOut = (BitOutAttribute) attr;
-			return (V) Integer.valueOf(bit_end[bitOut.which]);
+			return (V) Integer.valueOf(bitEnd[bitOut.which]);
 		} else if (attr == ATTR_TUNNELVIEW) {
 			return (V) tunnelView;
 		} else if (attr == StdAttr.FPGA_SUPPORTED) {
@@ -245,7 +253,7 @@ class SplitterAttributes extends AbstractAttributeSet {
 			parameters = null;
 		} else if (attr == ATTR_FANOUT) {
 			int newValue = ((Integer) value).intValue();
-			byte[] bits = bit_end;
+			byte[] bits = bitEnd;
 			for (int i = 0; i < bits.length; i++) {
 				if (bits[i] >= newValue) bits[i] = (byte) (newValue - 1);
 			}
@@ -255,7 +263,7 @@ class SplitterAttributes extends AbstractAttributeSet {
 			parameters = null;
 		} else if (attr == ATTR_WIDTH) {
 			BitWidth width = (BitWidth) value;
-			bit_end = new byte[width.getWidth()];
+			bitEnd = new byte[width.getWidth()];
 			configureOptions();
 			configureDefaults();
 		} else if (attr == ATTR_APPEARANCE) {
@@ -270,7 +278,7 @@ class SplitterAttributes extends AbstractAttributeSet {
 				val= ((BitOutOption) value).value + 1;
 			}
 			if (val >= 0 && val <= fanout) {
-				bit_end[bitOutAttr.which] = (byte) val;
+				bitEnd[bitOutAttr.which] = (byte) val;
 			}
 		}else if (attr == ATTR_TUNNELVIEW) {
 			tunnelView = (Boolean) value;
@@ -280,7 +288,7 @@ class SplitterAttributes extends AbstractAttributeSet {
 		} else {
 			throw new IllegalArgumentException("unknown attribute " + attr);
 		}
-		fireAttributeValueChanged(attr, value);
+		fireAttributeValueChanged(attr, value, null);
 	}
 
 	private void configureOptions() {
@@ -305,29 +313,29 @@ class SplitterAttributes extends AbstractAttributeSet {
 		int curNum = attrs.size() - offs;
 
 		// compute default values
-		byte[] dflt = computeDistribution(fanout, bit_end.length, 1);
+		byte[] dflt = computeDistribution(fanout, bitEnd.length, 1);
 
-		boolean changed = curNum != bit_end.length;
+		boolean changed = curNum != bitEnd.length;
 		
 		// remove excess attributes
-		while (curNum > bit_end.length) {
+		while (curNum > bitEnd.length) {
 			curNum--;
 			attrs.remove(offs + curNum);
 		}
 
 		// set existing attributes
 		for (int i = 0; i < curNum; i++) {
-			if (bit_end[i] != dflt[i]) {
+			if (bitEnd[i] != dflt[i]) {
 				BitOutAttribute attr = (BitOutAttribute) attrs.get(offs + i);
-				bit_end[i] = dflt[i];
-				fireAttributeValueChanged(attr, Integer.valueOf(bit_end[i]));
+				bitEnd[i] = dflt[i];
+				fireAttributeValueChanged(attr, Integer.valueOf(bitEnd[i]), null);
 			}
 		}
 
 		// add new attributes
-		for (int i = curNum; i < bit_end.length; i++) {
+		for (int i = curNum; i < bitEnd.length; i++) {
 			BitOutAttribute attr = new BitOutAttribute(i, options);
-			bit_end[i] = dflt[i];
+			bitEnd[i] = dflt[i];
 			attrs.add(attr);
 		}
 		

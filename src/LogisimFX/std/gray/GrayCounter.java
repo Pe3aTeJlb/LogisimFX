@@ -69,7 +69,7 @@ class GrayCounter extends InstanceFactory {
 		// StdAttr.WIDTH attribute to determine the bit width to work with.
 		BitWidth width = state.getAttributeValue(StdAttr.WIDTH);
 		CounterData cur = CounterData.get(state, width);
-		boolean trigger = cur.updateClock(state.getPort(0));
+		boolean trigger = cur.updateClock(state.getPortValue(0));
 		if (trigger) cur.setValue(GrayIncrementer.nextGray(cur.getValue()));
 		state.setPort(1, cur.getValue(), 9);
 

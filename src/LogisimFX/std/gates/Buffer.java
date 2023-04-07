@@ -9,6 +9,7 @@ package LogisimFX.std.gates;
 import java.util.Map;
 
 import LogisimFX.data.*;
+import LogisimFX.fpga.designrulecheck.CorrectLabel;
 import LogisimFX.instance.*;
 import LogisimFX.newgui.AnalyzeFrame.Expression;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
@@ -24,7 +25,7 @@ class Buffer extends InstanceFactory {
 
 	private Buffer() {
 
-		super("Buffer", LC.createStringBinding("bufferComponent"));
+		super("Buffer", LC.createStringBinding("bufferComponent"), new AbstractBufferHdlGenerator(false));
 		setAttributes(new Attribute[] {
 				StdAttr.FPGA_SUPPORTED,
 				StdAttr.FACING, StdAttr.WIDTH,
@@ -55,7 +56,7 @@ class Buffer extends InstanceFactory {
 	@Override
 	public void propagate(InstanceState state) {
 
-		Value in = state.getPort(1);
+		Value in = state.getPortValue(1);
 		in = Buffer.repair(state, in);
 		state.setPort(0, in, GateAttributes.DELAY);
 
@@ -194,6 +195,25 @@ class Buffer extends InstanceFactory {
 		Object outType = state.getAttributeValue(GateAttributes.ATTR_OUTPUT);
 		return AbstractGate.pullOutput(repaired, outType);
 
+	}
+
+
+
+	@Override
+	public String getHDLName(AttributeSet attrs) {
+		final var completeName = new StringBuilder();
+		completeName.append(CorrectLabel.getCorrectLabel(this.getName()).toUpperCase());
+		completeName.append("_COMPONENT");
+		final var width = attrs.getValue(StdAttr.WIDTH);
+		if (width.getWidth() > 1) completeName.append("_BUS");
+		return completeName.toString();
+	}
+
+	@Override
+	public boolean hasThreeStateDrivers(AttributeSet attrs) {
+		return attrs.containsAttribute(GateAttributes.ATTR_OUTPUT)
+				? attrs.getValue(GateAttributes.ATTR_OUTPUT) != GateAttributes.OUTPUT_01
+				: false;
 	}
 
 }

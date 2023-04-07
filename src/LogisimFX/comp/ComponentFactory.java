@@ -9,6 +9,8 @@ package LogisimFX.comp;
 import LogisimFX.data.*;
 import LogisimFX.LogisimVersion;
 
+import LogisimFX.fpga.designrulecheck.netlistComponent;
+import LogisimFX.fpga.hdlgenerator.HdlGeneratorFactory;
 import javafx.beans.binding.StringBinding;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -56,4 +58,27 @@ public interface ComponentFactory extends AttributeDefaultProvider {
 	 *    the feature.
 	 */
 	 Object getFeature(Object key, AttributeSet attrs);
+
+
+
+	HdlGeneratorFactory getHDLGenerator(AttributeSet attrs);
+
+	String getHDLName(AttributeSet attrs);
+
+	boolean activeOnHigh(AttributeSet attrs);
+
+	boolean hasThreeStateDrivers(AttributeSet attrs);
+
+	boolean isHDLSupportedComponent(AttributeSet attrs);
+
+	boolean isHDLGeneratorAvailable();
+
+	boolean checkForGatedClocks(netlistComponent comp);
+
+	int[] clockPinIndex(netlistComponent comp);
+
+	boolean requiresGlobalClock();
+
+	boolean requiresNonZeroLabel();
+
 }

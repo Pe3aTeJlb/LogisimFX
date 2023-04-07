@@ -7,6 +7,9 @@
 package LogisimFX.std.memory;
 
 import LogisimFX.data.*;
+import LogisimFX.fpga.designrulecheck.CorrectLabel;
+import LogisimFX.fpga.designrulecheck.Netlist;
+import LogisimFX.fpga.designrulecheck.netlistComponent;
 import LogisimFX.instance.*;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.std.LC;
@@ -18,16 +21,16 @@ import javafx.scene.paint.Color;
 
 public class Register extends InstanceFactory {
 
-	private static final int DELAY = 8;
-	private static final int OUT = 0;
-	private static final int IN  = 1;
-	private static final int CK  = 2;
-	private static final int CLR = 3;
-	private static final int EN  = 4;
+	static final int DELAY = 8;
+	static final int OUT = 0;
+	static final int IN  = 1;
+	static final int CK  = 2;
+	static final int CLR = 3;
+	static final int EN  = 4;
 
 	public Register() {
 
-		super("Register", LC.createStringBinding("registerComponent"));
+		super("Register", LC.createStringBinding("registerComponent"), new RegisterHdlGeneratorFactory());
 		setAttributes(new Attribute[] {
 				StdAttr.FPGA_SUPPORTED,
 				StdAttr.WIDTH, StdAttr.TRIGGER,
@@ -79,12 +82,12 @@ public class Register extends InstanceFactory {
 
 		BitWidth dataWidth = state.getAttributeValue(StdAttr.WIDTH);
 		Object triggerType = state.getAttributeValue(StdAttr.TRIGGER);
-		boolean triggered = data.updateClock(state.getPort(CK), triggerType);
+		boolean triggered = data.updateClock(state.getPortValue(CK), triggerType);
 
-		if (state.getPort(CLR) == Value.TRUE) {
+		if (state.getPortValue(CLR) == Value.TRUE) {
 			data.value = 0;
-		} else if (triggered && state.getPort(EN) != Value.FALSE) {
-			Value in = state.getPort(IN);
+		} else if (triggered && state.getPortValue(EN) != Value.FALSE) {
+			Value in = state.getPortValue(IN);
 			if (in.isFullyDefined()) data.value = in.toIntValue();
 		} 
 
@@ -150,6 +153,29 @@ public class Register extends InstanceFactory {
 
 		g.toDefault();
 
+	}
+
+
+	@Override
+	public String getHDLName(AttributeSet attrs) {
+		final var CompleteName = new StringBuilder();
+		CompleteName.append(CorrectLabel.getCorrectLabel(this.getName()).toUpperCase());
+		if ((attrs.getValue(StdAttr.TRIGGER) == StdAttr.TRIG_FALLING)
+				|| (attrs.getValue(StdAttr.TRIGGER) == StdAttr.TRIG_RISING)) {
+			CompleteName.append("_FLIP_FLOP");
+		} else {
+			CompleteName.append("_LATCH");
+		}
+		return CompleteName.toString();
+	}
+
+	@Override
+	public boolean checkForGatedClocks(netlistComponent comp) {
+		return Netlist.isFlipFlop(comp.getComponent().getAttributeSet());
+	}
+	@Override
+	public int[] clockPinIndex(netlistComponent comp) {
+		return new int[] {CK};
 	}
 
 }

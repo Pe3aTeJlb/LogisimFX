@@ -51,7 +51,7 @@ public final class SyntaxChecker {
 	public static boolean isVariableNameAcceptable(String val, Boolean showDialog) {
 		final var message = getErrorMessage(val);
 		if (message != null && showDialog) {
-			DialogManager.CreateWarningDialog("Error", message.concat(LC.get("variableNameNotAcceptable")));
+			DialogManager.createWarningDialog("Error", message.concat(LC.get("variableNameNotAcceptable")));
 		}
 		return message == null;
 	}

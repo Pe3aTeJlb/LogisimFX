@@ -14,7 +14,6 @@ import LogisimFX.file.LogisimFile;
 import LogisimFX.newgui.DialogManager;
 import LogisimFX.util.StringUtil;
 import LogisimFX.prefs.AppPreferences;
-import LogisimFX.localization.Localizer;
 import LogisimFX.prefs.Template;
 
 import javafx.collections.FXCollections;
@@ -246,7 +245,7 @@ public class PreferencesController extends AbstractController {
 
                 }
                 catch (IOException ex) {
-                    DialogManager.CreateErrorDialog(LC.get("templateErrorTitle"), StringUtil.format(LC.get("templateErrorMessage"), ex.toString()));
+                    DialogManager.createErrorDialog(LC.get("templateErrorTitle"), StringUtil.format(LC.get("templateErrorMessage"), ex.toString()));
                 } finally {
                     try {
                         if (reader != null) reader.close();

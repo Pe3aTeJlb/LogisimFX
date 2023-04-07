@@ -361,7 +361,7 @@ public class PainterShaped {
 				int len = lengths[i];
 				if (len != 0 && (!printView || painter.isPortConnected(i + 1))) {
 					if (painter.getShowState()) {
-						Value val = painter.getPort(i + 1);
+						Value val = painter.getPortValue(i + 1);
 						g.setColor(val.getColor());
 					} else {
 						g.setColor(baseColor);

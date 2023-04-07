@@ -13,14 +13,12 @@ import LogisimFX.circuit.Circuit;
 import LogisimFX.comp.Component;
 import LogisimFX.comp.ComponentFactory;
 import LogisimFX.comp.PositionComparator;
-import LogisimFX.data.AttributeSet;
 import LogisimFX.fpga.designrulecheck.CorrectLabel;
-import LogisimFX.instance.StdAttr;
-import LogisimFX.newgui.DialogManager;
-import LogisimFX.std.wiring.Pin;
 import LogisimFX.std.wiring.Tunnel;
 
 import java.util.*;
+
+import static LogisimFX.circuit.Circuit.isCorrectLabel;
 
 public class AutoLabel {
 
@@ -177,63 +175,6 @@ public class AutoLabel {
 		SortedSet<Component> sorted = new TreeSet<>(new PositionComparator());
 		sorted.addAll(comps);
 		return sorted;
-	}
-
-	public static boolean isCorrectLabel(
-			String circuitName,
-			String name,
-			Set<Component> components,
-			AttributeSet me,
-			ComponentFactory myFactory,
-			Boolean showDialog) {
-		if (myFactory instanceof Tunnel) return true;
-		if (circuitName != null
-				&& !circuitName.isEmpty()
-				&& circuitName.equalsIgnoreCase(name)
-				&& myFactory instanceof Pin) {
-			if (showDialog) {
-				DialogManager.CreateErrorDialog("Error", LC.get("ComponentLabelEqualCircuitName"));
-			}
-			return false;
-		}
-		return !(isExistingLabel(name, me, components, showDialog)
-				|| isComponentName(name, components, showDialog));
-	}
-
-	private static boolean isExistingLabel(String name, AttributeSet me, Set<Component> comps, Boolean showDialog) {
-		if (name.isEmpty()) return false;
-		for (final var comp : comps) {
-			if (!comp.getAttributeSet().equals(me) && !(comp.getFactory() instanceof Tunnel)) {
-				final var Label =
-						(comp.getAttributeSet().containsAttribute(StdAttr.LABEL))
-								? comp.getAttributeSet().getValue(StdAttr.LABEL)
-								: "";
-				if (Label.equalsIgnoreCase(name)) {
-					if (showDialog) {
-						DialogManager.CreateErrorDialog("Error", LC.get("UsedLabelNameError"));
-					}
-					return true;
-				}
-			}
-		}
-		// we do not have to check the wires as (1) Wire is a reserved keyword,
-		// and (2) they cannot have a label
-		return false;
-	}
-
-	private static boolean isComponentName(String name, Set<Component> comps, Boolean showDialog) {
-		if (name.isEmpty()) return false;
-		for (final var comp : comps) {
-			if (comp.getFactory().getName().equalsIgnoreCase(name)) {
-				if (showDialog) {
-					DialogManager.CreateErrorDialog("Error", LC.get("ComponentLabelNameError"));
-				}
-				return true;
-			}
-		}
-		// we do not have to check the wires as (1) Wire is a reserved keyword,
-		// and (2) they cannot have a label
-		return false;
 	}
 
 }

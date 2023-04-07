@@ -11,6 +11,8 @@ import java.util.Map;
 import LogisimFX.IconsManager;
 import LogisimFX.comp.TextField;
 import LogisimFX.data.*;
+import LogisimFX.fpga.designrulecheck.CorrectLabel;
+import LogisimFX.fpga.hdlgenerator.HdlGeneratorFactory;
 import LogisimFX.instance.*;
 import LogisimFX.newgui.AnalyzeFrame.Expression;
 import LogisimFX.newgui.AnalyzeFrame.Expressions;
@@ -39,13 +41,13 @@ abstract class AbstractGate extends InstanceFactory {
 	private String rectLabel = "";
 	private boolean paintInputLines;
 
-	protected AbstractGate(String name, StringBinding desc) {
-		this(name, desc, false);
+	protected AbstractGate(String name, StringBinding desc, HdlGeneratorFactory generator) {
+		this(name, desc, false, generator);
 	}
 	
-	protected AbstractGate(String name, StringBinding desc, boolean isXor) {
+	protected AbstractGate(String name, StringBinding desc, boolean isXor, HdlGeneratorFactory generator) {
 
-		super(name, desc);
+		super(name, desc, generator);
 		this.isXor = isXor;
 		setFacingAttribute(StdAttr.FACING);
 		setKeyConfigurator(JoinedConfigurator.create(
@@ -447,9 +449,9 @@ abstract class AbstractGate extends InstanceFactory {
 			if (state.isPortConnected(i)) {
 				int negatedBit = (negated >> (i - 1)) & 1;
 				if (negatedBit == 1) {
-					inputs[numInputs] = state.getPort(i).not();
+					inputs[numInputs] = state.getPortValue(i).not();
 				} else {
-					inputs[numInputs] = state.getPort(i);
+					inputs[numInputs] = state.getPortValue(i);
 				}
 				numInputs++;
 			} else {
@@ -589,6 +591,34 @@ abstract class AbstractGate extends InstanceFactory {
 			return Location.create(-dx, dy);
 		}
 
+	}
+
+
+
+	@Override
+	public String getHDLName(AttributeSet attrs) {
+		final var myAttrs = (GateAttributes) attrs;
+		final var completeName = new StringBuilder();
+		completeName.append(CorrectLabel.getCorrectLabel(this.getName()).toUpperCase());
+		final var width = myAttrs.getValue(StdAttr.WIDTH);
+		if (width.getWidth() > 1) completeName.append("_BUS");
+		final var inputCount = myAttrs.getValue(GateAttributes.ATTR_INPUTS);
+		if (inputCount > 2) {
+			completeName.append("_").append(inputCount).append("_INPUTS");
+		}
+		if (myAttrs.containsAttribute(GateAttributes.ATTR_XOR)) {
+			if (myAttrs.getValue(GateAttributes.ATTR_XOR).equals(GateAttributes.XOR_ONE)) {
+				completeName.append("_ONEHOT");
+			}
+		}
+		return completeName.toString();
+	}
+
+	@Override
+	public boolean hasThreeStateDrivers(AttributeSet attrs) {
+		return (attrs.containsAttribute(GateAttributes.ATTR_OUTPUT))
+				? (attrs.getValue(GateAttributes.ATTR_OUTPUT) != GateAttributes.OUTPUT_01)
+				: false;
 	}
 
 }

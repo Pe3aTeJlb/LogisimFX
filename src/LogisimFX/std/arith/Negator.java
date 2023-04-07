@@ -7,18 +7,19 @@
 package LogisimFX.std.arith;
 
 import LogisimFX.data.*;
+import LogisimFX.fpga.designrulecheck.CorrectLabel;
 import LogisimFX.instance.*;
 import LogisimFX.std.LC;
 import LogisimFX.tools.key.BitWidthConfigurator;
 
 public class Negator extends InstanceFactory {
 
-	private static final int IN    = 0;
-	private static final int OUT   = 1;
+	static final int IN    = 0;
+	static final int OUT   = 1;
 
 	public Negator() {
 
-		super("Negator", LC.createStringBinding("negatorComponent"));
+		super("Negator", LC.createStringBinding("negatorComponent"), new NegatorHdlGeneratorFactory());
 		setAttributes(new Attribute[] { StdAttr.FPGA_SUPPORTED, StdAttr.WIDTH },
 					new Object[] { Boolean.FALSE, BitWidth.create(8) });
 		setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
@@ -41,7 +42,7 @@ public class Negator extends InstanceFactory {
 		BitWidth dataWidth = state.getAttributeValue(StdAttr.WIDTH);
 
 		// compute outputs
-		Value in = state.getPort(IN);
+		Value in = state.getPortValue(IN);
 		Value out;
 		if (in.isFullyDefined()) {
 			out = Value.createKnown(in.getBitWidth(), -in.toIntValue());
@@ -88,6 +89,15 @@ public class Negator extends InstanceFactory {
 		painter.drawPort(IN);
 		painter.drawPort(OUT, "-x", Direction.WEST);
 
+	}
+
+
+	@Override
+	public String getHDLName(AttributeSet attrs) {
+		StringBuilder CompleteName = new StringBuilder();
+		if (attrs.getValue(StdAttr.WIDTH).getWidth() == 1) CompleteName.append("BitNegator");
+		else CompleteName.append(CorrectLabel.getCorrectLabel(this.getName()));
+		return CompleteName.toString();
 	}
 
 }

@@ -621,7 +621,7 @@ class CircuitWires {
 		for (Splitter spl : splitters) {
 			synchronized(spl) {
 				SplitterAttributes spl_attrs = (SplitterAttributes) spl.getAttributeSet();
-				byte[] bit_end = spl_attrs.bit_end;
+				byte[] bit_end = spl_attrs.bitEnd;
 				SplitterData spl_data = spl.wire_data;
 				WireBundle from_bundle = spl_data.end_bundle[0];
 				if (from_bundle == null || !from_bundle.isValid()) continue;

@@ -25,6 +25,7 @@ public class InstanceTextField implements AttributeListener, TextFieldListener,
 	private TextField field;
 	private Attribute<String> labelAttr;
 	private Attribute<Font> fontAttr;
+	private boolean isLabelVisible = true;
 	private int fieldX;
 	private int fieldY;
 	private int halign;
@@ -48,6 +49,9 @@ public class InstanceTextField implements AttributeListener, TextFieldListener,
 		this.valign = valign;
 		boolean shouldReg = shouldRegister();
 		AttributeSet attrs = comp.getAttributeSet();
+		if (attrs.containsAttribute(StdAttr.LABEL_VISIBILITY)) {
+			isLabelVisible = attrs.getValue(StdAttr.LABEL_VISIBILITY);
+		}
 		if (!wasReg && shouldReg) attrs.addAttributeListener(this);
 		if (wasReg && !shouldReg) attrs.removeAttributeListener(this);
 
@@ -85,11 +89,11 @@ public class InstanceTextField implements AttributeListener, TextFieldListener,
 	}
 
 	Bounds getBounds(Graphics g) {
-		return field == null ? Bounds.EMPTY_BOUNDS : field.getBounds(g);
+		return field == null || !isLabelVisible ? Bounds.EMPTY_BOUNDS : field.getBounds(g);
 	}
 
 	void draw(Component comp, ComponentDrawContext context) {
-		if (field != null) {
+		if (field != null && isLabelVisible) {
 			field.draw(context.getGraphics());
 		}
 	}
@@ -102,6 +106,8 @@ public class InstanceTextField implements AttributeListener, TextFieldListener,
 			updateField(comp.getAttributeSet());
 		} else if (attr == fontAttr) {
 			if (field != null) field.setFont((Font) e.getValue());
+		} else if (attr == StdAttr.LABEL_VISIBILITY) {
+			isLabelVisible = (Boolean) e.getValue();
 		}
 	}
 
