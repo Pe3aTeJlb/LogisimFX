@@ -6,10 +6,17 @@
 package LogisimFX.newgui.MainFrame.EditorTabs.CodeEditor;
 
 import LogisimFX.IconsManager;
-import LogisimFX.circuit.Circuit;
-import LogisimFX.circuit.CircuitHdlGeneratorFactory;
-import LogisimFX.circuit.SubcircuitFactory;
+import LogisimFX.circuit.*;
 import LogisimFX.comp.Component;
+import LogisimFX.comp.ComponentEvent;
+import LogisimFX.comp.ComponentListener;
+import LogisimFX.comp.EndData;
+import LogisimFX.data.Attribute;
+import LogisimFX.data.AttributeEvent;
+import LogisimFX.data.Location;
+import LogisimFX.file.LogisimFile;
+import LogisimFX.fpga.file.FileWriter;
+import LogisimFX.newgui.DialogManager;
 import LogisimFX.newgui.MainFrame.EditorTabs.CodeEditor.AutoCompletion.AutoCompletion;
 import LogisimFX.newgui.MainFrame.EditorTabs.CodeEditor.AutoCompletion.AutoCompletionWords;
 import LogisimFX.newgui.MainFrame.EditorTabs.EditHandler;
@@ -38,9 +45,13 @@ import org.fxmisc.richtext.model.PlainTextChange;
 import org.fxmisc.richtext.util.UndoUtils;
 import org.fxmisc.undo.UndoManager;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -74,44 +85,7 @@ public class CodeEditor extends EditorBase {
     private AtomicInteger currWordIndex = new AtomicInteger(0);
 
     private Component comp;
-
-    public CodeEditor(Project project, Circuit circ){
-
-        super(project, circ);
-
-        initFindReplaceBar();
-        initCodeArea();
-        initFootBar();
-
-        codeEditorToolBar = new CodeEditorToolBar();
-        codeEditorToolBar.setOnMousePressed(event -> Event.fireEvent(this, event.copyFor(event.getSource(), this)));
-
-        this.getChildren().addAll(codeEditorToolBar, findBar, replaceBar, virtualizedScrollPane, footBar);
-
-        proj.getFrameController().editorProperty().addListener((observableValue, editorBase, t1) -> {
-            if (this.isSelected()){
-                recalculateAccelerators();
-            }
-        });
-
-        //this.sceneProperty().addListener(sceneListener = (change) -> this.recalculateAccelerators());
-
-        editHandler = new CodeEditHandler(this);
-        menu = new CodeEditorEditMenu(this);
-
-        codeArea.requestFocus();
-
-        StringBuilder builder = new StringBuilder();
-        SubcircuitFactory factory = circ.getSubcircuitFactory();
-        for(String s: ((CircuitHdlGeneratorFactory)factory.getHDLGenerator(circ.getStaticAttributes())).getModuleFunctionality(
-                circ.getNetList(), circ.getStaticAttributes()
-        ).get()) {
-            builder.append(s).append("\n");
-        }
-
-        codeArea.insertText(0, builder.toString());
-
-    }
+    private File file;
 
     public CodeEditor(Project project, Circuit circ, Component comp){
 
@@ -120,7 +94,7 @@ public class CodeEditor extends EditorBase {
         this.comp = comp;
 
         initFindReplaceBar();
-        initCodeArea();
+        initCodeArea("v");
         initFootBar();
 
         codeEditorToolBar = new CodeEditorToolBar();
@@ -144,34 +118,161 @@ public class CodeEditor extends EditorBase {
 
         StringBuilder builder = new StringBuilder();
 
-        if (comp.getFactory().getHDLGenerator(comp.getAttributeSet()).isOnlyInlined()){
-            circ.getNetList().designRuleCheckResult(proj.getLogisimFile().getMainCircuit() == circ, new ArrayList<>());
-            builder.append(
-                    comp.getFactory().getHDLGenerator(
-                            comp.getAttributeSet()).getInlinedCode(
-                            circ.getNetList(), 0L,
-                            circ.getNetList().getNormalComponents().stream().filter(net -> net.getComponent() == comp).findFirst().get(),
-                            circ.getName()
-                            ).toString()
-            ).append("\n");
-
-            codeArea.setEditable(false);
-
-        } else {
-
-            for(String s: comp.getFactory().getHDLGenerator(comp.getAttributeSet()).getArchitecture(
-                    circ.getNetList(), comp.getAttributeSet(), comp.getFactory().getHDLName(comp.getAttributeSet()))) {
-                builder.append(s).append("\n");
-            }
-
+        for(String s: comp.getFactory().getHDLGenerator(comp.getAttributeSet()).getArchitecture(
+                circ.getNetList(), comp.getAttributeSet(), comp.getFactory().getHDLName(comp.getAttributeSet()))) {
+            builder.append(s).append("\n");
         }
 
         codeArea.insertText(0, builder.toString());
 
+        codeArea.setEditable(false);
+
     }
 
+    public CodeEditor(Project project, Circuit circ, File file){
 
-    private void initCodeArea(){
+        super(project, circ);
+
+        this.file = file;
+
+        circ.registerProject(proj);
+
+        initFindReplaceBar();
+        initCodeArea(file.getName().split("\\.")[1]);
+        initFootBar();
+
+        codeEditorToolBar = new CodeEditorToolBar();
+        codeEditorToolBar.setOnMousePressed(event -> Event.fireEvent(this, event.copyFor(event.getSource(), this)));
+
+        this.getChildren().addAll(codeEditorToolBar, findBar, replaceBar, virtualizedScrollPane, footBar);
+
+        proj.getFrameController().editorProperty().addListener((observableValue, editorBase, t1) -> {
+            if (this.isSelected()){
+                recalculateAccelerators();
+            }
+        });
+
+        //this.sceneProperty().addListener(sceneListener = (change) -> this.recalculateAccelerators());
+
+        editHandler = new CodeEditHandler(this);
+        menu = new CodeEditorEditMenu(this);
+
+        codeArea.requestFocus();
+
+        if (file.length() > 0) {
+
+            try {
+                codeArea.insertText(0, Files.readString(file.toPath()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+
+            StringBuilder builder = new StringBuilder();
+            SubcircuitFactory factory = circ.getSubcircuitFactory();
+            for (String s : ((CircuitHdlGeneratorFactory) factory.getHDLGenerator(circ.getStaticAttributes())).getModuleFunctionality(
+                    circ.getNetList(), circ.getStaticAttributes()
+            ).get()) {
+                builder.append(s).append("\n");
+            }
+
+            codeArea.insertText(0, builder.toString());
+
+        }
+
+    }
+
+    public CodeEditor(Project project, File file){
+
+        super(project, null);
+
+        this.file = file;
+
+        initFindReplaceBar();
+        initCodeArea("");
+        initFootBar();
+
+        codeEditorToolBar = new CodeEditorToolBar();
+        codeEditorToolBar.setOnMousePressed(event -> Event.fireEvent(this, event.copyFor(event.getSource(), this)));
+
+        this.getChildren().addAll(codeEditorToolBar, findBar, replaceBar, virtualizedScrollPane, footBar);
+
+        proj.getFrameController().editorProperty().addListener((observableValue, editorBase, t1) -> {
+            if (this.isSelected()){
+                recalculateAccelerators();
+            }
+        });
+
+        //this.sceneProperty().addListener(sceneListener = (change) -> this.recalculateAccelerators());
+
+        editHandler = new CodeEditHandler(this);
+        menu = new CodeEditorEditMenu(this);
+
+        codeArea.requestFocus();
+
+
+        if (file.length() > 0) {
+            try {
+                codeArea.insertText(0, Files.readString(file.toPath()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    @Override
+    public String getEditorDescriptor(){
+
+        if (comp != null){
+            return circ.getName() + " " + comp.getFactory().getName() + " " + comp.getLocation().toString();
+        } else if (circ != null){
+            return circ.getHDLFile(proj, file.getName()).toString().split(proj.getLogisimFile().getProjectDir().getFileName().toString())[1].substring(1);
+        } else {
+            return file.toString().split(proj.getLogisimFile().getProjectDir().getFileName().toString())[1].substring(1);
+        }
+
+    }
+
+    public void doSave(){
+
+        FileOutputStream writer;
+
+        if (comp == null && circ != null){
+            try {
+                File f = circ.getHDLFile(proj, file.getName());
+                if (!f.exists()){
+                    f.getParentFile().mkdirs();
+                    f.createNewFile();
+                }
+                writer = new FileOutputStream(f);
+                writer.write(codeArea.getText().getBytes());
+                writer.flush();
+                writer.close();
+            } catch (IOException e) {
+                DialogManager.createStackTraceDialog("Error!", "Error during saving code editor content " + file.getName(), e);
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                if (!file.exists()){
+                    file.getParentFile().mkdirs();
+                    file.createNewFile();
+                }
+                writer = new FileOutputStream(file);
+                writer.write(codeArea.getText().getBytes());
+                writer.flush();
+                writer.close();
+            } catch (IOException e) {
+                DialogManager.createStackTraceDialog("Error!", "Error during saving code editor content " + file.getName(), e);
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    private void initCodeArea(String ext){
 
         autoCompletionPopup = new Popup();
         autoCompletionPopup.setAutoHide(true);
@@ -190,7 +291,7 @@ public class CodeEditor extends EditorBase {
         UndoManager<List<PlainTextChange>> um = UndoUtils.plainTextUndoManager(codeArea);
         codeArea.setUndoManager(um);
 
-        new SyntaxHighlighter(codeArea).start("verilog");
+        new SyntaxHighlighter(codeArea).start(ext);
         autoIndent(codeArea);  // auto-indent: insert previous line's indents on enter
         configureAllShortcuts(codeArea);
         codeArea.richChanges().filter(ch -> !ch.getInserted().equals(ch.getRemoved())).subscribe(x -> {
@@ -235,6 +336,10 @@ public class CodeEditor extends EditorBase {
 
     public Component getComp(){
         return comp;
+    }
+
+    public File getOpenedFile(){
+        return file;
     }
 
 

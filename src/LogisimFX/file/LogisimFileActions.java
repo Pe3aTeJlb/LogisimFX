@@ -6,17 +6,19 @@
 
 package LogisimFX.file;
 
+import LogisimFX.newgui.DialogManager;
 import LogisimFX.proj.Action;
 import LogisimFX.proj.Project;
 import LogisimFX.proj.ProjectActions;
 import LogisimFX.circuit.Circuit;
 import LogisimFX.data.Attribute;
 import LogisimFX.data.AttributeSet;
+import LogisimFX.std.base.Text;
 import LogisimFX.tools.AddTool;
 import LogisimFX.tools.Library;
 import LogisimFX.tools.Tool;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class LogisimFileActions {
 
@@ -34,12 +36,12 @@ public class LogisimFileActions {
 		return new MoveCircuit(tool, toIndex);
 	}
 
-	public static Action loadLibrary(Library lib) {
-		return new LoadLibraries(new Library[] { lib });
+	public static Action loadLibrary(Library lib, LogisimFile source) {
+		return new LoadLibraries(new Library[] { lib }, source);
 	}
 
-	public static Action loadLibraries(Library[] libs) {
-		return new LoadLibraries(libs);
+	public static Action loadLibraries(Library[] libs, LogisimFile source) {
+		return new LoadLibraries(libs, source);
 	}
 
 	public static Action unloadLibrary(Library lib) {
@@ -162,19 +164,110 @@ public class LogisimFileActions {
 	}
 
 	private static class LoadLibraries extends Action {
-		private Library[] libs;
+		private final List<Library> mergedLibs = new ArrayList<>();
+		private final Set<String> baseLibsToEnable = new HashSet<>();
 
-		LoadLibraries(Library[] libs) {
-			this.libs = libs;
+		LoadLibraries(Library[] libs, LogisimFile source) {
+			final var libNames = new HashMap<String, Library>();
+			final var toolList = new HashSet<String>();
+			final var errors = new HashMap<String, String>();
+			for (final var newLib : libs) {
+				// first cleanup step: remove unused libraries from loaded library
+				LibraryManager.removeUnusedLibraries(newLib);
+				// second cleanup step: promote base libraries
+				baseLibsToEnable.addAll(LibraryManager.getUsedBaseLibraries(newLib));
+			}
+			// promote the none visible base libraries to toplevel
+			final var builtinLibraries = LibraryManager.getBuildinNames(source.getLoader());
+			for (final var lib : source.getLibraries()) {
+				final var libName = lib.getName();
+				if (baseLibsToEnable.contains(libName) || !builtinLibraries.contains(libName)) {
+					baseLibsToEnable.remove(libName);
+				}
+			}
+			// remove the promoted base libraries from the loaded library
+			for (final var newLib : libs) {
+				LibraryManager.removeBaseLibraries(newLib, baseLibsToEnable);
+			}
+			for (final var lib : source.getLibraries()) {
+				LibraryTools.buildLibraryList(lib, libNames);
+			}
+			LibraryTools.buildToolList(source, toolList);
+			for (final var lib : libs) {
+				if (libNames.containsKey(lib.getName().toUpperCase())) {
+					DialogManager.createWarningDialog( LC.get("LibLoadErrors") + " " + lib.getName() + " !", "\"" + lib.getName() + "\": " + LC.get("LibraryAlreadyLoaded"));
+				} else {
+					LibraryTools.removePresentLibraries(lib, libNames, false);
+					if (LibraryTools.isLibraryConform(lib, new HashSet<>(), new HashSet<>(), errors)) {
+						final var addedToolList = new HashSet<String>();
+						LibraryTools.buildToolList(lib, addedToolList);
+						for (final var tool : addedToolList)
+							if (toolList.contains(tool))
+								errors.put(tool, LC.get("LibraryMultipleToolError"));
+						if (errors.keySet().isEmpty()) {
+							LibraryTools.buildLibraryList(lib, libNames);
+							toolList.addAll(addedToolList);
+							mergedLibs.add(lib);
+						} else {
+							LibraryTools.showErrors(lib.getName(), errors);
+							baseLibsToEnable.clear();
+						}
+					} else
+						LibraryTools.showErrors(lib.getName(), errors);
+				}
+			}
+		}
+
+		@Override
+		public void doIt(Project proj) {
+			for (final var lib : baseLibsToEnable) {
+				final var logisimFile = proj.getLogisimFile();
+				logisimFile.addLibrary(logisimFile.getLoader().getBuiltin().getLibrary(lib));
+			}
+			for (final var lib : mergedLibs) {
+				if (lib instanceof LoadedLibrary) {
+					if (((LoadedLibrary)lib).getBase() instanceof LogisimFile) {
+						repair(proj, ((LoadedLibrary)lib).getBase());
+					}
+				} else if (lib instanceof LogisimFile) {
+					repair(proj, lib);
+				}
+				proj.getLogisimFile().addLibrary(lib);
+			}
+		}
+
+		private void repair(Project proj, Library lib) {
+			final var availableTools = new HashMap<String, AddTool>();
+			LibraryTools.buildToolList(proj.getLogisimFile(), availableTools);
+			if (lib instanceof LogisimFile) {
+				for (final var circ : ((LogisimFile)lib).getCircuits()) {
+					for (final var tool : circ.getNonWires()) {
+						if (availableTools.containsKey(tool.getFactory().getName().toUpperCase())) {
+							final var current = availableTools.get(tool.getFactory().getName().toUpperCase());
+							if (current != null) {
+								tool.setFactory(current.getFactory());
+							} else if ("Text".equals(tool.getFactory().getName())) {
+								final var newComp = Text.FACTORY.createComponent(tool.getLocation(), (AttributeSet) tool.getAttributeSet().clone());
+								tool.setFactory(newComp.getFactory());
+							} else
+								System.out.println("Not found:" + tool.getFactory().getName());
+						}
+					}
+				}
+			}
+			for (final var libs : lib.getLibraries()) {
+				repair(proj, libs);
+			}
+		}
+
+		@Override
+		public boolean isModification() {
+			return !mergedLibs.isEmpty();
 		}
 
 		@Override
 		public String getName() {
-			if (libs.length == 1) {
-				return LC.get("loadLibraryAction");
-			} else {
-				return LC.get("loadLibrariesAction");
-			}
+			return (mergedLibs.size() <= 1) ? LC.get("loadLibraryAction") : LC.get("loadLibrariesAction");
 		}
 
 		@Override
@@ -183,17 +276,9 @@ public class LogisimFileActions {
 		}
 
 		@Override
-		public void doIt(Project proj) {
-			for (int i = 0; i < libs.length; i++) {
-				proj.getLogisimFile().addLibrary(libs[i]);
-			}
-		}
-
-		@Override
 		public void undo(Project proj) {
-			for (int i = libs.length - 1; i >= 0; i--) {
-				proj.getLogisimFile().removeLibrary(libs[i]);
-			}
+			for (final var lib : mergedLibs) proj.getLogisimFile().removeLibrary(lib);
+			for (final var lib : baseLibsToEnable) proj.getLogisimFile().removeLibrary(lib);
 		}
 	}
 

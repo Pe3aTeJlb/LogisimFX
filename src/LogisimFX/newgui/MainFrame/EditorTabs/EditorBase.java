@@ -187,7 +187,9 @@ public class EditorBase extends VBox {
         return isSelected;
     }
 
-
+    public String getEditorDescriptor(){
+        return null;
+    }
 
     public void copyAccelerators(){
 

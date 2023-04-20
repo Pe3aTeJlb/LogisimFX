@@ -80,6 +80,11 @@ public class LoadedLibrary extends Library implements LibraryEventSource {
 	public List<Library> getLibraries() {
 		return base.getLibraries();
 	}
+
+	@Override
+	public boolean removeLibrary(String name) {
+		return base.removeLibrary(name);
+	}
 	
 	void setDirty(boolean value) {
 		if (dirty != value) {

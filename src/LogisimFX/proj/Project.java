@@ -88,11 +88,12 @@ public class Project {
 	private Dependencies depends;
 	private MyListener myListener = new MyListener();
 
-	private FPGAToolchainOrchestrator fpgaToolchainOrchestrator = new FPGAToolchainOrchestrator(this);
+	private FPGAToolchainOrchestrator fpgaToolchainOrchestrator;
 
 	public Project(LogisimFile file) {
 		addLibraryListener(myListener);
 		setLogisimFile(file);
+		fpgaToolchainOrchestrator = new FPGAToolchainOrchestrator(this);
 	}
 
 	public void setFrameController(MainFrameController controller){

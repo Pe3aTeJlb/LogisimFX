@@ -5,7 +5,6 @@
 
 package LogisimFX.newgui.MainFrame;
 
-import LogisimFX.data.Location;
 import LogisimFX.file.LogisimFile;
 import LogisimFX.proj.Project;
 import org.w3c.dom.Document;
@@ -76,18 +75,16 @@ public class FrameLayout {
     }
 
     public static class EditorTabDescriptor {
-        public String circ, type;
-        public boolean isSelected, isCompEditor;
-        public String comp;
-        public Location loc;
-        public EditorTabDescriptor(String circ, String comp, Location loc, String type, boolean isSelected){
-            this.circ = circ;
-            this.comp = comp;
-            this.loc = loc;
+
+        public String type, desk;
+        public boolean isSelected;
+
+        public EditorTabDescriptor(String type, String desk, boolean isSelected){
             this.type = type;
+            this.desk = desk;
             this.isSelected = isSelected;
-            this.isCompEditor = comp != null && loc != null;
         }
+
     }
 
     public static class TabPaneLayoutDescriptor {

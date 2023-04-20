@@ -7,6 +7,7 @@
 package LogisimFX.file;
 
 import LogisimFX.data.*;
+import LogisimFX.fpga.SerializedFilesContainer;
 import LogisimFX.newgui.MainFrame.FrameLayout;
 
 public class Options {
@@ -37,12 +38,14 @@ public class Options {
 	private MouseMappings mappings;
 	private ToolbarData toolbar;
 	private FrameLayout layout;
+	private SerializedFilesContainer serializedFilesContainer;
 
 	public Options() {
 		attrs = AttributeSets.fixedSet(ATTRIBUTES, DEFAULTS);
 		mappings = new MouseMappings();
 		toolbar = new ToolbarData();
 		layout = new FrameLayout();
+		serializedFilesContainer = new SerializedFilesContainer();
 	}
 
 	public AttributeSet getAttributeSet() {
@@ -61,11 +64,16 @@ public class Options {
 		return layout;
 	}
 
+	public SerializedFilesContainer getSerializedFilesContainer(){
+		return serializedFilesContainer;
+	}
+
 	public void copyFrom(Options other, LogisimFile dest) {
 		AttributeSets.copy(other.attrs, this.attrs);
 		this.toolbar.copyFrom(other.toolbar, dest);
 		this.mappings.copyFrom(other.mappings, dest);
 		this.layout.copyFrom(other.layout, dest);
+		this.serializedFilesContainer.copyFrom(other.serializedFilesContainer, dest);
 	}
 
 }

@@ -380,19 +380,25 @@ public class CustomMenuBar extends MenuBar {
         SeparatorMenuItem sp3 = new SeparatorMenuItem();
 
         MenuItem EditCircuitLayout = new MenuItem();
-        //EditCircuitLayout.disableProperty().bind(explorerToolBar.EditCircuitLayout);
         EditCircuitLayout.textProperty().bind(localizer.createStringBinding("projectEditCircuitLayoutItem"));
         EditCircuitLayout.setOnAction(event -> proj.getFrameController().addCircLayoutEditor(proj.getCurrentCircuit()));
 
         MenuItem EditCircuitAppearance = new MenuItem();
-        //EditCircuitAppearance.disableProperty().bind(explorerToolBar.EditCircuitAppearance);
         EditCircuitAppearance.textProperty().bind(localizer.createStringBinding("projectEditCircuitAppearanceItem"));
         EditCircuitAppearance.setOnAction(event -> proj.getFrameController().addCircAppearanceEditor(proj.getCurrentCircuit()));
 
         MenuItem EditVerilogModel = new MenuItem();
-        //EditVerilogModel.disableProperty().bind(proj.getFrameController().editorProperty() instanceof CodeEditor);
         EditVerilogModel.textProperty().bind(localizer.createStringBinding("projectEditVerilogModelItem"));
-        EditVerilogModel.setOnAction(event -> proj.getFrameController().addVerilogModelEditor(proj.getCurrentCircuit()));
+        EditVerilogModel.setOnAction(event -> proj.getFrameController().addCodeEditor(proj.getCurrentCircuit(), proj.getCurrentCircuit().getVerilogModel(proj)));
+
+        MenuItem EditTopLevelShell = new MenuItem();
+        EditTopLevelShell.disableProperty().bind(Bindings.not(logisimFile.isMain));
+        EditTopLevelShell.textProperty().bind(localizer.createStringBinding("projectEditTopLevelShell"));
+        EditTopLevelShell.setOnAction(event -> proj.getFrameController().addCodeEditor(proj.getCurrentCircuit(), proj.getCurrentCircuit().getTopLevelShell(proj)));
+
+        MenuItem EditHLSModel = new MenuItem();
+        EditHLSModel.textProperty().bind(localizer.createStringBinding("projectEditHLSModel"));
+        EditHLSModel.setOnAction(event -> proj.getFrameController().addCodeEditor(proj.getCurrentCircuit(), proj.getCurrentCircuit().getHLS(proj)));
 
 
         SeparatorMenuItem sp4 = new SeparatorMenuItem();
@@ -400,7 +406,6 @@ public class CustomMenuBar extends MenuBar {
         MenuItem AnalyzeCircuit = new MenuItem();
         AnalyzeCircuit.textProperty().bind(localizer.createStringBinding("projectAnalyzeCircuitItem"));
         AnalyzeCircuit.setOnAction(event -> ProjectCircuitActions.doAnalyze(proj, proj.getCurrentCircuit()));
-        //AnalyzeCircuit.setOnAction(event -> FrameManager.CreateCircuitAnalysisFrame(proj));
 
         MenuItem GetCircuitStatistics = new MenuItem();
         GetCircuitStatistics.textProperty().bind(localizer.createStringBinding("projectGetCircuitStatisticsItem"));
@@ -429,6 +434,8 @@ public class CustomMenuBar extends MenuBar {
                 EditCircuitLayout,
                 EditCircuitAppearance,
                 EditVerilogModel,
+                EditTopLevelShell,
+                EditHLSModel,
                 sp4,
                 AnalyzeCircuit,
                 GetCircuitStatistics,
@@ -796,8 +803,9 @@ public class CustomMenuBar extends MenuBar {
         chooseBoard.setOnAction(event -> proj.getFpgaToolchainOrchestrator().selectBoard());
 
         MenuItem openProjectConstrains = new MenuItem();
+//        openProjectConstrains.disableProperty().bind(proj.getFpgaToolchainOrchestrator().constrainsFileProperty().isNull());
         openProjectConstrains.textProperty().bind(localizer.createStringBinding("fpgaOpenConstrainsFile"));
-        //openProjectConstrains.setOnAction(event -> proj.getFpgaToolchainOrchestrator().annotate(false));
+        openProjectConstrains.setOnAction(event -> proj.getFpgaToolchainOrchestrator().openConstrainsFile());
 
         SeparatorMenuItem sp2 = new SeparatorMenuItem();
 
@@ -807,7 +815,7 @@ public class CustomMenuBar extends MenuBar {
 
         MenuItem generateBit = new MenuItem();
         generateBit.textProperty().bind(localizer.createStringBinding("fpgaGenerateBitFile"));
-        generateBit.setOnAction(event -> proj.getFpgaToolchainOrchestrator().exportHDLFiles(0, 0));
+        //generateBit.setOnAction(event -> proj.getFpgaToolchainOrchestrator().exportHDLFiles(0, 0));
 
         SeparatorMenuItem sp3 = new SeparatorMenuItem();
 

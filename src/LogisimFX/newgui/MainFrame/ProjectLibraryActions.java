@@ -51,7 +51,7 @@ public class ProjectLibraryActions {
 		}
 
 		Library[] libs = DialogManager.createLibSelectionDialog(builtins);
-		if (libs != null) proj.doAction(LogisimFileActions.loadLibraries(libs));
+		if (libs != null) proj.doAction(LogisimFileActions.loadLibraries(libs, proj.getLogisimFile()));
 
 		/*
 		LibraryJList list = new LibraryJList(builtins);
@@ -73,12 +73,19 @@ public class ProjectLibraryActions {
 		Loader loader = proj.getLogisimFile().getLoader();
 
 		FileSelector fs = new FileSelector(proj.getFrameController().getStage());
-		File f = fs.OpenCircFile();
+		File f = fs.openCircFile();
 
 		if(f != null){
 			Library lib = loader.loadLogisimLibrary(f);
 			if (lib != null) {
-				proj.doAction(LogisimFileActions.loadLibrary(lib));
+				/*
+				try {
+					FileUtils.copyFile(f, proj.getLogisimFile().getLibDir().toFile());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				*/
+				proj.doAction(LogisimFileActions.loadLibrary(lib, proj.getLogisimFile()));
 			}
 		}
 
@@ -89,7 +96,7 @@ public class ProjectLibraryActions {
 		Loader loader = proj.getLogisimFile().getLoader();
 
 		FileSelector fs = new FileSelector(proj.getFrameController().getStage());
-		File f = fs.OpenJarFile();
+		File f = fs.openJarFile();
 
 		if(f==null)return;
 
@@ -125,7 +132,7 @@ public class ProjectLibraryActions {
 
 		Library lib = loader.loadJarLibrary(f, className);
 		if (lib != null) {
-			proj.doAction(LogisimFileActions.loadLibrary(lib));
+			proj.doAction(LogisimFileActions.loadLibrary(lib, proj.getLogisimFile()));
 		}
 
 	}

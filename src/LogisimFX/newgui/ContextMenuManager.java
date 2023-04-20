@@ -136,7 +136,15 @@ public class ContextMenuManager {
 
         MenuItem EditVerilogModel = new MenuItem();
         EditVerilogModel.textProperty().bind(lc.createStringBinding("projectEditVerilogModelItem"));
-        EditVerilogModel.setOnAction(event -> proj.getFrameController().addVerilogModelEditor(circ));
+        EditVerilogModel.setOnAction(event -> proj.getFrameController().addCodeEditor(circ, circ.getVerilogModel(proj)));
+
+        MenuItem EditTopLevelShell = new MenuItem();
+        EditTopLevelShell.textProperty().bind(lc.createStringBinding("projectEditTopLevelShell"));
+        EditTopLevelShell.setOnAction(event -> proj.getFrameController().addCodeEditor(circ, circ.getTopLevelShell(proj)));
+
+        MenuItem EditHLSModel = new MenuItem();
+        EditHLSModel.textProperty().bind(lc.createStringBinding("projectEditHLSModel"));
+        EditHLSModel.setOnAction(event -> proj.getFrameController().addCodeEditor(circ, circ.getHLS(proj)));
 
         MenuItem AnalyzeCircuit = new MenuItem();
         AnalyzeCircuit.textProperty().bind(lc.createStringBinding("projectAnalyzeCircuitItem"));
@@ -147,7 +155,7 @@ public class ContextMenuManager {
         GetCircuitStatistics.setOnAction(event -> FrameManager.CreateCircuitStatisticFrame(proj, circ));
 
         MenuItem SetAsMain = new MenuItem();
-        SetAsMain.disableProperty().bind(proj.getLogisimFile().isMain);
+        SetAsMain.setDisable(proj.getLogisimFile().getMainCircuit() == circ);
         SetAsMain.textProperty().bind(lc.createStringBinding("projectSetAsMainItem"));
         SetAsMain.setOnAction(event -> proj.getLogisimFile().setMainCircuit(circ));
 
@@ -160,7 +168,13 @@ public class ContextMenuManager {
         contextMenu.getItems().addAll(
                 EditCircuit,
                 EditAppearance,
-                EditVerilogModel,
+                EditVerilogModel
+        );
+        if (proj.getLogisimFile().getMainCircuit() == circ){
+            contextMenu.getItems().add(EditTopLevelShell);
+        }
+        contextMenu.getItems().addAll(
+                EditHLSModel,
                 AnalyzeCircuit,
                 GetCircuitStatistics,
                 SetAsMain,
@@ -211,7 +225,7 @@ public class ContextMenuManager {
 
             MenuItem verilog = new MenuItem("Verilog");
             verilog.textProperty().bind(LC_tools.getInstance().createStringBinding("compViewVerilogModel"));
-            verilog.setOnAction(event -> proj.getFrameController().addVerilogModelEditor(circ, comp));
+            verilog.setOnAction(event -> proj.getFrameController().addCodeEditor(circ, comp));
 
             contextMenu.getItems().add(verilog);
         }
@@ -295,7 +309,10 @@ public class ContextMenuManager {
                 MenuItem EditVerilogModel = new MenuItem();
                 EditVerilogModel.textProperty().bind(lc.createStringBinding("projectEditVerilogModelItem"));
                 EditVerilogModel.setOnAction(event ->
-                        proj.getFrameController().addVerilogModelEditor(((SubcircuitFactory)instance.getFactory()).getSubcircuit())
+                        proj.getFrameController().addCodeEditor(
+                                ((SubcircuitFactory)instance.getFactory()).getSubcircuit(),
+                                ((SubcircuitFactory)instance.getFactory()).getSubcircuit().getVerilogModel(proj)
+                        )
                 );
 
                 menu.getItems().add(EditVerilogModel);
@@ -422,7 +439,7 @@ public class ContextMenuManager {
 
                 MenuItem verilog = new MenuItem("Verilog");
                 verilog.textProperty().bind(LC_tools.getInstance().createStringBinding("compViewVerilogModel"));
-                verilog.setOnAction(event -> proj.getFrameController().addVerilogModelEditor(proj.getCurrentCircuit(),instance.getComponent()));
+                verilog.setOnAction(event -> proj.getFrameController().addCodeEditor(proj.getCurrentCircuit(), instance.getComponent()));
 
 
                 menu.getItems().add(verilog);

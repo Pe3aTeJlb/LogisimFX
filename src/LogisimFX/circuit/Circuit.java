@@ -10,18 +10,28 @@ import LogisimFX.circuit.appear.CircuitAppearance;
 import LogisimFX.comp.Component;
 import LogisimFX.comp.*;
 import LogisimFX.data.*;
+import LogisimFX.file.LogisimFile;
 import LogisimFX.fpga.Reporter;
 import LogisimFX.fpga.designrulecheck.Netlist;
 import LogisimFX.instance.StdAttr;
 import LogisimFX.localization.LC_util;
 import LogisimFX.newgui.DialogManager;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
+import LogisimFX.proj.Project;
 import LogisimFX.std.wiring.Clock;
 import LogisimFX.std.wiring.Pin;
 import LogisimFX.std.wiring.Tunnel;
 import LogisimFX.tools.SetAttributeAction;
 import LogisimFX.util.*;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringBinding;
+import javafx.beans.binding.StringExpression;
+import javafx.beans.property.SimpleStringProperty;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.*;
 
@@ -68,7 +78,7 @@ public class Circuit {
 
 	}
 
-	private class MyComponentListener implements ComponentListener {
+	private class MyComponentListener implements ComponentListener, CircuitListener {
 		public void endChanged(ComponentEvent e) {
 			//locker.checkForWritePermission("ends changed");
 			netList.clear();
@@ -121,6 +131,12 @@ public class Circuit {
 			}
 		}
 
+		@Override
+		public void circuitChanged(CircuitEvent event) {
+			if (event.getAction() == CircuitEvent.ACTION_SET_NAME){
+				updateFilePaths((String) event.getData());
+			}
+		}
 	}
 
 	public static boolean isCorrectLabel(
@@ -194,7 +210,11 @@ public class Circuit {
 
 	private final Netlist netList;
 
+	private ArrayList<String> hdlSubPaths = new ArrayList<>();
+	private String circSchPath;
+	private String circAppPath;
 
+	private Project proj;
 
 	public Circuit(String name) {
 
@@ -202,10 +222,68 @@ public class Circuit {
 		staticAttrs = CircuitAttributes.createBaseAttrs(this, name);
 		subcircuitFactory = new SubcircuitFactory(this);
 		locker = new CircuitLocker();
-		circuitsUsingThis = new WeakHashMap<Component, Circuit>();
+		circuitsUsingThis = new WeakHashMap<>();
 		netList = new Netlist(this);
 
+		this.addCircuitListener(myComponentListener);
+		nameProperty().set(name);
+
+		hdlSubPaths.add("circuit"+File.separator+name+File.separator+"VerilogModel.v");
+		hdlSubPaths.add("circuit"+File.separator+name+File.separator+"TopLevelShell.v");
+		hdlSubPaths.add("circuit"+File.separator+name+File.separator+"HLS.py");
+
+		circSchPath = "circuit"+File.separator+name+File.separator+name+".sch";
+		circAppPath = "circuit"+File.separator+name+File.separator+name+".app";
+
 	}
+
+	public void registerProject(Project proj){
+		this.proj = proj;
+	}
+
+	private void updateFilePaths(String newName) {
+
+		circSchPath = circSchPath.replace(nameProperty().get(), newName);
+		circAppPath = circSchPath.replace(nameProperty().get(), newName);
+
+		for (String oldPath : ((ArrayList<String>) hdlSubPaths.clone())) {
+			String newPath = oldPath.replace(nameProperty().get(), newName);
+			if (proj != null) {
+				proj.getFrameController().updateFilepath(
+						Paths.get(proj.getLogisimFile().getProjectDir() + File.separator + oldPath).toFile(),
+						Paths.get(proj.getLogisimFile().getProjectDir() + File.separator + newPath).toFile()
+				);
+			}
+			hdlSubPaths.set(hdlSubPaths.indexOf(oldPath), newPath);
+		}
+
+		nameProperty().set(newName);
+
+	}
+
+
+	private SimpleStringProperty circName;
+
+	public SimpleStringProperty nameProperty() {
+		if (circName == null) {
+			circName = new SimpleStringProperty() {
+				@Override protected void invalidated() {
+				}
+
+				@Override
+				public Object getBean() {
+					return Circuit.this;
+				}
+
+				@Override
+				public String getName() {
+					return "name";
+				}
+			};
+		}
+		return circName;
+	}
+
 
 	CircuitLocker getLocker() {
 		return locker;
@@ -763,6 +841,58 @@ public class Circuit {
 				((SubcircuitFactory) comp.getFactory()).getSubcircuit().clearAnnotationLevel();
 			}
 		}
+	}
+
+
+	public File getAppearanceFile(Project proj){
+		return Paths.get(proj.getLogisimFile().getCircuitDir() + File.separator + circAppPath).toFile();
+	}
+
+	public File getSchematicsFile(Project proj){
+		return Paths.get(proj.getLogisimFile().getCircuitDir() + File.separator + circSchPath).toFile();
+	}
+
+	public File getVerilogModel(Project proj){
+		return Paths.get(
+				proj.getLogisimFile().getProjectDir() +
+						File.separator +
+						hdlSubPaths.stream().filter(f -> f.split(nameProperty().get())[1].substring(1).equals("VerilogModel.v")).findFirst().get()
+		).toFile();
+	}
+
+	public File getTopLevelShell(Project proj){
+		return Paths.get(
+				proj.getLogisimFile().getProjectDir() +
+						File.separator +
+						hdlSubPaths.stream().filter(f -> f.split(nameProperty().get())[1].substring(1).equals("TopLevelShell.v")).findFirst().get()
+		).toFile();
+	}
+
+	public File getHLS(Project proj){
+		return Paths.get(
+				proj.getLogisimFile().getProjectDir() +
+						File.separator +
+						hdlSubPaths.stream().filter(f -> f.split(nameProperty().get())[1].substring(1).equals("HLS.py")).findFirst().get()
+		).toFile();
+	}
+
+	public File getHDLFile(Project proj, String fileName){
+		return Paths.get(
+				proj.getLogisimFile().getProjectDir() +
+						File.separator +
+						hdlSubPaths.stream().filter(f -> f.split(nameProperty().get())[1].substring(1).equals(fileName)).findFirst().get()
+		).toFile();
+	}
+
+	public ArrayList<File> getHDLFiles(Project proj){
+
+		ArrayList<File> files = new ArrayList<>();
+
+		for (String subPath: hdlSubPaths){
+			files.add(Paths.get(proj.getLogisimFile().getProjectDir() + File.separator + subPath).toFile());
+		}
+
+		return files;
 	}
 
 }

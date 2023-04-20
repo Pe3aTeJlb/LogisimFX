@@ -10,6 +10,7 @@ import LogisimFX.FileSelector;
 import LogisimFX.localization.LC_file;
 import LogisimFX.localization.Localizer;
 import LogisimFX.newgui.DialogManager;
+import LogisimFX.proj.Project;
 import LogisimFX.std.Builtin;
 import LogisimFX.tools.Library;
 import LogisimFX.util.StringUtil;
@@ -95,7 +96,7 @@ public class Loader implements LibraryLoader {
 
 	public LogisimFile openLogisimFile(File file) throws LoadFailedException {
 		try {
-			LogisimFile ret = loadLogisimFile(file);
+			LogisimFile ret = loadLogisimFile(file, true);
 			if (ret != null) setMainFile(file);
 			showMessages(ret);
 			return ret;
@@ -108,7 +109,7 @@ public class Loader implements LibraryLoader {
 			throws LoadFailedException, IOException {
 		LogisimFile ret = null;
 		try {
-			ret = LogisimFile.load(reader, this);
+			ret = LogisimFile.load(reader, this, false);
 		} catch (LoaderException e) {
 			return null;
 		}
@@ -135,7 +136,7 @@ public class Loader implements LibraryLoader {
 		LibraryManager.instance.reload(this, lib);
 	}
 
-	public boolean save(LogisimFile file, File dest) {
+	public boolean save(Project proj, LogisimFile file, File dest) {
 		Library reference = LibraryManager.instance.findReference(file, dest);
 		if (reference != null) {
 			DialogManager.createErrorDialog(
@@ -143,6 +144,9 @@ public class Loader implements LibraryLoader {
 							lc.get("fileSaveErrorTitle"));
 			return false;
 		}
+
+		proj.getFrameController().doSaveCodeEditors();
+
 		File backup = null;
 		if(dest != null)  backup = determineBackupName(dest);
 		boolean backupCreated = backup != null && dest.renameTo(backup);
@@ -216,7 +220,7 @@ public class Loader implements LibraryLoader {
 	//
 	// methods for LibraryManager
 	//
-	LogisimFile loadLogisimFile(File request) throws LoadFailedException {
+	LogisimFile loadLogisimFile(File request, boolean isLib) throws LoadFailedException {
 		File actual = getSubstitution(request);
 		for (File fileOpening : filesOpening) {
 			if (fileOpening.equals(actual)) {
@@ -228,7 +232,7 @@ public class Loader implements LibraryLoader {
 		LogisimFile ret = null;
 		filesOpening.push(actual);
 		try {
-			ret = LogisimFile.load(actual, this);
+			ret = LogisimFile.load(actual, this, isLib);
 		} catch (IOException e) {
 			throw new LoadFailedException(LC.getFormatted("logisimLoadError",
 					toProjectName(actual), e.toString()));
@@ -351,7 +355,7 @@ public class Loader implements LibraryLoader {
 			FileSelector fileSelector = new FileSelector(null);
 			if(filter.equals("circ"))fileSelector.setCircFilter();
 			if(filter.equals("jar"))fileSelector.setJarFilter();
-			file = fileSelector.chooseDirectory(LC.getFormatted("fileLibraryMissingTitle", file.getName()));
+			file = fileSelector.showOpenDialog(LC.getFormatted("fileLibraryMissingTitle", file.getName()));
 
 		}
 		return file;

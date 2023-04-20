@@ -195,6 +195,11 @@ public class InstanceComponent implements Component, AttributeListener, ToolTipM
 		return factory;
 	}
 
+	@Override
+	public void setFactory(ComponentFactory fact) {
+		factory = (InstanceFactory) fact;
+	}
+
 	public AttributeSet getAttributeSet() {
 		return attrs;
 	}

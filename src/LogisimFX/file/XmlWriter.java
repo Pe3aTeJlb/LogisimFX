@@ -16,7 +16,6 @@ import LogisimFX.comp.ComponentFactory;
 import LogisimFX.data.Attribute;
 import LogisimFX.data.AttributeDefaultProvider;
 import LogisimFX.data.AttributeSet;
-import LogisimFX.newgui.MainFrame.FrameLayout;
 import LogisimFX.tools.Library;
 import LogisimFX.tools.Tool;
 import LogisimFX.util.InputEventUtil;
@@ -77,7 +76,7 @@ class XmlWriter {
 		Element ret = doc.createElement("project");
 		doc.appendChild(ret);
 		ret.appendChild(doc.createTextNode("\nThis file is intended to be "
-				+ "loaded by LogisimFX (https://sites.google.com/view/pplosstudio ) or Logisim (http://www.cburch.com/logisim/).\n"));
+				+ "loaded by LogisimFX (https://sites.google.com/view/pplosstudio).\n"));
 		ret.setAttribute("version", "1.0");
 		ret.setAttribute("source", Main.VERSION_NAME);
 
@@ -95,11 +94,16 @@ class XmlWriter {
 		ret.appendChild(fromOptions());
 		ret.appendChild(fromMouseMappings());
 		ret.appendChild(fromToolbarData());
-		ret.appendChild(fromMainFrameLayout());
 
 		for (Circuit circ : file.getCircuits()) {
 			ret.appendChild(fromCircuit(circ));
 		}
+
+		Element files = fromTempFiles();
+		if (files != null) ret.appendChild(files);
+
+		ret.appendChild(fromMainFrameLayout());
+
 		return ret;
 	}
 
@@ -165,6 +169,10 @@ class XmlWriter {
 
 	Element fromMainFrameLayout(){
 		return file.getOptions().getMainFrameLayout().getLayout(doc);
+	}
+
+	Element fromTempFiles(){
+		return file.getOptions().getSerializedFilesContainer().getSerializedFiles(doc);
 	}
 
 	Element fromTool(Tool tool) {

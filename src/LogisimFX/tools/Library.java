@@ -85,4 +85,8 @@ public abstract class Library {
 		return null;
 	}
 
+	public boolean removeLibrary(String name) {
+		return false;
+	}
+
 }

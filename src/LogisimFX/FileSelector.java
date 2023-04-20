@@ -70,7 +70,7 @@ public class FileSelector {
 
     public File showOpenDialog(String title){
 
-        UpdateLocale();
+        updateLocale();
 
         if (tempFile != null) fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
 
@@ -86,7 +86,7 @@ public class FileSelector {
 
     public File showSaveDialog(String title){
 
-        UpdateLocale();
+        updateLocale();
 
         if (tempFile != null) fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
 
@@ -104,9 +104,9 @@ public class FileSelector {
 
 
 
-    public File OpenCircFile(){
+    public File openCircFile(){
 
-        UpdateLocale();
+        updateLocale();
 
         if (tempFile != null) fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
 
@@ -120,9 +120,9 @@ public class FileSelector {
 
     }
 
-    public File OpenJarFile(){
+    public File openJarFile(){
 
-        UpdateLocale();
+        updateLocale();
 
         if (tempFile != null) fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
 
@@ -136,9 +136,9 @@ public class FileSelector {
 
     }
 
-    public File OpenCirclog(){
+    public File openCirclog(){
 
-        UpdateLocale();
+        updateLocale();
 
         if (tempFile != null) fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
 
@@ -152,9 +152,9 @@ public class FileSelector {
 
     }
 
-    public File SaveCircFile(){
+    public File saveCircFile(){
 
-        UpdateLocale();
+        updateLocale();
 
         if (tempFile != null) fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
 
@@ -168,9 +168,9 @@ public class FileSelector {
 
     }
 
-    public File SaveJarFile(){
+    public File saveJarFile(){
 
-        UpdateLocale();
+        updateLocale();
 
         if (tempFile != null) fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
 
@@ -184,9 +184,9 @@ public class FileSelector {
 
     }
 
-    public File SavePngFile(){
+    public File savePngFile(){
 
-        UpdateLocale();
+        updateLocale();
 
         if (tempFile != null) fileChooser.setInitialDirectory(tempFile.getAbsoluteFile()); 
 
@@ -200,9 +200,9 @@ public class FileSelector {
 
     }
 
-    public File SaveJpgFile(){
+    public File saveJpgFile(){
 
-        UpdateLocale();
+        updateLocale();
 
         if (tempFile != null) fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
 
@@ -216,9 +216,9 @@ public class FileSelector {
 
     }
 
-    public File SaveGifFile(){
+    public File saveGifFile(){
 
-        UpdateLocale();
+        updateLocale();
 
         if (tempFile != null) fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
 
@@ -232,9 +232,9 @@ public class FileSelector {
 
     }
 
-    public File SaveCirclog(){
+    public File saveCirclog(){
 
-        UpdateLocale();
+        updateLocale();
 
         if (tempFile != null) fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
 
@@ -312,7 +312,7 @@ public class FileSelector {
     }
 
 
-    private void UpdateLocale(){
+    private void updateLocale(){
 
         circ = new FileChooser.ExtensionFilter(LC_file.getInstance().get("logisimFilter"),"*.circ");
         jar =  new FileChooser.ExtensionFilter(LC_file.getInstance().get("jarFilter"),"*.jar");

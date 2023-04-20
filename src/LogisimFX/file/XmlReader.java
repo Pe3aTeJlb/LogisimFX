@@ -16,6 +16,7 @@ import LogisimFX.data.Attribute;
 import LogisimFX.data.AttributeDefaultProvider;
 import LogisimFX.data.AttributeSet;
 import LogisimFX.data.Location;
+import LogisimFX.fpga.SerializedFilesContainer;
 import LogisimFX.instance.Instance;
 import LogisimFX.newgui.MainFrame.FrameLayout;
 import LogisimFX.std.wiring.Pin;
@@ -29,8 +30,10 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -123,7 +126,9 @@ class XmlReader {
 					initToolbarData(sub_elt);
 				} else if (name.equals("layout")){
 					initMainFrameLayout(sub_elt);
-				} else if (name.equals("main")) {
+				} else if (name.equals("files")){
+					initSerializedFiles(sub_elt);
+				}else if (name.equals("main")) {
 					String main = sub_elt.getAttribute("name");
 					Circuit circ = file.getCircuit(main);
 					if (circ != null) {
@@ -455,22 +460,16 @@ class XmlReader {
 
 						for (Element tab : XmlIterator.forChildElements(tabpane, "tab")) {
 
-							String circ = tab.getAttribute("circ");
 							String type = tab.getAttribute("type");
-							String loc 	= tab.getAttribute("loc");
-							String comp 	= tab.getAttribute("comp");
+							String desc = tab.getAttribute("desc");
+
 							String selected = tab.getAttribute("selected");
 							boolean isSelected = false;
 							if (selected != null && !selected.equals("")) isSelected = Boolean.parseBoolean(selected);
 
-							Location location = null;
-							if (loc != null && !loc.equals("")) location = Location.parse(loc);
-
 							tabPaneLayoutDescriptor.addTabDescriptor(new FrameLayout.EditorTabDescriptor(
-									circ,
-									comp,
-									location,
 									type,
+									desc,
 									isSelected
 							));
 
@@ -520,22 +519,16 @@ class XmlReader {
 
 					for (Element tab : XmlIterator.forChildElements(tabpane, "tab")) {
 
-						String circ = tab.getAttribute("circ");
 						String type = tab.getAttribute("type");
-						String loc 	= tab.getAttribute("loc");
-						String comp 	= tab.getAttribute("comp");
+						String desc = tab.getAttribute("desc");
+
 						String selected = tab.getAttribute("selected");
 						boolean isSelected = false;
 						if (selected != null && !selected.equals("")) isSelected = Boolean.parseBoolean(selected);
 
-						Location location = null;
-						if (loc != null && !loc.equals("")) location = Location.parse(loc);
-
 						tabPaneLayoutDescriptor.addTabDescriptor(new FrameLayout.EditorTabDescriptor(
-								circ,
-								comp,
-								location,
 								type,
+								desc,
 								isSelected
 						));
 
@@ -551,6 +544,23 @@ class XmlReader {
 
 		}
 
+		private void initSerializedFiles(Element elt){
+
+			SerializedFilesContainer files = file.getOptions().getSerializedFilesContainer();
+
+			for (Element file : XmlIterator.forChildElements(elt, "file")){
+
+				String path = file.getAttribute("path");
+				String data = file.getAttribute("data");
+
+				SerializedFilesContainer.SerializedFile serializedFile = new SerializedFilesContainer.SerializedFile(path, data);
+
+				files.addSerializedData(serializedFile);
+
+			}
+
+		}
+
 	}
 
 	private LibraryLoader loader;
@@ -559,11 +569,11 @@ class XmlReader {
 		this.loader = loader;
 	}
 
-	LogisimFile readLibrary(InputStream is) throws IOException, SAXException {
+	LogisimFile readLibrary(InputStream is, boolean isLib) throws IOException, SAXException {
 		Document doc = loadXmlFrom(is);
 		Element elt = doc.getDocumentElement();
 		considerRepairs(doc, elt);
-		LogisimFile file = new LogisimFile((Loader) loader);
+		LogisimFile file = new LogisimFile((Loader) loader, isLib);
 		ReadContext context = new ReadContext(file);
 		context.toLogisimFile(elt);
 		if (file.getCircuitCount() == 0) {

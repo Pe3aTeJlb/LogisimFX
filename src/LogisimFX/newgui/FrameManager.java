@@ -9,6 +9,7 @@ import LogisimFX.IconsManager;
 import LogisimFX.circuit.Circuit;
 import LogisimFX.data.Bounds;
 import LogisimFX.file.Loader;
+import LogisimFX.file.LogisimFile;
 import LogisimFX.localization.LC_gui;
 import LogisimFX.newgui.AnalyzeFrame.AnalyzeController;
 import LogisimFX.newgui.CircuitStatisticFrame.CircuitStatisticController;
@@ -24,6 +25,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -516,6 +518,14 @@ public class FrameManager {
             proj.getSimulator().shutDown();
             proj.getFrameController().onClose();
 
+            if (LogisimFile.LOGISIMFX_TEMP_DIR.toFile().exists()) {
+                try {
+                    FileUtils.deleteDirectory(LogisimFile.LOGISIMFX_TEMP_DIR.toFile());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
             Platform.exit();
             System.exit(0);
 
@@ -576,6 +586,14 @@ public class FrameManager {
     }
 
     public static void ForceExit(){
+
+        if (LogisimFile.LOGISIMFX_TEMP_DIR.toFile().exists()) {
+            try {
+                FileUtils.deleteDirectory(LogisimFile.LOGISIMFX_TEMP_DIR.toFile());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         Platform.exit();
         System.exit(0);

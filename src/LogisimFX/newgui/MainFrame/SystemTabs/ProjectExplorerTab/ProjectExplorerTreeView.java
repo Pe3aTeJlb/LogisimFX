@@ -25,9 +25,11 @@ import javafx.application.Platform;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.Collections;
 
 import static LogisimFX.file.LibraryEvent.REMOVE_TOOL;
@@ -73,7 +75,15 @@ public class ProjectExplorerTreeView extends AbstractTreeExplorer<Object> {
                     if (tool.getFactory() instanceof SubcircuitFactory) {
                         SubcircuitFactory fact = (SubcircuitFactory) tool.getFactory();
                         fact.getSubcircuit().addCircuitListener(this);
-                        treeView.getRoot().getChildren().add(proj.getLogisimFile().getTools().size()-1, new TreeItem<>(tool));
+                        TreeItem<Object> treeItem = new TreeItem<>(tool);
+                        if (proj.getLogisimFile().getMainCircuit() == fact.getSubcircuit()){
+                            treeItem.getChildren().addAll(new TreeItem<>(fact.getSubcircuit().getTopLevelShell(proj)));
+                        }
+                        treeItem.getChildren().addAll(
+                                new TreeItem<>(fact.getSubcircuit().getVerilogModel(proj)),
+                                new TreeItem<>(fact.getSubcircuit().getHLS(proj))
+                        );
+                        treeView.getRoot().getChildren().add(proj.getLogisimFile().getTools().size()-1, treeItem);
                     }
                 }
             } else if (act == REMOVE_TOOL) {
@@ -105,7 +115,19 @@ public class ProjectExplorerTreeView extends AbstractTreeExplorer<Object> {
                 refresh();
                 //updateTree();
             } else if (act == LibraryEvent.SET_MAIN){
-
+                for(TreeItem<Object> child: treeView.getRoot().getChildren()){
+                    if (child.getValue() instanceof AddTool){
+                        SubcircuitFactory fact = (SubcircuitFactory) ((AddTool)child.getValue()).getFactory();
+                        if (fact.getSubcircuit() == proj.getLogisimFile().getMainCircuit()){
+                            child.getChildren().add(0, new TreeItem<>(fact.getSubcircuit().getTopLevelShell(proj)));
+                        } else {
+                            if (child.getChildren().size() == 3){
+                                child.getChildren().remove(0);
+                            }
+                        }
+                    }
+                }
+                refresh();
             } else {
                 updateTree();
             }
@@ -232,8 +254,13 @@ public class ProjectExplorerTreeView extends AbstractTreeExplorer<Object> {
                                 setContextMenu(null);
                             }
 
+                        } else if (item instanceof File){
+
+                            setText(((File)item).getName());
+                            setGraphic(IconsManager.getIcon("code.gif"));
+
                         } else {
-                            setText("you fucked up2");
+                            setText("you fucked up");
                         }
 
                     }
@@ -242,7 +269,7 @@ public class ProjectExplorerTreeView extends AbstractTreeExplorer<Object> {
 
             };
 
-            cell.setOnMouseClicked(event -> {
+            cell.addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
 
                 if (!cell.isEmpty()) {
 
@@ -259,14 +286,21 @@ public class ProjectExplorerTreeView extends AbstractTreeExplorer<Object> {
                                 proj.setTool(prevTool);
                                 proj.getFrameController().addCircLayoutEditor(((SubcircuitFactory) fact).getSubcircuit());
                                 proj.setCircuitState(new CircuitState(proj, ((SubcircuitFactory) fact).getSubcircuit()));
-
+                                event.consume();
                             }
+
+                        } else if (treeItem.getValue() instanceof File){
+
+                            ComponentFactory fact = ((AddTool) treeItem.getParent().getValue()).getFactory(false);
+
+                            proj.getFrameController().addCodeEditor(
+                                    ((SubcircuitFactory) fact).getSubcircuit(),
+                                    (File)treeItem.getValue()
+                            );
 
                         }
 
-                        event.consume();
-
-                    }else if (event.getButton().equals(MouseButton.PRIMARY)){
+                    } else if (event.getButton().equals(MouseButton.PRIMARY)){
 
                         prevTool = proj.getTool();
 
@@ -296,26 +330,63 @@ public class ProjectExplorerTreeView extends AbstractTreeExplorer<Object> {
 
         //Circuits
         for (AddTool tool: proj.getLogisimFile().getTools()) {
-
-            TreeItem<Object> l = new TreeItem<>(tool);
-            root.getChildren().add(l);
-
+            root.getChildren().add(addCircNode(tool));
         }
 
         //Libs and tools
         for (Library lib: proj.getLogisimFile().getLibraries()) {
+           root.getChildren().add(addLibraryNode(lib));
+        }
 
-            TreeItem<Object> l = new TreeItem<>(lib);
-            root.getChildren().add(l);
+    }
 
-            for (Tool tool: lib.getTools()) {
+    private TreeItem<Object> addCircNode(AddTool tool){
 
-                TreeItem<Object> t = new TreeItem<>(tool);
-                l.getChildren().add(t);
+        TreeItem<Object> circ = new TreeItem<>(tool);
 
+        SubcircuitFactory fact = (SubcircuitFactory) tool.getFactory();
+
+        if (fact.getSubcircuit() == proj.getLogisimFile().getMainCircuit()){
+            circ.getChildren().add(
+                    new TreeItem<>(((SubcircuitFactory)tool.getFactory()).getSubcircuit().getTopLevelShell(proj))
+            );
+        }
+
+        circ.getChildren().addAll(
+                new TreeItem<>(((SubcircuitFactory)tool.getFactory()).getSubcircuit().getVerilogModel(proj)),
+                new TreeItem<>(((SubcircuitFactory)tool.getFactory()).getSubcircuit().getHLS(proj))
+        );
+
+        return circ;
+
+    }
+
+    private TreeItem<Object> addLibraryNode(Library lib){
+
+        TreeItem<Object> l = new TreeItem<>(lib);
+
+        for (Tool tool: lib.getTools()) {
+
+            TreeItem<Object> t = null;
+            
+            if (tool instanceof AddTool) {
+                ComponentFactory fact = ((AddTool) tool).getFactory(false);
+                if (fact instanceof SubcircuitFactory) {
+                    t = addCircNode((AddTool)tool);
+                }
+            } else {
+                t = new TreeItem<>(tool);
             }
 
+            l.getChildren().add(t);
+
         }
+
+        for (Library sublib: lib.getLibraries()) {
+            l.getChildren().add(addLibraryNode(sublib));
+        }
+
+        return l;
 
     }
     

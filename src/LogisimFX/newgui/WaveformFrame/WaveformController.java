@@ -1827,7 +1827,7 @@ public class WaveformController extends AbstractController {
 
         FileSelector fileSelector = new FileSelector(stage);
 
-        File file = fileSelector.SaveCirclog();
+        File file = fileSelector.saveCirclog();
 
         if (file != null && file.exists() && (!file.canWrite() || file.isDirectory())) {
 
@@ -1885,7 +1885,7 @@ public class WaveformController extends AbstractController {
 
         FileSelector fileSelector = new FileSelector(stage);
 
-        File file = fileSelector.OpenCirclog();
+        File file = fileSelector.openCirclog();
 
         if(file != null) {
             //read

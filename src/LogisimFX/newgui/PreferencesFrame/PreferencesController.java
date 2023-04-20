@@ -231,7 +231,7 @@ public class PreferencesController extends AbstractController {
                     reader = new FileInputStream(f);
                     Template template = Template.create(reader);
                     reader2 = template.createStream();
-                    LogisimFile.load(reader2, loader); // to see if OK
+                    LogisimFile.load(reader2, loader, false); // to see if OK
 
                     AppPreferences.setTemplateFile(f, template);
                     AppPreferences.setTemplateType(AppPreferences.TEMPLATE_CUSTOM);

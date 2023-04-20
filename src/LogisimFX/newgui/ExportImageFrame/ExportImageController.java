@@ -195,12 +195,12 @@ public class ExportImageController extends AbstractController implements Simulat
             dest = fileSelector.chooseDirectory(LC.get("exportImageDirectorySelect"));
         } else {
             if(PngRb.isSelected()){
-                dest = fileSelector.SavePngFile();
+                dest = fileSelector.savePngFile();
             }else if(GifRb.isSelected()){
-                dest = fileSelector.SaveGifFile();
+                dest = fileSelector.saveGifFile();
                 ticks = Integer.parseInt(TicksTxtFld.getText());
             }else if(JpegRb.isSelected()) {
-                dest = fileSelector.SaveJpgFile();
+                dest = fileSelector.saveJpgFile();
             }else{
                 dest = null;
             }

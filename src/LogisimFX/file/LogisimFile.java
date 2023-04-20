@@ -1,8 +1,8 @@
 /*
-* This file is part of LogisimFX. Copyright (c) 2022, Pplos Studio
-* Original code by Carl Burch (http://www.cburch.com), 2011.
-* License information is located in the Launch file
-*/
+ * This file is part of LogisimFX. Copyright (c) 2022, Pplos Studio
+ * Original code by Carl Burch (http://www.cburch.com), 2011.
+ * License information is located in the Launch file
+ */
 
 package LogisimFX.file;
 
@@ -20,11 +20,12 @@ import LogisimFX.util.ListUtil;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import org.xml.sax.SAXException;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -68,36 +69,103 @@ public class LogisimFile extends Library implements LibraryEventSource {
 	private LinkedList<Library> libraries = new LinkedList<>();
 	private Circuit main = null;
 	private Circuit current = null;
-	private String name;
 	private boolean dirty = false;
 
 	public SimpleStringProperty obsPos = new SimpleStringProperty("undefined2");
 	public SimpleBooleanProperty isMain = new SimpleBooleanProperty(false);
 
-	LogisimFile(Loader loader) {
+	public static Path LOGISIMFX_TEMP_DIR;
+	private Path projectDir;
+	private Path circuitDir;
+	private Path fpgaDir;
+	private Path libDir;
+	private Path otherDir;
+
+	LogisimFile(Loader loader, boolean isLib) {
 
 		this.loader = loader;
 
-		name = LC.get("defaultProjectName");
-		if (FrameManager.windowNamed(name)) {
+		nameProperty().set(LC.get("defaultProjectName"));
+		if (FrameManager.windowNamed(name.get())) {
 			for (int i = 2; true; i++) {
-				if (!FrameManager.windowNamed(name + " " + i)) {
-					name += " " + i;
+				if (!FrameManager.windowNamed(name.get() + " " + i)) {
+					name.set(name.get() + " " + i);
 					break;
 				}
 			}
 		}
 
+		try {
+
+			if (LOGISIMFX_TEMP_DIR == null) {
+				LOGISIMFX_TEMP_DIR = Files.createTempDirectory("LogisimFX-");
+			}
+
+			if (!isLib) {
+
+				projectDir = Files.createTempDirectory(LOGISIMFX_TEMP_DIR, name.get() + "-");
+
+				circuitDir = new File(projectDir + File.separator + "circuit").toPath();
+				circuitDir.toFile().mkdirs();
+
+				fpgaDir = new File(projectDir + File.separator + "fpga").toPath();
+				fpgaDir.toFile().mkdirs();
+
+				libDir = new File(projectDir + File.separator + "lib").toPath();
+				libDir.toFile().mkdirs();
+
+				otherDir = new File(projectDir + File.separator + "other").toPath();
+				otherDir.toFile().mkdirs();
+
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	private SimpleStringProperty name;
+
+	public SimpleStringProperty nameProperty() {
+		if (name == null) {
+			name = new SimpleStringProperty(LC.get("defaultProjectName")) {
+				@Override
+				protected void invalidated() {
+				}
+
+				@Override
+				public Object getBean() {
+					return LogisimFile.this;
+				}
+
+				@Override
+				public String getName() {
+					return "name";
+				}
+			};
+		}
+		return name;
+	}
+
+	@Override
+	public String getName() {
+		return name.getValue();
 	}
 
 	//
 	// access methods
 	//
-	@Override
-	public String getName() { return name; }
+
+
+	//public Path getProjectDir(){
+	//	return projectDir;
+	//}
 
 	@Override
-	public boolean isDirty() { return dirty; }
+	public boolean isDirty() {
+		return dirty;
+	}
 
 	public String getMessage() {
 		if (messages.size() == 0) return null;
@@ -175,6 +243,26 @@ public class LogisimFile extends Library implements LibraryEventSource {
 		return tools.size();
 	}
 
+	public Path getProjectDir(){
+		return projectDir;
+	}
+
+	public Path getCircuitDir(){
+		return circuitDir;
+	}
+
+	public Path getFpgaDir(){
+		return fpgaDir;
+	}
+
+	public Path getLibDir(){
+		return libDir;
+	}
+
+	public Path getOtherDir(){
+		return otherDir;
+	}
+
 	//
 	// listener methods
 	//
@@ -212,7 +300,8 @@ public class LogisimFile extends Library implements LibraryEventSource {
 
 	public void setName(String name) {
 
-		this.name = name;
+		nameProperty().set(name);
+		//this.name = name;
 		fireEvent(LibraryEvent.SET_NAME, name);
 
 	}
@@ -278,11 +367,20 @@ public class LogisimFile extends Library implements LibraryEventSource {
 
 	}
 
-	public void removeLibrary(Library lib) {
+	@Override
+	public boolean removeLibrary(String name) {
+		int index = -1;
+		for (final var lib : libraries)
+			if (lib.getName().equals(name))
+				index = libraries.indexOf(lib);
+		if (index < 0) return false;
+		libraries.remove(index);
+		return true;
+	}
 
+	public void removeLibrary(Library lib) {
 		libraries.remove(lib);
 		fireEvent(LibraryEvent.REMOVE_LIBRARY, lib);
-
 	}
 
 	public String getUnloadLibraryMessage(Library lib) {
@@ -328,13 +426,13 @@ public class LogisimFile extends Library implements LibraryEventSource {
 
 	}
 
-	public void setCurrent(Circuit circ){
+	public void setCurrent(Circuit circ) {
 
 		current = circ;
 
-		if(current != main){
+		if (current != main) {
 			isMain.setValue(false);
-		}else{
+		} else {
 			isMain.setValue(true);
 		}
 
@@ -373,7 +471,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 		}
 		new WritingThread(writer, this).start();
 		try {
-			return LogisimFile.load(reader, newloader);
+			return LogisimFile.load(reader, newloader, false);
 		} catch (IOException e) {
 			newloader.showError(LC.getFormatted("fileDuplicateError", e.toString()));
 			return null;
@@ -395,21 +493,17 @@ public class LogisimFile extends Library implements LibraryEventSource {
 		return null;
 	}
 
-	public void updateCircuitPos(){
+	public void updateCircuitPos() {
 
-		//System.out.println("tool size: "+tools.size());
-
-		if(tools.size()==1){
+		if (tools.size() == 1) {
 			obsPos.setValue("first&last");
-		}
-		else if(getCircuits().indexOf(current)==0){
+		} else if (getCircuits().indexOf(current) == 0) {
 			obsPos.setValue("first");
-		}else if(getCircuits().indexOf(current)==getCircuits().size()-1){
+		} else if (getCircuits().indexOf(current) == getCircuits().size() - 1) {
 			obsPos.setValue("last");
-		}else{
+		} else {
 			obsPos.setValue("undefined");
 		}
-		//System.out.println(obsPos.getValue());
 
 	}
 
@@ -418,7 +512,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 	//
 	public static LogisimFile createNew(Loader loader) {
 
-		LogisimFile ret = new LogisimFile(loader);
+		LogisimFile ret = new LogisimFile(loader, false);
 		ret.main = new Circuit("main");
 		// The name will be changed in LogisimPreferences
 		ret.tools.add(new AddTool(ret.main.getSubcircuitFactory()));
@@ -426,14 +520,14 @@ public class LogisimFile extends Library implements LibraryEventSource {
 
 	}
 
-	public static LogisimFile load(File file, Loader loader)
+	public static LogisimFile load(File file, Loader loader, boolean isLib)
 			throws IOException {
 
 		InputStream in = new FileInputStream(file);
 		SAXException firstExcept = null;
 
 		try {
-			return loadSub(in, loader);
+			return loadSub(in, loader, isLib);
 		} catch (SAXException e) {
 			firstExcept = e;
 		} finally {
@@ -446,7 +540,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 			// UTF-8 as the encoding (though the XML file reported otherwise).
 			try {
 				in = new ReaderInputStream(new FileReader(file), "UTF8");
-				return loadSub(in, loader);
+				return loadSub(in, loader, isLib);
 			} catch (Throwable t) {
 				loader.showError(LC.getFormatted("xmlFormatError", firstExcept.toString()));
 			} finally {
@@ -460,11 +554,11 @@ public class LogisimFile extends Library implements LibraryEventSource {
 
 	}
 
-	public static LogisimFile load(InputStream in, Loader loader)
+	public static LogisimFile load(InputStream in, Loader loader, boolean isLib)
 			throws IOException {
 
 		try {
-			return loadSub(in, loader);
+			return loadSub(in, loader, isLib);
 		} catch (SAXException e) {
 			loader.showError(LC.getFormatted("xmlFormatError", e.toString()));
 			return null;
@@ -472,7 +566,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 
 	}
 
-	public static LogisimFile loadSub(InputStream in, Loader loader)
+	public static LogisimFile loadSub(InputStream in, Loader loader, boolean isLib)
 			throws IOException, SAXException {
 
 		// fetch first line and then reset
@@ -488,7 +582,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 		}
 
 		XmlReader xmlReader = new XmlReader(loader);
-		LogisimFile ret = xmlReader.readLibrary(inBuffered);
+		LogisimFile ret = xmlReader.readLibrary(inBuffered, isLib);
 		ret.loader = loader;
 		return ret;
 
@@ -501,13 +595,14 @@ public class LogisimFile extends Library implements LibraryEventSource {
 		in.mark(first.length - 1);
 		in.read(first);
 		in.reset();
-		
+
 		int lineBreak = first.length;
 		for (int i = 0; i < lineBreak; i++) {
 			if (first[i] == '\n') {
 				lineBreak = i;
 			}
 		}
+
 		return new String(first, 0, lineBreak, "UTF-8");
 
 	}

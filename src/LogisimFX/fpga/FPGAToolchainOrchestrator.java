@@ -2,36 +2,53 @@ package LogisimFX.fpga;
 
 import LogisimFX.FileSelector;
 import LogisimFX.circuit.Circuit;
-import LogisimFX.fpga.data.LedArrayDriving;
+import LogisimFX.file.LogisimFile;
+import LogisimFX.fpga.data.MappableResourcesContainer;
 import LogisimFX.fpga.designrulecheck.Netlist;
 import LogisimFX.fpga.hdlgenerator.Hdl;
 import LogisimFX.fpga.hdlgenerator.HdlGeneratorFactory;
 import LogisimFX.fpga.hdlgenerator.TickComponentHdlGeneratorFactory;
-import LogisimFX.fpga.hdlgenerator.ToplevelHdlGeneratorFactory;
 import LogisimFX.newgui.DialogManager;
 import LogisimFX.proj.Project;
-import LogisimFX.std.io.LedArrayGenericHdlGeneratorFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashSet;
 
 public class FPGAToolchainOrchestrator {
 
 	private Project proj;
+	private MappableResourcesContainer mappableResourcesContainer;
 
-	private File boardConstrainsFile;
 	private ProjectConstrainsManager constrainsManager;
 	private ConstrainsFileParser parser;
+
+	private File boardConstrainsFile;
 
 	public FPGAToolchainOrchestrator(Project project) {
 
 		proj = project;
 		constrainsManager = new ProjectConstrainsManager();
 		parser = new ConstrainsFileParser();
+
+		boardConstrainsFile = new File(proj.getLogisimFile().getOtherDir()+ File.separator + "constrains");
+		try {
+			boardConstrainsFile.getParentFile().mkdirs();
+			boardConstrainsFile.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		deserializeVerilogFiles(proj.getLogisimFile().getOptions().getSerializedFilesContainer());
 
 	}
 
@@ -59,8 +76,6 @@ public class FPGAToolchainOrchestrator {
 			try {
 
 				File constrains = new File(url.toURI());
-				boardConstrainsFile = File.createTempFile("constrains-", "."+constrains.getName().split("\\.")[1]);
-				boardConstrainsFile.deleteOnExit();
 
 				FileChannel src = new FileInputStream(constrains).getChannel();
 				FileChannel dest = new FileOutputStream(boardConstrainsFile).getChannel();
@@ -68,11 +83,16 @@ public class FPGAToolchainOrchestrator {
 
 				parser.parseConstrainsFile(boardConstrainsFile);
 
-				System.out.println(parser.getBoardPorts());
 			} catch (URISyntaxException | IOException e) {
 				e.printStackTrace();
 			}
 		}
+
+	}
+	
+	public void openConstrainsFile(){
+
+		proj.getFrameController().addCodeEditor(boardConstrainsFile);
 
 	}
 
@@ -103,6 +123,9 @@ public class FPGAToolchainOrchestrator {
 		if (!performDrc(proj.getLogisimFile().getMainCircuit().getName())) {
 			return;
 		}
+
+		mappableResourcesContainer = new MappableResourcesContainer(proj.getLogisimFile().getMainCircuit());
+		System.out.println(mappableResourcesContainer.getMappableResources());
 
 		if (frequency <= 0) frequency = 1;
 		if (frequency > (fpgaClockFreq / 4)) {
@@ -182,8 +205,9 @@ public class FPGAToolchainOrchestrator {
 				return;
 			}
 		}
+/*
+		final ToplevelHdlGeneratorFactory top = new ToplevelHdlGeneratorFactory(fpgaClockFreq, frequency, topLevelCirc, mappableResourcesContainer);
 
-		final ToplevelHdlGeneratorFactory top = new ToplevelHdlGeneratorFactory(fpgaClockFreq, frequency, topLevelCirc);
 		if (top.hasLedArray()) {
 			for (String type : LedArrayDriving.DRIVING_STRINGS) {
 				if (top.hasLedArrayType(type)) {
@@ -205,8 +229,10 @@ public class FPGAToolchainOrchestrator {
 				projDir + top.getRelativeDirectory(),
 				top.getArchitecture(
 						topLevelCirc.getNetList(), null, ToplevelHdlGeneratorFactory.FPGA_TOP_LEVEL_NAME),
-				ToplevelHdlGeneratorFactory.FPGA_TOP_LEVEL_NAME);
+						ToplevelHdlGeneratorFactory.FPGA_TOP_LEVEL_NAME
+				);
 
+*/
 
 	}
 
@@ -251,5 +277,89 @@ public class FPGAToolchainOrchestrator {
 		return drcResult == Netlist.DRC_PASSED;
 	}
 
+
+	public void deserializeVerilogFiles(SerializedFilesContainer files){
+
+		files.registerProject(proj);
+
+		for (SerializedFilesContainer.SerializedFile serializedFile : files.getSerializedFiles()){
+
+			try {
+				byte[] decodedBytes = Base64.getDecoder().decode(serializedFile.data);
+				String subPath = serializedFile.path.replace("\\/", File.separator).replace("\\", File.separator);
+				Path path = Paths.get(proj.getLogisimFile().getProjectDir() + File.separator + subPath);
+				if (!path.toFile().exists()){
+					path.toFile().getParentFile().mkdirs();
+					path.toFile().createNewFile();
+				}
+				Files.write(path, decodedBytes);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		}
+
+	}
+
+	public Element getSerializedFiles(Document doc) {
+
+		Element files = doc.createElement("files");
+
+		for (Circuit circuit: proj.getLogisimFile().getCircuits()){
+
+			for (File filt : circuit.getHDLFiles(proj)){
+
+				if (filt.length() > 0){
+
+					Element file = doc.createElement("file");
+					file.setAttribute("path", filt.toString().split(proj.getLogisimFile().getProjectDir().getFileName().toString())[1].substring(1));
+
+					byte[] byteData = new byte[0];
+					try {
+						byteData = Files.readAllBytes(filt.toPath());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+					String modelData = Base64.getEncoder().encodeToString(byteData);
+					file.setAttribute("data", modelData);
+
+					files.appendChild(file);
+
+				}
+
+			}
+
+		}
+
+		if (boardConstrainsFile.length() > 0) {
+
+			Element file = doc.createElement("file");
+			file.setAttribute("path", boardConstrainsFile.toString().split(proj.getLogisimFile().getOtherDir().getFileName().toString())[1].substring(1));
+
+			byte[] byteData = new byte[0];
+			try {
+				byteData = Files.readAllBytes(boardConstrainsFile.toPath());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			String constrainsData = Base64.getEncoder().encodeToString(byteData);
+
+			file.setAttribute("data", constrainsData);
+
+			if (file.getChildNodes().getLength() > 0) {
+				files.appendChild(file);
+			}
+
+		}
+
+		if (files.getChildNodes().getLength() > 0) {
+			return files;
+		} else {
+			return null;
+		}
+
+	}
 
 }

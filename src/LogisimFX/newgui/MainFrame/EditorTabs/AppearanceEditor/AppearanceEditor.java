@@ -102,6 +102,12 @@ public class AppearanceEditor extends EditorBase {
     }
 
     @Override
+    public String getEditorDescriptor(){
+        return circ.getName();
+    }
+
+
+    @Override
     public void copyAccelerators(){
         if (this.getScene() != proj.getFrameController().getStage().getScene()){
             this.getScene().getAccelerators().putAll(

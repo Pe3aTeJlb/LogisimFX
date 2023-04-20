@@ -12,10 +12,7 @@ import LogisimFX.tools.Library;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.WeakHashMap;
+import java.util.*;
 
 class LibraryManager {
 	public static final LibraryManager instance = new LibraryManager();
@@ -48,7 +45,7 @@ class LibraryManager {
 
 		@Override
 		void setBase(Loader loader, LoadedLibrary lib) throws LoadFailedException {
-			lib.setBase(loader.loadLogisimFile(file));
+			lib.setBase(loader.loadLogisimFile(file, true));
 		}
 
 		@Override
@@ -165,7 +162,7 @@ class LibraryManager {
 		if (ret != null) return ret;
 
 		try {
-			ret = new LoadedLibrary(loader.loadLogisimFile(toRead));
+			ret = new LoadedLibrary(loader.loadLogisimFile(toRead, true));
 		} catch (LoadFailedException e) {
 			loader.showError(e.getMessage());
 			return null;
@@ -224,6 +221,14 @@ class LibraryManager {
 			}
 		}
 		return null;
+	}
+
+	public static Set<String> getBuildinNames(Loader loader) {
+		final var buildinNames = new HashSet<String>();
+		for (final var lib : loader.getBuiltin().getLibraries()) {
+			buildinNames.add(lib.getName());
+		}
+		return buildinNames;
 	}
 
 	public void fileSaved(Loader loader, File dest, File oldFile, LogisimFile file) {
@@ -297,4 +302,57 @@ class LibraryManager {
 			return file.toString();
 		}
 	}
+
+	public static void removeUnusedLibraries(Library lib) {
+		LogisimFile logiLib = null;
+		if (lib instanceof LoadedLibrary) {
+			if (((LoadedLibrary)lib).getBase() instanceof LogisimFile) {
+				logiLib = (LogisimFile) ((LoadedLibrary)lib).getBase();
+			}
+		} else if (lib instanceof LogisimFile) {
+			logiLib = (LogisimFile) lib;
+		}
+		if (logiLib == null) return;
+		final var toBeRemoved = new HashSet<String>();
+		for (final var library : logiLib.getLibraries()) {
+			var isUsed = false;
+			for (final var circ : logiLib.getCircuits()) {
+				for (final var tool : circ.getNonWires()) {
+					isUsed |= library.contains(tool.getFactory());
+				}
+			}
+			if (!isUsed) {
+				toBeRemoved.add(library.getName());
+			} else {
+				removeUnusedLibraries(library);
+			}
+		}
+		for (final var remove : toBeRemoved) {
+			lib.removeLibrary(remove);
+		}
+	}
+
+	public static Set<String> getUsedBaseLibraries(Library library) {
+		final var result = new HashSet<String>();
+		for (final var lib : library.getLibraries()) {
+			result.addAll(getUsedBaseLibraries(lib));
+			if (!(lib instanceof LoadedLibrary) && !(lib instanceof LogisimFile)) {
+				result.add(lib.getName());
+			}
+		}
+		return result;
+	}
+
+	public static void removeBaseLibraries(Library library, Set<String> baseLibs) {
+		final var libIterator = library.getLibraries().iterator();
+		while (libIterator.hasNext()) {
+			final var lib = libIterator.next();
+			if (baseLibs.contains(lib.getName())) {
+				libIterator.remove();
+			} else {
+				removeBaseLibraries(lib, baseLibs);
+			}
+		}
+	}
+
 }
