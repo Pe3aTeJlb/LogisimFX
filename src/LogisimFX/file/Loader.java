@@ -15,6 +15,7 @@ import LogisimFX.std.Builtin;
 import LogisimFX.tools.Library;
 import LogisimFX.util.StringUtil;
 import LogisimFX.util.ZipClassLoader;
+import LogisimFX.util.ZipUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -231,8 +232,15 @@ public class Loader implements LibraryLoader {
 
 		LogisimFile ret = null;
 		filesOpening.push(actual);
+		boolean isZip = ZipUtils.isZip(actual);
+		System.out.println("zip " + isZip);
+
 		try {
-			ret = LogisimFile.load(actual, this, isLib);
+			if (!isZip) {
+				ret = LogisimFile.load(actual, this, isLib);
+			} else {
+
+			}
 		} catch (IOException e) {
 			throw new LoadFailedException(LC.getFormatted("logisimLoadError",
 					toProjectName(actual), e.toString()));
@@ -294,8 +302,8 @@ public class Loader implements LibraryLoader {
 	//
 	// Library methods
 	//
-	public Library loadLibrary(String desc) {
-		return LibraryManager.instance.loadLibrary(this, desc);
+	public Library loadLibrary(LogisimFile file, String desc) {
+		return LibraryManager.instance.loadLibrary(this, file, desc);
 	}
 
 	public String getDescriptor(Library lib) {
@@ -351,7 +359,6 @@ public class Loader implements LibraryLoader {
 			DialogManager.createInfoDialog("File missing", StringUtil.format(lc.get("fileLibraryMissingError"),
 					file.getName()));
 
-			//Todo
 			FileSelector fileSelector = new FileSelector(null);
 			if(filter.equals("circ"))fileSelector.setCircFilter();
 			if(filter.equals("jar"))fileSelector.setJarFilter();

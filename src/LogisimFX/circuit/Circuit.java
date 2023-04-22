@@ -848,8 +848,16 @@ public class Circuit {
 		return Paths.get(proj.getLogisimFile().getCircuitDir() + File.separator + circAppPath).toFile();
 	}
 
+	public Path getAppearanceRelativePath(){
+		return Paths.get(circAppPath);
+	}
+
 	public File getSchematicsFile(Project proj){
 		return Paths.get(proj.getLogisimFile().getCircuitDir() + File.separator + circSchPath).toFile();
+	}
+
+	public Path getSchematicsRelativePath(){
+		return Paths.get(circSchPath);
 	}
 
 	public File getVerilogModel(Project proj){

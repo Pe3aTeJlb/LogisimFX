@@ -78,13 +78,6 @@ public class ProjectLibraryActions {
 		if(f != null){
 			Library lib = loader.loadLogisimLibrary(f);
 			if (lib != null) {
-				/*
-				try {
-					FileUtils.copyFile(f, proj.getLogisimFile().getLibDir().toFile());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				*/
 				proj.doAction(LogisimFileActions.loadLibrary(lib, proj.getLogisimFile()));
 			}
 		}

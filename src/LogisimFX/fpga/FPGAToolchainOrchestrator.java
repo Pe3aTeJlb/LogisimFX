@@ -48,8 +48,6 @@ public class FPGAToolchainOrchestrator {
 			e.printStackTrace();
 		}
 
-		deserializeVerilogFiles(proj.getLogisimFile().getOptions().getSerializedFilesContainer());
-
 	}
 
 
@@ -275,91 +273,6 @@ public class FPGAToolchainOrchestrator {
 			drcResult = root.getNetList().designRuleCheckResult(true, sheetNames);
 		}
 		return drcResult == Netlist.DRC_PASSED;
-	}
-
-
-	public void deserializeVerilogFiles(SerializedFilesContainer files){
-
-		files.registerProject(proj);
-
-		for (SerializedFilesContainer.SerializedFile serializedFile : files.getSerializedFiles()){
-
-			try {
-				byte[] decodedBytes = Base64.getDecoder().decode(serializedFile.data);
-				String subPath = serializedFile.path.replace("\\/", File.separator).replace("\\", File.separator);
-				Path path = Paths.get(proj.getLogisimFile().getProjectDir() + File.separator + subPath);
-				if (!path.toFile().exists()){
-					path.toFile().getParentFile().mkdirs();
-					path.toFile().createNewFile();
-				}
-				Files.write(path, decodedBytes);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-		}
-
-	}
-
-	public Element getSerializedFiles(Document doc) {
-
-		Element files = doc.createElement("files");
-
-		for (Circuit circuit: proj.getLogisimFile().getCircuits()){
-
-			for (File filt : circuit.getHDLFiles(proj)){
-
-				if (filt.length() > 0){
-
-					Element file = doc.createElement("file");
-					file.setAttribute("path", filt.toString().split(proj.getLogisimFile().getProjectDir().getFileName().toString())[1].substring(1));
-
-					byte[] byteData = new byte[0];
-					try {
-						byteData = Files.readAllBytes(filt.toPath());
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-
-					String modelData = Base64.getEncoder().encodeToString(byteData);
-					file.setAttribute("data", modelData);
-
-					files.appendChild(file);
-
-				}
-
-			}
-
-		}
-
-		if (boardConstrainsFile.length() > 0) {
-
-			Element file = doc.createElement("file");
-			file.setAttribute("path", boardConstrainsFile.toString().split(proj.getLogisimFile().getOtherDir().getFileName().toString())[1].substring(1));
-
-			byte[] byteData = new byte[0];
-			try {
-				byteData = Files.readAllBytes(boardConstrainsFile.toPath());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			String constrainsData = Base64.getEncoder().encodeToString(byteData);
-
-			file.setAttribute("data", constrainsData);
-
-			if (file.getChildNodes().getLength() > 0) {
-				files.appendChild(file);
-			}
-
-		}
-
-		if (files.getChildNodes().getLength() > 0) {
-			return files;
-		} else {
-			return null;
-		}
-
 	}
 
 }

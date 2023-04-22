@@ -9,7 +9,7 @@ package LogisimFX.file;
 import LogisimFX.tools.Library;
 
 interface LibraryLoader {
-	public Library loadLibrary(String desc);
+	public Library loadLibrary(LogisimFile file, String desc);
 	public String getDescriptor(Library lib);
 	public void showError(String description);
 }

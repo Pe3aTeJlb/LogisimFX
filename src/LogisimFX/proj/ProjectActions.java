@@ -17,11 +17,13 @@ import LogisimFX.circuit.Circuit;
 import LogisimFX.prefs.AppPreferences;
 import LogisimFX.tools.Tool;
 import LogisimFX.util.StringUtil;
+import LogisimFX.util.ZipUtils;
 import javafx.application.Platform;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.Map;
 
 public class ProjectActions {
@@ -170,46 +172,19 @@ public class ProjectActions {
 
 		FileSelector fs = new FileSelector(baseProject.getFrameController().getStage());
 
-		File selected = fs.OpenCircFile();
+		File selected = fs.openCircFile();
 
 		if(selected != null){
 			doOpen(null, selected);
-		}else{ return;}
-
-		/*
-		JFileChooser chooser;
-
-		if (baseProject != null) {
-			Loader oldLoader = baseProject.getLogisimFile().getLoader();
-			chooser = oldLoader.createChooser();
-			if (oldLoader.getMainFile() != null) {
-				chooser.setSelectedFile(oldLoader.getMainFile());
-			}
 		} else {
-			chooser = JFileChoosers.create();
+			return;
 		}
-
-		chooser.setFileFilter(Loader.LOGISIM_FILTER);
-
-		int returnVal = chooser.showOpenDialog(parent);
-
-		if (returnVal != JFileChooser.APPROVE_OPTION) return;
-
-		File selected = chooser.getSelectedFile();
-
-		if (selected != null) {
-			doOpen(baseProject, selected);
-		}
-
-		 */
 
 	}
 
-	public static Project doOpen(Project baseProject, File f) {
+	public static Project doOpen(Project baseProject, File file) {
 
-		//Project proj = Projects.findProjectFor(f);
-
-		Project proj = FrameManager.FindProjectForFile(f);
+		Project proj = FrameManager.FindProjectForFile(file);
 
 		Loader loader = null;
 
@@ -226,27 +201,6 @@ public class ProjectActions {
 				}else if(type == 0){
 					return proj;
 				}
-
-				/*
-				String message = StringUtil.format(lc.get("openAlreadyMessage"),
-						proj.getLogisimFile().getName());
-				String[] options = {
-						lc.get("openAlreadyLoseChangesOption"),
-						lc.get("openAlreadyNewWindowOption"),
-						lc.get("openAlreadyCancelOption"),
-					};
-				int result = JOptionPane.showOptionDialog(proj.getFrame(),
-						message, lc.get("openAlreadyTitle"), 0,
-						JOptionPane.QUESTION_MESSAGE, null,
-						options, options[2]);
-				if (result == 0) {
-					; // keep proj as is, so that load happens into the window
-				} else if (result == 1) {
-					proj = null; // we'll create a new project
-				} else {
-					return proj;
-				}
-				*/
 
 			}else {
 				FrameManager.FocusOnFrame(proj);
@@ -265,8 +219,8 @@ public class ProjectActions {
 
 		try {
 
-			LogisimFile lib = loader.openLogisimFile(f);
-			AppPreferences.updateRecentFile(f);
+			LogisimFile lib = loader.openLogisimFile(file);
+			AppPreferences.updateRecentFile(file);
 
 			if (lib == null) return null;
 
@@ -286,17 +240,6 @@ public class ProjectActions {
 			return null;
 		}
 
-		/*
-		Frame frame = proj.getFrame();
-		if (frame == null) {
-			frame = createFrame(baseProject, proj);
-		}
-
-		frame.setVisible(true);
-		frame.toFront();
-		frame.getCanvas().requestFocus();
-		 */
-
 		return proj;
 
 	}
@@ -310,7 +253,7 @@ public class ProjectActions {
 
 		FileSelector fileSelector = new FileSelector(proj.getFrameController().getStage());
 
-		File f = fileSelector.SaveCircFile();
+		File f = fileSelector.saveCircFile();
 
 		if (f == null) return false;
 
@@ -324,8 +267,11 @@ public class ProjectActions {
 
 		File f = loader.getMainFile();
 
-		if (f == null) return doSaveAs(proj);
-		else return doSave(proj, f);
+		if (f == null) {
+			return doSaveAs(proj);
+		} else {
+			return doSave(proj, f);
+		}
 
 	}
 
@@ -336,11 +282,23 @@ public class ProjectActions {
 		Tool oldTool = proj.getTool();
 		proj.setTool(null);
 
-		boolean ret = loader.save(proj.getLogisimFile(), f);
+		boolean ret = loader.save(
+				proj,
+				proj.getLogisimFile(),
+				Paths.get(proj.getLogisimFile().getProjectDir() + File.separator + f.getName().split("\\.")[0]+".proj").toFile()
+		);
 
 		if (ret) {
+
 			AppPreferences.updateRecentFile(f);
 			proj.setFileAsClean();
+
+			try {
+				ZipUtils.zipFolder(proj.getLogisimFile().getProjectDir().toFile(), f);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
 		}
 
 		proj.setTool(oldTool);

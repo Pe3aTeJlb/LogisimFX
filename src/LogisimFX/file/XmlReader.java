@@ -16,7 +16,6 @@ import LogisimFX.data.Attribute;
 import LogisimFX.data.AttributeDefaultProvider;
 import LogisimFX.data.AttributeSet;
 import LogisimFX.data.Location;
-import LogisimFX.fpga.SerializedFilesContainer;
 import LogisimFX.instance.Instance;
 import LogisimFX.newgui.MainFrame.FrameLayout;
 import LogisimFX.std.wiring.Pin;
@@ -30,9 +29,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -100,11 +97,37 @@ class XmlReader {
 				if (name == null || name.equals("")) {
 					addError(LC.get("circNameMissingError"), "C??");
 				}
+				//Check if circuit described in files
+				String schPath = circElt.getAttribute("sch");
+				if (schPath != null && !schPath.equals("")){
+					try {
+						InputStream in = new FileInputStream(Paths.get(file.getProjectDir() + File.separator + schPath).toFile());
+						Document doc = loadXmlFrom(in);
+						for (Element c : XmlIterator.forChildElements(doc.getDocumentElement())) {
+							circElt.appendChild(c);
+						}
+						in.close();
+					} catch (IOException | SAXException e) {
+						e.printStackTrace();
+					}
+				}
+				String appPath = circElt.getAttribute("app");
+				if (appPath != null && !appPath.equals("")){
+					try {
+						InputStream in = new FileInputStream(Paths.get(file.getProjectDir() + File.separator + appPath).toFile());
+						Document doc = loadXmlFrom(in);
+						circElt.appendChild(doc.getDocumentElement());
+						in.close();
+					} catch (IOException | SAXException e) {
+						e.printStackTrace();
+					}
+				}
+				//else do old circ file
 				CircuitData circData = new CircuitData(circElt, new Circuit(name));
 				file.addCircuit(circData.circuit);
 				circData.knownComponents = loadKnownComponents(circElt);
 				for (Element appearElt : XmlIterator.forChildElements(circElt, "appear")) {
-					loadAppearance(appearElt, circData, name + ".appear");
+					loadAppearance(appearElt, circData, name);
 				}
 				circuitsData.add(circData);
 			}
@@ -126,9 +149,7 @@ class XmlReader {
 					initToolbarData(sub_elt);
 				} else if (name.equals("layout")){
 					initMainFrameLayout(sub_elt);
-				} else if (name.equals("files")){
-					initSerializedFiles(sub_elt);
-				}else if (name.equals("main")) {
+				} else if (name.equals("main")) {
 					String main = sub_elt.getAttribute("name");
 					Circuit circ = file.getCircuit(main);
 					if (circ != null) {
@@ -161,7 +182,7 @@ class XmlReader {
 			String name = elt.getAttribute("name");
 			String desc = elt.getAttribute("desc");
 
-			Library ret = loader.loadLibrary(desc);
+			Library ret = loader.loadLibrary(file, desc);
 			if (ret == null) return null;
 
 			libs.put(name, ret);
@@ -539,23 +560,6 @@ class XmlReader {
 				}
 
 				layout.addSubWindowDescriptor(subWindowDescriptor);
-
-			}
-
-		}
-
-		private void initSerializedFiles(Element elt){
-
-			SerializedFilesContainer files = file.getOptions().getSerializedFilesContainer();
-
-			for (Element file : XmlIterator.forChildElements(elt, "file")){
-
-				String path = file.getAttribute("path");
-				String data = file.getAttribute("data");
-
-				SerializedFilesContainer.SerializedFile serializedFile = new SerializedFilesContainer.SerializedFile(path, data);
-
-				files.addSerializedData(serializedFile);
 
 			}
 

@@ -40,7 +40,7 @@ class LibraryManager {
 
 		@Override
 		String toDescriptor(Loader loader) {
-			return "file#" + toRelative(loader, file);
+			return "file"+desc_sep+"rel"+desc_sep+"lib"+File.separator+file.getName();
 		}
 
 		@Override
@@ -77,7 +77,7 @@ class LibraryManager {
 
 		@Override
 		String toDescriptor(Loader loader) {
-			return "jar#" + toRelative(loader, file) + desc_sep + className;
+			return "jar"+desc_sep+"rel"+desc_sep+"lib"+File.separator+file.getName()+desc_sep+className;
 		}
 
 		@Override
@@ -123,7 +123,7 @@ class LibraryManager {
 		return ret;
 	}
 
-	public Library loadLibrary(Loader loader, String desc) {
+	public Library loadLibrary(Loader loader, LogisimFile file, String desc) {
 		// It may already be loaded.
 		// Otherwise we'll have to decode it.
 		int sep = desc.indexOf(desc_sep);
@@ -131,10 +131,12 @@ class LibraryManager {
 			loader.showError(LC.getFormatted("fileDescriptorError", desc));
 			return null;
 		}
-		String type = desc.substring(0, sep);
-		String name = desc.substring(sep + 1);
+
+		String[] descParams = desc.split(Character.toString(desc_sep));
+		String type = descParams[0];
 
 		if (type.equals("")) {
+			String name = descParams[1];
 			Library ret = loader.getBuiltin().getLibrary(name);
 			if (ret == null) {
 				loader.showError(LC.getFormatted("fileBuiltinMissingError", name));
@@ -142,13 +144,29 @@ class LibraryManager {
 			}
 			return ret;
 		} else if (type.equals("file")) {
-			File toRead = loader.getFileFor(name, "circ");
+			File toRead;
+			if (descParams[1].equals("rel")){
+				toRead = loader.getFileFor(
+						file.getLibDir()+File.separator+descParams[2].replace("\\", File.separator).replace("/", File.separator),
+						"circ"
+				);
+			} else {
+				toRead = loader.getFileFor(descParams[1], "circ");
+			}
 			return loadLogisimLibrary(loader, toRead);
 		} else if (type.equals("jar")) {
-			int sepLoc = name.lastIndexOf(desc_sep);
-			String fileName = name.substring(0, sepLoc);
-			String className = name.substring(sepLoc + 1);
-			File toRead = loader.getFileFor(fileName, "jar");
+			File toRead;
+			String className;
+			if (descParams[1].equals("rel")){
+				toRead = loader.getFileFor(
+						file.getLibDir()+File.separator+descParams[2].replace("\\", File.separator).replace("/", File.separator),
+						"jar"
+				);
+				className = descParams[3];
+			} else {
+				toRead = loader.getFileFor(descParams[1], "jar");
+				className = descParams[2];
+			}
 			return loadJarLibrary(loader, toRead, className);
 		} else {
 			loader.showError(LC.getFormatted("fileTypeError",

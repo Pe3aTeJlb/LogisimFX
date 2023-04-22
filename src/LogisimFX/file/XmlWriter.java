@@ -29,7 +29,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import java.io.File;
 import java.io.OutputStream;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -95,12 +97,26 @@ class XmlWriter {
 		ret.appendChild(fromMouseMappings());
 		ret.appendChild(fromToolbarData());
 
+		/*
 		for (Circuit circ : file.getCircuits()) {
 			ret.appendChild(fromCircuit(circ));
 		}
+		 */
+		for (Circuit circuit: file.getCircuits()){
 
-		Element files = fromTempFiles();
-		if (files != null) ret.appendChild(files);
+			Element circ = doc.createElement("circuit");
+			circ.setAttribute("name", circuit.getName());
+			circ.setAttribute("sch", circuit.getSchematicsRelativePath().toString());
+
+			if (!circuit.getAppearance().isDefaultAppearance()){
+				circ.setAttribute("app", circuit.getAppearanceRelativePath().toString());
+			}
+
+			ret.appendChild(circ);
+
+			exportCircuit(circuit);
+
+		}
 
 		ret.appendChild(fromMainFrameLayout());
 
@@ -125,7 +141,7 @@ class XmlWriter {
 			if (attrs != null) {
 				Element toAdd = doc.createElement("tool");
 				toAdd.setAttribute("name", t.getName());
-				addAttributeSetContent(toAdd, attrs, t);
+				addAttributeSetContent(doc, toAdd, attrs, t);
 				if (toAdd.getChildNodes().getLength() > 0) {
 					ret.appendChild(toAdd);
 				}
@@ -136,7 +152,7 @@ class XmlWriter {
 
 	Element fromOptions() {
 		Element elt = doc.createElement("options");
-		addAttributeSetContent(elt, file.getOptions().getAttributeSet(), null);
+		addAttributeSetContent(doc, elt, file.getOptions().getAttributeSet(), null);
 		return elt;
 	}
 
@@ -171,10 +187,6 @@ class XmlWriter {
 		return file.getOptions().getMainFrameLayout().getLayout(doc);
 	}
 
-	Element fromTempFiles(){
-		return file.getOptions().getSerializedFilesContainer().getSerializedFiles(doc);
-	}
-
 	Element fromTool(Tool tool) {
 		Library lib = findLibrary(tool);
 		String lib_name;
@@ -195,14 +207,14 @@ class XmlWriter {
 		Element elt = doc.createElement("tool");
 		if (lib_name != null) elt.setAttribute("lib", lib_name);
 		elt.setAttribute("name", tool.getName());
-		addAttributeSetContent(elt, tool.getAttributeSet(), tool);
+		addAttributeSetContent(doc, elt, tool.getAttributeSet(), tool);
 		return elt;
 	}
 
 	Element fromCircuit(Circuit circuit) {
 		Element ret = doc.createElement("circuit");
 		ret.setAttribute("name", circuit.getName());
-		addAttributeSetContent(ret, circuit.getStaticAttributes(), null);
+		addAttributeSetContent(doc, ret, circuit.getStaticAttributes(), null);
 		if (!circuit.getAppearance().isDefaultAppearance()) {
 			Element appear = doc.createElement("appear");
 			for (Object o : circuit.getAppearance().getObjectsFromBottom()) {
@@ -219,13 +231,13 @@ class XmlWriter {
 			ret.appendChild(fromWire(w));
 		}
 		for (Component comp : circuit.getNonWires()) {
-			Element elt = fromComponent(comp);
+			Element elt = fromComponent(doc, comp);
 			if (elt != null) ret.appendChild(elt);
 		}
 		return ret;
 	}
 
-	Element fromComponent(Component comp) {
+	Element fromComponent(Document doc, Component comp) {
 		ComponentFactory source = comp.getFactory();
 		Library lib = findLibrary(source);
 		String lib_name;
@@ -246,7 +258,7 @@ class XmlWriter {
 		if (lib_name != null) ret.setAttribute("lib", lib_name);
 		ret.setAttribute("name", source.getName());
 		ret.setAttribute("loc", comp.getLocation().toString());
-		addAttributeSetContent(ret, comp.getAttributeSet(), comp.getFactory());
+		addAttributeSetContent(doc, ret, comp.getAttributeSet(), comp.getFactory());
 		return ret;
 	}
 
@@ -257,7 +269,7 @@ class XmlWriter {
 		return ret;
 	}
 
-	void addAttributeSetContent(Element elt, AttributeSet attrs,
+	void addAttributeSetContent(Document doc, Element elt, AttributeSet attrs,
 			AttributeDefaultProvider source) {
 		if (attrs == null) return;
 		LogisimVersion ver = Main.VERSION;
@@ -282,6 +294,80 @@ class XmlWriter {
 			}
 		}
 	}
+
+
+
+	private void exportCircuit(Circuit circuit){
+
+		try {
+
+			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+			Document doc = docBuilder.newDocument();
+
+			Element circ = doc.createElement("circuit");
+			doc.appendChild(circ);
+
+			addAttributeSetContent(doc, circ, circuit.getStaticAttributes(), null);
+
+			for (Wire w : circuit.getWires()) {
+				circ.appendChild(fromWire(w));
+			}
+			for (Component comp : circuit.getNonWires()) {
+				Element elt = fromComponent(doc, comp);
+				if (elt != null) circ.appendChild(elt);
+			}
+
+			exportToFile(doc, Paths.get(file.getProjectDir() + File.separator + circuit.getSchematicsRelativePath()).toFile());
+
+			if (!circuit.getAppearance().isDefaultAppearance()){
+
+				docFactory = DocumentBuilderFactory.newInstance();
+				docBuilder = docFactory.newDocumentBuilder();
+				doc = docBuilder.newDocument();
+
+				Element appear = doc.createElement("appear");
+				doc.appendChild(appear);
+
+				for (Object o : circuit.getAppearance().getObjectsFromBottom()) {
+					if (o instanceof AbstractCanvasObject) {
+						Element elt = ((AbstractCanvasObject) o).toSvgElement(doc);
+						if (elt != null) {
+							appear.appendChild(elt);
+						}
+					}
+				}
+
+				exportToFile(doc, Paths.get(file.getProjectDir() + File.separator + circuit.getAppearanceRelativePath()).toFile());
+
+			}
+
+		} catch (ParserConfigurationException | TransformerException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	private void exportToFile(Document doc, File out) throws TransformerException {
+
+		TransformerFactory tfFactory = TransformerFactory.newInstance();
+		try {
+			tfFactory.setAttribute("indent-number", Integer.valueOf(2));
+		} catch (IllegalArgumentException e) { }
+		Transformer tf = tfFactory.newTransformer();
+		tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+		tf.setOutputProperty(OutputKeys.INDENT, "yes");
+		try {
+			tf.setOutputProperty("{http://xml.apache.org/xslt}indent-amount",
+					"2");
+		} catch (IllegalArgumentException e) { }
+
+		Source src = new DOMSource(doc);
+		Result dest = new StreamResult(out);
+		tf.transform(src, dest);
+
+	}
+
 
 	Library findLibrary(Tool tool) {
 		if (libraryContains(file, tool)) {
