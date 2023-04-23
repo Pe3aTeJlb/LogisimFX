@@ -10,6 +10,7 @@ import LogisimFX.FileSelector;
 import LogisimFX.localization.LC_file;
 import LogisimFX.localization.Localizer;
 import LogisimFX.newgui.DialogManager;
+import LogisimFX.newgui.FrameManager;
 import LogisimFX.proj.Project;
 import LogisimFX.std.Builtin;
 import LogisimFX.tools.Library;
@@ -20,7 +21,6 @@ import LogisimFX.util.ZipUtils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +31,7 @@ public class Loader implements LibraryLoader {
 	private static Localizer lc = LC_file.getInstance();
 
 	public static final String LOGISIM_EXTENSION = ".circ";
+	public static final String LOGISIM_PROJ_DESC = ".proj";
 
 	// fixed
 	private Builtin builtin = new Builtin();
@@ -97,25 +98,13 @@ public class Loader implements LibraryLoader {
 
 	public LogisimFile openLogisimFile(File file) throws LoadFailedException {
 		try {
-			LogisimFile ret = loadLogisimFile(file, true);
+			LogisimFile ret = loadLogisimFile(file, false);
 			if (ret != null) setMainFile(file);
 			showMessages(ret);
 			return ret;
 		} catch (LoaderException e) {
 			throw new LoadFailedException(e.getMessage(), e.isShown());
 		}
-	}
-
-	public LogisimFile openLogisimFile(InputStream reader)
-			throws LoadFailedException, IOException {
-		LogisimFile ret = null;
-		try {
-			ret = LogisimFile.load(reader, this, false);
-		} catch (LoaderException e) {
-			return null;
-		}
-		showMessages(ret);
-		return ret;
 	}
 
 	public Library loadLogisimLibrary(File file) {
@@ -233,13 +222,12 @@ public class Loader implements LibraryLoader {
 		LogisimFile ret = null;
 		filesOpening.push(actual);
 		boolean isZip = ZipUtils.isZip(actual);
-		System.out.println("zip " + isZip);
 
 		try {
 			if (!isZip) {
 				ret = LogisimFile.load(actual, this, isLib);
 			} else {
-
+				ret = LogisimFile.loadZip(actual, this, isLib);
 			}
 		} catch (IOException e) {
 			throw new LoadFailedException(LC.getFormatted("logisimLoadError",
@@ -372,10 +360,19 @@ public class Loader implements LibraryLoader {
 	private String toProjectName(File file) {
 
 		String ret = file.getName();
-		if (ret.endsWith(LOGISIM_EXTENSION)) {
+		if (ret.endsWith(LOGISIM_EXTENSION) || ret.endsWith(LOGISIM_PROJ_DESC)) {
 			return ret.substring(0, ret.length() - LOGISIM_EXTENSION.length());
 		} else {
-			return ret;
+			String name = LC.get("defaultProjectName");
+			if (FrameManager.windowNamed(name)) {
+				for (int i = 2; true; i++) {
+					if (!FrameManager.windowNamed(name + " " + i)) {
+						name = name + " " + i;
+						break;
+					}
+				}
+			}
+			return name;
 		}
 
 	}

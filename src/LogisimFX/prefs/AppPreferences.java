@@ -10,18 +10,18 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 
-import LogisimFX.Startup;
 import LogisimFX.data.Direction;
 import LogisimFX.localization.LocaleManager;
-import LogisimFX.localization.Localizer;
 import LogisimFX.util.LocaleListener;
 import LogisimFX.util.PropertyChangeWeakSupport;
 import LogisimFX.Main;
@@ -50,10 +50,9 @@ public class AppPreferences {
 	private static int templateType = TEMPLATE_PLAIN;
 	private static File templateFile = null;
 
-	private static Template plainTemplate = null;
-	private static Template emptyTemplate = null;
-	private static Template customTemplate = null;
-	private static File customTemplateFile = null;
+	private static File plainTemplate = null;
+	private static File emptyTemplate = null;
+	private static File customTemplate = null;
 
 	// International preferences
 	public static final String SHAPE_SHAPED = "shaped";
@@ -284,16 +283,10 @@ public class AppPreferences {
 
 	public static void setTemplateFile(File value) {
 		getPrefs();
-		setTemplateFile(value, null);
-	}
-
-	public static void setTemplateFile(File value, Template template) {
-		getPrefs();
 		if (value != null && !value.canRead()) value = null;
-		if (value == null ? templateFile != null : !value.equals(templateFile)) {
+		if (!Objects.equals(value, templateFile)) {
 			try {
-				customTemplateFile = template == null ? null : value;
-				customTemplate = template;
+				customTemplate = value;
 				getPrefs().put(TEMPLATE_FILE, value == null ? "" : value.getCanonicalPath());
 			} catch (IOException ex) { }
 		}
@@ -318,58 +311,52 @@ public class AppPreferences {
 	//
 	// template methods
 	//
-	public static Template getTemplate() {
+	public static File getTemplate() {
 		getPrefs();
 		switch (templateType) {
-		case TEMPLATE_PLAIN: return getPlainTemplate();
 		case TEMPLATE_EMPTY: return getEmptyTemplate();
 		case TEMPLATE_CUSTOM: return getCustomTemplate();
 		default: return getPlainTemplate();
 		}
 	}
 
-	public static Template getEmptyTemplate() {
-		if (emptyTemplate == null) emptyTemplate = Template.createEmpty();
+	public static File getEmptyTemplate() {
+		if (emptyTemplate == null) {
+			URL url = AppPreferences.class.getResource("/LogisimFX/resources/empty.templ");
+			try {
+				emptyTemplate = new File(url.toURI());
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+		}
 		return emptyTemplate;
 	}
 
-	private static Template getPlainTemplate() {
+	private static File getPlainTemplate() {
 		if (plainTemplate == null) {
-			ClassLoader ld = Startup.class.getClassLoader();
-			InputStream in = ld.getResourceAsStream("LogisimFX/resources/default.templ");
-			if (in == null) {
+			URL url = AppPreferences.class.getResource("/LogisimFX/resources/default.templ");
+			try {
+				plainTemplate = new File(url.toURI());
+			} catch (URISyntaxException e) {
 				plainTemplate = getEmptyTemplate();
-			} else {
-				try {
-					try {
-						plainTemplate = Template.create(in);
-					} finally {
-						in.close();
-					}
-				} catch (Throwable e) {
-					plainTemplate = getEmptyTemplate();
-				}
 			}
 		}
 		return plainTemplate;
 	}
 
-	private static Template getCustomTemplate() {
+	private static File getCustomTemplate() {
 		File toRead = templateFile;
-		if (customTemplateFile == null || !(customTemplateFile.equals(toRead))) {
+		if (customTemplate == null || !(customTemplate.equals(toRead))) {
 			if (toRead == null) {
 				customTemplate = null;
-				customTemplateFile = null;
 			} else {
 				FileInputStream reader = null;
 				try {
 					reader = new FileInputStream(toRead);
-					customTemplate = Template.create(reader);
-					customTemplateFile = templateFile;
+					customTemplate = templateFile;
 				} catch (Throwable t) {
 					setTemplateFile(null);
 					customTemplate = null;
-					customTemplateFile = null;
 				} finally {
 					if (reader != null) {
 						try { reader.close(); } catch (IOException e) { }

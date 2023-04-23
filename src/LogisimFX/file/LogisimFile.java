@@ -17,8 +17,10 @@ import LogisimFX.tools.Tool;
 import LogisimFX.util.EventSourceWeakSupport;
 import LogisimFX.util.ListUtil;
 
+import LogisimFX.util.ZipUtils;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
@@ -81,6 +83,11 @@ public class LogisimFile extends Library implements LibraryEventSource {
 	private Path libDir;
 	private Path otherDir;
 
+	public static String CIRCUIT = "circuit";
+	public static String FPGA = "fpga";
+	public static String LIB = "lib";
+	public static String OTHERS = "other";
+
 	LogisimFile(Loader loader, boolean isLib) {
 
 		this.loader = loader;
@@ -105,16 +112,16 @@ public class LogisimFile extends Library implements LibraryEventSource {
 
 				projectDir = Files.createTempDirectory(LOGISIMFX_TEMP_DIR, name.get() + "-");
 
-				circuitDir = new File(projectDir + File.separator + "circuit").toPath();
+				circuitDir = new File(projectDir + File.separator + CIRCUIT).toPath();
 				circuitDir.toFile().mkdirs();
 
-				fpgaDir = new File(projectDir + File.separator + "fpga").toPath();
+				fpgaDir = new File(projectDir + File.separator + FPGA).toPath();
 				fpgaDir.toFile().mkdirs();
 
-				libDir = new File(projectDir + File.separator + "lib").toPath();
+				libDir = new File(projectDir + File.separator + LIB).toPath();
 				libDir.toFile().mkdirs();
 
-				otherDir = new File(projectDir + File.separator + "other").toPath();
+				otherDir = new File(projectDir + File.separator + OTHERS).toPath();
 				otherDir.toFile().mkdirs();
 
 			}
@@ -299,11 +306,8 @@ public class LogisimFile extends Library implements LibraryEventSource {
 	}
 
 	public void setName(String name) {
-
 		nameProperty().set(name);
-		//this.name = name;
 		fireEvent(LibraryEvent.SET_NAME, name);
-
 	}
 
 	public void addCircuit(Circuit circuit) {
@@ -517,6 +521,41 @@ public class LogisimFile extends Library implements LibraryEventSource {
 		// The name will be changed in LogisimPreferences
 		ret.tools.add(new AddTool(ret.main.getSubcircuitFactory()));
 		return ret;
+
+	}
+
+	public static LogisimFile loadZip(File file, Loader loader, boolean isLib){
+
+		LogisimFile logisimFile = new LogisimFile(loader, false);
+
+		try {
+
+			ZipUtils.unzipFolder(file, logisimFile.getProjectDir().toFile());
+			FileFilter fileFilter = new WildcardFileFilter("*.proj");
+			File[] projFile = logisimFile.getProjectDir().toFile().listFiles(fileFilter);
+
+			InputStream in = new FileInputStream(projFile[0]);
+			BufferedInputStream inBuffered = new BufferedInputStream(in);
+			String firstLine = getFirstLine(inBuffered);
+
+			if (firstLine == null) {
+				throw new IOException("File is empty");
+			} else if (firstLine.equals("Logisim v1.0")) {
+				// if this is a 1.0 file, then set up a pipe to translate to
+				// 2.0 and then interpret as a 2.0 file
+				throw new IOException("Version 1.0 files no longer supported");
+			}
+
+			XmlReader xmlReader = new XmlReader(loader);
+			xmlReader.readLibraryTo(logisimFile, inBuffered);
+			logisimFile.loader = loader;
+			return logisimFile;
+
+		} catch (IOException | SAXException e) {
+			e.printStackTrace();
+		}
+
+		return logisimFile;
 
 	}
 

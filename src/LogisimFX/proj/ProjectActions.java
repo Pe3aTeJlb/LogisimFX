@@ -55,19 +55,14 @@ public class ProjectActions {
 		LoadingScreen.nextStep();
 
 		Loader loader = new Loader();
-
-		InputStream templReader = AppPreferences.getTemplate().createStream();
 		LogisimFile file = null;
 
 		try {
-			file = loader.openLogisimFile(templReader);
-		} catch (IOException ex) {
-			displayException(ex);
+			file = loader.openLogisimFile(AppPreferences.getTemplate());
 		} catch (LoadFailedException ex) {
 			displayException(ex);
-		} finally {
-			try { templReader.close(); } catch (IOException e) { }
 		}
+
 		if (file == null) file = createEmptyFile(loader);
 
 		return completeProject(loader, file);
@@ -84,15 +79,12 @@ public class ProjectActions {
 	}
 
 	private static LogisimFile createEmptyFile(Loader loader) {
-		InputStream templReader = AppPreferences.getEmptyTemplate().createStream();
 		LogisimFile file;
 		try {
-			file = loader.openLogisimFile(templReader);
+			file = loader.openLogisimFile(AppPreferences.getEmptyTemplate());
 		} catch (Throwable t) {
 			file = LogisimFile.createNew(loader);
 			file.addCircuit(new Circuit("main"));
-		} finally {
-			try { templReader.close(); } catch (IOException e) { }
 		}
 		return file;
 	}
@@ -114,21 +106,17 @@ public class ProjectActions {
 	public static LogisimFile createNewFile(Project baseProject) {
 
 		Loader loader = new Loader();
-		InputStream templReader = AppPreferences.getTemplate().createStream();
+
 		LogisimFile file;
 		try {
-			file = loader.openLogisimFile(templReader);
-		} catch (IOException ex) {
-			displayException(ex);
-			file = createEmptyFile(loader);
+			file = loader.openLogisimFile(AppPreferences.getTemplate());
 		} catch (LoadFailedException ex) {
 			if (!ex.isShown()) {
 				displayException(ex);
 			}
 			file = createEmptyFile(loader);
-		} finally {
-			try { templReader.close(); } catch (IOException e) { }
 		}
+
 		return file;
 
 	}

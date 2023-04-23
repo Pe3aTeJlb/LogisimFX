@@ -1,10 +1,14 @@
 package LogisimFX.util;
 
+import LogisimFX.file.Loader;
+import LogisimFX.file.LogisimFile;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -60,6 +64,35 @@ public class ZipUtils {
 			}
 		}
 	}
+
+	public static void unzipProject(final File zipFile, final File folder) throws IOException {
+		unzipProject(new FileInputStream(zipFile), folder.toPath());
+	}
+
+	public static void unzipProject(FileInputStream is, Path targetDir) throws IOException {
+		targetDir = targetDir.toAbsolutePath();
+		try (ZipInputStream zipIn = new ZipInputStream(is)) {
+			for (ZipEntry ze; (ze = zipIn.getNextEntry()) != null; ) {
+				Path resolvedPath = targetDir.resolve(ze.getName()).normalize();
+				if (!resolvedPath.startsWith(targetDir)) {
+					// see: https://snyk.io/research/zip-slip-vulnerability
+					throw new RuntimeException("Entry with an illegal path: "
+							+ ze.getName());
+				}
+				if (ze.getName().endsWith(Loader.LOGISIM_PROJ_DESC)){
+					Files.copy(zipIn, Paths.get(targetDir + File.separator + LogisimFile.LIB + File.separator + ze.getName()));
+				}
+				System.out.println(ze.isDirectory() + " " + ze.getName());
+				if (ze.isDirectory() &&
+						(ze.getName().equals(LogisimFile.CIRCUIT) ||
+								ze.getName().equals(LogisimFile.LIB))){
+					Files.copy(zipIn, Paths.get(targetDir + File.separator + ze.getName()));
+				}
+			}
+		}
+	}
+
+
 
 	public static boolean isZip(File f) {
 		int fileSignature = 0;

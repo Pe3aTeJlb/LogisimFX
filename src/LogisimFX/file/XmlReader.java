@@ -103,8 +103,8 @@ class XmlReader {
 					try {
 						InputStream in = new FileInputStream(Paths.get(file.getProjectDir() + File.separator + schPath).toFile());
 						Document doc = loadXmlFrom(in);
-						for (Element c : XmlIterator.forChildElements(doc.getDocumentElement())) {
-							circElt.appendChild(c);
+						for (int i = 0; i < doc.getDocumentElement().getChildNodes().getLength(); i++){
+							circElt.appendChild(circElt.getOwnerDocument().importNode(doc.getDocumentElement().getChildNodes().item(i),true));
 						}
 						in.close();
 					} catch (IOException | SAXException e) {
@@ -116,7 +116,7 @@ class XmlReader {
 					try {
 						InputStream in = new FileInputStream(Paths.get(file.getProjectDir() + File.separator + appPath).toFile());
 						Document doc = loadXmlFrom(in);
-						circElt.appendChild(doc.getDocumentElement());
+						circElt.appendChild(circElt.getOwnerDocument().importNode(doc.getDocumentElement(),true));
 						in.close();
 					} catch (IOException | SAXException e) {
 						e.printStackTrace();
@@ -573,6 +573,7 @@ class XmlReader {
 		this.loader = loader;
 	}
 
+	//Use for old circ files
 	LogisimFile readLibrary(InputStream is, boolean isLib) throws IOException, SAXException {
 		Document doc = loadXmlFrom(is);
 		Element elt = doc.getDocumentElement();
@@ -592,6 +593,26 @@ class XmlReader {
 			loader.showError(all.substring(0, all.length() - 1));
 		}
 		return file;
+	}
+
+	//se for new zip .circ files
+	void readLibraryTo(LogisimFile file, InputStream is) throws IOException, SAXException {
+		Document doc = loadXmlFrom(is);
+		Element elt = doc.getDocumentElement();
+		considerRepairs(doc, elt);
+		ReadContext context = new ReadContext(file);
+		context.toLogisimFile(elt);
+		if (file.getCircuitCount() == 0) {
+			file.addCircuit(new Circuit("main"));
+		}
+		if (context.messages.size() > 0) {
+			StringBuilder all = new StringBuilder();
+			for (String msg : context.messages) {
+				all.append(msg);
+				all.append("\n");
+			}
+			loader.showError(all.substring(0, all.length() - 1));
+		}
 	}
 
 	private Document loadXmlFrom(InputStream is) throws SAXException, IOException {

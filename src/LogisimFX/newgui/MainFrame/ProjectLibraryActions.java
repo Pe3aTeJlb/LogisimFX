@@ -15,6 +15,8 @@ import LogisimFX.file.LogisimFileActions;
 import LogisimFX.newgui.DialogManager;
 import LogisimFX.proj.Project;
 import LogisimFX.tools.Library;
+import LogisimFX.util.ZipUtils;
+import org.apache.commons.io.FileUtils;
 
 
 import java.io.File;
@@ -78,6 +80,15 @@ public class ProjectLibraryActions {
 		if(f != null){
 			Library lib = loader.loadLogisimLibrary(f);
 			if (lib != null) {
+				try {
+					if (!ZipUtils.isZip(f)) {
+						FileUtils.copyFileToDirectory(f, proj.getLogisimFile().getLibDir().toFile());
+					} else {
+						ZipUtils.unzipProject(f, proj.getLogisimFile().getProjectDir().toFile());
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 				proj.doAction(LogisimFileActions.loadLibrary(lib, proj.getLogisimFile()));
 			}
 		}
@@ -125,6 +136,11 @@ public class ProjectLibraryActions {
 
 		Library lib = loader.loadJarLibrary(f, className);
 		if (lib != null) {
+			try {
+				FileUtils.copyFileToDirectory(f, proj.getLogisimFile().getLibDir().toFile());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			proj.doAction(LogisimFileActions.loadLibrary(lib, proj.getLogisimFile()));
 		}
 

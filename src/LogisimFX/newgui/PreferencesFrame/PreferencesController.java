@@ -14,7 +14,6 @@ import LogisimFX.file.LogisimFile;
 import LogisimFX.newgui.DialogManager;
 import LogisimFX.util.StringUtil;
 import LogisimFX.prefs.AppPreferences;
-import LogisimFX.prefs.Template;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -25,7 +24,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -221,19 +219,14 @@ public class PreferencesController extends AbstractController {
 
             File f = fileChooser.showOpenDialog(Root.getScene().getWindow());
 
-            FileInputStream reader = null;
-            InputStream reader2 = null;
-
             if(f != null){
 
                 try {
-                    Loader loader = new Loader();
-                    reader = new FileInputStream(f);
-                    Template template = Template.create(reader);
-                    reader2 = template.createStream();
-                    LogisimFile.load(reader2, loader, false); // to see if OK
 
-                    AppPreferences.setTemplateFile(f, template);
+                    Loader loader = new Loader();
+                    LogisimFile.load(f, loader, false); // to see if OK
+
+                    AppPreferences.setTemplateFile(f);
                     AppPreferences.setTemplateType(AppPreferences.TEMPLATE_CUSTOM);
 
                     if(AppPreferences.getTemplateFile() != null)FilePathTextField.setText(AppPreferences.getTemplateFile().toString());
@@ -246,13 +239,6 @@ public class PreferencesController extends AbstractController {
                 }
                 catch (IOException ex) {
                     DialogManager.createErrorDialog(LC.get("templateErrorTitle"), StringUtil.format(LC.get("templateErrorMessage"), ex.toString()));
-                } finally {
-                    try {
-                        if (reader != null) reader.close();
-                    } catch (IOException ex) { }
-                    try {
-                        if (reader != null) reader2.close();
-                    } catch (IOException ex) { }
                 }
 
             }
