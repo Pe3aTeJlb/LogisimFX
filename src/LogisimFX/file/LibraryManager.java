@@ -8,16 +8,20 @@ package LogisimFX.file;
 
 import LogisimFX.newgui.DialogManager;
 import LogisimFX.tools.Library;
+import LogisimFX.util.ZipUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.lang.ref.WeakReference;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Pattern;
 
 class LibraryManager {
 	public static final LibraryManager instance = new LibraryManager();
 
-	private static char desc_sep = '#';
+	public static char DESC_SEP = '#';
 	
 	private static abstract class LibraryDescriptor {
 		abstract boolean concernsFile(File query);
@@ -28,9 +32,13 @@ class LibraryManager {
 
 	private static class LogisimProjectDescriptor extends LibraryDescriptor {
 		private File file;
+		private LogisimFile baseLogisimFile;
+		private boolean isZip;
 
-		LogisimProjectDescriptor(File file) {
+		LogisimProjectDescriptor(LogisimFile baseLogisimFile, File file) {
 			this.file = file;
+			this.baseLogisimFile = baseLogisimFile;
+			isZip = ZipUtils.isZip(file);
 		}
 
 		@Override
@@ -40,12 +48,13 @@ class LibraryManager {
 
 		@Override
 		String toDescriptor(Loader loader) {
-			return "file"+desc_sep+"rel"+desc_sep+"lib"+File.separator+file.getName();
+			return "file"+DESC_SEP+"rel"+DESC_SEP+"lib"+File.separator+
+					(isZip ? file.getName().replace(Loader.LOGISIM_EXTENSION, Loader.LOGISIM_PROJ_DESC) :  file.getName());
 		}
 
 		@Override
 		void setBase(Loader loader, LoadedLibrary lib) throws LoadFailedException {
-			lib.setBase(loader.loadLogisimFile(file, true));
+			lib.setBase(loader.loadLogisimFile(file, true, baseLogisimFile));
 		}
 
 		@Override
@@ -77,7 +86,7 @@ class LibraryManager {
 
 		@Override
 		String toDescriptor(Loader loader) {
-			return "jar"+desc_sep+"rel"+desc_sep+"lib"+File.separator+file.getName()+desc_sep+className;
+			return "jar"+ DESC_SEP +"rel"+ DESC_SEP +"lib"+File.separator+file.getName()+ DESC_SEP +className;
 		}
 
 		@Override
@@ -126,13 +135,13 @@ class LibraryManager {
 	public Library loadLibrary(Loader loader, LogisimFile file, String desc) {
 		// It may already be loaded.
 		// Otherwise we'll have to decode it.
-		int sep = desc.indexOf(desc_sep);
+		int sep = desc.indexOf(DESC_SEP);
 		if (sep < 0) {
 			loader.showError(LC.getFormatted("fileDescriptorError", desc));
 			return null;
 		}
 
-		String[] descParams = desc.split(Character.toString(desc_sep));
+		String[] descParams = desc.split(Character.toString(DESC_SEP));
 		String type = descParams[0];
 
 		if (type.equals("")) {
@@ -147,19 +156,19 @@ class LibraryManager {
 			File toRead;
 			if (descParams[1].equals("rel")){
 				toRead = loader.getFileFor(
-						file.getLibDir()+File.separator+descParams[2].replace("\\", File.separator).replace("/", File.separator),
+						file.getProjectDir()+File.separator+descParams[2].replace("\\", File.separator).replace("/", File.separator),
 						"circ"
 				);
 			} else {
 				toRead = loader.getFileFor(descParams[1], "circ");
 			}
-			return loadLogisimLibrary(loader, toRead);
+			return loadLogisimLibrary(file, loader, toRead);
 		} else if (type.equals("jar")) {
 			File toRead;
 			String className;
 			if (descParams[1].equals("rel")){
 				toRead = loader.getFileFor(
-						file.getLibDir()+File.separator+descParams[2].replace("\\", File.separator).replace("/", File.separator),
+						file.getProjectDir()+File.separator+descParams[2].replace("\\", File.separator).replace("/", File.separator),
 						"jar"
 				);
 				className = descParams[3];
@@ -175,18 +184,29 @@ class LibraryManager {
 		}
 	}
 
-	public LoadedLibrary loadLogisimLibrary(Loader loader, File toRead) {
+	public LoadedLibrary loadLogisimLibrary(LogisimFile baseLogisimFile, Loader loader, File toRead) {
 		LoadedLibrary ret = findKnown(toRead);
 		if (ret != null) return ret;
 
 		try {
-			ret = new LoadedLibrary(loader.loadLogisimFile(toRead, true));
-		} catch (LoadFailedException e) {
+			ret = new LoadedLibrary(loader.loadLogisimFile(toRead, true, baseLogisimFile));
+			if (!ZipUtils.isZip(toRead)) {
+				//break the cycle. When u load lib described in project file, it is already in lib folder. No need to copy it again
+				//Should happen when import external logisim file
+				if (!FileUtils.directoryContains(baseLogisimFile.getLibDir().toFile(), toRead)){
+					copyLib(toRead, Paths.get(baseLogisimFile.getLibDir()+File.separator+toRead.getName()).toFile());
+				}
+			} else {
+				ZipUtils.unzipProject(toRead.toPath(), baseLogisimFile.getProjectDir());
+			}
+			removeBaseLibraries(ret, getUsedBaseLibraries(ret));
+		} catch (LoadFailedException | IOException e) {
 			loader.showError(e.getMessage());
+			e.printStackTrace();
 			return null;
 		}
 
-		LogisimProjectDescriptor desc = new LogisimProjectDescriptor(toRead);
+		LogisimProjectDescriptor desc = new LogisimProjectDescriptor(baseLogisimFile, toRead);
 		fileMap.put(desc, new WeakReference<LoadedLibrary>(ret));
 		invMap.put(ret, desc);
 		return ret;
@@ -266,7 +286,7 @@ class LibraryManager {
 
 	public String getDescriptor(Loader loader, Library lib) {
 		if (loader.getBuiltin().getLibraries().contains(lib)) {
-			return desc_sep + lib.getName();
+			return DESC_SEP + lib.getName();
 		} else {
 			LibraryDescriptor desc = invMap.get(lib);
 			if (desc != null) {
@@ -370,6 +390,32 @@ class LibraryManager {
 			} else {
 				removeBaseLibraries(lib, baseLibs);
 			}
+		}
+	}
+
+	private void copyLib(File toRead, File dest){
+		BufferedReader br;
+		PrintWriter pw;
+		Pattern libPattern = Pattern.compile("\\s*<lib.+\\/>");
+		try {
+			br = new BufferedReader(new FileReader(toRead));
+			pw =  new PrintWriter(new FileWriter(dest));
+			String line;
+			while ((line = br.readLine()) != null) {
+				//replace absolute paths to local
+				if (libPattern.matcher(line).matches() && line.contains("file#")){
+					String absolutPath = StringUtils.substringBetween(line, "file#", "\"");
+					String localPath = "rel"+ DESC_SEP +"lib"+File.separator+Paths.get(absolutPath).getFileName();
+					String newLine = line.replace(absolutPath, localPath);
+					pw.println(newLine);
+				}else {
+					pw.println(line);
+				}
+			}
+			br.close();
+			pw.close();
+		}catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

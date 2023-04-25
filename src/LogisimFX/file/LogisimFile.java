@@ -475,7 +475,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 		}
 		new WritingThread(writer, this).start();
 		try {
-			return LogisimFile.load(reader, newloader, false);
+			return LogisimFile.load(reader, newloader, false, null);
 		} catch (IOException e) {
 			newloader.showError(LC.getFormatted("fileDuplicateError", e.toString()));
 			return null;
@@ -524,13 +524,13 @@ public class LogisimFile extends Library implements LibraryEventSource {
 
 	}
 
-	public static LogisimFile loadZip(File file, Loader loader, boolean isLib){
+	public static LogisimFile loadZip(File file, Loader loader, boolean isLib, LogisimFile baseLogisimFile){
 
 		LogisimFile logisimFile = new LogisimFile(loader, false);
 
 		try {
 
-			ZipUtils.unzipFolder(file, logisimFile.getProjectDir().toFile());
+			ZipUtils.unzipFolder(file.toPath(), logisimFile.getProjectDir());
 			FileFilter fileFilter = new WildcardFileFilter("*.proj");
 			File[] projFile = logisimFile.getProjectDir().toFile().listFiles(fileFilter);
 
@@ -547,8 +547,9 @@ public class LogisimFile extends Library implements LibraryEventSource {
 			}
 
 			XmlReader xmlReader = new XmlReader(loader);
-			xmlReader.readLibraryTo(logisimFile, inBuffered);
+			xmlReader.readLibraryTo(logisimFile, inBuffered, false, null);
 			logisimFile.loader = loader;
+
 			return logisimFile;
 
 		} catch (IOException | SAXException e) {
@@ -559,14 +560,14 @@ public class LogisimFile extends Library implements LibraryEventSource {
 
 	}
 
-	public static LogisimFile load(File file, Loader loader, boolean isLib)
+	public static LogisimFile load(File file, Loader loader, boolean isLib, LogisimFile baseLogisimFile)
 			throws IOException {
 
 		InputStream in = new FileInputStream(file);
 		SAXException firstExcept = null;
 
 		try {
-			return loadSub(in, loader, isLib);
+			return loadSub(in, loader, isLib, baseLogisimFile);
 		} catch (SAXException e) {
 			firstExcept = e;
 		} finally {
@@ -579,7 +580,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 			// UTF-8 as the encoding (though the XML file reported otherwise).
 			try {
 				in = new ReaderInputStream(new FileReader(file), "UTF8");
-				return loadSub(in, loader, isLib);
+				return loadSub(in, loader, isLib, baseLogisimFile);
 			} catch (Throwable t) {
 				loader.showError(LC.getFormatted("xmlFormatError", firstExcept.toString()));
 			} finally {
@@ -593,11 +594,11 @@ public class LogisimFile extends Library implements LibraryEventSource {
 
 	}
 
-	public static LogisimFile load(InputStream in, Loader loader, boolean isLib)
+	public static LogisimFile load(InputStream in, Loader loader, boolean isLib, LogisimFile baseLogisimFile)
 			throws IOException {
 
 		try {
-			return loadSub(in, loader, isLib);
+			return loadSub(in, loader, isLib, baseLogisimFile);
 		} catch (SAXException e) {
 			loader.showError(LC.getFormatted("xmlFormatError", e.toString()));
 			return null;
@@ -605,7 +606,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 
 	}
 
-	public static LogisimFile loadSub(InputStream in, Loader loader, boolean isLib)
+	public static LogisimFile loadSub(InputStream in, Loader loader, boolean isLib, LogisimFile baseLogisimFile)
 			throws IOException, SAXException {
 
 		// fetch first line and then reset
@@ -621,7 +622,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 		}
 
 		XmlReader xmlReader = new XmlReader(loader);
-		LogisimFile ret = xmlReader.readLibrary(inBuffered, isLib);
+		LogisimFile ret = xmlReader.readLibrary(inBuffered, isLib, baseLogisimFile);
 		ret.loader = loader;
 		return ret;
 

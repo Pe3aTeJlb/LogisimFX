@@ -224,7 +224,7 @@ public class PreferencesController extends AbstractController {
                 try {
 
                     Loader loader = new Loader();
-                    LogisimFile.load(f, loader, false); // to see if OK
+                    LogisimFile.load(f, loader, false, null); // to see if OK
 
                     AppPreferences.setTemplateFile(f);
                     AppPreferences.setTemplateType(AppPreferences.TEMPLATE_CUSTOM);

@@ -17,8 +17,14 @@ import LogisimFX.std.base.Text;
 import LogisimFX.tools.AddTool;
 import LogisimFX.tools.Library;
 import LogisimFX.tools.Tool;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class LogisimFileActions {
 
@@ -173,7 +179,7 @@ public class LogisimFileActions {
 			final var errors = new HashMap<String, String>();
 			for (final var newLib : libs) {
 				// first cleanup step: remove unused libraries from loaded library
-				LibraryManager.removeUnusedLibraries(newLib);
+				//LibraryManager.removeUnusedLibraries(newLib);
 				// second cleanup step: promote base libraries
 				baseLibsToEnable.addAll(LibraryManager.getUsedBaseLibraries(newLib));
 			}
@@ -272,7 +278,7 @@ public class LogisimFileActions {
 
 		@Override
 		public int getActionType() {
-			return Action.LOGISIM_FILE_ACTION;
+			return Action.LOGISIM_LIBRARY_ACTION;
 		}
 
 		@Override
@@ -300,13 +306,68 @@ public class LogisimFileActions {
 
 		@Override
 		public int getActionType() {
-			return Action.LOGISIM_FILE_ACTION;
+			return Action.LOGISIM_LIBRARY_ACTION;
 		}
 
 		@Override
 		public void doIt(Project proj) {
 			for (int i = libs.length - 1; i >= 0; i--) {
 				proj.getLogisimFile().removeLibrary(libs[i]);
+				deleteSubLib(proj, libs[i]);
+			}
+		}
+
+		private void deleteSubLib(Project proj, Library lib){
+
+			String[] descParams = proj.getLogisimFile().getLoader().getDescriptor(lib).split(Character.toString(LibraryManager.DESC_SEP));
+
+			try {
+				if (descParams[0].equals("")) {
+					return;
+				} else if (descParams[0].equals("file")) {
+
+					if (descParams[2].endsWith(Loader.LOGISIM_PROJ_DESC)){
+						deleteCircDesc(
+								proj,
+								Paths.get(proj.getLogisimFile().getProjectDir()+File.separator+
+								descParams[2].replace("\\", File.separator).replace("/", File.separator)).toFile());
+					}
+
+					Files.deleteIfExists(
+							Paths.get(proj.getLogisimFile().getProjectDir()+File.separator+
+									descParams[2].replace("\\", File.separator).replace("/", File.separator)));
+
+				} else if (descParams[0].equals("jar")) {
+					Files.deleteIfExists(
+							Paths.get(proj.getLogisimFile().getProjectDir()+File.separator+
+									descParams[2].replace("\\", File.separator).replace("/", File.separator)));
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			for (Library l: lib.getLibraries()){
+				deleteSubLib(proj, l);
+			}
+
+		}
+
+		private void deleteCircDesc(Project proj, File toRead){
+			BufferedReader br;
+			Pattern circPattern = Pattern.compile("\\s*<circuit.+\\/>");
+			try {
+				br = new BufferedReader(new FileReader(toRead));
+				String line;
+				while ((line = br.readLine()) != null) {
+					//replace absolute paths to local
+					if (circPattern.matcher(line).matches()){
+						String circName = StringUtils.substringBetween(line, "name=\"", "\"");
+						FileUtils.deleteDirectory(Paths.get(proj.getLogisimFile().getCircuitDir().toString(), File.separator, circName).toFile());
+					}
+				}
+				br.close();
+			}catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 

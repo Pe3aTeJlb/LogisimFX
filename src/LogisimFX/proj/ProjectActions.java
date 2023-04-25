@@ -58,7 +58,7 @@ public class ProjectActions {
 		LogisimFile file = null;
 
 		try {
-			file = loader.openLogisimFile(AppPreferences.getTemplate());
+			file = loader.openLogisimFile(AppPreferences.getTemplate(), true);
 		} catch (LoadFailedException ex) {
 			displayException(ex);
 		}
@@ -81,7 +81,7 @@ public class ProjectActions {
 	private static LogisimFile createEmptyFile(Loader loader) {
 		LogisimFile file;
 		try {
-			file = loader.openLogisimFile(AppPreferences.getEmptyTemplate());
+			file = loader.openLogisimFile(AppPreferences.getEmptyTemplate(), true);
 		} catch (Throwable t) {
 			file = LogisimFile.createNew(loader);
 			file.addCircuit(new Circuit("main"));
@@ -109,7 +109,7 @@ public class ProjectActions {
 
 		LogisimFile file;
 		try {
-			file = loader.openLogisimFile(AppPreferences.getTemplate());
+			file = loader.openLogisimFile(AppPreferences.getTemplate(), true);
 		} catch (LoadFailedException ex) {
 			if (!ex.isShown()) {
 				displayException(ex);
@@ -282,7 +282,7 @@ public class ProjectActions {
 			proj.setFileAsClean();
 
 			try {
-				ZipUtils.zipFolder(proj.getLogisimFile().getProjectDir().toFile(), f);
+				ZipUtils.zipFolder(proj.getLogisimFile().getProjectDir(), f.toPath());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

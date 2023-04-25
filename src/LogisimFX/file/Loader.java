@@ -97,9 +97,13 @@ public class Loader implements LibraryLoader {
 	}
 
 	public LogisimFile openLogisimFile(File file) throws LoadFailedException {
+		return openLogisimFile(file, false);
+	}
+
+	public LogisimFile openLogisimFile(File file, boolean isTemplate) throws LoadFailedException {
 		try {
-			LogisimFile ret = loadLogisimFile(file, false);
-			if (ret != null) setMainFile(file);
+			LogisimFile ret = loadLogisimFile(file, false, null);
+			if (ret != null && !isTemplate) setMainFile(file);
 			showMessages(ret);
 			return ret;
 		} catch (LoaderException e) {
@@ -107,9 +111,9 @@ public class Loader implements LibraryLoader {
 		}
 	}
 
-	public Library loadLogisimLibrary(File file) {
+	public Library loadLogisimLibrary(LogisimFile baseLogisimFile, File file) {
 		File actual = getSubstitution(file);
-		LoadedLibrary ret = LibraryManager.instance.loadLogisimLibrary(this, actual);
+		LoadedLibrary ret = LibraryManager.instance.loadLogisimLibrary(baseLogisimFile, this, actual);
 		if (ret != null) {
 			LogisimFile retBase = (LogisimFile) ret.getBase();
 			showMessages(retBase);
@@ -210,7 +214,7 @@ public class Loader implements LibraryLoader {
 	//
 	// methods for LibraryManager
 	//
-	LogisimFile loadLogisimFile(File request, boolean isLib) throws LoadFailedException {
+	LogisimFile loadLogisimFile(File request, boolean isLib, LogisimFile baseLogisimFile) throws LoadFailedException {
 		File actual = getSubstitution(request);
 		for (File fileOpening : filesOpening) {
 			if (fileOpening.equals(actual)) {
@@ -225,9 +229,9 @@ public class Loader implements LibraryLoader {
 
 		try {
 			if (!isZip) {
-				ret = LogisimFile.load(actual, this, isLib);
+				ret = LogisimFile.load(actual, this, isLib, baseLogisimFile);
 			} else {
-				ret = LogisimFile.loadZip(actual, this, isLib);
+				ret = LogisimFile.loadZip(actual, this, isLib, baseLogisimFile);
 			}
 		} catch (IOException e) {
 			throw new LoadFailedException(LC.getFormatted("logisimLoadError",

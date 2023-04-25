@@ -55,19 +55,6 @@ public class ProjectLibraryActions {
 		Library[] libs = DialogManager.createLibSelectionDialog(builtins);
 		if (libs != null) proj.doAction(LogisimFileActions.loadLibraries(libs, proj.getLogisimFile()));
 
-		/*
-		LibraryJList list = new LibraryJList(builtins);
-		JScrollPane listPane = new JScrollPane(list);
-		int action = JOptionPane.showConfirmDialog(proj.getFrame(), listPane,
-				Strings.get("loadBuiltinDialogTitle"), JOptionPane.OK_CANCEL_OPTION,
-				JOptionPane.QUESTION_MESSAGE);
-		if (action == JOptionPane.OK_OPTION) {
-			Library[] libs = list.getSelectedLibraries();
-			if (libs != null) proj.doAction(LogisimFileActions.loadLibraries(libs));
-		}
-
-		 */
-
 	}
 	
 	public static void doLoadLogisimLibrary(Project proj) {
@@ -78,17 +65,8 @@ public class ProjectLibraryActions {
 		File f = fs.openCircFile();
 
 		if(f != null){
-			Library lib = loader.loadLogisimLibrary(f);
+			Library lib = loader.loadLogisimLibrary(proj.getLogisimFile(), f);
 			if (lib != null) {
-				try {
-					if (!ZipUtils.isZip(f)) {
-						FileUtils.copyFileToDirectory(f, proj.getLogisimFile().getLibDir().toFile());
-					} else {
-						ZipUtils.unzipProject(f, proj.getLogisimFile().getProjectDir().toFile());
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
 				proj.doAction(LogisimFileActions.loadLibrary(lib, proj.getLogisimFile()));
 			}
 		}
@@ -163,7 +141,9 @@ public class ProjectLibraryActions {
 
 		Library[] libs = DialogManager.createLibSelectionDialog(canUnload);
 
-		if (libs != null) proj.doAction(LogisimFileActions.unloadLibraries(libs));
+		if (libs != null) {
+			proj.doAction(LogisimFileActions.unloadLibraries(libs));
+		}
 
 	}
 

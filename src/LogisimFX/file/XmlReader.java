@@ -55,12 +55,22 @@ class XmlReader {
 	class ReadContext {
 
 		LogisimFile file;
+		LogisimFile baseLogisimFile;
+		boolean isLib;
 		LogisimVersion sourceVersion;
 		HashMap<String,Library> libs = new HashMap<String,Library>();
 		private ArrayList<String> messages;
 
-		ReadContext(LogisimFile file) {
+		ReadContext(LogisimFile file, boolean isLib) {
 			this.file = file;
+			this.isLib = isLib;
+			this.messages = new ArrayList<>();
+		}
+
+		ReadContext(LogisimFile file, boolean isLib, LogisimFile baseLogisimFile) {
+			this.file = file;
+			this.isLib = isLib;
+			this.baseLogisimFile = baseLogisimFile;
 			this.messages = new ArrayList<>();
 		}
 		
@@ -182,7 +192,12 @@ class XmlReader {
 			String name = elt.getAttribute("name");
 			String desc = elt.getAttribute("desc");
 
-			Library ret = loader.loadLibrary(file, desc);
+			Library ret;
+			if (isLib){
+				ret = loader.loadLibrary(baseLogisimFile, desc);
+			} else {
+				ret = loader.loadLibrary(file, desc);
+			}
 			if (ret == null) return null;
 
 			libs.put(name, ret);
@@ -574,12 +589,17 @@ class XmlReader {
 	}
 
 	//Use for old circ files
-	LogisimFile readLibrary(InputStream is, boolean isLib) throws IOException, SAXException {
+	LogisimFile readLibrary(InputStream is, boolean isLib, LogisimFile baseLogisimFile) throws IOException, SAXException {
 		Document doc = loadXmlFrom(is);
 		Element elt = doc.getDocumentElement();
 		considerRepairs(doc, elt);
 		LogisimFile file = new LogisimFile((Loader) loader, isLib);
-		ReadContext context = new ReadContext(file);
+		ReadContext context;
+		if (isLib){
+			context = new ReadContext(file, isLib, baseLogisimFile);
+		} else {
+			context = new ReadContext(file, isLib);
+		}
 		context.toLogisimFile(elt);
 		if (file.getCircuitCount() == 0) {
 			file.addCircuit(new Circuit("main"));
@@ -596,11 +616,16 @@ class XmlReader {
 	}
 
 	//se for new zip .circ files
-	void readLibraryTo(LogisimFile file, InputStream is) throws IOException, SAXException {
+	void readLibraryTo(LogisimFile file, InputStream is, boolean isLib, LogisimFile baseLogisimFile) throws IOException, SAXException {
 		Document doc = loadXmlFrom(is);
 		Element elt = doc.getDocumentElement();
 		considerRepairs(doc, elt);
-		ReadContext context = new ReadContext(file);
+		ReadContext context;
+		if (isLib){
+			context = new ReadContext(file, isLib, baseLogisimFile);
+		} else {
+			context = new ReadContext(file, isLib);
+		}
 		context.toLogisimFile(elt);
 		if (file.getCircuitCount() == 0) {
 			file.addCircuit(new Circuit("main"));
