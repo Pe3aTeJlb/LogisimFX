@@ -23,10 +23,8 @@ import LogisimFX.std.wiring.Pin;
 import LogisimFX.std.wiring.Tunnel;
 import LogisimFX.tools.SetAttributeAction;
 import LogisimFX.util.*;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.StringBinding;
-import javafx.beans.binding.StringExpression;
 import javafx.beans.property.SimpleStringProperty;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -901,6 +899,14 @@ public class Circuit {
 		}
 
 		return files;
+	}
+
+	public void deleteFiles(Project proj){
+		try {
+			FileUtils.deleteDirectory(Paths.get(proj.getLogisimFile().getCircuitDir().toString(), File.separator, getName()).toFile());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

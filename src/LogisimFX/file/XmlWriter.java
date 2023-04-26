@@ -30,6 +30,7 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -349,6 +350,15 @@ class XmlWriter {
 	}
 
 	private void exportToFile(Document doc, File out) throws TransformerException {
+
+		if (!out.exists()){
+			try {
+				out.getParentFile().mkdirs();
+				out.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 
 		TransformerFactory tfFactory = TransformerFactory.newInstance();
 		try {

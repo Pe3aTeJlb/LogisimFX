@@ -116,6 +116,7 @@ public class LogisimFileActions {
 		public void doIt(Project proj) {
 			index = proj.getLogisimFile().getCircuits().indexOf(circuit);
 			proj.getLogisimFile().removeCircuit(circuit);
+			circuit.deleteFiles(proj);
 		}
 
 		@Override
@@ -141,7 +142,7 @@ public class LogisimFileActions {
 
 		@Override
 		public int getActionType() {
-			return Action.LOGISIM_FILE_ACTION;
+			return Action.LOGISIM_PROJECT_ACTION;
 		}
 
 		@Override
@@ -278,7 +279,7 @@ public class LogisimFileActions {
 
 		@Override
 		public int getActionType() {
-			return Action.LOGISIM_LIBRARY_ACTION;
+			return Action.LOGISIM_FILE_ACTION;
 		}
 
 		@Override
@@ -306,7 +307,7 @@ public class LogisimFileActions {
 
 		@Override
 		public int getActionType() {
-			return Action.LOGISIM_LIBRARY_ACTION;
+			return Action.LOGISIM_FILE_ACTION;
 		}
 
 		@Override
@@ -394,7 +395,7 @@ public class LogisimFileActions {
 
 		@Override
 		public int getActionType() {
-			return Action.LOGISIM_FILE_ACTION;
+			return Action.LOGISIM_PROJECT_ACTION;
 		}
 
 		@Override
@@ -438,7 +439,7 @@ public class LogisimFileActions {
 
 		@Override
 		public int getActionType() {
-			return Action.LOGISIM_FILE_ACTION;
+			return Action.LOGISIM_PROJECT_ACTION;
 		}
 
 		@Override

@@ -11,7 +11,6 @@ import LogisimFX.file.*;
 import LogisimFX.circuit.*;
 import LogisimFX.fpga.FPGAToolchainOrchestrator;
 import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.AppearanceCanvas;
-import LogisimFX.newgui.MainFrame.EditorTabs.EditorBase;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutCanvas;
 import LogisimFX.newgui.MainFrame.MainFrameController;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.Selection;
@@ -390,7 +389,7 @@ public class Project {
 				if (
 								actType == Action.OPTIONS_ACTION 		||
 								actType == Action.CIRCUIT_ACTION 		||
-								actType == Action.LOGISIM_FILE_ACTION 	||
+								actType == Action.LOGISIM_PROJECT_ACTION ||
 								actType == Action.TOOLBAR_ACTION
 				) {
 					undoLog.add(new ActionData(circuitState, toAdd));
@@ -409,7 +408,7 @@ public class Project {
 		if (
 					actType == Action.OPTIONS_ACTION 		||
 					actType == Action.CIRCUIT_ACTION 		||
-					actType == Action.LOGISIM_FILE_ACTION 	||
+					actType == Action.LOGISIM_PROJECT_ACTION ||
 					actType == Action.TOOLBAR_ACTION
 		) {
 			undoLog.add(new ActionData(circuitState, toAdd));

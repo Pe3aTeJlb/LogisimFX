@@ -17,11 +17,11 @@ public abstract class Action {
 	public final static int LAYOUT_SELECTION_ACTION = 7;
 	public final static int APPEARANCE_SELECTION_ACTION = 8;
 	public final static int TOOL_ATTRIBUTE_ACTION = 9;
-	public final static int LOGISIM_FILE_ACTION = 10;
+	public final static int LOGISIM_PROJECT_ACTION = 10;
 	public final static int ROM_CONTENTS_ACTION = 11;
 	public final static int TOOLBAR_ACTION = 12;
 	public final static int JOINED_ACTION = 13;
-	public final static int LOGISIM_LIBRARY_ACTION = 14;
+	public final static int LOGISIM_FILE_ACTION = 14;
 
 	public boolean isModification() { return true; }
 

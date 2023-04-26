@@ -241,6 +241,11 @@ public class CodeEditor extends EditorBase {
 
         if (comp == null && circ != null){
             try {
+
+                if (codeArea.getText().isEmpty()){
+                    return;
+                }
+
                 File f = circ.getHDLFile(proj, file.getName());
                 if (!f.exists()){
                     f.getParentFile().mkdirs();
