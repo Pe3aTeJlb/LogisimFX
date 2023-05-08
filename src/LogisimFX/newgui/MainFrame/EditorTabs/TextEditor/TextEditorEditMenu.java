@@ -3,7 +3,7 @@
  * License information is located in the Launch file
  */
 
-package LogisimFX.newgui.MainFrame.EditorTabs.CodeEditor;
+package LogisimFX.newgui.MainFrame.EditorTabs.TextEditor;
 
 import LogisimFX.localization.LC_menu;
 import LogisimFX.localization.Localizer;
@@ -13,12 +13,12 @@ import javafx.scene.input.KeyCombination;
 
 import java.util.List;
 
-public class CodeEditorEditMenu {
+public class TextEditorEditMenu {
 
     private static Localizer localizer = LC_menu.getInstance();
 
     private List<MenuItem> menuItems;
-    private CodeEditHandler editHandler;
+    private TextEditHandler editHandler;
 
     private final MenuItem Undo,
                             Redo,
@@ -31,11 +31,11 @@ public class CodeEditorEditMenu {
                             Duplicate,
                             SelectAll;
 
-    public CodeEditorEditMenu(CodeEditor codeEditor){
+    public TextEditorEditMenu(TextEditor textEditor){
 
-        editHandler = (CodeEditHandler) codeEditor.getEditHandler();
+        editHandler = (TextEditHandler) textEditor.getEditHandler();
 
-        codeEditor.getCodeArea().getCaretSelectionBind().selectedTextProperty().addListener(change -> calculateEnabled());
+        textEditor.getCodeArea().getCaretSelectionBind().selectedTextProperty().addListener(change -> calculateEnabled());
 
         Undo = new MenuItem();
         Undo.setAccelerator(KeyCombination.keyCombination("Ctrl+Z"));

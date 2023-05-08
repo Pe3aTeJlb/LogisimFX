@@ -346,18 +346,20 @@ public class CustomMenuBar extends MenuBar {
 
 
         MenuItem MoveCircuitUp = new MenuItem();
-        MoveCircuitUp.disableProperty().bind(
-                Bindings.or(logisimFile.obsPos.isEqualTo("first"),logisimFile.obsPos.isEqualTo("first&last"))
-        );
+        MoveCircuitUp.setDisable(logisimFile.contains(proj.getCurrentCircuit()) || logisimFile.obsPos.get().equals("first") || logisimFile.obsPos.get().equals("first&last"));
+        /*MoveCircuitUp.disableProperty().bind(
+                Bindings.or(logisimFile.obsPos.isEqualTo("first"), logisimFile.obsPos.isEqualTo("first&last"))
+        );*/
         MoveCircuitUp.textProperty().bind(localizer.createStringBinding("projectMoveCircuitUpItem"));
         MoveCircuitUp.setOnAction(event -> {
             ProjectCircuitActions.doMoveCircuit(proj,proj.getCurrentCircuit(),-1);
         });
 
         MenuItem MoveCircuitDown = new MenuItem();
-        MoveCircuitDown.disableProperty().bind(
-                Bindings.or(logisimFile.obsPos.isEqualTo("last"),logisimFile.obsPos.isEqualTo("first&last"))
-        );
+        MoveCircuitDown.setDisable(logisimFile.contains(proj.getCurrentCircuit()) || logisimFile.obsPos.get().equals("last") || logisimFile.obsPos.get().equals("first&last"));
+        /*MoveCircuitDown.disableProperty().bind(
+                Bindings.or(logisimFile.obsPos.isEqualTo("last"), logisimFile.obsPos.isEqualTo("first&last"))
+        );*/
         MoveCircuitDown.textProperty().bind(localizer.createStringBinding("projectMoveCircuitDownItem"));
         MoveCircuitDown.setOnAction(event -> ProjectCircuitActions.doMoveCircuit(proj,proj.getCurrentCircuit(),1));
 
@@ -367,7 +369,8 @@ public class CustomMenuBar extends MenuBar {
         SetAsMain.setOnAction(event -> ProjectCircuitActions.doSetAsMainCircuit(proj, proj.getCurrentCircuit()));
 
         MenuItem RemoveCirc = new MenuItem();
-        RemoveCirc.disableProperty().bind(logisimFile.obsPos.isEqualTo("first&last"));
+        RemoveCirc.setDisable(!proj.getLogisimFile().contains(proj.getCurrentCircuit()) || proj.getLogisimFile().obsPos.get().equals("first&last"));
+        //RemoveCirc.disableProperty().bind(logisimFile.obsPos.isEqualTo("first&last"));
         RemoveCirc.textProperty().bind(localizer.createStringBinding("projectRemoveCircuitItem"));
         RemoveCirc.setOnAction(event -> ProjectCircuitActions.doRemoveCircuit(proj,proj.getCurrentCircuit()));
 

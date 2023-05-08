@@ -160,7 +160,8 @@ public class ContextMenuManager {
         SetAsMain.setOnAction(event -> proj.getLogisimFile().setMainCircuit(circ));
 
         MenuItem RemoveCirc = new MenuItem();
-        RemoveCirc.disableProperty().bind(proj.getLogisimFile().obsPos.isEqualTo("first&last"));
+        RemoveCirc.setDisable(!proj.getLogisimFile().contains(circ) || proj.getLogisimFile().obsPos.get().equals("first&last"));
+        //RemoveCirc.disableProperty().bind(proj.getLogisimFile().obsPos.isEqualTo("first&last"));
         RemoveCirc.textProperty().bind(lc.createStringBinding("projectRemoveCircuitItem"));
         RemoveCirc.setOnAction(event -> ProjectCircuitActions.doRemoveCircuit(proj,circ));
 

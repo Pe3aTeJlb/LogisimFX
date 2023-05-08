@@ -3,7 +3,7 @@
  * License information is located in the Launch file
  */
 
-package LogisimFX.newgui.MainFrame.EditorTabs.CodeEditor.AutoCompletion;
+package LogisimFX.newgui.MainFrame.EditorTabs.TextEditor.AutoCompletion;
 
 import java.util.ArrayList;
 import java.util.HashMap;

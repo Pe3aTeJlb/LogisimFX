@@ -5,7 +5,7 @@
 
 // Generated from java-escape by ANTLR 4.11.1
 
-package LogisimFX.verilog;
+package LogisimFX.lang.verilog;
 
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 

@@ -37,7 +37,6 @@ public class EditorBase extends VBox {
     private LinkedList<ActionData> redoLog = new LinkedList<>();
 
     protected Project proj;
-    protected Circuit circ;
 
     protected MyProjectListener projectListener = new MyProjectListener();
     class MyProjectListener implements ProjectListener {
@@ -77,20 +76,15 @@ public class EditorBase extends VBox {
 
     }
 
-    public EditorBase(Project project, Circuit circ){
+    public EditorBase(Project project){
         super();
         this.proj = project;
-        this.circ = circ;
         proj.getFrameController().editorProperty().addListener((observableValue, handler, t1) -> setIsSelected());
         proj.addProjectListener(projectListener);
     }
 
     public Project getProj() {
         return proj;
-    }
-
-    public Circuit getCirc(){
-        return circ;
     }
 
 

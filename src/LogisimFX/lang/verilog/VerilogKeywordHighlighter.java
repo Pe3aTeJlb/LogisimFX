@@ -3,7 +3,7 @@
  * License information is located in the Launch file
  */
 
-package LogisimFX.verilog;
+package LogisimFX.lang.verilog;
 
 import org.fxmisc.richtext.StyleClassedTextArea;
 import org.fxmisc.richtext.model.StyleSpans;

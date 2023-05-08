@@ -257,7 +257,7 @@ public class ProjectExplorerTreeView extends AbstractTreeExplorer<Object> {
                         } else if (item instanceof File){
 
                             setText(((File)item).getName());
-                            setGraphic(IconsManager.getIcon("code.gif"));
+                            setGraphic(IconsManager.getIcon("file.gif"));
 
                         } else {
                             setText("you fucked up");

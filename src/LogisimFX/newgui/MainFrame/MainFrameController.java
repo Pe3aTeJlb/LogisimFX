@@ -12,7 +12,6 @@ import LogisimFX.data.Location;
 import LogisimFX.draw.tools.AbstractTool;
 import LogisimFX.file.LibraryEvent;
 import LogisimFX.file.LibraryListener;
-import LogisimFX.file.LogisimFile;
 import LogisimFX.newgui.MainFrame.EditorTabs.CodeEditor.CodeEditor;
 import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.AppearanceCanvas;
 import LogisimFX.newgui.AbstractController;
@@ -874,7 +873,7 @@ public class MainFrameController extends AbstractController {
                 Component comp = circ.getExclusive(Location.parse(params[2]));
                 return createCodeEditor(circ, comp);
             } else {
-                String path = params[0].replace("\\/", File.separator).replace("\\", File.separator);
+                String path = params[0].replace("/", File.separator).replace("\\", File.separator);
                 if (path.contains("circuit")){
                     Circuit circ = proj.getLogisimFile().getCircuit(Paths.get(path).getParent().getFileName().toString());
                     return createCodeEditor(circ, Paths.get(proj.getLogisimFile().getProjectDir() + File.separator + path).toFile());
@@ -1099,7 +1098,7 @@ public class MainFrameController extends AbstractController {
         CodeEditor codeEditor = new CodeEditor(proj, circ, comp);
         setEditor(codeEditor);
 
-        DraggableTab tab = new DraggableTab(hdlName+comp.getLocation().toString()+".v", IconsManager.getImage("code.gif"), codeEditor);
+        DraggableTab tab = new DraggableTab(hdlName+comp.getLocation().toString()+".v", IconsManager.getImage("file.gif"), codeEditor);
         tab.setStageTitle((StringBinding) Bindings.concat(LC.createComplexStringBinding("titleVerilogCodeEditor", hdlName), proj.getLogisimFile().nameProperty()));
         tab.setType("code");
 
@@ -1171,7 +1170,7 @@ public class MainFrameController extends AbstractController {
         CodeEditor codeEditor = new CodeEditor(proj, circ, file);
         setEditor(codeEditor);
 
-        DraggableTab tab = new DraggableTab(hdlName, IconsManager.getImage("code.gif"), codeEditor);
+        DraggableTab tab = new DraggableTab(hdlName, IconsManager.getImage("file.gif"), codeEditor);
         tab.setStageTitle(
                 (StringBinding) Bindings.concat(
                         LC.createStringBinding("titleVerilogCodeEditor"),
@@ -1249,7 +1248,7 @@ public class MainFrameController extends AbstractController {
         CodeEditor codeEditor = new CodeEditor(proj, file);
         setEditor(codeEditor);
 
-        DraggableTab tab = new DraggableTab(fileName, IconsManager.getImage("code.gif"), codeEditor);
+        DraggableTab tab = new DraggableTab(fileName, IconsManager.getImage("file.gif"), codeEditor);
         tab.setStageTitle((StringBinding) Bindings.concat(LC.createComplexStringBinding("titleCodeEditor", fileName), proj.getLogisimFile().nameProperty()));
         tab.setType("code");
 
@@ -1321,6 +1320,13 @@ public class MainFrameController extends AbstractController {
             openedCodeEditors.put(newFile, tab);
         }
 
+    }
+
+    public void reloadFile(File file){
+        if (openedCodeEditors.containsKey(file)) {
+            DraggableTab tab = openedCodeEditors.get(file);
+            ((CodeEditor) tab.getContent()).reloadFile();
+        }
     }
 
     public void doSaveCodeEditors(){
