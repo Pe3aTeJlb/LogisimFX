@@ -20,6 +20,7 @@ import LogisimFX.util.ListUtil;
 import LogisimFX.util.ZipUtils;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
@@ -28,10 +29,7 @@ import javax.xml.transform.TransformerException;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class LogisimFile extends Library implements LibraryEventSource {
 
@@ -87,6 +85,21 @@ public class LogisimFile extends Library implements LibraryEventSource {
 	public static String FPGA = "fpga";
 	public static String LIB = "lib";
 	public static String OTHERS = "other";
+
+	static {
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				try {
+					if (Files.exists(LOGISIMFX_TEMP_DIR)) {
+						FileUtils.deleteDirectory(LOGISIMFX_TEMP_DIR.toFile());
+					}
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
+	}
 
 	LogisimFile(Loader loader, boolean isLib) {
 

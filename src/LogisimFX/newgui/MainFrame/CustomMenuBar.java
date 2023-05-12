@@ -221,11 +221,17 @@ public class CustomMenuBar extends MenuBar {
         addWaveformTab.textProperty().bind(localizer.createStringBinding("viewWaveformTab"));
         addWaveformTab.setOnAction(event -> proj.getFrameController().addWaveformTab());
 
+        MenuItem addTerminalTab = new MenuItem();
+        //addWaveformTab.setAccelerator(KeyCombination.keyCombination("Alt+4"));
+        addTerminalTab.textProperty().bind(localizer.createStringBinding("terminalTab"));
+        addTerminalTab.setOnAction(event -> proj.getFrameController().addTerminalTab());
+
         tabMenu.getItems().addAll(
                 addToolsTab,
                 addSimulationTab,
                 addAttributesTab,
-                addWaveformTab
+                addWaveformTab,
+                addTerminalTab
         );
 
         SeparatorMenuItem sp2 = new SeparatorMenuItem();

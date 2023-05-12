@@ -40,7 +40,6 @@ import java.util.regex.Pattern;
 
 public class TextEditor extends EditorBase {
 
-
 	private TextEditHandler editHandler;
 	private TextEditorEditMenu menu;
 
@@ -134,13 +133,7 @@ public class TextEditor extends EditorBase {
 		codeArea = new StyleClassedTextArea();
 		scaleVirtualized = new ScaledVirtualized<>(codeArea);
 		virtualizedScrollPane = new VirtualizedScrollPane<>(scaleVirtualized);
-		IntFunction<Node> noFactory = LineNumberFactory.get(codeArea);
-		IntFunction<Node> graphicFactory = line -> {
-			HBox lineBox = new HBox(noFactory.apply(line));
-			lineBox.getStyleClass().add("lineno-box");
-			lineBox.setAlignment(Pos.CENTER_LEFT);
-			return lineBox;
-		};
+
 		UndoManager<List<PlainTextChange>> um = UndoUtils.plainTextUndoManager(codeArea);
 		codeArea.setUndoManager(um);
 
@@ -153,7 +146,6 @@ public class TextEditor extends EditorBase {
 
 		setSelectionListener(codeArea);
 		codeArea.caretPositionProperty().addListener((observableValue, oldPos, newPos) -> updateCaret(codeArea));
-		codeArea.setParagraphGraphicFactory(graphicFactory);
 
 		VBox.setVgrow(virtualizedScrollPane, Priority.ALWAYS);
 
@@ -163,6 +155,10 @@ public class TextEditor extends EditorBase {
 			if (e.isControlDown()) {
 				zoom(e.getDeltaY());
 			}
+		});
+
+		codeArea.setOnMousePressed(event -> {
+			Event.fireEvent(this, event.copyFor(event.getSource(), this));
 		});
 
 	}

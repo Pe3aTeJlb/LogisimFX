@@ -517,7 +517,7 @@ public class FrameManager {
             CloseProjectAssociatedFrames(proj);
             proj.getSimulator().shutDown();
             proj.getFrameController().onClose();
-
+/*
             if (LogisimFile.LOGISIMFX_TEMP_DIR.toFile().exists()) {
                 try {
                     FileUtils.deleteDirectory(LogisimFile.LOGISIMFX_TEMP_DIR.toFile());
@@ -525,7 +525,7 @@ public class FrameManager {
                     e.printStackTrace();
                 }
             }
-
+*/
             Platform.exit();
             System.exit(0);
 
@@ -586,7 +586,7 @@ public class FrameManager {
     }
 
     public static void ForceExit(){
-
+/*
         if (LogisimFile.LOGISIMFX_TEMP_DIR.toFile().exists()) {
             try {
                 FileUtils.deleteDirectory(LogisimFile.LOGISIMFX_TEMP_DIR.toFile());
@@ -594,7 +594,7 @@ public class FrameManager {
                 e.printStackTrace();
             }
         }
-
+*/
         Platform.exit();
         System.exit(0);
 

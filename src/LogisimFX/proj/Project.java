@@ -12,6 +12,7 @@ import LogisimFX.circuit.*;
 import LogisimFX.fpga.FPGAToolchainOrchestrator;
 import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.AppearanceCanvas;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutCanvas;
+import LogisimFX.newgui.MainFrame.EditorTabs.TerminalTab.Terminal;
 import LogisimFX.newgui.MainFrame.MainFrameController;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.Selection;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.SelectionActions;
@@ -71,6 +72,7 @@ public class Project {
 	private CircuitState circuitState;
 	private HashMap<Circuit, CircuitState> stateMap = new HashMap<>();
 	private MainFrameController frameController;
+	private Terminal terminal;
 	private Tool tool = null;
 	private AbstractTool abstractTool = null;
 	private LinkedList<ActionData> undoLog = new LinkedList<ActionData>();
@@ -99,8 +101,16 @@ public class Project {
 		frameController = controller;
 	}
 
+	public void setTerminal(Terminal terminal){
+		this.terminal = terminal;
+	}
+
 	public MainFrameController getFrameController(){
 		return frameController;
+	}
+
+	public Terminal getTerminal(){
+		return terminal;
 	}
 
 

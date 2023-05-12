@@ -24,6 +24,7 @@ import LogisimFX.newgui.MainFrame.SystemTabs.ProjectExplorerTab.ProjectExplorerT
 import LogisimFX.newgui.MainFrame.SystemTabs.ProjectExplorerTab.ProjectTreeToolBar;
 import LogisimFX.newgui.MainFrame.SystemTabs.SimulationExplorerTab.SimulationExplorerTreeView;
 import LogisimFX.newgui.MainFrame.SystemTabs.SimulationExplorerTab.SimulationTreeToolBar;
+import LogisimFX.newgui.MainFrame.EditorTabs.TerminalTab.Terminal;
 import LogisimFX.newgui.MainFrame.SystemTabs.WaveformTab.WaveformController;
 import LogisimFX.proj.Project;
 import LogisimFX.proj.ProjectEvent;
@@ -50,6 +51,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.fxml.FXML;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -84,6 +86,7 @@ public class MainFrameController extends AbstractController {
     private LayoutCanvas currLayoutCanvas;
     private AppearanceCanvas currAppearanceCanvas;
 
+    private Terminal terminal;
 
     private HashMap<String, DraggableTab> openedSystemTabs = new HashMap<>();
     private HashMap<DraggableTab, WaveformController> openedWaveforms = new HashMap<>();
@@ -218,6 +221,9 @@ public class MainFrameController extends AbstractController {
         proj = p;
         proj.setFrameController(this);
 
+        terminal = new Terminal(proj);
+        proj.setTerminal(terminal);
+
         proj.addProjectListener(myProjectListener);
         proj.addLibraryListener(myProjectListener);
         proj.addCircuitListener(myProjectListener);
@@ -342,6 +348,7 @@ public class MainFrameController extends AbstractController {
                        case "simtree": tab = createSimulationTab(); break;
                        case "attrs":   tab = createAttributesTab(); break;
                        case "wave":    tab = createWaveformTab(); break;
+                       case "terminal":    tab = createTerminalTab(); break;
                    }
 
                    if (systemTabDescriptor.side.equals("left")){
@@ -474,6 +481,7 @@ public class MainFrameController extends AbstractController {
         addSimulationTab();
         addAttributesTab();
         addWaveformTab();
+        addTerminalTab();
 
         addCircAppearanceEditor(proj.getCurrentCircuit());
         addCircLayoutEditor(proj.getCurrentCircuit());
@@ -507,6 +515,7 @@ public class MainFrameController extends AbstractController {
         addSimulationTab();
         addAttributesTab();
         addWaveformTab();
+        addTerminalTab();
 
     }
 
@@ -808,7 +817,7 @@ public class MainFrameController extends AbstractController {
         scrollPane.setContent(attributeTable);
         scrollPane.setFitToWidth(true);
 
-        DraggableTab attributeTableTab = new DraggableTab(LC.createStringBinding("attrTab"), IconsManager.getImage("circattr.gif"), scrollPane);
+        DraggableTab attributeTableTab = new DraggableTab(LC.createComplexStringBinding("attrTab", "LogisimFX:"), IconsManager.getImage("circattr.gif"), scrollPane);
         attributeTableTab.setOnClosed(event -> openedSystemTabs.remove("AttributesTab"));
         attributeTableTab.setType("attrs");
 
@@ -850,6 +859,41 @@ public class MainFrameController extends AbstractController {
         }
 
         return waveformTab;
+
+    }
+
+    public void addTerminalTab(){
+
+        DraggableTab tab = createTerminalTab();
+        if (tab != null) systemTabPaneBottom.addRight(tab);
+
+    }
+
+    private DraggableTab createTerminalTab(){
+
+        if (openedSystemTabs.containsKey("TerminalTab")){
+            openedSystemTabs.get("TerminalTab").getTabPane().getSelectionModel().select(openedSystemTabs.get("TerminalTab"));
+            ((DraggableTabPane) openedSystemTabs.get("TerminalTab").getTabPane()).expand();
+            return null;
+        }
+
+        DraggableTab tab = new DraggableTab(LC.createComplexStringBinding("terminalTab", "LogisimFX:"), IconsManager.getImage("tty.gif"), terminal);
+        tab.setOnClosed(event -> openedSystemTabs.remove("TerminalTab"));
+        tab.setType("terminal");
+
+        tab.getContent().addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
+            setEditor(terminal);
+        });
+
+        tab.setOnSelectionChanged(event -> {
+            if (tab.isSelected()) {
+                setEditor(terminal);
+            }
+        });
+
+        openedSystemTabs.put("TerminalTab", tab);
+
+        return tab;
 
     }
 
@@ -933,7 +977,7 @@ public class MainFrameController extends AbstractController {
 
 
 
-        tab.getContent().setOnMousePressed(event -> {
+        tab.getContent().addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
             setEditor(layoutEditor);
             setWorkPane((DraggableTabPane) tab.getTabPane());
             currLayoutCanvas = layoutEditor.getLayoutCanvas();
@@ -1023,7 +1067,7 @@ public class MainFrameController extends AbstractController {
 
 
 
-        tab.getContent().setOnMousePressed(event -> {
+        tab.getContent().addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
             setEditor(appearanceEditor);
             setWorkPane((DraggableTabPane) tab.getTabPane());
             currAppearanceCanvas = appearanceEditor.getAppearanceCanvas();
@@ -1104,7 +1148,7 @@ public class MainFrameController extends AbstractController {
 
 
 
-        tab.getContent().setOnMousePressed(event -> {
+        tab.getContent().addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
             setEditor(codeEditor);
             setWorkPane((DraggableTabPane) tab.getTabPane());
             proj.setCurrentCircuit(circ);
@@ -1184,7 +1228,7 @@ public class MainFrameController extends AbstractController {
 
 
 
-        tab.getContent().setOnMousePressed(event -> {
+        tab.getContent().addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
             setEditor(codeEditor);
             setWorkPane((DraggableTabPane) tab.getTabPane());
             proj.setCurrentCircuit(circ);
@@ -1254,7 +1298,7 @@ public class MainFrameController extends AbstractController {
 
 
 
-        tab.getContent().setOnMousePressed(event -> {
+        tab.getContent().addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
             setEditor(codeEditor);
             setWorkPane((DraggableTabPane) tab.getTabPane());
         });

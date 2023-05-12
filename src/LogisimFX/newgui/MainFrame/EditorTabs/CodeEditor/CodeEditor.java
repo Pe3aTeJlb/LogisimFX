@@ -13,13 +13,18 @@ import LogisimFX.newgui.MainFrame.EditorTabs.TextEditor.TextEditor;
 import LogisimFX.newgui.MainFrame.EditorTabs.TextEditor.TextEditorToolBar;
 import LogisimFX.proj.Project;
 import LogisimFX.lang.python.PythonConnector;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
+import javafx.scene.layout.HBox;
+import org.fxmisc.richtext.LineNumberFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.function.IntFunction;
 
 
 public class CodeEditor extends TextEditor {
@@ -44,6 +49,15 @@ public class CodeEditor extends TextEditor {
             builder.append(s).append("\n");
         }
 
+        IntFunction<Node> noFactory = LineNumberFactory.get(getCodeArea());
+        IntFunction<Node> graphicFactory = line -> {
+            HBox lineBox = new HBox(noFactory.apply(line));
+            lineBox.getStyleClass().add("lineno-box");
+            lineBox.setAlignment(Pos.CENTER_LEFT);
+            return lineBox;
+        };
+        getCodeArea().setParagraphGraphicFactory(graphicFactory);
+
         getCodeArea().insertText(0, builder.toString());
 
         getCodeArea().setEditable(false);
@@ -59,6 +73,15 @@ public class CodeEditor extends TextEditor {
         circ.registerProject(proj);
 
         new SyntaxHighlighter(getCodeArea()).start(file.getName().split("\\.")[1]);
+
+        IntFunction<Node> noFactory = LineNumberFactory.get(getCodeArea());
+        IntFunction<Node> graphicFactory = line -> {
+            HBox lineBox = new HBox(noFactory.apply(line));
+            lineBox.getStyleClass().add("lineno-box");
+            lineBox.setAlignment(Pos.CENTER_LEFT);
+            return lineBox;
+        };
+        getCodeArea().setParagraphGraphicFactory(graphicFactory);
 
         switch (file.getName()){
             case "VerilogModel.v":  extendEditorToolBarWithVerilog();    break;
@@ -124,6 +147,15 @@ public class CodeEditor extends TextEditor {
         this.file = file;
 
         new SyntaxHighlighter(getCodeArea()).start(file.getName().split("\\.")[1]);
+
+        IntFunction<Node> noFactory = LineNumberFactory.get(getCodeArea());
+        IntFunction<Node> graphicFactory = line -> {
+            HBox lineBox = new HBox(noFactory.apply(line));
+            lineBox.getStyleClass().add("lineno-box");
+            lineBox.setAlignment(Pos.CENTER_LEFT);
+            return lineBox;
+        };
+        getCodeArea().setParagraphGraphicFactory(graphicFactory);
 
         getCodeArea().requestFocus();
 
@@ -216,6 +248,15 @@ public class CodeEditor extends TextEditor {
         } else {
             DialogManager.createErrorDialog("Error", "Python3 required");
         }
+
+    }
+
+    public void toSchematics(){
+
+    }
+
+    public void fromSchematics(){
+
     }
 
     public void reloadFile(){
@@ -261,26 +302,26 @@ public class CodeEditor extends TextEditor {
 
     private void extendEditorToolBarWithVerilog(){
 
-        Button toRTL = new Button();
-        toRTL.graphicProperty().setValue(IconsManager.getIcon("codetortl.gif"));
-        toRTL.setTooltip(new TextEditorToolBar.ToolTip("codeToRTL"));
-        toRTL.setOnAction(event -> openFindBar());
-        toRTL.setPrefSize(prefWidth,prefHeight);
-        toRTL.setMinSize(prefWidth,prefHeight);
-        toRTL.setMaxSize(prefWidth,prefHeight);
+        Button toSchematics = new Button();
+        toSchematics.graphicProperty().setValue(IconsManager.getIcon("codetortl.gif"));
+        toSchematics.setTooltip(new TextEditorToolBar.ToolTip("codeToRTL"));
+        toSchematics.setOnAction(event -> toSchematics());
+        toSchematics.setPrefSize(prefWidth,prefHeight);
+        toSchematics.setMinSize(prefWidth,prefHeight);
+        toSchematics.setMaxSize(prefWidth,prefHeight);
 
-        Button fromRTL = new Button();
-        fromRTL.graphicProperty().setValue(IconsManager.getIcon("rtltocode.gif"));
-        fromRTL.setTooltip(new TextEditorToolBar.ToolTip("RTLToCode"));
-        fromRTL.setOnAction(event -> openReplaceBar());
-        fromRTL.setPrefSize(prefWidth,prefHeight);
-        fromRTL.setMinSize(prefWidth,prefHeight);
-        fromRTL.setMaxSize(prefWidth,prefHeight);
+        Button fromSchematics = new Button();
+        fromSchematics.graphicProperty().setValue(IconsManager.getIcon("rtltocode.gif"));
+        fromSchematics.setTooltip(new TextEditorToolBar.ToolTip("RTLToCode"));
+        fromSchematics.setOnAction(event -> fromSchematics());
+        fromSchematics.setPrefSize(prefWidth,prefHeight);
+        fromSchematics.setMinSize(prefWidth,prefHeight);
+        fromSchematics.setMaxSize(prefWidth,prefHeight);
 
         getTextEditorToolBar().getItems().addAll(
                 new Separator(),
-                toRTL,
-                fromRTL
+                toSchematics,
+                fromSchematics
         );
 
     }
