@@ -16,6 +16,8 @@ public class IconsManager {
 
     public static final Image LogisimFX = new Image("LogisimFX/resources/logo/logisimfx_128.png");
 
+    public static final ImageView LogisimFXPrompt = new ImageView("LogisimFX/resources/logo/LogisimFXPrompt.png");
+
     public static ImageView getIcon(String name) {
         return getImageView(name);
     }

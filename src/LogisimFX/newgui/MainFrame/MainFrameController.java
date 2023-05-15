@@ -51,9 +51,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.fxml.FXML;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
@@ -240,7 +242,8 @@ public class MainFrameController extends AbstractController {
         systemTabPaneBottom = new DoubleSidedTabPane(stage, proj);
         systemTabPaneBottom.setSide(Side.BOTTOM);
 
-        mainWinWorkspace = new DockPane(false);
+
+        mainWinWorkspace = new DockPane(IconsManager.LogisimFXPrompt, false);
         mainWinWorkspace.setUseDockPaneBoundaryForSideDock(true);
 
         mainWinRootDockPane.dock(mainWinWorkspace, DockAnchor.TOP);
@@ -817,7 +820,7 @@ public class MainFrameController extends AbstractController {
         scrollPane.setContent(attributeTable);
         scrollPane.setFitToWidth(true);
 
-        DraggableTab attributeTableTab = new DraggableTab(LC.createComplexStringBinding("attrTab", "LogisimFX:"), IconsManager.getImage("circattr.gif"), scrollPane);
+        DraggableTab attributeTableTab = new DraggableTab(LC.createStringBinding("attrTab"), IconsManager.getImage("circattr.gif"), scrollPane);
         attributeTableTab.setOnClosed(event -> openedSystemTabs.remove("AttributesTab"));
         attributeTableTab.setType("attrs");
 
@@ -1422,13 +1425,13 @@ public class MainFrameController extends AbstractController {
 
         if (sceneGraphPerformed && getWorkPane().getParent() == null){
 
-            if (lastUsedDockPane.getParent() != null){
+            if (lastUsedDockPane != null && lastUsedDockPane.getParent() != null){
 
-                if(lastUsedDockPane.getChildren().isEmpty()){
+                if(lastUsedDockPane.getRoot() == null){
                     createWorkPane(lastUsedDockPane);
                     return getWorkPane();
                 } else {
-                    DraggableTabPane tabPane = (DraggableTabPane)((CustomSplitPane)lastUsedDockPane.getChildren().get(0)).getItems().get(0);
+                    DraggableTabPane tabPane = (DraggableTabPane) lastUsedDockPane.getRoot().getItems().get(0);
                     setWorkPane(tabPane);
                     return tabPane;
 
@@ -1436,11 +1439,11 @@ public class MainFrameController extends AbstractController {
 
             } else {
 
-                if(mainWinWorkspace.getChildren().isEmpty()){
+                if(mainWinWorkspace.getRoot() == null){
                     createWorkPane(mainWinWorkspace);
                     return getWorkPane();
                 } else {
-                    DraggableTabPane tabPane = (DraggableTabPane)((CustomSplitPane) mainWinWorkspace.getChildren().get(0)).getItems().get(0);
+                    DraggableTabPane tabPane = (DraggableTabPane)(mainWinWorkspace.getRoot()).getItems().get(0);
                     setWorkPane(tabPane);
                     return tabPane;
                 }
@@ -1457,18 +1460,18 @@ public class MainFrameController extends AbstractController {
 
         if (sceneGraphPerformed && getWorkPane().getParent() == null){
 
-            if (lastUsedDockPane.getParent() != null){
+            if (lastUsedDockPane != null && lastUsedDockPane.getParent() != null){
 
-                if(!lastUsedDockPane.getChildren().isEmpty()){
-                    DraggableTabPane tabPane = (DraggableTabPane)((CustomSplitPane)lastUsedDockPane.getChildren().get(0)).getItems().get(0);
+                if(lastUsedDockPane.getRoot() != null){
+                    DraggableTabPane tabPane = (DraggableTabPane) lastUsedDockPane.getRoot().getItems().get(0);
                     setWorkPane(tabPane);
                     return tabPane;
                 }
 
             } else {
 
-                if(!mainWinWorkspace.getChildren().isEmpty()){
-                    DraggableTabPane tabPane = (DraggableTabPane)((CustomSplitPane) mainWinWorkspace.getChildren().get(0)).getItems().get(0);
+                if(mainWinWorkspace.getRoot() != null){
+                    DraggableTabPane tabPane = (DraggableTabPane)(mainWinWorkspace.getRoot()).getItems().get(0);
                     setWorkPane(tabPane);
                     return tabPane;
                 }
