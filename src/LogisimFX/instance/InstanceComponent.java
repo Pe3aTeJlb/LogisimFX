@@ -14,6 +14,7 @@ import java.util.List;
 import LogisimFX.comp.*;
 import LogisimFX.data.*;
 import LogisimFX.fpga.designrulecheck.CorrectLabel;
+import LogisimFX.fpga.designrulecheck.Netlist;
 import LogisimFX.newgui.DialogManager;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.tools.TextEditable;
@@ -41,6 +42,8 @@ public class InstanceComponent implements Component, AttributeListener, ToolTipM
 	private AttributeSet attrs;
 	private boolean attrListenRequested;
 	private InstanceTextField textField;
+	private boolean doMarkInstance;
+	private boolean doMarkLabel;
 	
 	InstanceComponent(InstanceFactory factory, Location loc,
                       AttributeSet attrs) {
@@ -56,6 +59,8 @@ public class InstanceComponent implements Component, AttributeListener, ToolTipM
 		this.attrs = attrs;
 		this.attrListenRequested = false;
 		this.textField = null;
+		this.doMarkInstance = false;
+		this.doMarkLabel = false;
 
 		computeEnds();
 
@@ -293,6 +298,17 @@ public class InstanceComponent implements Component, AttributeListener, ToolTipM
 		InstancePainter painter = context.getInstancePainter();
 		painter.setInstance(this);
 		factory.paintInstance(painter);
+		if (doMarkInstance) {
+			final var g = painter.getGraphics();
+			final var bds = painter.getBounds();
+			final var current = g.getColor();
+			g.setColor(Netlist.DRC_INSTANCE_MARK_COLOR);
+			g.setLineWidth(2);
+			g.c.strokeRoundRect(
+					bds.getX() - 10, bds.getY() - 10, bds.getWidth() + 20, bds.getHeight() + 20, 40, 40);
+			g.toDefaultLineWidth();
+			g.setColor(current);
+		}
 
 	}
 
@@ -357,7 +373,20 @@ public class InstanceComponent implements Component, AttributeListener, ToolTipM
 	void drawLabel(ComponentDrawContext context) {
 
 		InstanceTextField field = textField;
-		if (field != null) field.draw(this, context);
+		if (field != null) {
+			field.draw(this, context);
+			if (doMarkLabel) {
+				final var g = context.getGraphics();
+				final var bds = field.getBounds(g);
+				final var current = g.getColor();
+				g.setColor(Netlist.DRC_LABEL_MARK_COLOR);
+				g.setLineWidth(2);
+				g.c.strokeRoundRect(
+						bds.getX() - 10, bds.getY() - 10, bds.getWidth() + 20, bds.getHeight() + 20, 40, 40);
+				g.toDefaultLineWidth();
+				g.setColor(current);
+			}
+		}
 
 	}
 
@@ -408,6 +437,24 @@ public class InstanceComponent implements Component, AttributeListener, ToolTipM
 			field.update(labelAttr, fontAttr, x, y, halign, valign);
 		}
 
+	}
+
+
+	public boolean isMarked() {
+		return doMarkInstance || doMarkLabel;
+	}
+
+	public void clearMarks() {
+		doMarkInstance = false;
+		doMarkLabel = false;
+	}
+
+	public void markInstance() {
+		doMarkInstance = true;
+	}
+
+	public void markLabel() {
+		doMarkLabel = true;
 	}
 
 }

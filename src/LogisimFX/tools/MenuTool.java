@@ -86,6 +86,8 @@ public class MenuTool extends Tool {
 
 		if (menu != null) {
 			canvas.showContextMenu(menu, e.event.getScreenX(),e.event.getScreenY());
+		} else {
+			proj.getTerminal().hideDrcTrace();
 		}
 
 	}

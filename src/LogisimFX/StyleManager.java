@@ -30,21 +30,24 @@ public class StyleManager {
     public static void initializeDefaultUserAgentStylesheet(){
         Font.loadFont(String.valueOf(StyleManager.class.getResource("/LogisimFX/resources/css/JetBrainsMono-Regular.ttf")), 10);
         //firstly init default javafx default stylesheet
+        /*
+        for (String theme: themes.values()){
+            if (!theme.equals(Application.STYLESHEET_MODENA) && !theme.equals(Application.STYLESHEET_CASPIAN)) {
+                com.sun.javafx.css.StyleManager.getInstance().
+                        addUserAgentStylesheet(StyleManager.class.getResource(theme).toExternalForm());
+            }
+        }*/
         Application.setUserAgentStylesheet(Application.STYLESHEET_MODENA);
         //Set app preference stylesheet
         setTheme(AppPreferences.WINDOW_STYLE.get());
         //init additional stylesheets for every getStyleClass().add() in project
         DockPane.initializeDefaultUserAgentStylesheet();
-        com.sun.javafx.css.StyleManager.getInstance().addUserAgentStylesheet(StyleManager.class.getResource("/LogisimFX/resources/css/default.css").toExternalForm());
+        com.sun.javafx.css.StyleManager.getInstance().
+                addUserAgentStylesheet(StyleManager.class.getResource("/LogisimFX/resources/css/default.css").toExternalForm());
     }
 
     public static void setTheme(String theme){
-        if (theme.equals(Application.STYLESHEET_MODENA) || theme.equals(Application.STYLESHEET_CASPIAN)) {
-            Application.setUserAgentStylesheet(themes.get(theme));
-        } else {
-            com.sun.javafx.css.StyleManager.getInstance().
-                    addUserAgentStylesheet(StyleManager.class.getResource(themes.get(theme)).toExternalForm());
-        }
+        Application.setUserAgentStylesheet(themes.get(theme));
         AppPreferences.WINDOW_STYLE.set(theme);
     }
 

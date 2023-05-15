@@ -1,4 +1,4 @@
-package LogisimFX.docker;
+package LogisimFX.fpga;
 
 public class DockerConnector {
 }

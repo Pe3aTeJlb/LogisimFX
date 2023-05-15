@@ -11,6 +11,7 @@ package LogisimFX.fpga;
 
 import LogisimFX.Startup;
 import LogisimFX.fpga.designrulecheck.SimpleDrcContainer;
+import LogisimFX.newgui.MainFrame.EditorTabs.TerminalTab.Terminal;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.slf4j.Logger;
@@ -20,28 +21,67 @@ public class Reporter {
 
 	public static final Reporter report = new Reporter();
 	private static final Logger logger = LoggerFactory.getLogger(Reporter.class);
-	private static final ObservableList<Object> msgs = FXCollections.observableArrayList();
+	private Terminal terminal;
 
-	public ObservableList<Object> getMessages(){
-		return msgs;
+	public void setTerminal(Terminal terminal){
+		this.terminal = terminal;
 	}
+
+
+
+	public void addInfo(String message) {
+		if (Startup.isTty) {
+			logger.info(message);
+		} else {
+			terminal.printInfo(message);
+		}
+	}
+
+
+
+	public void addSevereWarning(String message) {
+		if (Startup.isTty) {
+			logger.warn(message);
+		} else {
+			terminal.printWarning(new SimpleDrcContainer(message, SimpleDrcContainer.LEVEL_SEVERE));
+		}
+	}
+
+	public void addWarningIncrement(String message) {
+		if (Startup.isTty) {
+			logger.warn(message);
+		} else {
+			terminal.printWarning(new SimpleDrcContainer(message, SimpleDrcContainer.LEVEL_NORMAL, true));
+		}
+	}
+
+	public void addWarning(Object message) {
+		if (Startup.isTty) {
+			if (message instanceof String) logger.warn((String) message);
+		} else {
+			terminal.printWarning(message instanceof String
+					? new SimpleDrcContainer(message, SimpleDrcContainer.LEVEL_NORMAL)
+					: (SimpleDrcContainer) message);
+		}
+	}
+
+
 
 	public void addErrorIncrement(String message) {
 		if (Startup.isTty) {
 			logger.error(message);
 		} else {
-			msgs.add(new SimpleDrcContainer(message, SimpleDrcContainer.LEVEL_NORMAL, true));
+			terminal.printError(new SimpleDrcContainer(message, SimpleDrcContainer.LEVEL_NORMAL, true));
 		}
 	}
 
 	public void addError(Object message) {
-		System.out.println("Error ! " + message);
 		if (Startup.isTty) {
 			if (message instanceof String) logger.error((String) message);
 		} else {
-			msgs.add((message instanceof String)
+			terminal.printError((message instanceof String)
 					? new SimpleDrcContainer(message, SimpleDrcContainer.LEVEL_NORMAL)
-					: message);
+					: (SimpleDrcContainer)message);
 		}
 	}
 
@@ -50,11 +90,10 @@ public class Reporter {
 	}
 
 	public void addFatalError(String message) {
-		System.out.println("Fatal ! " + message);
 		if (Startup.isTty) {
 			logger.error(message);
 		} else {
-			msgs.add(new SimpleDrcContainer(message, SimpleDrcContainer.LEVEL_FATAL));
+			terminal.printError(new SimpleDrcContainer(message, SimpleDrcContainer.LEVEL_FATAL));
 		}
 	}
 
@@ -62,57 +101,14 @@ public class Reporter {
 		if (Startup.isTty) {
 			logger.error(message);
 		} else {
-			msgs.add(new SimpleDrcContainer(message, SimpleDrcContainer.LEVEL_SEVERE));
+			terminal.printWarning(new SimpleDrcContainer(message, SimpleDrcContainer.LEVEL_SEVERE));
 		}
 	}
 
-	public void addInfo(String message) {
-		System.out.println("Info " + message);
-		if (Startup.isTty) {
-			logger.info(message);
-		} else {
-			msgs.add(message);
-		}
-	}
 
-	public void addSevereWarning(String message) {
-		System.out.println("Severe ! " + message);
-		if (Startup.isTty) {
-			logger.warn(message);
-		} else {
-			msgs.add(new SimpleDrcContainer(message, SimpleDrcContainer.LEVEL_SEVERE));
-		}
-	}
-
-	public void addWarningIncrement(String message) {
-		if (Startup.isTty) {
-			logger.warn(message);
-		} else {
-			msgs.add(new SimpleDrcContainer(message, SimpleDrcContainer.LEVEL_NORMAL, true));
-		}
-	}
-
-	public void addWarning(Object message) {
-		System.out.println("Warn ! " + message);
-		if (Startup.isTty) {
-			if (message instanceof String) logger.warn((String) message);
-		} else {
-			msgs.add(message instanceof String
-					? new SimpleDrcContainer(message, SimpleDrcContainer.LEVEL_NORMAL)
-					: message);
-		}
-	}
 
 	public void clearConsole() {
-		msgs.clear();
-	}
-
-	public void print(String message) {
-		if (Startup.isTty) {
-			logger.info(message);
-		} else {
-			msgs.add(message);
-		}
+		terminal.clearTerminal();
 	}
 
 }

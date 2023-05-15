@@ -1612,6 +1612,8 @@ public class MainFrameController extends AbstractController {
     @Override
     public void onClose() {
 
+        terminal.terminateListeners();
+
         for (Tab tab: openedLayoutEditors.values()){
             ((LayoutEditor) tab.getContent()).terminateListeners();
         }

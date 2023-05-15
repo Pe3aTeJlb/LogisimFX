@@ -53,6 +53,8 @@ public class FPGAToolchainOrchestrator {
 
 	public void annotate(boolean ClearExistingLabels) {
 
+		Reporter.report.setTerminal(proj.getTerminal());
+
 		Circuit root = proj.getLogisimFile().getMainCircuit();
 
 		if (ClearExistingLabels) {
@@ -97,6 +99,8 @@ public class FPGAToolchainOrchestrator {
 
 	public void exportHDLFiles(long fpgaClockFreq, double frequency) {
 
+		Reporter.report.setTerminal(proj.getTerminal());
+
 		Reporter.report.clearConsole();
 
 		//Choose output directory
@@ -122,8 +126,8 @@ public class FPGAToolchainOrchestrator {
 			return;
 		}
 
-		mappableResourcesContainer = new MappableResourcesContainer(proj.getLogisimFile().getMainCircuit());
-		System.out.println(mappableResourcesContainer.getMappableResources());
+		///mappableResourcesContainer = new MappableResourcesContainer(proj.getLogisimFile().getMainCircuit());
+		//System.out.println(mappableResourcesContainer.getMappableResources());
 
 		if (frequency <= 0) frequency = 1;
 		if (frequency > (fpgaClockFreq / 4)) {

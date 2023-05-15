@@ -132,18 +132,17 @@ public class SimpleDrcContainer {
 	public void markComponents() {
 		if (!isDrcInfoPresent()) return;
 		for (final var obj : drcComponents) {
-			if (obj instanceof Wire wire) {
+			if (obj instanceof Wire) {
 				if ((markType & MARK_WIRE) != 0) {
-					wire.setDrcHighlight(true);
+					((Wire)obj).setDrcHighlight(true);
 				}
-			} else if (obj instanceof Splitter split) {
+			} else if (obj instanceof Splitter) {
 				if ((markType & MARK_INSTANCE) != 0) {
-					split.setMarked(true);
+					((Splitter) obj).setMarked(true);
 				}
-			} else if (obj instanceof InstanceComponent comp) {
-				if ((markType & MARK_INSTANCE) != 0) comp.markInstance();
-				if ((markType & MARK_LABEL) != 0) comp.markLabel();
-			} else {
+			} else if (obj instanceof InstanceComponent) {
+				if ((markType & MARK_INSTANCE) != 0) ((InstanceComponent)obj).markInstance();
+				if ((markType & MARK_LABEL) != 0) ((InstanceComponent)obj).markLabel();
 			}
 		}
 	}
@@ -151,17 +150,18 @@ public class SimpleDrcContainer {
 	public void clearMarks() {
 		if (!isDrcInfoPresent()) return;
 		for (final var obj : drcComponents) {
-			if (obj instanceof Wire wire) {
+			if (obj instanceof Wire) {
 				if ((markType & MARK_WIRE) != 0) {
-					wire.setDrcHighlight(false);
+					((Wire)obj).setDrcHighlight(false);
 				}
-			} else if (obj instanceof Splitter split) {
+			} else if (obj instanceof Splitter) {
 				if ((markType & MARK_INSTANCE) != 0) {
-					split.setMarked(false);
+					((Splitter) obj).setMarked(false);
 				}
-			} else if (obj instanceof InstanceComponent comp) {
-				comp.clearMarks();
+			} else if (obj instanceof InstanceComponent) {
+				((InstanceComponent)obj).clearMarks();
 			}
 		}
 	}
+
 }

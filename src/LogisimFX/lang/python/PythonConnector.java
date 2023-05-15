@@ -1,6 +1,7 @@
 package LogisimFX.lang.python;
 
-import LogisimFX.Main;
+import LogisimFX.newgui.MainFrame.EditorTabs.TerminalTab.Terminal;
+import LogisimFX.proj.Project;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,18 +13,19 @@ public class PythonConnector {
 
 	public static final Pattern PYTHON_VERSION = Pattern.compile("Python\\s3[\\d\\.]+");
 
-	public static boolean isPythonPresent(){
+	public static boolean isPythonPresent(Project proj){
 
 		String version = "";
 
 		try {
-			Process process = Runtime.getRuntime().exec("python --version");
+
+			Process process = proj.getTerminal().silentExecute("python --version");
 			try (BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
 				version = input.readLine();
 			}
 
 			if (!PYTHON_VERSION.matcher(version).matches()){
-				Process process2 = Runtime.getRuntime().exec("python3 --version");
+				Process process2 = proj.getTerminal().silentExecute("python3 --version");
 				try (BufferedReader input = new BufferedReader(new InputStreamReader(process2.getInputStream()))) {
 					version = input.readLine();
 				}
@@ -37,38 +39,12 @@ public class PythonConnector {
 
 	}
 
-	public static String getJarPath(String name){
-
-		try {
-			String jarPath = Main.class
-					.getProtectionDomain()
-					.getCodeSource()
-					.getLocation()
-					.toURI()
-					.getPath().substring(1).replace("/", File.separator).replace("\\", File.separator) +
-					"locallibs" + File.separator + "python" + File.separator + name;
-			return jarPath;
-		} catch (Exception e){
-
-		}
-
-		return null;
+	public static String getLibPath(String name){
+		return Terminal.getJarPath() + "locallibs" + File.separator + "python" + File.separator + name;
 	}
 
-	public static void executeFile(File file){
-
-		try {
-			Process process = Runtime.getRuntime().exec("python \"" + file.toString()+"\"");
-			try (BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-				String line;
-				while ((line = input.readLine()) != null) {
-					//System.out.println(line);
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
+	public static void executeFile(Project proj, File file){
+		proj.getTerminal().execute("python \"" + file.toString()+"\"");
 	}
 
 }

@@ -119,16 +119,18 @@ public class CodeEditor extends TextEditor {
 
         } else if(file.getName().equals("HLS.py")){
 
-            String pathToLib = PythonConnector.getJarPath("sfgen");
+            String pathToLib = PythonConnector.getLibPath("sfgen");
             String importSection = "import sys\n" +
                     "import os\n" +
                     "sys.path.append(r'" + pathToLib + "')\n"+
                     "from sfgen import * \n" +
                     "from sfgen.verilog_backend import * \n" +
                     "#for more information visit https://github.com/dillonhuff/SFGen \n"+
-                    "\n\n\n"+
+                    "def cube(x):\n" +
+                    "\tout = x*x*x\n" +
+                    "\treturn out\n"+
                     "constraints = ScheduleConstraints() \n"+
-                    "synthesize_verilog(os.path.abspath(__file__), '!func name!', '!args type!', constraints)"
+                    "synthesize_verilog(os.path.abspath(__file__), 'cube', [l.ArrayType(32)], constraints)"
                     ;
 
             getCodeArea().insertText(0, importSection);
@@ -232,11 +234,11 @@ public class CodeEditor extends TextEditor {
 
     public void doHLS(){
 
-        if (PythonConnector.isPythonPresent()) {
+        if (PythonConnector.isPythonPresent(proj)) {
 
             //Save HLS file and execute it
             doSave();
-            PythonConnector.executeFile(file);
+            PythonConnector.executeFile(proj, file);
 
             //reload verilog model
             proj.getFrameController().reloadFile(circ.getVerilogModel(proj));

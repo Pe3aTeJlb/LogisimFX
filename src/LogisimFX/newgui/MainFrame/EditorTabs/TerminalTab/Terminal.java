@@ -2,44 +2,41 @@ package LogisimFX.newgui.MainFrame.EditorTabs.TerminalTab;
 
 import LogisimFX.IconsManager;
 import LogisimFX.Main;
+import LogisimFX.fpga.designrulecheck.SimpleDrcContainer;
 import LogisimFX.newgui.MainFrame.EditorTabs.EditHandler;
 import LogisimFX.newgui.MainFrame.EditorTabs.EditorBase;
 import LogisimFX.proj.Project;
-import com.pty4j.PtyProcess;
-import com.pty4j.PtyProcessBuilder;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.transform.Scale;
-import org.apache.commons.lang3.SystemUtils;
 import org.fxmisc.flowless.ScaledVirtualized;
 import org.fxmisc.flowless.VirtualizedScrollPane;
+import org.fxmisc.richtext.LineNumberFactory;
 import org.fxmisc.richtext.StyleClassedTextArea;
 import org.fxmisc.richtext.model.PlainTextChange;
 import org.fxmisc.richtext.util.UndoUtils;
 import org.fxmisc.undo.UndoManager;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.IntFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Terminal extends EditorBase {
 
 	private Project proj;
-
+/*
 	private PtyProcess process;
 	private Path terminalPath;
 	private String[] termCommand;
@@ -51,7 +48,7 @@ public class Terminal extends EditorBase {
 
 	private String windowsTerminalStarter = "cmd.exe";
 	private String unixTerminalStarter = "/bin/bash -i";
-
+*/
 
 	private TerminalHandler editHandler;
 	private TerminalEditMenu menu;
@@ -67,6 +64,10 @@ public class Terminal extends EditorBase {
 	private ArrayList<ArrayList<Integer>> coordinateList = new ArrayList<>();
 	private AtomicInteger currWordIndex = new AtomicInteger(0);
 
+	private String backgroundStyleClass = "terminal-background";
+	private String infoStyleClass = "terminal-info";
+	private String warningStyleClass = "terminal-warning";
+	private String errorStyleClass = "terminal-error";
 
 	public Terminal(Project project){
 
@@ -88,8 +89,6 @@ public class Terminal extends EditorBase {
 		editHandler = new TerminalHandler(this);
 		menu = new TerminalEditMenu(this);
 
-		terminalArea.requestFocus();
-
 		try {
 			initializeProcess();
 		} catch (Exception e) {
@@ -103,6 +102,7 @@ public class Terminal extends EditorBase {
 
 		terminalArea = new StyleClassedTextArea();
 		scaleVirtualized = new ScaledVirtualized<>(terminalArea);
+
 		virtualizedScrollPane = new VirtualizedScrollPane<>(scaleVirtualized);
 
 		UndoManager<List<PlainTextChange>> um = UndoUtils.plainTextUndoManager(terminalArea);
@@ -110,17 +110,55 @@ public class Terminal extends EditorBase {
 
 		VBox.setVgrow(virtualizedScrollPane, Priority.ALWAYS);
 
-		terminalArea.getStyleClass().add("styled-text-area");
-
 		terminalArea.addEventFilter(ScrollEvent.ANY, e -> {
 			if (e.isControlDown()) {
 				zoom(e.getDeltaY());
 			}
 		});
 
-		terminalArea.setOnMousePressed(event -> {
+		terminalArea.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 			Event.fireEvent(this, event.copyFor(event.getSource(), this));
 		});
+
+		terminalArea.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+			System.out.println("lolxds");
+			terminateListeners();
+		});
+
+		IntFunction<Node> graphicFactory = line -> {
+
+			HBox hbox = new HBox();
+			hbox.setAlignment(Pos.CENTER_LEFT);
+
+			Button button = new Button();
+			button.setPrefSize(15,15);
+			button.setMinSize(15,15);
+			button.setMaxSize(15,15);
+			button.getStyleClass().add(backgroundStyleClass);
+
+			if (!drcContainers.isEmpty() && drcContainers.containsKey(line) && drcContainers.get(line).hasCircuit()){
+				SimpleDrcContainer drc = drcContainers.get(line);
+				button.setOnAction(event -> {
+					generateDrcTrace(drc);
+					if (curDRCContainer != null){
+						curDRCContainer.clearMarks();
+					}
+					curDRCContainer = drc;
+				});
+				button.setGraphic(IconsManager.getIcon("drclink.png"));
+			}
+
+			hbox.getChildren().add(button);
+
+			return hbox;
+		};
+		terminalArea.setParagraphGraphicFactory(graphicFactory);
+
+		terminalArea.setEditable(false);
+		terminalArea.requestFocus();
+
+		this.getStylesheets().add("/LogisimFX/resources/css/default.css");
+		terminalArea.getStyleClass().add(backgroundStyleClass);
 
 	}
 
@@ -308,6 +346,7 @@ public class Terminal extends EditorBase {
 
 	private void initializeProcess() throws Exception {
 
+/*
 		terminalPath = Paths.get(getJarPath());
 
 		outputWriterProperty = new SimpleObjectProperty<>();
@@ -345,13 +384,14 @@ public class Terminal extends EditorBase {
 		}
 
 		String defaultCharEncoding = System.getProperty("file.encoding");
+
 		setInputReader(new BufferedReader(new InputStreamReader(process.getInputStream(), defaultCharEncoding)));
 		setErrorReader(new BufferedReader(new InputStreamReader(process.getErrorStream(), defaultCharEncoding)));
 		setOutputWriter(new BufferedWriter(new OutputStreamWriter(process.getOutputStream(), defaultCharEncoding)));
-
+*/
 	}
 
-
+/*
 	public void execute(String command) {
 		try {
 			commandQueue.put(command);
@@ -384,9 +424,8 @@ public class Terminal extends EditorBase {
 				e.printStackTrace();
 			}
 		});
-	}
 
-	private void printReader(Reader bufferedReader) {
+		private void printReader(Reader bufferedReader) {
 		try {
 			int nRead;
 			final char[] data = new char[1 * 1024];
@@ -409,17 +448,46 @@ public class Terminal extends EditorBase {
 		});
 	}
 
+	}*/
+
+	public void execute(String command) {
+
+		try {
+
+			terminalArea.append(getJarPath()+">"+command+"\n", infoStyleClass);
+			Process process = Runtime.getRuntime().exec(command);
+
+			BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			BufferedReader errors = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+
+			input.lines().forEach(string -> terminalArea.append(string+"\n", infoStyleClass));
+			errors.lines().forEach(string -> terminalArea.append(string+"\n", errorStyleClass));
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public Process silentExecute(String command) {
+		try {
+			return Runtime.getRuntime().exec(command);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 
 	public static String getJarPath() {
 
 		try {
-			String jarPath = Main.class
+			return Main.class
 					.getProtectionDomain()
 					.getCodeSource()
 					.getLocation()
 					.toURI()
 					.getPath().substring(1).replace("/", File.separator).replace("\\", File.separator);
-			return jarPath;
 		} catch (Exception e) {
 
 		}
@@ -428,28 +496,64 @@ public class Terminal extends EditorBase {
 
 	}
 
+
+	HashMap<Integer, SimpleDrcContainer> drcContainers = new HashMap<>();
+	SimpleDrcContainer curDRCContainer;
+
 	public void printError(Exception e){
 		printError(e.getMessage());
 	}
 
-	public void printError(String error){
+	public void printError(SimpleDrcContainer error){
+		drcContainers.put(terminalArea.getCurrentParagraph(), error);
+		printError(error.toString());
+	}
 
+	public void printError(String error){
+		terminalArea.append(error+"\n", errorStyleClass);
+	}
+
+	public void printWarning(SimpleDrcContainer warning){
+		drcContainers.put(terminalArea.getCurrentParagraph(), warning);
+		printWarning(warning.toString());
 	}
 
 	public void printWarning(String warning){
+		terminalArea.append(warning+"\n", warningStyleClass);
+	}
 
+	public void printInfo(SimpleDrcContainer info){
+		drcContainers.put(terminalArea.getCurrentParagraph(), info);
+		printInfo(info.toString());
 	}
 
 	public void printInfo(String info){
-
+		terminalArea.append(info+"\n", infoStyleClass);
 	}
 
 	public void clearTerminal(){
+		terminalArea.clear();
+		drcContainers.clear();
+	}
 
+	private void generateDrcTrace(SimpleDrcContainer dc) {
+		if (dc.hasCircuit()) {
+			if (proj != null && !proj.getCurrentCircuit().equals(dc.getCircuit())) {
+				proj.getFrameController().selectCircLayoutEditor(dc.getCircuit());
+			}
+		}
+		dc.markComponents();
+	}
+
+	public void hideDrcTrace(){
+		if (curDRCContainer != null){
+			curDRCContainer.clearMarks();
+			curDRCContainer = null;
+		}
 	}
 
 
-
+/*
 	public ObjectProperty<Reader> inputReaderProperty() {
 		return inputReaderProperty;
 	}
@@ -487,7 +591,7 @@ public class Terminal extends EditorBase {
 	public void setOutputWriter(Writer writer) {
 		outputWriterProperty.set(writer);
 	}
-
+*/
 
 
 	public void recalculateAccelerators(){
@@ -528,6 +632,28 @@ public class Terminal extends EditorBase {
 			);
 		}
 		recalculateAccelerators();
+	}
+
+	@Override
+	public void terminateListeners(){
+		/*
+		if (process != null) {
+			System.out.println(process.isAlive());
+			try {
+				process.getErrorStream().close();
+				process.getInputStream().close();
+				process.getOutputStream().close();
+				process.destroy();
+				System.out.println(process.waitFor(1, TimeUnit.SECONDS));
+				System.out.println(process.isAlive() + " ");
+				System.out.println(process.exitValue());
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			process = null;
+		}*/
 	}
 
 }

@@ -430,6 +430,20 @@ class CircuitWires {
 				} else {
 					g.c.strokeLine(s.getX(), s.getY(), t.getX(), t.getY());
 				}
+				/* The following part is used by the FPGA-commanders DRC to highlight a wire with DRC
+				 * problems (KTT1)
+				 */
+				if (w.isDrcHighlighted()) {
+					g.setColor(w.getDrcHighlightColor());
+					g.setLineWidth(2);
+					if (w.isVertical()) {
+						g.c.strokeLine(s.getX() - 3, s.getY(), t.getX() - 3, t.getY());
+						g.c.strokeLine(s.getX() + 3, s.getY(), t.getX() + 3, t.getY());
+					} else {
+						g.c.strokeLine(s.getX(), s.getY() - 3, t.getX(), t.getY() - 3);
+						g.c.strokeLine(s.getX(), s.getY() + 3, t.getX(), t.getY() + 3);
+					}
+				}
 			}
 
 			for (Location loc : points.getSplitLocations()) {

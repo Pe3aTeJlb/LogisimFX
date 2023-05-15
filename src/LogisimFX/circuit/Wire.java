@@ -9,10 +9,12 @@ package LogisimFX.circuit;
 import LogisimFX.comp.Component;
 import LogisimFX.comp.*;
 import LogisimFX.data.*;
+import LogisimFX.fpga.designrulecheck.Netlist;
 import LogisimFX.instance.StdAttr;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.tools.CustomHandles;
 import LogisimFX.util.Cache;
+import javafx.scene.paint.Color;
 
 import java.util.AbstractList;
 import java.util.Arrays;
@@ -63,6 +65,9 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 	final boolean is_diagonal;
 	final double rot;
 	final int deg_rot; // lol
+
+	private boolean isDrcHighlighted = false;
+	private Color drcWireMarkColor = Netlist.DRC_WIRE_MARK_COLOR;
 
 	private Wire(Location e0, Location e1) {
 		this.is_x_equal = e0.getX() == e1.getX();
@@ -409,6 +414,22 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 	public void drawHandles(ComponentDrawContext context) {
 		context.drawHandle(e0);
 		context.drawHandle(e1);
+	}
+
+	public void setDrcHighlight(boolean highlight) {
+		isDrcHighlighted = highlight;
+	}
+
+	public boolean isDrcHighlighted() {
+		return isDrcHighlighted;
+	}
+
+	public void setDrcHighlightColor(Color col) {
+		drcWireMarkColor = col;
+	}
+
+	public Color getDrcHighlightColor() {
+		return drcWireMarkColor;
 	}
 
 }

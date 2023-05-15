@@ -13,7 +13,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.HBox;
@@ -23,7 +22,6 @@ import javafx.scene.transform.Scale;
 import javafx.stage.Popup;
 import org.fxmisc.flowless.ScaledVirtualized;
 import org.fxmisc.flowless.VirtualizedScrollPane;
-import org.fxmisc.richtext.LineNumberFactory;
 import org.fxmisc.richtext.StyleClassedTextArea;
 import org.fxmisc.richtext.model.PlainTextChange;
 import org.fxmisc.richtext.util.UndoUtils;
@@ -34,7 +32,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.IntFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -95,6 +92,8 @@ public class TextEditor extends EditorBase {
 
 		codeArea.requestFocus();
 
+		this.getStylesheets().add("/LogisimFX/resources/css/default.css");
+
 	}
 
 	public TextEditor(Project project, File file){
@@ -149,7 +148,7 @@ public class TextEditor extends EditorBase {
 
 		VBox.setVgrow(virtualizedScrollPane, Priority.ALWAYS);
 
-		codeArea.getStyleClass().add("styled-text-area");
+		//codeArea.getStyleClass().add("styled-text-area");
 
 		codeArea.addEventFilter(ScrollEvent.ANY, e -> {
 			if (e.isControlDown()) {
@@ -157,7 +156,7 @@ public class TextEditor extends EditorBase {
 			}
 		});
 
-		codeArea.setOnMousePressed(event -> {
+		codeArea.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 			Event.fireEvent(this, event.copyFor(event.getSource(), this));
 		});
 

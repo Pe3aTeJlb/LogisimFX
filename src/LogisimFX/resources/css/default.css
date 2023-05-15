@@ -19,21 +19,6 @@
 
 /*CodeEditor*/
 
-.styled-text-area {
-    -fx-font-size: 10px;
-    -fx-font-family: 'JetBrains Mono' !important;
-}
-
-.find
-{
-    -rtfx-background-color: #F8E71C !important;
-    -fx-fill: #000 !important;
-}
-.findActive
-{
-    -rtfx-background-color: #A07C61 !important;
-}
-
 .preprocessor {
     -fx-fill: #8000FF !important;
     -fx-font-weight: bold;
@@ -71,4 +56,28 @@
 }
 .comment {
 	-fx-fill: #75715E !important;
+}
+
+/*Terminal*/
+.terminal-background {
+    -fx-background-color: #000000;
+}
+
+.terminal-info {
+    -fx-fill: #FFFFFF;
+    -fx-font-weight: bold;
+}
+
+.terminal-warning {
+    -fx-fill: #FFD800;
+    -fx-font-weight: bold;
+}
+
+.terminal-error {
+    -fx-fill: #FF0000;
+    -fx-font-weight: bold;
+}
+
+.terminal-link {
+    -fx-background-color: #000000;
 }
