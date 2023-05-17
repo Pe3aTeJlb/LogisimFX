@@ -40,6 +40,8 @@ public abstract class AttrTableModel {
 
     public abstract StringBinding getTitle();
 
+    public abstract StringBinding getViewedObjectName();
+
     public void setAttributeSet(AttributeSet value) {
 
         if (attrs != value) {
@@ -81,6 +83,11 @@ class AttrTableCircuitModel extends AttrTableModel{
     }
 
     @Override
+    public StringBinding getViewedObjectName() {
+        return circ.getSubcircuitFactory().getDisplayName();
+    }
+
+    @Override
     public void setValueRequested(Attribute<Object> attr, Object value) throws AttrTableSetException {
 
     }
@@ -102,6 +109,11 @@ class AttrTableComponentModel extends AttrTableModel{
 
     @Override
     public StringBinding getTitle() {
+        return comp.getFactory().getDisplayName();
+    }
+
+    @Override
+    public StringBinding getViewedObjectName() {
         return comp.getFactory().getDisplayName();
     }
 
@@ -145,6 +157,11 @@ class AttrTableToolModel extends AttrTableModel{
     }
 
     @Override
+    public StringBinding getViewedObjectName() {
+        return tool.getDisplayName();
+    }
+
+    @Override
     public void setValueRequested(Attribute<Object> attr, Object value) {
         proj.doAction(ToolAttributeAction.create(tool, attr, value));
     }
@@ -155,6 +172,7 @@ class AttrTableSelectionModel extends AttrTableModel{
 
     private Project proj;
     private Selection selection;
+    private StringBinding viewedObjectName;
 
     public AttrTableSelectionModel(Project proj) {
 
@@ -200,17 +218,26 @@ class AttrTableSelectionModel extends AttrTableModel{
         }
 
         if (variousFound) {
+            viewedObjectName = LC.createStringBinding("selectionTitle");
             return (LC.createComplexStringBinding("selectionVarious", "" + totalCount));
         } else if (factoryCount == 0) {
+            viewedObjectName = proj.getCurrentCircuit().getSubcircuitFactory().getDisplayName();
             String circName = proj.getCurrentCircuit().getName();
             return (LC.createComplexStringBinding("circuitAttrTitle", circName));
         } else if (factoryCount == 1) {
+            viewedObjectName = factory.getDisplayName();
             return (LC.createComplexStringBinding("selectionOne", factory.getDisplayName().getValue()));
         } else {
+            viewedObjectName = factory.getDisplayName();
             return (LC.createComplexStringBinding("selectionMultiple", factory.getDisplayName().getValue(),
                     "" + factoryCount));
         }
 
+    }
+
+    @Override
+    public StringBinding getViewedObjectName() {
+        return viewedObjectName;
     }
 
     @Override
@@ -260,6 +287,11 @@ class AttrTableAbstractToolModel extends AttrTableModel{
     }
 
     @Override
+    public StringBinding getViewedObjectName() {
+        return LC.castToBind(currentTool.getName());
+    }
+
+    @Override
     public void setValueRequested(Attribute<Object> attr, Object value) throws AttrTableSetException {
         defaults.setValue(attr, value);
     }
@@ -271,6 +303,7 @@ class AttrTableAppearanceSelectionModel extends AttrTableModel{
     private Project proj;
     private AppearanceCanvas canvas;
     private LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.Selection selection;
+    private StringBinding viewedObjectName;
 
     public AttrTableAppearanceSelectionModel(Project proj) {
         super(null);
@@ -307,14 +340,22 @@ class AttrTableAppearanceSelectionModel extends AttrTableModel{
         if (firstObject == null) {
             return null;
         } else if (commonClass == null) {
+            viewedObjectName =  LC.createStringBinding("selectionTitle");
             return LC.createComplexStringBinding("selectionVarious", "" + totalCount);
         } else if (commonCount == 1) {
+            viewedObjectName = LC.castToBind(firstObject.getDisplayName());
             return LC.createComplexStringBinding("selectionOne", firstObject.getDisplayName());
         } else {
+            viewedObjectName = LC.castToBind(firstObject.getDisplayName());
             return LC.createComplexStringBinding("selectionMultiple", firstObject.getDisplayName(),
                     "" + commonCount);
         }
 
+    }
+
+    @Override
+    public StringBinding getViewedObjectName() {
+        return viewedObjectName;
     }
 
     @Override

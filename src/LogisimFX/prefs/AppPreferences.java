@@ -87,8 +87,6 @@ public class AppPreferences {
 
 	public static final PrefMonitor<Boolean> PRINTER_VIEW
 		= create(new PrefMonitorBoolean("printerView", false));
-	public static final PrefMonitor<Boolean> ATTRIBUTE_HALO
-		= create(new PrefMonitorBoolean("attributeHalo", true));
 	public static final PrefMonitor<Boolean> COMPONENT_TIPS
 		= create(new PrefMonitorBoolean("componentTips", true));
 	public static final PrefMonitor<Boolean> MOVE_KEEP_CONNECT

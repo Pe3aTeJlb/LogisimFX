@@ -326,7 +326,7 @@ public class ProjectExplorerTreeView extends AbstractTreeExplorer<Object> {
 
         TreeItem<Object> root = new TreeItem<>(proj.getLogisimFile());
         this.setRoot(root);
-        root.expandedProperty().set(true);
+        root.setExpanded(true);
 
         //Circuits
         for (AddTool tool: proj.getLogisimFile().getTools()) {
@@ -366,20 +366,17 @@ public class ProjectExplorerTreeView extends AbstractTreeExplorer<Object> {
         TreeItem<Object> l = new TreeItem<>(lib);
 
         for (Tool tool: lib.getTools()) {
-
-            TreeItem<Object> t = null;
-            
             if (tool instanceof AddTool) {
                 ComponentFactory fact = ((AddTool) tool).getFactory(false);
                 if (fact instanceof SubcircuitFactory) {
-                    t = addCircNode((AddTool)tool);
+                    System.out.println("    1 "+ addCircNode((AddTool)tool));
+                    l.getChildren().add(addCircNode((AddTool)tool));
+                } else {
+                    l.getChildren().add(new TreeItem<>(tool));
                 }
             } else {
-                t = new TreeItem<>(tool);
+                l.getChildren().add(new TreeItem<>(tool));
             }
-
-            l.getChildren().add(t);
-
         }
 
         for (Library sublib: lib.getLibraries()) {

@@ -19,7 +19,7 @@ public class WireSet {
 	private Set<Wire> wires;
 	private Set<Location> points;
 
-	WireSet(Set<Wire> wires) {
+	public WireSet(Set<Wire> wires) {
 		if (wires.isEmpty()) {
 			this.wires = NULL_WIRES;
 			points = Collections.emptySet();

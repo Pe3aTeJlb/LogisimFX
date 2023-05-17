@@ -3,7 +3,7 @@
  * License information is located in the Launch file
  */
 
-package LogisimFX.newgui.MainFrame.EditorTabs.TerminalTab;
+package LogisimFX.newgui.MainFrame.SystemTabs.TerminalTab;
 
 import LogisimFX.localization.LC_menu;
 import LogisimFX.localization.Localizer;
@@ -69,11 +69,11 @@ public class TerminalEditMenu {
         });
 
         menuItems = List.of(
-                Find,
-                sp1,
-                Cut,
-                Copy,
-                Paste
+                Find
+               // sp1,
+                //Cut,
+               // Copy,
+               // Paste
         );
 
     }

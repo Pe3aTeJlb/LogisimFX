@@ -12,7 +12,7 @@ import LogisimFX.circuit.*;
 import LogisimFX.fpga.FPGAToolchainOrchestrator;
 import LogisimFX.newgui.MainFrame.EditorTabs.AppearanceEditor.appearanceCanvas.AppearanceCanvas;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutCanvas;
-import LogisimFX.newgui.MainFrame.EditorTabs.TerminalTab.Terminal;
+import LogisimFX.newgui.MainFrame.SystemTabs.TerminalTab.Terminal;
 import LogisimFX.newgui.MainFrame.MainFrameController;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.Selection;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.SelectionActions;

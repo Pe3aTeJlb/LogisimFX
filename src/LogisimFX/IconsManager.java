@@ -5,8 +5,10 @@
 
 package LogisimFX;
 
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 
 public class IconsManager {
 
@@ -16,7 +18,20 @@ public class IconsManager {
 
     public static final Image LogisimFX = new Image("LogisimFX/resources/logo/logisimfx_128.png");
 
-    public static final ImageView LogisimFXPrompt = new ImageView("LogisimFX/resources/logo/LogisimFXPrompt.png");
+    public static Node getLogisimFXPrompt() {
+
+        Pane pane = new Pane();
+        ImageView img = new ImageView("LogisimFX/resources/logo/LogisimFXPrompt.png");
+
+        pane.setMinSize(0, 0);
+        pane.setPrefSize(img.getImage().getWidth(), img.getImage().getHeight());
+        pane.setMaxSize(img.getImage().getWidth(), img.getImage().getHeight());
+
+        pane.getChildren().add(img);
+
+        return pane;
+
+    }
 
     public static ImageView getIcon(String name) {
         return getImageView(name);

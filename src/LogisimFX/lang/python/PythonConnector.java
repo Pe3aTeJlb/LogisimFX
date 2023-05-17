@@ -1,6 +1,6 @@
 package LogisimFX.lang.python;
 
-import LogisimFX.newgui.MainFrame.EditorTabs.TerminalTab.Terminal;
+import LogisimFX.newgui.MainFrame.SystemTabs.TerminalTab.Terminal;
 import LogisimFX.proj.Project;
 
 import java.io.BufferedReader;

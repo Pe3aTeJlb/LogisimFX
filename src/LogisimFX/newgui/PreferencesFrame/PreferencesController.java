@@ -104,9 +104,6 @@ public class PreferencesController extends AbstractController {
     private CheckBox PrinterViewChbx;
 
     @FXML
-    private CheckBox ShowAttrHaloChbx;
-
-    @FXML
     private CheckBox ShowComponentTipsChbx;
 
     @FXML
@@ -325,10 +322,6 @@ public class PreferencesController extends AbstractController {
         PrinterViewChbx.textProperty().bind(LC.createStringBinding("layoutPrinterView"));
         PrinterViewChbx.setSelected(AppPreferences.PRINTER_VIEW.get());
         PrinterViewChbx.setOnAction(event -> AppPreferences.PRINTER_VIEW.set(PrinterViewChbx.isSelected()));
-
-        ShowAttrHaloChbx.textProperty().bind(LC.createStringBinding("layoutAttributeHalo"));
-        ShowAttrHaloChbx.setSelected(AppPreferences.ATTRIBUTE_HALO.get());
-        ShowAttrHaloChbx.setOnAction(event -> AppPreferences.ATTRIBUTE_HALO.set(ShowAttrHaloChbx.isSelected()));
 
         ShowComponentTipsChbx.textProperty().bind(LC.createStringBinding("layoutShowTips"));
         ShowComponentTipsChbx.setSelected(AppPreferences.COMPONENT_TIPS.get());

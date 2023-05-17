@@ -79,9 +79,25 @@ public class TextEditor extends EditorBase {
 
 		this.getChildren().addAll(textEditorToolBar, findBar, replaceBar, virtualizedScrollPane, footBar);
 
-		proj.getFrameController().editorProperty().addListener((observableValue, editorBase, t1) -> {
-			if (this.isSelected()){
-				recalculateAccelerators();
+		this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+			if (event.getCode() == KeyCode.ESCAPE) {
+				findBar.setVisible(false);
+				replaceBar.setVisible(false);
+
+				findBar.setMinHeight(0);
+				findBar.setMaxHeight(0);
+				replaceBar.setMinHeight(0);
+				replaceBar.setMaxHeight(0);
+
+				removeHighlightedTxt(coordinateList, codeArea, currWordIndex);
+				/*
+				 * After closing the popup dialog the color of keywords is also changed.
+				 * So in order to re-highlight the syntax I am appending and deleting the text to fire plaintext change event.
+				 * I think, there are some better way, but until that I am going with this one.
+				 */
+				codeArea.appendText(" ");
+				int len = codeArea.getText().length();
+				codeArea.deleteText(len-1, len);
 			}
 		});
 
@@ -347,12 +363,12 @@ public class TextEditor extends EditorBase {
 
 		Button prevWordBt = new Button();
 		//prevWordBt.disableProperty().bind(coordinateList.s);
-		prevWordBt.setGraphic(IconsManager.getImageView("projup.gif"));
+		prevWordBt.setGraphic(IconsManager.getImageView("arrowup.gif"));
 		prevWordBt.setOnAction(event -> prevWord());
 
 		Button nextWordBtn = new Button();
 		//nextWordBtn.disableProperty().bind();
-		nextWordBtn.setGraphic(IconsManager.getImageView("projdown.gif"));
+		nextWordBtn.setGraphic(IconsManager.getImageView("arrowdown.gif"));
 		nextWordBtn.setOnAction(event -> nextWord());
 
 		findBar.getItems().addAll(findTxtFld, findResultLbl, prevWordBt, nextWordBtn);
@@ -565,38 +581,7 @@ public class TextEditor extends EditorBase {
 		return editHandler;
 	}
 
-	public void recalculateAccelerators(){
 
-		if (this.getScene() == null) return;
-
-		this.getScene().getAccelerators().put(
-				new KeyCodeCombination(KeyCode.ESCAPE),
-				new Runnable() {
-					@FXML
-					public void run() {
-						findBar.setVisible(false);
-						replaceBar.setVisible(false);
-
-						findBar.setMinHeight(0);
-						findBar.setMaxHeight(0);
-						replaceBar.setMinHeight(0);
-						replaceBar.setMaxHeight(0);
-
-						removeHighlightedTxt(coordinateList, codeArea, currWordIndex);
-						/*
-						 * After closing the popup dialog the color of keywords is also changed.
-						 * So in order to re-highlight the syntax I am appending and deleting the text to fire plaintext change event.
-						 * I think, there are some better way, but until that I am going with this one.
-						 */
-						codeArea.appendText(" ");
-						int len = codeArea.getText().length();
-						codeArea.deleteText(len-1, len);
-
-					}
-				}
-		);
-
-	}
 
 	@Override
 	public void copyAccelerators(){
@@ -605,7 +590,6 @@ public class TextEditor extends EditorBase {
 					proj.getFrameController().getStage().getScene().getAccelerators()
 			);
 		}
-		recalculateAccelerators();
 	}
 
 }

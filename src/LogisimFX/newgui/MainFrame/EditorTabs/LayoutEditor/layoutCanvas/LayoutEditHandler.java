@@ -8,6 +8,7 @@ package LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas;
 
 import LogisimFX.circuit.Circuit;
 import LogisimFX.newgui.MainFrame.EditorTabs.EditHandler;
+import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.LayoutEditor;
 import LogisimFX.proj.Action;
 import LogisimFX.proj.Project;
 import LogisimFX.std.base.Base;
@@ -16,10 +17,12 @@ import LogisimFX.tools.Tool;
 
 public class LayoutEditHandler extends EditHandler {
 
+	private LayoutEditor editor;
 	private LayoutCanvas canvas;
 
-	public LayoutEditHandler(LayoutCanvas canvas) {
-		this.canvas = canvas;
+	public LayoutEditHandler(LayoutEditor editor) {
+		this.editor = editor;
+		this.canvas = editor.getLayoutCanvas();
 	}
 
 	@Override
@@ -35,6 +38,7 @@ public class LayoutEditHandler extends EditHandler {
 			if (lib instanceof Base) selectAvailable = true;
 		}
 
+		if(from.equals("FIND")){ return !editor.getCirc().getNonWires().isEmpty();}
 		if(from.equals("CUT")){ return !selEmpty && selectAvailable && canChange;}
 		if(from.equals("COPY")){ return !selEmpty && selectAvailable;}
 		if(from.equals("PASTE")){ return selectAvailable && canChange && !Clipboard.isEmpty();}
@@ -75,6 +79,10 @@ public class LayoutEditHandler extends EditHandler {
 	@Override
 	public void redo() {
 		canvas.getProject().redoAction();
+	}
+
+	public void find(){
+		editor.triggerFindBar();
 	}
 
 	@Override

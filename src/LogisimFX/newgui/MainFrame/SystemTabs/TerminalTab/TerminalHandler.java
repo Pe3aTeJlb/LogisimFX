@@ -3,7 +3,7 @@
  * License information is located in the Launch file
  */
 
-package LogisimFX.newgui.MainFrame.EditorTabs.TerminalTab;
+package LogisimFX.newgui.MainFrame.SystemTabs.TerminalTab;
 
 import LogisimFX.newgui.MainFrame.EditorTabs.EditHandler;
 import javafx.scene.input.Clipboard;

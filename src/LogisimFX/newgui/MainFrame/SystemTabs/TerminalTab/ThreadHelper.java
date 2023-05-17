@@ -1,4 +1,4 @@
-package LogisimFX.newgui.MainFrame.EditorTabs.TerminalTab;
+package LogisimFX.newgui.MainFrame.SystemTabs.TerminalTab;
 
 import javafx.application.Platform;
 

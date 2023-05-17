@@ -17,6 +17,7 @@ import LogisimFX.newgui.MainFrame.LC;
 import LogisimFX.proj.Project;
 import LogisimFX.tools.Tool;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -68,6 +69,8 @@ public class AttributeTable extends GridPane
 
             selectionLbl = new Label();
             selectionLbl.textProperty().bind(attrModel.getTitle());
+            selectedTool.unbind();
+            selectedTool.bind(attrModel.getViewedObjectName());
             this.add(selectionLbl,0,0,2,1);
             GridPane.setHalignment(selectionLbl, HPos.CENTER);
 
@@ -152,6 +155,12 @@ public class AttributeTable extends GridPane
             updateTable();
         }
 
+    }
+
+    private SimpleStringProperty selectedTool = new SimpleStringProperty();
+
+    public SimpleStringProperty getSelectedTool() {
+        return selectedTool;
     }
 
 

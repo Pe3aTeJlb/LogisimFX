@@ -46,7 +46,7 @@ public class ProjectTreeToolBar extends ToolBar {
         });
 
 
-        CustomButton PullCircuitUpBtn = new  CustomButton(prefWidth,prefHeight,"projup.gif");
+        CustomButton PullCircuitUpBtn = new  CustomButton(prefWidth,prefHeight,"arrowup.gif");
         PullCircuitUpBtn.setTooltip(new ToolTip("projectMoveCircuitUpTip"));
         PullCircuitUpBtn.disableProperty().bind(
                 Bindings.or(logisimFile.obsPos.isEqualTo("first"),logisimFile.obsPos.isEqualTo("first&last"))
@@ -55,7 +55,7 @@ public class ProjectTreeToolBar extends ToolBar {
             ProjectCircuitActions.doMoveCircuit(proj,proj.getCurrentCircuit(),-1);
         });
 
-        CustomButton PullCircuitDownIBtn = new CustomButton(prefWidth,prefHeight,"projdown.gif");
+        CustomButton PullCircuitDownIBtn = new CustomButton(prefWidth,prefHeight,"arrowdown.gif");
         PullCircuitDownIBtn.setTooltip(new ToolTip("projectMoveCircuitDownTip"));
         PullCircuitDownIBtn.disableProperty().bind(
                 Bindings.or(logisimFile.obsPos.isEqualTo("last"),logisimFile.obsPos.isEqualTo("first&last"))

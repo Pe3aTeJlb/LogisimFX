@@ -5,35 +5,56 @@
 
 package LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor;
 
+import LogisimFX.IconsManager;
 import LogisimFX.circuit.Circuit;
+import LogisimFX.circuit.SubcircuitFactory;
+import LogisimFX.comp.Component;
+import LogisimFX.comp.ComponentFactory;
+import LogisimFX.instance.StdAttr;
 import LogisimFX.newgui.MainFrame.EditorTabs.EditHandler;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutEditHandler;
 import LogisimFX.newgui.MainFrame.LC;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutCanvas;
 import LogisimFX.newgui.MainFrame.EditorTabs.EditorBase;
 import LogisimFX.proj.Project;
+import LogisimFX.tools.AddTool;
+import LogisimFX.tools.Library;
+import LogisimFX.tools.Tool;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.Event;
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.util.Pair;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class LayoutEditor extends EditorBase {
 
-    private LayoutCanvas layoutCanvas;
     private LayoutEditorToolBar toolBar;
+    private LayoutCanvas layoutCanvas;
+    private ToolBar findBar;
+    private TextField findTxtFld;
+    private SimpleStringProperty currFindIndex, totalFindIndex;
+    private CheckBox searchProj;
+    private ArrayList<Pair<Circuit, Component>> compList = new ArrayList<>();
+    private AtomicInteger currCompIndex = new AtomicInteger(0);
     private HBox footBar;
 
     private LayoutEditHandler editHandler;
     private LayoutEditorEditMenu menu;
 
     private Circuit circ;
+
+
 
     public LayoutEditor(Project project, Circuit circ){
 
@@ -43,18 +64,205 @@ public class LayoutEditor extends EditorBase {
 
         AnchorPane canvasRoot = new AnchorPane();
         canvasRoot.setMinSize(0,0);
-
         layoutCanvas = new LayoutCanvas(canvasRoot, this);
         canvasRoot.getChildren().add(layoutCanvas);
+        VBox.setVgrow(canvasRoot, Priority.ALWAYS);
 
         toolBar = new LayoutEditorToolBar(proj, this);
         toolBar.setOnMousePressed(event -> Event.fireEvent(this, event.copyFor(event.getSource(), this)));
 
-        VBox.setVgrow(canvasRoot, Priority.ALWAYS);
-
-        editHandler = new LayoutEditHandler(getLayoutCanvas());
+        editHandler = new LayoutEditHandler(this);
         menu = new LayoutEditorEditMenu(this);
         layoutCanvas.getSelection().addListener(menu);
+
+        initFindBar();
+
+        initFootBar();
+
+        this.getChildren().addAll(toolBar, canvasRoot, findBar, footBar);
+
+        this.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.ESCAPE) {
+                closeFindBar();
+            }
+        });
+
+    }
+
+    private void initFindBar(){
+
+        currFindIndex = new SimpleStringProperty("0");
+        totalFindIndex = new SimpleStringProperty("0");
+
+        findBar = new ToolBar();
+        findBar.setVisible(false);
+
+        findTxtFld = new TextField();
+        findTxtFld.setOnKeyPressed(event ->{
+            if (event.getCode() == KeyCode.ENTER){
+                find();
+            }
+        });
+        //findTxtFld.textProperty().addListener(change -> find());
+
+        Label findResultLbl = new Label();
+        findResultLbl.textProperty().bind(
+                Bindings.concat(
+                        currFindIndex,
+                        "/",
+                        totalFindIndex
+                )
+        );
+
+        Button prevCompBt = new Button();
+        prevCompBt.setGraphic(IconsManager.getImageView("arrowleft.gif"));
+        prevCompBt.setOnAction(event -> prevComp());
+
+        Button nextCompBtn = new Button();
+        nextCompBtn.setGraphic(IconsManager.getImageView("arrowright.gif"));
+        nextCompBtn.setOnAction(event -> nextComp());
+
+        searchProj = new CheckBox();
+        searchProj.textProperty().bind(LC.createStringBinding("searchInProject"));
+
+        findBar.getItems().addAll(findTxtFld, findResultLbl, prevCompBt, nextCompBtn, searchProj);
+
+        findBar.setMinHeight(0);
+        findBar.setMaxHeight(0);
+
+    }
+
+    public void triggerFindBar(){
+
+        if (findBar.isVisible()){
+            closeFindBar();
+        } else {
+            openFindBar();
+        }
+
+    }
+
+    private void openFindBar(){
+        findBar.setVisible(true);
+        findBar.setMinHeight(-1);
+        findBar.setMaxHeight(-1);
+        find();
+    }
+
+    private void closeFindBar(){
+        findBar.setVisible(false);
+        findBar.setMinHeight(0);
+        findBar.setMaxHeight(0);
+        proj.getFrameController().getLayoutCanvas().focusOnComp(null);
+        //layoutCanvas.focusOnComp(null);
+    }
+
+    private void find() {
+
+        if (findTxtFld.getText().isEmpty()) {
+            return;
+        }
+
+        compList.clear();
+
+        if (searchProj.isSelected()) {
+
+            calculateComps(circ);
+
+            for (AddTool tool: proj.getLogisimFile().getTools()){
+                calculateComps(((SubcircuitFactory)tool.getFactory()).getSubcircuit());
+            }
+
+            List<Library> builtinLibraries = proj.getLogisimFile().getLoader().getBuiltin().getLibraries();
+            for (Library lib: proj.getLogisimFile().getLibraries()){
+                if (!builtinLibraries.contains(lib)) {
+                    calculateLibComps(lib);
+                }
+            }
+
+        } else {
+            calculateComps(circ);
+        }
+
+        if (compList.size() == 0) {
+            return;
+        }
+
+        proj.getFrameController().addCircLayoutEditor(compList.get(0).getKey());
+        proj.getFrameController().getLayoutCanvas().focusOnComp(compList.get(0).getValue());
+        //layoutCanvas.focusOnComp(compList.get(0).getValue());
+        totalFindIndex.set(String.valueOf(compList.size()));
+        currFindIndex.set(String.valueOf(currCompIndex.get() + 1));
+
+    }
+
+    private void calculateComps(Circuit circ){
+
+        for (Component comp : circ.getNonWires()) {
+            if (comp.getAttributeSet().containsAttribute(StdAttr.LABEL)) {
+                if (comp.getAttributeSet().getValue(StdAttr.LABEL).contains(findTxtFld.getText())) {
+                    compList.add(new Pair<>(circ, comp));
+                }
+            }
+        }
+
+    }
+
+    private void calculateLibComps(Library lib){
+
+        for (Tool tool: lib.getTools()) {
+            if (tool instanceof AddTool) {
+                ComponentFactory fact = ((AddTool) tool).getFactory(false);
+                if (fact instanceof SubcircuitFactory) {
+                    calculateComps(((SubcircuitFactory)fact).getSubcircuit());
+                }
+            }
+        }
+
+        for (Library sublib: lib.getLibraries()) {
+            calculateLibComps(sublib);
+        }
+
+    }
+
+
+    private void nextComp() {
+        if (compList.size()==0){
+            return;
+        }
+        gotoNextComp(compList, currCompIndex);
+        currFindIndex.set(String.valueOf(currCompIndex.get()+1));
+    }
+
+    private void gotoNextComp(ArrayList<Pair<Circuit, Component>> coordinateList, AtomicInteger currCompIndex) {
+        if (currCompIndex.get() >= (coordinateList.size()-1) && coordinateList.size()!=0) return;
+        currCompIndex.incrementAndGet();
+        int index = currCompIndex.get();
+        proj.getFrameController().addCircLayoutEditor(compList.get(index).getKey());
+        proj.getFrameController().getLayoutCanvas().focusOnComp(compList.get(0).getValue());
+        //layoutCanvas.focusOnComp(compList.get(index).getValue());
+    }
+
+
+    private void prevComp() {
+        if (compList.size()==0) {
+            return;
+        }
+        gotoPrevComp(compList, currCompIndex);
+        currFindIndex.set(String.valueOf(currCompIndex.get()+1));
+    }
+
+    private void gotoPrevComp(ArrayList<Pair<Circuit, Component>> coordinateList, AtomicInteger currCompIndex) {
+        if (currCompIndex.get() <= 0 && coordinateList.size()!=0) return;
+        currCompIndex.decrementAndGet();
+        int index = currCompIndex.get();
+        proj.getFrameController().addCircLayoutEditor(compList.get(index).getKey());
+        proj.getFrameController().getLayoutCanvas().focusOnComp(compList.get(0).getValue());
+        //layoutCanvas.focusOnComp(compList.get(index).getValue());
+    }
+
+
+    private void initFootBar(){
 
         footBar = new HBox();
         footBar.setAlignment(Pos.CENTER_RIGHT);
@@ -78,9 +286,8 @@ public class LayoutEditor extends EditorBase {
 
         footBar.getChildren().add(info);
 
-        this.getChildren().addAll(toolBar, canvasRoot, footBar);
-
     }
+
 
     public List<MenuItem> getEditMenuItems(){
         return menu.getMenuItems();

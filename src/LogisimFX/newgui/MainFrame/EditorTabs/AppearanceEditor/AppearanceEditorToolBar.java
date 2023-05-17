@@ -151,7 +151,7 @@ public class AppearanceEditorToolBar extends ToolBar {
         EditAppearanceBtnsList = FXCollections.observableArrayList();
         initItems();
 
-        proj.getFrameController().editorProperty().addListener((observableValue, editorBase, t1) -> {
+        appearanceEditor.isSelectedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (appearanceEditor.isSelected()){
                 recalculateAccelerators();
             }

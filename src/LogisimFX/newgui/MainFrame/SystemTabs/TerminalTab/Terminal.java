@@ -1,15 +1,15 @@
-package LogisimFX.newgui.MainFrame.EditorTabs.TerminalTab;
+package LogisimFX.newgui.MainFrame.SystemTabs.TerminalTab;
 
 import LogisimFX.IconsManager;
 import LogisimFX.Main;
+import LogisimFX.circuit.WireSet;
 import LogisimFX.fpga.designrulecheck.SimpleDrcContainer;
 import LogisimFX.newgui.MainFrame.EditorTabs.EditHandler;
-import LogisimFX.newgui.MainFrame.EditorTabs.EditorBase;
+import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.LayoutEditor;
 import LogisimFX.proj.Project;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.Event;
-import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -20,7 +20,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.transform.Scale;
 import org.fxmisc.flowless.ScaledVirtualized;
 import org.fxmisc.flowless.VirtualizedScrollPane;
-import org.fxmisc.richtext.LineNumberFactory;
 import org.fxmisc.richtext.StyleClassedTextArea;
 import org.fxmisc.richtext.model.PlainTextChange;
 import org.fxmisc.richtext.util.UndoUtils;
@@ -33,7 +32,7 @@ import java.util.function.IntFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Terminal extends EditorBase {
+public class Terminal extends VBox {
 
 	private Project proj;
 /*
@@ -71,7 +70,7 @@ public class Terminal extends EditorBase {
 
 	public Terminal(Project project){
 
-		super(project);
+		super();
 
 		this.proj = project;
 
@@ -80,9 +79,23 @@ public class Terminal extends EditorBase {
 
 		this.getChildren().addAll(findBar, virtualizedScrollPane);
 
-		proj.getFrameController().editorProperty().addListener((observableValue, editorBase, t1) -> {
-			if (this.isSelected()){
-				recalculateAccelerators();
+		this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+			if (event.getCode() == KeyCode.ESCAPE) {
+				findBar.setVisible(false);
+
+				findBar.setMinHeight(0);
+				findBar.setMaxHeight(0);
+
+				removeHighlightedTxt(coordinateList, terminalArea, currWordIndex);
+				/*
+				 * After closing the popup dialog the color of keywords is also changed.
+				 * So in order to re-highlight the syntax I am appending and deleting the text to fire plaintext change event.
+				 * I think, there are some better way, but until that I am going with this one.
+				 */
+				terminalArea.appendText(" ");
+				int len = terminalArea.getText().length();
+				terminalArea.deleteText(len-1, len);
+
 			}
 		});
 
@@ -120,11 +133,6 @@ public class Terminal extends EditorBase {
 			Event.fireEvent(this, event.copyFor(event.getSource(), this));
 		});
 
-		terminalArea.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-			System.out.println("lolxds");
-			terminateListeners();
-		});
-
 		IntFunction<Node> graphicFactory = line -> {
 
 			HBox hbox = new HBox();
@@ -139,10 +147,15 @@ public class Terminal extends EditorBase {
 			if (!drcContainers.isEmpty() && drcContainers.containsKey(line) && drcContainers.get(line).hasCircuit()){
 				SimpleDrcContainer drc = drcContainers.get(line);
 				button.setOnAction(event -> {
-					generateDrcTrace(drc);
 					if (curDRCContainer != null){
-						curDRCContainer.clearMarks();
+						if (!curDRCContainer.getDrcComponents().isEmpty()) {
+							layoutEditor.getLayoutCanvas().setHighlightedComponent(null);
+						}
+						if (!curDRCContainer.getDrcWires().isEmpty()) {
+							layoutEditor.getLayoutCanvas().setHighlightedWires(WireSet.EMPTY);
+						}
 					}
+					generateDrcTrace(drc);
 					curDRCContainer = drc;
 				});
 				button.setGraphic(IconsManager.getIcon("drclink.png"));
@@ -183,11 +196,11 @@ public class Terminal extends EditorBase {
 		);
 
 		Button prevWordBt = new Button();
-		prevWordBt.setGraphic(IconsManager.getImageView("projup.gif"));
+		prevWordBt.setGraphic(IconsManager.getImageView("arrowup.gif"));
 		prevWordBt.setOnAction(event -> prevWord());
 
 		Button nextWordBtn = new Button();
-		nextWordBtn.setGraphic(IconsManager.getImageView("projdown.gif"));
+		nextWordBtn.setGraphic(IconsManager.getImageView("arrowdown.gif"));
 		nextWordBtn.setOnAction(event -> nextWord());
 
 		findBar.getItems().addAll(findTxtFld, findResultLbl, prevWordBt, nextWordBtn);
@@ -498,7 +511,8 @@ public class Terminal extends EditorBase {
 
 
 	HashMap<Integer, SimpleDrcContainer> drcContainers = new HashMap<>();
-	SimpleDrcContainer curDRCContainer;
+	LayoutEditor layoutEditor;
+	SimpleDrcContainer curDRCContainer = null;
 
 	public void printError(Exception e){
 		printError(e.getMessage());
@@ -537,21 +551,23 @@ public class Terminal extends EditorBase {
 	}
 
 	private void generateDrcTrace(SimpleDrcContainer dc) {
+
 		if (dc.hasCircuit()) {
-			if (proj != null && !proj.getCurrentCircuit().equals(dc.getCircuit())) {
-				proj.getFrameController().selectCircLayoutEditor(dc.getCircuit());
+
+			proj.getFrameController().selectCircLayoutEditor(dc.getCircuit());
+			layoutEditor = (LayoutEditor) proj.getFrameController().getEditor();
+
+			if (dc.getDrcComponents() != null && !dc.getDrcComponents().isEmpty()) {
+				layoutEditor.getLayoutCanvas().setHighlightedComponents(new ArrayList<>(dc.getDrcComponents()));
 			}
-		}
-		dc.markComponents();
-	}
 
-	public void hideDrcTrace(){
-		if (curDRCContainer != null){
-			curDRCContainer.clearMarks();
-			curDRCContainer = null;
-		}
-	}
+			if (dc.getDrcWires() != null && !dc.getDrcWires().isEmpty()) {
+				layoutEditor.getLayoutCanvas().setHighlightedWires(new WireSet(dc.getDrcWires()));
+			}
 
+		}
+
+	}
 
 /*
 	public ObjectProperty<Reader> inputReaderProperty() {
@@ -592,38 +608,7 @@ public class Terminal extends EditorBase {
 		outputWriterProperty.set(writer);
 	}
 */
-
-
-	public void recalculateAccelerators(){
-
-		if (this.getScene() == null) return;
-
-		this.getScene().getAccelerators().put(
-				new KeyCodeCombination(KeyCode.ESCAPE),
-				new Runnable() {
-					@FXML
-					public void run() {
-						findBar.setVisible(false);
-
-						findBar.setMinHeight(0);
-						findBar.setMaxHeight(0);
-
-						removeHighlightedTxt(coordinateList, terminalArea, currWordIndex);
-						/*
-						 * After closing the popup dialog the color of keywords is also changed.
-						 * So in order to re-highlight the syntax I am appending and deleting the text to fire plaintext change event.
-						 * I think, there are some better way, but until that I am going with this one.
-						 */
-						terminalArea.appendText(" ");
-						int len = terminalArea.getText().length();
-						terminalArea.deleteText(len-1, len);
-
-					}
-				}
-		);
-
-	}
-
+/*
 	@Override
 	public void copyAccelerators(){
 		if (this.getScene() != proj.getFrameController().getStage().getScene()){
@@ -631,10 +616,9 @@ public class Terminal extends EditorBase {
 					proj.getFrameController().getStage().getScene().getAccelerators()
 			);
 		}
-		recalculateAccelerators();
 	}
+*/
 
-	@Override
 	public void terminateListeners(){
 		/*
 		if (process != null) {

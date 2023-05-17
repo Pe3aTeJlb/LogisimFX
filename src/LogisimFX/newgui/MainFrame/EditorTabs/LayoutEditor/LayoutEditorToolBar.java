@@ -148,7 +148,7 @@ public class LayoutEditorToolBar extends ToolBar {
         EditCircuitBtnsList = FXCollections.observableArrayList();
         initItems();
 
-        proj.getFrameController().editorProperty().addListener((observableValue, editorBase, t1) -> {
+        layoutEditor.isSelectedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (layoutEditor.isSelected()){
                 recalculateAccelerators();
             }

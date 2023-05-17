@@ -23,16 +23,6 @@ import javafx.scene.control.SeparatorMenuItem;
 public class Splitter extends ManagedComponent
 		implements WireRepair, MenuExtender, ToolTipMaker, AttributeListener {
 
-	private boolean isMarked = false;
-
-	public void setMarked(boolean value) {
-		isMarked = value;
-	}
-
-	public boolean isMarked() {
-		return isMarked;
-	}
-
 	// basic data
 	byte[] bit_thread; // how each bit maps to thread within end
 
@@ -136,13 +126,6 @@ public class Splitter extends ManagedComponent
 			SplitterPainter.drawLines(context, attrs, loc);
 			SplitterPainter.drawLabels(context, attrs, loc);
 			context.drawPins(this);
-		}
-		if (isMarked) {
-			final var g = context.getGraphics();
-			final var bds = this.getBounds();
-			g.setColor(Netlist.DRC_INSTANCE_MARK_COLOR);
-			g.setLineWidth(2);
-			g.c.strokeRoundRect(bds.getX() - 10, bds.getY() - 10, bds.getWidth() + 20, bds.getHeight() + 20, 20, 20);
 		}
 		context.getGraphics().toDefault();
 

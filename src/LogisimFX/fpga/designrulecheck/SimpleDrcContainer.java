@@ -10,9 +10,8 @@
 package LogisimFX.fpga.designrulecheck;
 
 import LogisimFX.circuit.Circuit;
-import LogisimFX.circuit.Splitter;
 import LogisimFX.circuit.Wire;
-import LogisimFX.instance.InstanceComponent;
+import LogisimFX.comp.Component;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,23 +21,18 @@ public class SimpleDrcContainer {
 	public static final int LEVEL_NORMAL = 1;
 	public static final int LEVEL_SEVERE = 2;
 	public static final int LEVEL_FATAL = 3;
-	public static final int MARK_NONE = 0;
-	public static final int MARK_INSTANCE = 1;
-	public static final int MARK_LABEL = 2;
-	public static final int MARK_WIRE = 4;
 
 	private final String message;
 	private final int severityLevel;
-	private Set<Object> drcComponents;
+	private Set<Component> drcComponents;
+	private Set<Wire> drcWires;
 	private Circuit myCircuit;
-	private final int markType;
 	private int listNumber;
 	private final boolean suppressCount;
 
 	public SimpleDrcContainer(String message, int level) {
 		this.message = message;
 		this.severityLevel = level;
-		this.markType = MARK_NONE;
 		this.listNumber = 0;
 		this.suppressCount = false;
 	}
@@ -46,7 +40,6 @@ public class SimpleDrcContainer {
 	public SimpleDrcContainer(String message, int level, boolean supressCount) {
 		this.message = message;
 		this.severityLevel = level;
-		this.markType = MARK_NONE;
 		this.listNumber = 0;
 		this.suppressCount = supressCount;
 	}
@@ -54,7 +47,6 @@ public class SimpleDrcContainer {
 	public SimpleDrcContainer(Object message, int level) {
 		this.message = message.toString();
 		this.severityLevel = level;
-		this.markType = MARK_NONE;
 		this.listNumber = 0;
 		this.suppressCount = false;
 	}
@@ -62,25 +54,22 @@ public class SimpleDrcContainer {
 	public SimpleDrcContainer(Object message, int level, boolean supressCount) {
 		this.message = message.toString();
 		this.severityLevel = level;
-		this.markType = MARK_NONE;
 		this.listNumber = 0;
 		this.suppressCount = supressCount;
 	}
 
-	public SimpleDrcContainer(Circuit circ, Object message, int level, int markMask) {
+	public SimpleDrcContainer(Circuit circ, Object message, int level) {
 		this.message = message.toString();
 		this.severityLevel = level;
 		this.myCircuit = circ;
-		this.markType = markMask;
 		this.listNumber = 0;
 		this.suppressCount = false;
 	}
 
-	public SimpleDrcContainer(Circuit circ, Object message, int level, int markMask, boolean supressCount) {
+	public SimpleDrcContainer(Circuit circ, Object message, int level, boolean supressCount) {
 		this.message = message.toString();
 		this.severityLevel = level;
 		this.myCircuit = circ;
-		this.markType = markMask;
 		this.listNumber = 0;
 		this.suppressCount = supressCount;
 	}
@@ -107,12 +96,17 @@ public class SimpleDrcContainer {
 		return (myCircuit != null);
 	}
 
-	public void addMarkComponent(Object comp) {
+	public void addMarkComponent(Component comp) {
 		if (drcComponents == null) drcComponents = new HashSet<>();
 		drcComponents.add(comp);
 	}
 
-	public void addMarkComponents(Set<?> set) {
+	public void addMarkWires(Set<Wire> set) {
+		if (drcWires == null) drcWires = new HashSet<>();
+		drcWires.addAll(set);
+	}
+
+	public void addMarkComponents(Set<Component> set) {
 		if (drcComponents == null) drcComponents = new HashSet<>();
 		drcComponents.addAll(set);
 	}
@@ -129,39 +123,12 @@ public class SimpleDrcContainer {
 		return listNumber;
 	}
 
-	public void markComponents() {
-		if (!isDrcInfoPresent()) return;
-		for (final var obj : drcComponents) {
-			if (obj instanceof Wire) {
-				if ((markType & MARK_WIRE) != 0) {
-					((Wire)obj).setDrcHighlight(true);
-				}
-			} else if (obj instanceof Splitter) {
-				if ((markType & MARK_INSTANCE) != 0) {
-					((Splitter) obj).setMarked(true);
-				}
-			} else if (obj instanceof InstanceComponent) {
-				if ((markType & MARK_INSTANCE) != 0) ((InstanceComponent)obj).markInstance();
-				if ((markType & MARK_LABEL) != 0) ((InstanceComponent)obj).markLabel();
-			}
-		}
+	public Set<Component> getDrcComponents(){
+		return drcComponents;
 	}
 
-	public void clearMarks() {
-		if (!isDrcInfoPresent()) return;
-		for (final var obj : drcComponents) {
-			if (obj instanceof Wire) {
-				if ((markType & MARK_WIRE) != 0) {
-					((Wire)obj).setDrcHighlight(false);
-				}
-			} else if (obj instanceof Splitter) {
-				if ((markType & MARK_INSTANCE) != 0) {
-					((Splitter) obj).setMarked(false);
-				}
-			} else if (obj instanceof InstanceComponent) {
-				((InstanceComponent)obj).clearMarks();
-			}
-		}
+	public Set<Wire> getDrcWires(){
+		return drcWires;
 	}
 
 }

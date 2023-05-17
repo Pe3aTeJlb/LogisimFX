@@ -13,6 +13,7 @@ import LogisimFX.data.*;
 import LogisimFX.instance.Instance;
 import LogisimFX.instance.StdAttr;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
+import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutCanvas;
 import LogisimFX.std.wiring.PullResistor;
 import LogisimFX.std.wiring.Tunnel;
 import LogisimFX.util.IteratorUtil;
@@ -424,25 +425,12 @@ class CircuitWires {
 					g.setColor(Color.BLACK);
 				}
 				if (highlighted.containsWire(w)) {
+					g.setColor(LayoutCanvas.HALO_COLOR);
 					g.setLineWidth(Wire.WIDTH + 2);
 					g.c.strokeLine(s.getX(), s.getY(), t.getX(), t.getY());
 					g.setLineWidth(Wire.WIDTH);
 				} else {
 					g.c.strokeLine(s.getX(), s.getY(), t.getX(), t.getY());
-				}
-				/* The following part is used by the FPGA-commanders DRC to highlight a wire with DRC
-				 * problems (KTT1)
-				 */
-				if (w.isDrcHighlighted()) {
-					g.setColor(w.getDrcHighlightColor());
-					g.setLineWidth(2);
-					if (w.isVertical()) {
-						g.c.strokeLine(s.getX() - 3, s.getY(), t.getX() - 3, t.getY());
-						g.c.strokeLine(s.getX() + 3, s.getY(), t.getX() + 3, t.getY());
-					} else {
-						g.c.strokeLine(s.getX(), s.getY() - 3, t.getX(), t.getY() - 3);
-						g.c.strokeLine(s.getX(), s.getY() + 3, t.getX(), t.getY() + 3);
-					}
 				}
 			}
 
@@ -462,6 +450,7 @@ class CircuitWires {
 							g.setColor(Color.BLACK);
 						}
 						if (highlighted.containsLocation(loc)) {
+							g.setColor(LayoutCanvas.HALO_COLOR);
 							g.c.fillOval(loc.getX() - 5, loc.getY() - 5, 10, 10);
 						} else {
 							g.c.fillOval(loc.getX() - 4, loc.getY() - 4, 8, 8);
@@ -487,6 +476,7 @@ class CircuitWires {
 						g.setColor(Color.BLACK);
 					}
 					if (highlighted.containsWire(w)) {
+						g.setColor(LayoutCanvas.HALO_COLOR);
 						g.setLineWidth(Wire.WIDTH + 2);
 						g.c.strokeLine(s.getX(), s.getY(), t.getX(), t.getY());
 						g.setLineWidth(Wire.WIDTH);
@@ -520,6 +510,7 @@ class CircuitWires {
 								g.setColor(Color.BLACK);
 							}
 							if (highlighted.containsLocation(loc)) {
+								g.setColor(LayoutCanvas.HALO_COLOR);
 								g.c.fillOval(loc.getX() - 5, loc.getY() - 5, 10, 10);
 							} else {
 								g.c.fillOval(loc.getX() - 4, loc.getY() - 4, 8, 8);

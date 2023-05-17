@@ -13,7 +13,6 @@ import LogisimFX.comp.ComponentUserEvent;
 import LogisimFX.data.*;
 import LogisimFX.file.LibraryEvent;
 import LogisimFX.file.LibraryListener;
-import LogisimFX.instance.Instance;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.LayoutEditor;
 import LogisimFX.newgui.MainFrame.LC;
@@ -27,8 +26,6 @@ import com.sun.javafx.tk.FontMetrics;
 import javafx.animation.AnimationTimer;
 import javafx.animation.PauseTransition;
 import javafx.beans.binding.StringBinding;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.Event;
 import javafx.scene.CacheHint;
@@ -37,6 +34,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -46,9 +44,7 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class LayoutCanvas extends Canvas {
 
@@ -102,9 +98,8 @@ public class LayoutCanvas extends Canvas {
 
 
     //Haloed components
-    static final Color HALO_COLOR = Color.color(0.753, 1, 1);
-    private Component haloedComponent = null;
-    private Circuit haloedCircuit = null;
+    public static final Color HALO_COLOR = Color.color(0, 1, 1);
+    private ArrayList<Component> highlightedComponents = new ArrayList<>();
     private WireSet highlightedWires = WireSet.EMPTY;
 
     private static final Set<Component> NO_COMPONENTS = Collections.emptySet();
@@ -417,8 +412,7 @@ public class LayoutCanvas extends Canvas {
 
     private void drawWithUserState() {
 
-        //circ = proj.getCurrentCircuit();
-        Set<Component> hidden = NO_COMPONENTS;
+        Set<Component> hidden;
 
         if (dragTool == null) {
             hidden = NO_COMPONENTS;
@@ -427,23 +421,27 @@ public class LayoutCanvas extends Canvas {
             if (hidden == null) hidden = NO_COMPONENTS;
         }
 
-        // draw halo around component whose attributes we are viewing
-        boolean showHalo = AppPreferences.ATTRIBUTE_HALO.getBoolean();
-        if (showHalo && haloedComponent != null && haloedCircuit == circ
-                && !hidden.contains(haloedComponent)) {
+        // draw halo around component which we are looking for
+        if (highlightedComponents != null && !highlightedComponents.isEmpty()) {
 
-            g.setLineWidth(3);
-            g.setColor(HALO_COLOR);
-            Bounds bds = haloedComponent.getBounds(g).expand(5);
-            int w = bds.getWidth();
-            int h = bds.getHeight();
-            double a = SQRT_2 * w;
-            double b = SQRT_2 * h;
-            g.c.strokeOval((int) Math.round(bds.getX() + w/2.0 - a/2.0),
-                    (int) Math.round(bds.getY() + h/2.0 - b/2.0),
-                    (int) Math.round(a), (int) Math.round(b));
+            for(Component comp: highlightedComponents) {
 
-            g.toDefault();
+                if (hidden.contains(comp)) continue;
+
+                g.setLineWidth(3);
+                g.setColor(HALO_COLOR);
+                Bounds bds = comp.getBounds(g).expand(5);
+                int w = bds.getWidth();
+                int h = bds.getHeight();
+                double a = SQRT_2 * w;
+                double b = SQRT_2 * h;
+                g.c.strokeOval((int) Math.round(bds.getX() + w / 2.0 - a / 2.0),
+                        (int) Math.round(bds.getY() + h / 2.0 - b / 2.0),
+                        (int) Math.round(a), (int) Math.round(b));
+
+                g.toDefault();
+
+            }
 
         }
 
@@ -549,10 +547,6 @@ public class LayoutCanvas extends Canvas {
 
     }
 
-    public void setCircState(CircuitState circState){
-        this.circState = circState;
-    }
-
     //Tools
 
     // convert screen coordinates to grid coordinates by inverting circuit transform
@@ -611,12 +605,11 @@ public class LayoutCanvas extends Canvas {
     private void setCanvasEvents(){
 
         //this.addEventFilter(MouseEvent.ANY, (e) -> this.requestFocus());
-        //this.addEventFilter(KeyEvent.ANY, (e) -> {this.requestFocus();});
+        //this.addEventFilter(KeyEvent.ANY, (e) -> this.requestFocus());
 
         this.setOnMousePressed(event -> {
 
-            //Accidentally press on canvas happens before press on tab content, so copy it for tab content
-            Event.fireEvent(layoutEditor, event.copyFor(event.getSource(), layoutEditor));
+            this.requestFocus();
 
             pauseTransition.stop();
             if(tooltip != null && tooltip.isShowing())tooltip.hide();
@@ -647,6 +640,9 @@ public class LayoutCanvas extends Canvas {
                 dragTool.mousePressed(this, getGraphics(), new CME(event));
             }
 
+            //Accidentally press on canvas happens before press on tab content, so copy it for tab content
+            Event.fireEvent(layoutEditor, event.copyFor(event.getSource(), layoutEditor));
+
         });
 
         this.setOnMouseDragged(event -> {
@@ -661,29 +657,10 @@ public class LayoutCanvas extends Canvas {
                 dx = (event.getX() - dragScreenX);
                 dy = (event.getY() - dragScreenY);
 
-                if (dx == 0 && dy == 0) {
-                    return;
-                }
-
-                if (transform[4] + dx > 0) {
-                    dx = 0;
-                    transform[4] = 0;
-                }
-
-                if (transform[5] + dy > 0) {
-                    dy = 0;
-                    transform[5] = 0;
-                }
-
-                clearRect40K(transform[4], transform[5]);
-
-                transform[4] += dx;
-                transform[5] += dy;
-
                 dragScreenX = event.getX();
                 dragScreenY = event.getY();
 
-                requestUpdate = true;
+                moveCanvasArea(dx, dy);
 
             }
 
@@ -730,6 +707,8 @@ public class LayoutCanvas extends Canvas {
         });
 
         this.setOnMouseMoved(event -> {
+
+            this.requestFocus();
 
             mouseXProperty.set(Integer.toString(inverseTransformX(event.getX())));
             mouseYProperty.set(Integer.toString(inverseTransformY(event.getY())));
@@ -806,6 +785,10 @@ public class LayoutCanvas extends Canvas {
 
         this.setOnKeyPressed(event -> {
 
+            this.requestFocus();
+
+            //Event.fireEvent(layoutEditor, event.copyFor(event.getSource(), layoutEditor));
+
             Tool tool = proj.getTool();
             if (tool != null) tool.keyPressed(this, event);
 
@@ -816,9 +799,9 @@ public class LayoutCanvas extends Canvas {
                 AppPreferences.SHOW_GRID.set(!AppPreferences.SHOW_GRID.get());
             }
 
-            if(event.getCode() == KeyCode.F){
+            if(event.getCode() == KeyCode.J){
                 frameCap++;
-                if(frameCap ==16) frameCap = 1;
+                if(frameCap == 16) frameCap = 1;
                 System.out.println(frameCap);
             }
 
@@ -829,8 +812,6 @@ public class LayoutCanvas extends Canvas {
             Tool tool = proj.getTool();
             if (tool != null) tool.keyReleased(this, event);
 
-            event.consume();
-
         });
 
         this.setOnKeyTyped(event -> {
@@ -838,42 +819,11 @@ public class LayoutCanvas extends Canvas {
             Tool tool = proj.getTool();
             if (tool != null) tool.keyTyped(this, event);
 
-            event.consume();
-
         });
 
     }
 
-    public void showContextMenu(ContextMenu menu, double x, double y){
 
-        if(contextMenu != null)contextMenu.hide();
-
-        contextMenu = menu;
-        contextMenu.show(this,x,y);
-
-    }
-
-    private void computeToolTipe(MouseEvent event){
-
-        if (AppPreferences.COMPONENT_TIPS.getBoolean()) {
-            CME cme = new CME(event);
-            Location loc = Location.create(cme.snappedX, cme.snappedY);
-            ComponentUserEvent e;
-            for (Component comp : getCircuit().getAllContaining(loc)) {
-                Object makerObj = comp.getFeature(ToolTipMaker.class);
-                if (makerObj instanceof ToolTipMaker) {
-                    ToolTipMaker maker = (ToolTipMaker) makerObj;
-                    e = new ComponentUserEvent(this, loc.getX(), loc.getY(), cme);
-                    if(maker.getToolTip(e) != null) {
-                        tooltip.setText(maker.getToolTip(e).getValue());
-                        pauseTransition.setOnFinished(ev -> tooltip.show(this, event.getScreenX()+5, event.getScreenY()+5));
-                        pauseTransition.play();
-                    }
-                }
-            }
-        }
-
-    }
 
     public void zoomIn(){
         zoom(40);
@@ -929,6 +879,61 @@ public class LayoutCanvas extends Canvas {
 
     }
 
+    public void showContextMenu(ContextMenu menu, double x, double y){
+
+        if(contextMenu != null)contextMenu.hide();
+
+        contextMenu = menu;
+        contextMenu.show(this,x,y);
+
+    }
+
+    private void computeToolTipe(MouseEvent event){
+
+        if (AppPreferences.COMPONENT_TIPS.getBoolean()) {
+            CME cme = new CME(event);
+            Location loc = Location.create(cme.snappedX, cme.snappedY);
+            ComponentUserEvent e;
+            for (Component comp : getCircuit().getAllContaining(loc)) {
+                Object makerObj = comp.getFeature(ToolTipMaker.class);
+                if (makerObj instanceof ToolTipMaker) {
+                    ToolTipMaker maker = (ToolTipMaker) makerObj;
+                    e = new ComponentUserEvent(this, loc.getX(), loc.getY(), cme);
+                    if(maker.getToolTip(e) != null) {
+                        tooltip.setText(maker.getToolTip(e).getValue());
+                        pauseTransition.setOnFinished(ev -> tooltip.show(this, event.getScreenX()+5, event.getScreenY()+5));
+                        pauseTransition.play();
+                    }
+                }
+            }
+        }
+
+    }
+
+    private void moveCanvasArea(double dx, double dy){
+
+        if (dx == 0 && dy == 0) {
+            return;
+        }
+
+        if (transform[4] + dx > 0) {
+            dx = 0;
+            transform[4] = 0;
+        }
+
+        if (transform[5] + dy > 0) {
+            dy = 0;
+            transform[5] = 0;
+        }
+
+        clearRect40K(transform[4], transform[5]);
+
+        transform[4] += dx;
+        transform[5] += dy;
+
+        requestUpdate = true;
+
+    }
 
     //Canvas trail cleaner
 
@@ -967,12 +972,43 @@ public class LayoutCanvas extends Canvas {
         highlightedWires = value == null ? WireSet.EMPTY : value;
     }
 
-    public void setHaloedComponent(Circuit circ, Component comp) {
-        if (comp == haloedComponent) return;
-        haloedCircuit = circ;
-        haloedComponent = comp;
+    public void setHighlightedComponent(Component comp) {
+        highlightedComponents.clear();
+        if (comp != null) {
+            highlightedComponents.add(comp);
+        }
     }
 
+    public void setHighlightedComponents(Collection<Component> comps) {
+        highlightedComponents.clear();
+        highlightedComponents.addAll(comps);
+    }
+
+    public void focusOnComp(Component comp){
+
+        setHighlightedComponent(comp);
+
+        if (comp == null) {
+            return;
+        }
+
+        double targetX = Math.max(0, comp.getLocation().getX() - (width / 2 / transform[0]));
+        double targetY = Math.max(0, comp.getLocation().getY() - (height / 2 / transform[0]));
+
+        double ddx = (inverseTransformX(0) - targetX) * transform[0];
+        double ddy = (inverseTransformY(0) - targetY) * transform[0];
+
+        moveCanvasArea(
+                ddx,
+                ddy
+        );
+
+    }
+
+
+    public void setCircState(CircuitState circState){
+        this.circState = circState;
+    }
 
 
     public Selection getSelection() {

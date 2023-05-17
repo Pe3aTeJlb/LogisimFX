@@ -5,7 +5,6 @@
 
 package LogisimFX.newgui.MainFrame.EditorTabs;
 
-import LogisimFX.circuit.Circuit;
 import LogisimFX.circuit.CircuitState;
 import LogisimFX.proj.Action;
 import LogisimFX.proj.Project;
@@ -167,14 +166,14 @@ public class EditorBase extends VBox {
     private BooleanProperty isSelected;
 
     private void setIsSelected() {
-        editorProperty().set(proj.getFrameController().getEditor() == this);
+        isSelectedProperty().set(proj.getFrameController().getEditor() == this);
     }
 
     public boolean isSelected() {
-        return editorProperty().get();
+        return isSelectedProperty().get();
     }
 
-    public BooleanProperty editorProperty() {
+    public BooleanProperty isSelectedProperty() {
         if (isSelected == null) {
             isSelected = new SimpleBooleanProperty(this, "isSelected", false);
         }

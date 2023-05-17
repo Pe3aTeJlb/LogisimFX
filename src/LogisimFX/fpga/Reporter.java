@@ -11,9 +11,7 @@ package LogisimFX.fpga;
 
 import LogisimFX.Startup;
 import LogisimFX.fpga.designrulecheck.SimpleDrcContainer;
-import LogisimFX.newgui.MainFrame.EditorTabs.TerminalTab.Terminal;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import LogisimFX.newgui.MainFrame.SystemTabs.TerminalTab.Terminal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -5,13 +5,10 @@
 
 package LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor;
 
-import LogisimFX.circuit.Circuit;
 import LogisimFX.localization.LC_menu;
 import LogisimFX.localization.Localizer;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutEditHandler;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.Selection;
-import LogisimFX.proj.Action;
-import LogisimFX.proj.Project;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.input.KeyCombination;
@@ -27,6 +24,7 @@ public class LayoutEditorEditMenu implements Selection.Listener{
 
     private final MenuItem Undo,
                             Redo,
+                            Find,
                             Cut,
                             Copy,
                             Paste,
@@ -65,6 +63,12 @@ public class LayoutEditorEditMenu implements Selection.Listener{
             );
         });
         Redo.setOnAction(event -> layoutEditor.redo());
+
+        Find = new MenuItem();
+        Find.setAccelerator(KeyCombination.keyCombination("Ctrl+F"));
+        Find.textProperty().bind(localizer.createStringBinding("editFindItem"));
+        //Find.setDisable(editHandler == null || !editHandler.computeEnabled("FIND"));
+        Find.setOnAction(event -> layoutEditor.triggerFindBar());
 
 
         SeparatorMenuItem sp1 = new SeparatorMenuItem();
@@ -131,6 +135,7 @@ public class LayoutEditorEditMenu implements Selection.Listener{
         menuItems = List.of(
                 Undo,
                 Redo,
+                Find,
                 sp1,
                 Cut,
                 Copy,
@@ -145,6 +150,7 @@ public class LayoutEditorEditMenu implements Selection.Listener{
 
     private void calculateEnabled(){
 
+        //Find.setDisable(editHandler == null || !editHandler.computeEnabled("FIND"));
         Cut.setDisable(editHandler == null || !editHandler.computeEnabled("CUT"));
         Copy.setDisable(editHandler == null || !editHandler.computeEnabled("COPY"));
         Paste.setDisable(editHandler == null || !editHandler.computeEnabled("PASTE"));
