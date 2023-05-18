@@ -1,8 +1,8 @@
 /*
-* This file is part of LogisimFX. Copyright (c) 2022, Pplos Studio
-* Original code by Carl Burch (http://www.cburch.com), 2011.
-* License information is located in the Launch file
-*/
+ * This file is part of LogisimFX. Copyright (c) 2022, Pplos Studio
+ * Original code by Carl Burch (http://www.cburch.com), 2011.
+ * License information is located in the Launch file
+ */
 
 package LogisimFX.file;
 
@@ -21,6 +21,7 @@ import LogisimFX.util.ZipUtils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +40,7 @@ public class Loader implements LibraryLoader {
 	// to be cleared with each new file
 	private File mainFile = null;
 	private Stack<File> filesOpening = new Stack<File>();
-	private Map<File,File> substitutions = new HashMap<File,File>();
+	private Map<File, File> substitutions = new HashMap<File, File>();
 
 	public Loader() {
 		clear();
@@ -86,7 +87,7 @@ public class Loader implements LibraryLoader {
 		mainFile = null;
 	}
 
-	public LogisimFile openLogisimFile(File file, Map<File,File> substitutions)
+	public LogisimFile openLogisimFile(File file, Map<File, File> substitutions)
 			throws LoadFailedException {
 		this.substitutions = substitutions;
 		try {
@@ -94,6 +95,17 @@ public class Loader implements LibraryLoader {
 		} finally {
 			this.substitutions = Collections.emptyMap();
 		}
+	}
+
+	public LogisimFile openLogisimFile(InputStream reader) throws IOException {
+		LogisimFile ret;
+		try {
+			ret = LogisimFile.load(reader, this, false, null);
+		} catch (LoaderException e) {
+			return null;
+		}
+		showMessages(ret);
+		return ret;
 	}
 
 	public LogisimFile openLogisimFile(File file) throws LoadFailedException {
@@ -135,14 +147,14 @@ public class Loader implements LibraryLoader {
 		if (reference != null) {
 			DialogManager.createErrorDialog(
 					StringUtil.format(lc.get("fileCircularError"), reference.getDisplayName().getValue()),
-							lc.get("fileSaveErrorTitle"));
+					lc.get("fileSaveErrorTitle"));
 			return false;
 		}
 
 		proj.getFrameController().doSaveCodeEditors();
 
 		File backup = null;
-		if(dest != null)  backup = determineBackupName(dest);
+		if (dest != null) backup = determineBackupName(dest);
 		boolean backupCreated = backup != null && dest.renameTo(backup);
 
 		FileOutputStream fwrite = null;
@@ -157,8 +169,8 @@ public class Loader implements LibraryLoader {
 		} catch (IOException e) {
 			if (backupCreated) recoverBackup(backup, dest);
 			if (dest.exists() && dest.length() == 0) dest.delete();
-			DialogManager.createStackTraceDialog(lc.get("fileSaveErrorTitle"),StringUtil.format(lc.get("fileSaveError"),
-					e.toString()),e);
+			DialogManager.createStackTraceDialog(lc.get("fileSaveErrorTitle"), StringUtil.format(lc.get("fileSaveError"),
+					e.toString()), e);
 			return false;
 		} finally {
 			if (fwrite != null) {
@@ -167,8 +179,8 @@ public class Loader implements LibraryLoader {
 				} catch (IOException e) {
 					if (backupCreated) recoverBackup(backup, dest);
 					if (dest.exists() && dest.length() == 0) dest.delete();
-					DialogManager.createStackTraceDialog(lc.get("fileSaveErrorTitle"),LC.getFormatted("fileSaveCloseError",
-							e.toString()),e);
+					DialogManager.createStackTraceDialog(lc.get("fileSaveErrorTitle"), LC.getFormatted("fileSaveCloseError",
+							e.toString()), e);
 					return false;
 				}
 			}
@@ -180,7 +192,7 @@ public class Loader implements LibraryLoader {
 			} else {
 				dest.delete();
 			}
-			DialogManager.createErrorDialog(lc.get("fileSaveErrorTitle"),lc.get("fileSaveZeroError"));
+			DialogManager.createErrorDialog(lc.get("fileSaveErrorTitle"), lc.get("fileSaveZeroError"));
 			return false;
 		}
 
@@ -315,10 +327,10 @@ public class Loader implements LibraryLoader {
 
 		if (description.contains("\n") || description.length() > 60) {
 
-			DialogManager.createScrollError(lc.get("fileErrorTitle"),description);
+			DialogManager.createScrollError(lc.get("fileErrorTitle"), description);
 
 		} else {
-			DialogManager.createScrollError(lc.get("fileErrorTitle"),description);
+			DialogManager.createScrollError(lc.get("fileErrorTitle"), description);
 		}
 	}
 
@@ -326,7 +338,7 @@ public class Loader implements LibraryLoader {
 		if (source == null) return;
 		String message = source.getMessage();
 		while (message != null) {
-			DialogManager.createInfoDialog(lc.get("fileMessageTitle"),message);
+			DialogManager.createInfoDialog(lc.get("fileMessageTitle"), message);
 			message = source.getMessage();
 		}
 	}
@@ -339,8 +351,7 @@ public class Loader implements LibraryLoader {
 		// Determine the actual file name.
 		File file = new File(name);
 
-		if (!file.isAbsolute())
-		{
+		if (!file.isAbsolute()) {
 			File currentDirectory = getCurrentDirectory();
 			if (currentDirectory != null) file = new File(currentDirectory, name);
 		}
@@ -352,8 +363,8 @@ public class Loader implements LibraryLoader {
 					file.getName()));
 
 			FileSelector fileSelector = new FileSelector(null);
-			if(filter.equals("circ"))fileSelector.setCircFilter();
-			if(filter.equals("jar"))fileSelector.setJarFilter();
+			if (filter.equals("circ")) fileSelector.setCircFilter();
+			if (filter.equals("jar")) fileSelector.setJarFilter();
 			file = fileSelector.showOpenDialog(LC.getFormatted("fileLibraryMissingTitle", file.getName()));
 
 		}

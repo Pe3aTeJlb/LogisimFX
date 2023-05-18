@@ -10,6 +10,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
@@ -309,7 +310,7 @@ public class AppPreferences {
 	//
 	// template methods
 	//
-	public static File getTemplate() {
+	public static Object getTemplate() {
 		getPrefs();
 		switch (templateType) {
 		case TEMPLATE_EMPTY: return getEmptyTemplate();
@@ -318,31 +319,25 @@ public class AppPreferences {
 		}
 	}
 
-	public static File getEmptyTemplate() {
-		if (emptyTemplate == null) {
-			URL url = AppPreferences.class.getResource("/LogisimFX/resources/empty.templ");
-			try {
-				emptyTemplate = new File(url.toURI());
-			} catch (URISyntaxException e) {
-				e.printStackTrace();
-			}
+	public static InputStream getEmptyTemplate() {
+		try {
+			return AppPreferences.class.getResource("/LogisimFX/resources/empty.templ").openStream();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		return emptyTemplate;
+		return null;
 	}
 
-	private static File getPlainTemplate() {
-		if (plainTemplate == null) {
-			URL url = AppPreferences.class.getResource("/LogisimFX/resources/default.templ");
-			try {
-				plainTemplate = new File(url.toURI());
-			} catch (URISyntaxException e) {
-				plainTemplate = getEmptyTemplate();
-			}
+	private static InputStream getPlainTemplate() {
+		try {
+			return AppPreferences.class.getResource("/LogisimFX/resources/default.templ").openStream();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		return plainTemplate;
+		return null;
 	}
 
-	private static File getCustomTemplate() {
+	private static Object getCustomTemplate() {
 		File toRead = templateFile;
 		if (customTemplate == null || !(customTemplate.equals(toRead))) {
 			if (toRead == null) {

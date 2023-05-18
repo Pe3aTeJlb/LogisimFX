@@ -58,8 +58,13 @@ public class ProjectActions {
 		LogisimFile file = null;
 
 		try {
-			file = loader.openLogisimFile(AppPreferences.getTemplate(), true);
-		} catch (LoadFailedException ex) {
+			Object f = AppPreferences.getTemplate();
+			if (f instanceof InputStream){
+				file = loader.openLogisimFile((InputStream) f);
+			} else if (f instanceof File) {
+				file = loader.openLogisimFile((File) f, true);
+			}
+		} catch (LoadFailedException | IOException ex) {
 			displayException(ex);
 		}
 
@@ -81,7 +86,7 @@ public class ProjectActions {
 	private static LogisimFile createEmptyFile(Loader loader) {
 		LogisimFile file;
 		try {
-			file = loader.openLogisimFile(AppPreferences.getEmptyTemplate(), true);
+			file = loader.openLogisimFile(AppPreferences.getEmptyTemplate());
 		} catch (Throwable t) {
 			file = LogisimFile.createNew(loader);
 			file.addCircuit(new Circuit("main"));
@@ -107,14 +112,21 @@ public class ProjectActions {
 
 		Loader loader = new Loader();
 
-		LogisimFile file;
+		LogisimFile file = null;
 		try {
-			file = loader.openLogisimFile(AppPreferences.getTemplate(), true);
+			Object f = AppPreferences.getTemplate();
+			if (f instanceof InputStream){
+				file = loader.openLogisimFile((InputStream) f);
+			} else if (f instanceof File) {
+				file = loader.openLogisimFile((File) f, true);
+			}
 		} catch (LoadFailedException ex) {
 			if (!ex.isShown()) {
 				displayException(ex);
 			}
 			file = createEmptyFile(loader);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 
 		return file;
