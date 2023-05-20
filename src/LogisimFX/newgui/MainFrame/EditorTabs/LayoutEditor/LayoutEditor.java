@@ -44,8 +44,7 @@ public class LayoutEditor extends EditorBase {
     private ToolBar findBar;
     private TextField findTxtFld;
     private SimpleStringProperty currFindIndex, totalFindIndex;
-    private CheckBox searchProj;
-    private ArrayList<Pair<Circuit, Component>> compList = new ArrayList<>();
+    private ArrayList<Component> compList = new ArrayList<>();
     private AtomicInteger currCompIndex = new AtomicInteger(0);
     private HBox footBar;
 
@@ -122,10 +121,7 @@ public class LayoutEditor extends EditorBase {
         nextCompBtn.setGraphic(IconsManager.getImageView("arrowright.gif"));
         nextCompBtn.setOnAction(event -> nextComp());
 
-        searchProj = new CheckBox();
-        searchProj.textProperty().bind(LC.createStringBinding("searchInProject"));
-
-        findBar.getItems().addAll(findTxtFld, findResultLbl, prevCompBt, nextCompBtn, searchProj);
+        findBar.getItems().addAll(findTxtFld, findResultLbl, prevCompBt, nextCompBtn);
 
         findBar.setMinHeight(0);
         findBar.setMaxHeight(0);
@@ -165,66 +161,24 @@ public class LayoutEditor extends EditorBase {
 
         compList.clear();
 
-        if (searchProj.isSelected()) {
-
-            calculateComps(circ);
-
-            for (AddTool tool: proj.getLogisimFile().getTools()){
-                calculateComps(((SubcircuitFactory)tool.getFactory()).getSubcircuit());
-            }
-
-            List<Library> builtinLibraries = proj.getLogisimFile().getLoader().getBuiltin().getLibraries();
-            for (Library lib: proj.getLogisimFile().getLibraries()){
-                if (!builtinLibraries.contains(lib)) {
-                    calculateLibComps(lib);
+        for (Component comp : circ.getNonWires()) {
+            if (comp.getAttributeSet().containsAttribute(StdAttr.LABEL)) {
+                if (comp.getAttributeSet().getValue(StdAttr.LABEL).contains(findTxtFld.getText())) {
+                    compList.add(comp);
                 }
             }
-
-        } else {
-            calculateComps(circ);
         }
 
         if (compList.size() == 0) {
             return;
         }
 
-        proj.getFrameController().addCircLayoutEditor(compList.get(0).getKey());
-        proj.getFrameController().getLayoutCanvas().focusOnComp(compList.get(0).getValue());
-        //layoutCanvas.focusOnComp(compList.get(0).getValue());
+        proj.getFrameController().getLayoutCanvas().focusOnComp(compList.get(0));
+        layoutCanvas.focusOnComp(compList.get(0));
         totalFindIndex.set(String.valueOf(compList.size()));
         currFindIndex.set(String.valueOf(currCompIndex.get() + 1));
 
     }
-
-    private void calculateComps(Circuit circ){
-
-        for (Component comp : circ.getNonWires()) {
-            if (comp.getAttributeSet().containsAttribute(StdAttr.LABEL)) {
-                if (comp.getAttributeSet().getValue(StdAttr.LABEL).contains(findTxtFld.getText())) {
-                    compList.add(new Pair<>(circ, comp));
-                }
-            }
-        }
-
-    }
-
-    private void calculateLibComps(Library lib){
-
-        for (Tool tool: lib.getTools()) {
-            if (tool instanceof AddTool) {
-                ComponentFactory fact = ((AddTool) tool).getFactory(false);
-                if (fact instanceof SubcircuitFactory) {
-                    calculateComps(((SubcircuitFactory)fact).getSubcircuit());
-                }
-            }
-        }
-
-        for (Library sublib: lib.getLibraries()) {
-            calculateLibComps(sublib);
-        }
-
-    }
-
 
     private void nextComp() {
         if (compList.size()==0){
@@ -234,13 +188,12 @@ public class LayoutEditor extends EditorBase {
         currFindIndex.set(String.valueOf(currCompIndex.get()+1));
     }
 
-    private void gotoNextComp(ArrayList<Pair<Circuit, Component>> coordinateList, AtomicInteger currCompIndex) {
+    private void gotoNextComp(ArrayList<Component> coordinateList, AtomicInteger currCompIndex) {
         if (currCompIndex.get() >= (coordinateList.size()-1) && coordinateList.size()!=0) return;
         currCompIndex.incrementAndGet();
         int index = currCompIndex.get();
-        proj.getFrameController().addCircLayoutEditor(compList.get(index).getKey());
-        proj.getFrameController().getLayoutCanvas().focusOnComp(compList.get(0).getValue());
-        //layoutCanvas.focusOnComp(compList.get(index).getValue());
+        proj.getFrameController().getLayoutCanvas().focusOnComp(compList.get(index));
+        layoutCanvas.focusOnComp(compList.get(index));
     }
 
 
@@ -252,13 +205,12 @@ public class LayoutEditor extends EditorBase {
         currFindIndex.set(String.valueOf(currCompIndex.get()+1));
     }
 
-    private void gotoPrevComp(ArrayList<Pair<Circuit, Component>> coordinateList, AtomicInteger currCompIndex) {
+    private void gotoPrevComp(ArrayList<Component> coordinateList, AtomicInteger currCompIndex) {
         if (currCompIndex.get() <= 0 && coordinateList.size()!=0) return;
         currCompIndex.decrementAndGet();
         int index = currCompIndex.get();
-        proj.getFrameController().addCircLayoutEditor(compList.get(index).getKey());
-        proj.getFrameController().getLayoutCanvas().focusOnComp(compList.get(0).getValue());
-        //layoutCanvas.focusOnComp(compList.get(index).getValue());
+        proj.getFrameController().getLayoutCanvas().focusOnComp(compList.get(index));
+        layoutCanvas.focusOnComp(compList.get(index));
     }
 
 

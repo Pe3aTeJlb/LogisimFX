@@ -17,11 +17,9 @@ import LogisimFX.tools.Tool;
 
 public class LayoutEditHandler extends EditHandler {
 
-	private LayoutEditor editor;
 	private LayoutCanvas canvas;
 
 	public LayoutEditHandler(LayoutEditor editor) {
-		this.editor = editor;
 		this.canvas = editor.getLayoutCanvas();
 	}
 
@@ -38,7 +36,6 @@ public class LayoutEditHandler extends EditHandler {
 			if (lib instanceof Base) selectAvailable = true;
 		}
 
-		if(from.equals("FIND")){ return !editor.getCirc().getNonWires().isEmpty();}
 		if(from.equals("CUT")){ return !selEmpty && selectAvailable && canChange;}
 		if(from.equals("COPY")){ return !selEmpty && selectAvailable;}
 		if(from.equals("PASTE")){ return selectAvailable && canChange && !Clipboard.isEmpty();}
@@ -81,9 +78,6 @@ public class LayoutEditHandler extends EditHandler {
 		canvas.getProject().redoAction();
 	}
 
-	public void find(){
-		editor.triggerFindBar();
-	}
 
 	@Override
 	public void cut() {

@@ -6,6 +6,7 @@
 package LogisimFX.newgui;
 
 import LogisimFX.IconsManager;
+import LogisimFX.circuit.Circuit;
 import LogisimFX.localization.LC_null;
 import LogisimFX.localization.Localizer;
 import LogisimFX.file.LogisimFile;
@@ -422,6 +423,21 @@ public class DialogManager {
         }else {
             return null;
         }
+
+    }
+
+    public static void createCircSearchDialog(Project proj){
+
+        lc.changeBundle("gui");
+
+        CircSearchDialog dialog = new CircSearchDialog(proj);
+
+        dialog.setTitle("LogisimFX");
+        dialog.setHeaderText(lc.get("searchInProject"));
+
+        ((Stage) dialog.getDialogPane().getScene().getWindow()).getIcons().add(IconsManager.LogisimFX);
+
+        dialog.showAndWait();
 
     }
 

@@ -7,6 +7,7 @@ package LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor;
 
 import LogisimFX.localization.LC_menu;
 import LogisimFX.localization.Localizer;
+import LogisimFX.newgui.DialogManager;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutEditHandler;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.Selection;
 import javafx.scene.control.MenuItem;
@@ -25,6 +26,7 @@ public class LayoutEditorEditMenu implements Selection.Listener{
     private final MenuItem Undo,
                             Redo,
                             Find,
+                            FindInProject,
                             Cut,
                             Copy,
                             Paste,
@@ -70,6 +72,10 @@ public class LayoutEditorEditMenu implements Selection.Listener{
         //Find.setDisable(editHandler == null || !editHandler.computeEnabled("FIND"));
         Find.setOnAction(event -> layoutEditor.triggerFindBar());
 
+        FindInProject = new MenuItem();
+        FindInProject.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+F"));
+        FindInProject.textProperty().bind(localizer.createStringBinding("editFindOnProjectItem"));
+        FindInProject.setOnAction(event -> DialogManager.createCircSearchDialog(layoutEditor.getProj()));
 
         SeparatorMenuItem sp1 = new SeparatorMenuItem();
 
@@ -136,6 +142,7 @@ public class LayoutEditorEditMenu implements Selection.Listener{
                 Undo,
                 Redo,
                 Find,
+                FindInProject,
                 sp1,
                 Cut,
                 Copy,
@@ -168,4 +175,5 @@ public class LayoutEditorEditMenu implements Selection.Listener{
     public void selectionChanged(Selection.Event event) {
         calculateEnabled();
     }
+
 }
