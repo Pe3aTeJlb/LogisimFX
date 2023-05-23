@@ -6,7 +6,6 @@
 package LogisimFX.newgui;
 
 import LogisimFX.IconsManager;
-import LogisimFX.circuit.Circuit;
 import LogisimFX.localization.LC_null;
 import LogisimFX.localization.Localizer;
 import LogisimFX.file.LogisimFile;

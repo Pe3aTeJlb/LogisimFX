@@ -69,6 +69,7 @@ public class CodeEditor extends TextEditor {
         super(project);
 
         this.file = file;
+        this.circ = circ;
 
         circ.registerProject(proj);
 
@@ -119,10 +120,9 @@ public class CodeEditor extends TextEditor {
 
         } else if(file.getName().equals("HLS.py")){
 
-            String pathToLib = PythonConnector.getLibPath("sfgen");
             String importSection = "import sys\n" +
                     "import os\n" +
-                    "sys.path.append(r'" + pathToLib + "')\n"+
+                    "sys.path.append(r'path_to_lib_do_not_change_this_line')\n"+
                     "from sfgen import * \n" +
                     "from sfgen.verilog_backend import * \n" +
                     "#for more information visit https://github.com/dillonhuff/SFGen \n"+
@@ -236,17 +236,21 @@ public class CodeEditor extends TextEditor {
 
         if (PythonConnector.isPythonPresent(proj)) {
 
+            String pathToLib = PythonConnector.getLibPath("sfgen");
+
             //Save HLS file and execute it
+            replace("path_to_lib_do_not_change_this_line", pathToLib);
             doSave();
             PythonConnector.executeFile(proj, file);
+            replace(pathToLib.replace("/", File.separator+File.separator).replace("\\", File.separator+File.separator),"path_to_lib_do_not_change_this_line");
+            doSave();
 
             //reload verilog model
-            proj.getFrameController().reloadFile(circ.getVerilogModel(proj));
 
+            proj.getFrameController().reloadFile(circ.getVerilogModel(proj));
             proj.getFrameController().addCodeEditor(circ, circ.getVerilogModel(proj));
 
-            //codeArea.getText().replace(circ.getHLS(proj).getParent(), "\'do not change\'");
-            //doSave();
+
         } else {
             DialogManager.createErrorDialog("Error", "Python3 required");
         }
@@ -264,6 +268,7 @@ public class CodeEditor extends TextEditor {
     public void reloadFile(){
 
         try {
+            getCodeArea().clear();
             getCodeArea().insertText(0, Files.readString(file.toPath()));
         } catch (IOException e) {
             e.printStackTrace();

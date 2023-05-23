@@ -398,7 +398,7 @@ public class TextEditor extends EditorBase {
 
 	public void find() {
 		if (findTxtFld.getText().isEmpty()) return;
-		highlightText(findTxtFld, coordinateList, currWordIndex, codeArea);
+		highlightText(findTxtFld.getText(), coordinateList, currWordIndex, codeArea);
 		if (coordinateList.size()==0) return;
 		totalFindIndex.set(String.valueOf(coordinateList.size()));
 		currFindIndex.set(String.valueOf(currWordIndex.get()+1));
@@ -440,8 +440,14 @@ public class TextEditor extends EditorBase {
 	public void replace() {
 		if (coordinateList.size()==0) return;
 		codeArea.replaceText(coordinateList.get(currWordIndex.get()).get(0), coordinateList.get(currWordIndex.get()).get(1), replaceTxtFld.getText());
-		highlightText(findTxtFld, coordinateList, currWordIndex, codeArea);
+		highlightText(findTxtFld.getText(), coordinateList, currWordIndex, codeArea);
 		totalFindIndex.set(String.valueOf(coordinateList.size()));
+	}
+
+	public void replace(String target, String replacement) {
+		highlightText(target, coordinateList, currWordIndex, codeArea);
+		if (coordinateList.size()==0) return;
+		codeArea.replaceText(coordinateList.get(currWordIndex.get()).get(0), coordinateList.get(currWordIndex.get()).get(1), replacement);
 	}
 
 	private void replaceAll() {
@@ -466,9 +472,9 @@ public class TextEditor extends EditorBase {
 		currCodeArea.setStyleClass(start, end, "find");
 	}
 
-	public void highlightText(TextField textField, ArrayList<ArrayList<Integer>> coordinateList, AtomicInteger currWordIndex, StyleClassedTextArea currCodeArea) {
+	public void highlightText(String str, ArrayList<ArrayList<Integer>> coordinateList, AtomicInteger currWordIndex, StyleClassedTextArea currCodeArea) {
 		removeHighlightedTxt(coordinateList, currCodeArea, currWordIndex);
-		Pattern pattern = Pattern.compile("\\b("+textField.getText()+")\\b");
+		Pattern pattern = Pattern.compile("\\b("+str+")\\b");
 		Matcher matcher = pattern.matcher(currCodeArea.getText());
 		while (matcher.find()) {
 			currCodeArea.setStyleClass(matcher.start(), matcher.end(), "find");
@@ -476,6 +482,10 @@ public class TextEditor extends EditorBase {
 		}
 		if (coordinateList.size()!=0) currCodeArea.getCaretSelectionBind().moveTo(coordinateList.get(0).get(0));
 		currCodeArea.requestFollowCaret();
+	}
+
+	public void highlightText(String str){
+		highlightText(str, coordinateList, currWordIndex, codeArea);
 	}
 
 

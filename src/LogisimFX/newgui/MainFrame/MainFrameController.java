@@ -1596,26 +1596,19 @@ public class MainFrameController extends AbstractController {
     //Section for static access from proj.getController. Duplicate functional
 
     private void resumeCanvasRender(){
-/*
-        if(canvasRoot.getChildren().get(0).equals(currLayoutCanvas)){
 
-            currLayoutCanvas.updateResume();
-            currAppearanceCanvas.updateStop();
-
-        }else{
-
-            currLayoutCanvas.updateStop();
-            currAppearanceCanvas.updateResume();
-
+        if(getEditor() instanceof LayoutEditor){
+            ((LayoutEditor)getEditor()).getLayoutCanvas().updateResume();
         }
-*/
+        if (getEditor() instanceof AppearanceEditor){
+            ((AppearanceEditor)getEditor()).getAppearanceCanvas().updateResume();
+        }
+
     }
 
     private void stopCanvasRender(){
-
         currLayoutCanvas.updateStop();
         currAppearanceCanvas.updateStop();
-
     }
 
 
