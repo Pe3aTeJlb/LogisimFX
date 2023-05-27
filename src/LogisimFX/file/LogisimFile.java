@@ -29,6 +29,7 @@ import javax.xml.transform.TransformerException;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class LogisimFile extends Library implements LibraryEventSource {
@@ -75,6 +76,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 	public SimpleBooleanProperty isMain = new SimpleBooleanProperty(false);
 
 	public static Path LOGISIMFX_TEMP_DIR;
+	public static Path LOGISIMFX_RUNTIME;
 	private Path projectDir;
 	private Path circuitDir;
 	private Path fpgaDir;
@@ -128,6 +130,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 
 			if (LOGISIMFX_TEMP_DIR == null) {
 				LOGISIMFX_TEMP_DIR = Files.createTempDirectory("LogisimFX-");
+				LOGISIMFX_RUNTIME = Files.createDirectories(Paths.get(LOGISIMFX_TEMP_DIR+File.separator+"runtime"));
 			}
 
 			if (!isLib) {
