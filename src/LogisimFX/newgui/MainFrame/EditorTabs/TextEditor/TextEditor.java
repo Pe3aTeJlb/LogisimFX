@@ -1,6 +1,8 @@
 package LogisimFX.newgui.MainFrame.EditorTabs.TextEditor;
 
+import LogisimFX.FileSelector;
 import LogisimFX.IconsManager;
+import LogisimFX.newgui.DialogManager;
 import LogisimFX.newgui.MainFrame.EditorTabs.TextEditor.AutoCompletion.AutoCompletion;
 import LogisimFX.newgui.MainFrame.EditorTabs.TextEditor.AutoCompletion.AutoCompletionWords;
 import LogisimFX.newgui.MainFrame.EditorTabs.EditHandler;
@@ -11,7 +13,6 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.Event;
-import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
@@ -20,6 +21,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.transform.Scale;
 import javafx.stage.Popup;
+import org.apache.commons.io.FileUtils;
 import org.fxmisc.flowless.ScaledVirtualized;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.StyleClassedTextArea;
@@ -28,6 +30,7 @@ import org.fxmisc.richtext.util.UndoUtils;
 import org.fxmisc.undo.UndoManager;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
@@ -42,7 +45,7 @@ public class TextEditor extends EditorBase {
 
 	private VirtualizedScrollPane<?> virtualizedScrollPane;
 	private ScaledVirtualized<StyleClassedTextArea> scaleVirtualized;
-	private StyleClassedTextArea codeArea;
+	private StyleClassedTextArea textArea;
 
 	private Popup autoCompletionPopup;
 	private ListView<String> autoCompletionList;
@@ -66,7 +69,7 @@ public class TextEditor extends EditorBase {
 	private File file;
 
 	//Code editor
-	public TextEditor(Project project){
+	public TextEditor(Project project) {
 
 		super(project);
 
@@ -74,7 +77,7 @@ public class TextEditor extends EditorBase {
 		initCodeArea();
 		initFootBar();
 
-		textEditorToolBar = new TextEditorToolBar(project, this);
+		textEditorToolBar = new TextEditorToolBar(this);
 		textEditorToolBar.setOnMousePressed(event -> Event.fireEvent(this, event.copyFor(event.getSource(), this)));
 
 		this.getChildren().addAll(textEditorToolBar, findBar, replaceBar, virtualizedScrollPane, footBar);
@@ -89,15 +92,15 @@ public class TextEditor extends EditorBase {
 				replaceBar.setMinHeight(0);
 				replaceBar.setMaxHeight(0);
 
-				removeHighlightedTxt(coordinateList, codeArea, currWordIndex);
+				removeHighlightedTxt(coordinateList, textArea, currWordIndex);
 				/*
 				 * After closing the popup dialog the color of keywords is also changed.
 				 * So in order to re-highlight the syntax I am appending and deleting the text to fire plaintext change event.
 				 * I think, there are some better way, but until that I am going with this one.
 				 */
-				codeArea.appendText(" ");
-				int len = codeArea.getText().length();
-				codeArea.deleteText(len-1, len);
+				textArea.appendText(" ");
+				int len = textArea.getText().length();
+				textArea.deleteText(len - 1, len);
 			}
 		});
 
@@ -106,13 +109,13 @@ public class TextEditor extends EditorBase {
 		editHandler = new TextEditHandler(this);
 		menu = new TextEditorEditMenu(this);
 
-		codeArea.requestFocus();
+		textArea.requestFocus();
 
 		this.getStylesheets().add("/LogisimFX/resources/css/default.css");
 
 	}
 
-	public TextEditor(Project project, File file){
+	public TextEditor(Project project, File file) {
 
 		this(project);
 
@@ -120,7 +123,7 @@ public class TextEditor extends EditorBase {
 
 		if (file.length() > 0) {
 			try {
-				codeArea.insertText(0, Files.readString(file.toPath()));
+				textArea.insertText(0, Files.readString(file.toPath()));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -128,64 +131,63 @@ public class TextEditor extends EditorBase {
 
 	}
 
-	public File getOpenedFile(){
+	public File getOpenedFile() {
 		return file;
 	}
 
 
-
 	@Override
-	public String getEditorDescriptor(){
+	public String getEditorDescriptor() {
 		return file.toString().split(proj.getLogisimFile().getProjectDir().getFileName().toString())[1].substring(1);
 	}
 
-	private void initCodeArea(){
+	private void initCodeArea() {
 
 		autoCompletionPopup = new Popup();
 		autoCompletionPopup.setAutoHide(true);
 		autoCompletionPopup.setHideOnEscape(true);
 
-		codeArea = new StyleClassedTextArea();
-		scaleVirtualized = new ScaledVirtualized<>(codeArea);
+		textArea = new StyleClassedTextArea();
+		scaleVirtualized = new ScaledVirtualized<>(textArea);
 		virtualizedScrollPane = new VirtualizedScrollPane<>(scaleVirtualized);
 
-		UndoManager<List<PlainTextChange>> um = UndoUtils.plainTextUndoManager(codeArea);
-		codeArea.setUndoManager(um);
+		UndoManager<List<PlainTextChange>> um = UndoUtils.plainTextUndoManager(textArea);
+		textArea.setUndoManager(um);
 
-		autoIndent(codeArea);  // auto-indent: insert previous line's indents on enter
-		configureAllShortcuts(codeArea);
-		codeArea.richChanges().filter(ch -> !ch.getInserted().equals(ch.getRemoved())).subscribe(x -> {
-			autoCompletion(getCurrWord(codeArea), codeArea);
+		autoIndent(textArea);  // auto-indent: insert previous line's indents on enter
+		configureAllShortcuts(textArea);
+		textArea.richChanges().filter(ch -> !ch.getInserted().equals(ch.getRemoved())).subscribe(x -> {
+			autoCompletion(getCurrWord(textArea), textArea);
 			//fileModified(tab, codeArea);
 		});
 
-		setSelectionListener(codeArea);
-		codeArea.caretPositionProperty().addListener((observableValue, oldPos, newPos) -> updateCaret(codeArea));
+		setSelectionListener(textArea);
+		textArea.caretPositionProperty().addListener((observableValue, oldPos, newPos) -> updateCaret(textArea));
 
 		VBox.setVgrow(virtualizedScrollPane, Priority.ALWAYS);
 
 		//codeArea.getStyleClass().add("styled-text-area");
 
-		codeArea.addEventFilter(ScrollEvent.ANY, e -> {
+		textArea.addEventFilter(ScrollEvent.ANY, e -> {
 			if (e.isControlDown()) {
 				zoom(e.getDeltaY());
 			}
 		});
 
-		codeArea.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+		textArea.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 			Event.fireEvent(this, event.copyFor(event.getSource(), this));
 		});
 
 	}
 
-	private void zoom(double delta){
+	private void zoom(double delta) {
 
 		double scaleAmount = 0.9;
 		Scale zoom = scaleVirtualized.getZoom();
 
 		if (delta != 0) {
 
-			double zoomVal =  delta > 0 ? zoom.getY() / scaleAmount : zoom.getY() * scaleAmount;
+			double zoomVal = delta > 0 ? zoom.getY() / scaleAmount : zoom.getY() * scaleAmount;
 			if (zoomVal > 3) zoomVal = 3;
 			if (zoomVal < 0.5) zoomVal = 0.5;
 			zoom.setY(zoomVal);
@@ -197,7 +199,7 @@ public class TextEditor extends EditorBase {
 
 
 	private void autoIndent(StyleClassedTextArea area) {
-		area.addEventHandler( KeyEvent.KEY_PRESSED, KE -> {
+		area.addEventHandler(KeyEvent.KEY_PRESSED, KE -> {
 			if (KE.getCode() == KeyCode.ENTER && !KE.isControlDown()) indent(area);
 		});
 	}
@@ -221,39 +223,38 @@ public class TextEditor extends EditorBase {
 		area.selectedTextProperty().addListener((observableValue, s, t1) -> {
 			selectTextLabel.setVisible(true);
 			selectedTextNum.set(String.valueOf(t1.length()));
-			if (t1.length()==0) selectTextLabel.setVisible(false);
+			if (t1.length() == 0) selectTextLabel.setVisible(false);
 		});
 	}
 
 	private void indent(StyleClassedTextArea area) {
-		final Pattern whiteSpace = Pattern.compile( "^\\s+" );
+		final Pattern whiteSpace = Pattern.compile("^\\s+");
 		int caretPosition = area.getCaretPosition();
 		int currentParagraph = area.getCurrentParagraph();
-		Matcher m0 = whiteSpace.matcher(area.getParagraph(currentParagraph-1).getSegments().get(0));
+		Matcher m0 = whiteSpace.matcher(area.getParagraph(currentParagraph - 1).getSegments().get(0));
 		if (m0.find()) area.insertText(caretPosition, m0.group());
 	}
 
 
-
 	private void autoCompletion(String toSearch, StyleClassedTextArea currCodeArea) {
-		if (toSearch.length()==0) {
+		if (toSearch.length() == 0) {
 			autoCompletionPopup.hide();
 			return;
 		}
 		List<String> words = new AutoCompletionWords().getWords("verilog");
-		if (words==null) return;
+		if (words == null) return;
 		AutoCompletion completion = new AutoCompletion(words);
 		showCompletion(completion.suggest(toSearch), currCodeArea, toSearch.length());
 	}
 
 	public void insertCompletion(String s, StyleClassedTextArea currCodeArea, int wordLen) {
-		currCodeArea.replaceText(currCodeArea.getCaretPosition()-wordLen, currCodeArea.getCaretPosition(), s);
+		currCodeArea.replaceText(currCodeArea.getCaretPosition() - wordLen, currCodeArea.getCaretPosition(), s);
 		autoCompletionPopup.hide();
 	}
 
 	private void showCompletion(List<String> list, StyleClassedTextArea currCodeArea, int wordLen) {
 
-		if (list.size()>0) {
+		if (list.size() > 0) {
 
 			autoCompletionList = new ListView<>();
 			autoCompletionList.setPrefWidth(360);
@@ -263,10 +264,12 @@ public class TextEditor extends EditorBase {
 
 			// set listeners
 			autoCompletionList.setOnKeyPressed(keyEvent -> {
-				if (keyEvent.getCode().equals(KeyCode.ENTER)) insertCompletion(autoCompletionList.getSelectionModel().getSelectedItem(), currCodeArea, wordLen);
+				if (keyEvent.getCode().equals(KeyCode.ENTER))
+					insertCompletion(autoCompletionList.getSelectionModel().getSelectedItem(), currCodeArea, wordLen);
 			});
 			autoCompletionList.setOnMouseClicked(event -> {
-				if (autoCompletionList.getSelectionModel().getSelectedItem()!=null) insertCompletion(autoCompletionList.getSelectionModel().getSelectedItem(), currCodeArea, wordLen);
+				if (autoCompletionList.getSelectionModel().getSelectedItem() != null)
+					insertCompletion(autoCompletionList.getSelectionModel().getSelectedItem(), currCodeArea, wordLen);
 			});
 
 			// replacing old data with new one.
@@ -286,10 +289,9 @@ public class TextEditor extends EditorBase {
 	}
 
 
-
 	private void updateCaret(StyleClassedTextArea codeArea) {
-		lineNum.set(Integer.toString(codeArea.getCaretSelectionBind().getParagraphIndex()+1));
-		colNum.set(Integer.toString(codeArea.getCaretSelectionBind().getColumnPosition()+1));
+		lineNum.set(Integer.toString(codeArea.getCaretSelectionBind().getParagraphIndex() + 1));
+		colNum.set(Integer.toString(codeArea.getCaretSelectionBind().getColumnPosition() + 1));
 	}
 
 	private String getCurrWord(StyleClassedTextArea currCodeArea) {
@@ -301,8 +303,8 @@ public class TextEditor extends EditorBase {
 		charSet.add(')');
 		charSet.add('(');
 		StringBuilder word = new StringBuilder();
-		for (int i = currCodeArea.getCaretPosition(); i>0; i--) {
-			char ch = currCodeArea.getText().charAt(i-1);
+		for (int i = currCodeArea.getCaretPosition(); i > 0; i--) {
+			char ch = currCodeArea.getText().charAt(i - 1);
 			if (ch == ' ' || ch == '\n' || charSet.contains(ch)) break;
 			else word.append(ch);
 		}
@@ -311,8 +313,7 @@ public class TextEditor extends EditorBase {
 	}
 
 
-
-	private void initFootBar(){
+	private void initFootBar() {
 
 		lineNum = new SimpleStringProperty("1");
 		colNum = new SimpleStringProperty("1");
@@ -340,8 +341,7 @@ public class TextEditor extends EditorBase {
 	}
 
 
-
-	private void initFindReplaceBar(){
+	private void initFindReplaceBar() {
 
 		currFindIndex = new SimpleStringProperty("0");
 		totalFindIndex = new SimpleStringProperty("0");
@@ -398,68 +398,68 @@ public class TextEditor extends EditorBase {
 
 	public void find() {
 		if (findTxtFld.getText().isEmpty()) return;
-		highlightText(findTxtFld.getText(), coordinateList, currWordIndex, codeArea);
-		if (coordinateList.size()==0) return;
+		highlightText(findTxtFld.getText(), coordinateList, currWordIndex, textArea);
+		if (coordinateList.size() == 0) return;
 		totalFindIndex.set(String.valueOf(coordinateList.size()));
-		currFindIndex.set(String.valueOf(currWordIndex.get()+1));
+		currFindIndex.set(String.valueOf(currWordIndex.get() + 1));
 	}
 
 
 	public void nextWord() {
-		if (coordinateList.size()==0) return;
-		gotoNextWord(coordinateList, currWordIndex, codeArea);
-		currFindIndex.set(String.valueOf(currWordIndex.get()+1));
+		if (coordinateList.size() == 0) return;
+		gotoNextWord(coordinateList, currWordIndex, textArea);
+		currFindIndex.set(String.valueOf(currWordIndex.get() + 1));
 	}
 
 	private void gotoNextWord(ArrayList<ArrayList<Integer>> coordinateList, AtomicInteger currWordIndex, StyleClassedTextArea codeArea) {
-		if (currWordIndex.get() >= (coordinateList.size()-1) && coordinateList.size()!=0) return;
+		if (currWordIndex.get() >= (coordinateList.size() - 1) && coordinateList.size() != 0) return;
 		currWordIndex.incrementAndGet();
 		int index = currWordIndex.get();
 		codeArea.getCaretSelectionBind().moveTo(coordinateList.get(currWordIndex.get()).get(0));
 		codeArea.setStyleClass(coordinateList.get(index).get(0), coordinateList.get(index).get(1), "findActive");
-		removeHighlightedTxtInRange(coordinateList.get(index-1).get(0), coordinateList.get(index-1).get(1), codeArea);
+		removeHighlightedTxtInRange(coordinateList.get(index - 1).get(0), coordinateList.get(index - 1).get(1), codeArea);
 	}
 
 
 	public void prevWord() {
-		if (coordinateList.size()==0) return;
-		gotoPrevWord(coordinateList, currWordIndex, codeArea);
-		currFindIndex.set(String.valueOf(currWordIndex.get()+1));
+		if (coordinateList.size() == 0) return;
+		gotoPrevWord(coordinateList, currWordIndex, textArea);
+		currFindIndex.set(String.valueOf(currWordIndex.get() + 1));
 	}
 
 	private void gotoPrevWord(ArrayList<ArrayList<Integer>> coordinateList, AtomicInteger currWordIndex, StyleClassedTextArea codeArea) {
-		if (currWordIndex.get() <= 0 && coordinateList.size()!=0) return;
+		if (currWordIndex.get() <= 0 && coordinateList.size() != 0) return;
 		currWordIndex.decrementAndGet();
 		int index = currWordIndex.get();
 		codeArea.setStyleClass(coordinateList.get(index).get(0), coordinateList.get(index).get(1), "findActive");
 		codeArea.getCaretSelectionBind().moveTo(coordinateList.get(currWordIndex.get()).get(0));
-		removeHighlightedTxtInRange(coordinateList.get(index+1).get(0), coordinateList.get(index+1).get(1), codeArea);
+		removeHighlightedTxtInRange(coordinateList.get(index + 1).get(0), coordinateList.get(index + 1).get(1), codeArea);
 	}
 
 
 	public void replace() {
-		if (coordinateList.size()==0) return;
-		codeArea.replaceText(coordinateList.get(currWordIndex.get()).get(0), coordinateList.get(currWordIndex.get()).get(1), replaceTxtFld.getText());
-		highlightText(findTxtFld.getText(), coordinateList, currWordIndex, codeArea);
+		if (coordinateList.size() == 0) return;
+		textArea.replaceText(coordinateList.get(currWordIndex.get()).get(0), coordinateList.get(currWordIndex.get()).get(1), replaceTxtFld.getText());
+		highlightText(findTxtFld.getText(), coordinateList, currWordIndex, textArea);
 		totalFindIndex.set(String.valueOf(coordinateList.size()));
 	}
 
 	public void replace(String target, String replacement) {
-		highlightText(target, coordinateList, currWordIndex, codeArea);
-		if (coordinateList.size()==0) return;
-		codeArea.replaceText(coordinateList.get(currWordIndex.get()).get(0), coordinateList.get(currWordIndex.get()).get(1), replacement);
+		highlightText(target, coordinateList, currWordIndex, textArea);
+		if (coordinateList.size() == 0) return;
+		textArea.replaceText(coordinateList.get(currWordIndex.get()).get(0), coordinateList.get(currWordIndex.get()).get(1), replacement);
 	}
 
 	private void replaceAll() {
-		if (coordinateList.size()==0) return;
-		codeArea.replaceText(codeArea.getText().replaceAll("\\b(" + findTxtFld.getText() + ")\\b", replaceTxtFld.getText()));
+		if (coordinateList.size() == 0) return;
+		textArea.replaceText(textArea.getText().replaceAll("\\b(" + findTxtFld.getText() + ")\\b", replaceTxtFld.getText()));
 	}
 
 
 	//Text highlight
 
 	public void removeHighlightedTxt(ArrayList<ArrayList<Integer>> coordinateList, StyleClassedTextArea currCodeArea, AtomicInteger currWordIndex) {
-		if (coordinateList.size()!=0) {
+		if (coordinateList.size() != 0) {
 			for (ArrayList<Integer> arrayList : coordinateList) {
 				currCodeArea.setStyleClass(arrayList.get(0), arrayList.get(1), "");
 			}
@@ -474,67 +474,105 @@ public class TextEditor extends EditorBase {
 
 	public void highlightText(String str, ArrayList<ArrayList<Integer>> coordinateList, AtomicInteger currWordIndex, StyleClassedTextArea currCodeArea) {
 		removeHighlightedTxt(coordinateList, currCodeArea, currWordIndex);
-		Pattern pattern = Pattern.compile("\\b("+str+")\\b");
+		Pattern pattern = Pattern.compile("\\b(" + str + ")\\b");
 		Matcher matcher = pattern.matcher(currCodeArea.getText());
 		while (matcher.find()) {
 			currCodeArea.setStyleClass(matcher.start(), matcher.end(), "find");
 			coordinateList.add(new ArrayList<>(Arrays.asList(matcher.start(), matcher.end())));
 		}
-		if (coordinateList.size()!=0) currCodeArea.getCaretSelectionBind().moveTo(coordinateList.get(0).get(0));
+		if (coordinateList.size() != 0) currCodeArea.getCaretSelectionBind().moveTo(coordinateList.get(0).get(0));
 		currCodeArea.requestFollowCaret();
 	}
 
-	public void highlightText(String str){
-		highlightText(str, coordinateList, currWordIndex, codeArea);
+	public void highlightText(String str) {
+		highlightText(str, coordinateList, currWordIndex, textArea);
 	}
 
+
+	public void doSave() {
+
+		FileOutputStream writer;
+
+		try {
+			if (!file.exists()) {
+				FileSelector f = new FileSelector(proj.getFrameController().getStage());
+				file = f.showSaveDialog("");
+			}
+			writer = new FileOutputStream(file);
+			writer.write(getTextArea().getText().getBytes());
+			writer.flush();
+			writer.close();
+		} catch (IOException e) {
+			DialogManager.createStackTraceDialog("Error!", "Error during saving code editor content " + file.getName(), e);
+			e.printStackTrace();
+		}
+
+	}
+
+	public void doDelete() {
+
+		if (DialogManager.createConfirmDialog()) {
+
+			this.textArea.clear();
+
+			try {
+				if (file.exists()) {
+					FileUtils.delete(file);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		}
+
+	}
 
 	//Accelerator events
 
 	public void undo() {
-		codeArea.undo();
+		textArea.undo();
 	}
 
 	public void redo() {
-		codeArea.redo();
+		textArea.redo();
 	}
 
 	public void cut() {
-		if (codeArea.getSelectedText().length()==0) codeArea.selectLine();
-		codeArea.cut();
+		if (textArea.getSelectedText().length() == 0) textArea.selectLine();
+		textArea.cut();
 	}
 
 	public void copy() {
-		if (codeArea.getSelectedText().length()==0) {
-			codeArea.selectLine();
-			codeArea.copy();
+		if (textArea.getSelectedText().length() == 0) {
+			textArea.selectLine();
+			textArea.copy();
 			return;
 		}
-		codeArea.copy();
+		textArea.copy();
 	}
 
-	public void paste(){
-		if (codeArea.getSelectedText().length()==0) codeArea.selectLine();
-		codeArea.paste();
+	public void paste() {
+		if (textArea.getSelectedText().length() == 0) textArea.selectLine();
+		textArea.paste();
 	}
 
-	public void delete(){
-		codeArea.deleteText(codeArea.getSelection());
+	public void delete() {
+		textArea.deleteText(textArea.getSelection());
 	}
 
-	public void duplicate(){
-		if (codeArea.getSelectedText().length()==0) return;
-		codeArea.insertText(codeArea.getCaretPosition(), codeArea.getSelectedText());
+	public void duplicate() {
+		if (textArea.getSelectedText().length() == 0) return;
+		textArea.insertText(textArea.getCaretPosition(), textArea.getSelectedText());
 	}
 
-	public void selectAll(){
-		codeArea.selectAll();
+	public void selectAll() {
+		textArea.selectAll();
 	}
 
-	public void openFindBar(){
+	public void openFindBar() {
 
 		findBar.setVisible(true);
-		if (codeArea.getSelectedText() != null) findTxtFld.setText(codeArea.getSelectedText());
+		if (textArea.getSelectedText() != null) findTxtFld.setText(textArea.getSelectedText());
 
 		replaceBar.setVisible(false);
 		findBar.setMinHeight(-1);
@@ -544,11 +582,11 @@ public class TextEditor extends EditorBase {
 
 	}
 
-	public void openReplaceBar(){
+	public void openReplaceBar() {
 
 		findBar.setVisible(true);
-		if (codeArea.getSelectedText() != null && findTxtFld.getText().equals("")){
-			findTxtFld.setText(codeArea.getSelectedText());
+		if (textArea.getSelectedText() != null && findTxtFld.getText().equals("")) {
+			findTxtFld.setText(textArea.getSelectedText());
 		}
 
 		replaceBar.setVisible(true);
@@ -560,42 +598,41 @@ public class TextEditor extends EditorBase {
 	}
 
 
-	public void zoomIn(){
+	public void zoomIn() {
 		zoom(40);
 	}
 
-	public void zoomOut(){
+	public void zoomOut() {
 		zoom(-40);
 	}
 
-	public void toDefaultZoom(){
+	public void toDefaultZoom() {
 		Scale zoom = scaleVirtualized.getZoom();
 		zoom.setY(1);
 		zoom.setX(1);
 	}
 
 
-	public StyleClassedTextArea getCodeArea(){
-		return codeArea;
+	public StyleClassedTextArea getTextArea() {
+		return textArea;
 	}
 
-	public TextEditorToolBar getTextEditorToolBar(){
+	public TextEditorToolBar getTextEditorToolBar() {
 		return textEditorToolBar;
 	}
 
-	public List<MenuItem> getEditMenuItems(){
+	public List<MenuItem> getEditMenuItems() {
 		return menu.getMenuItems();
 	}
 
-	public EditHandler getEditHandler(){
+	public EditHandler getEditHandler() {
 		return editHandler;
 	}
 
 
-
 	@Override
-	public void copyAccelerators(){
-		if (this.getScene() != proj.getFrameController().getStage().getScene()){
+	public void copyAccelerators() {
+		if (this.getScene() != proj.getFrameController().getStage().getScene()) {
 			this.getScene().getAccelerators().putAll(
 					proj.getFrameController().getStage().getScene().getAccelerators()
 			);

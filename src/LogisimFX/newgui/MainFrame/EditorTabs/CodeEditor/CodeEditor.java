@@ -8,6 +8,10 @@ package LogisimFX.newgui.MainFrame.EditorTabs.CodeEditor;
 import LogisimFX.IconsManager;
 import LogisimFX.circuit.*;
 import LogisimFX.comp.Component;
+import LogisimFX.fpga.Reporter;
+import LogisimFX.fpga.data.MappableResourcesContainer;
+import LogisimFX.fpga.designrulecheck.Netlist;
+import LogisimFX.fpga.hdlgenerator.ToplevelHdlGeneratorFactory;
 import LogisimFX.newgui.DialogManager;
 import LogisimFX.newgui.MainFrame.EditorTabs.TextEditor.TextEditor;
 import LogisimFX.newgui.MainFrame.EditorTabs.TextEditor.TextEditorToolBar;
@@ -18,12 +22,14 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.HBox;
+import org.apache.commons.io.FileUtils;
 import org.fxmisc.richtext.LineNumberFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.function.IntFunction;
 
 
@@ -38,10 +44,15 @@ public class CodeEditor extends TextEditor {
 
         super(project);
 
+        //remove find&replace and save
+        getTextEditorToolBar().getItems().remove(3);
+        getTextEditorToolBar().getItems().remove(2);
+        getTextEditorToolBar().getItems().remove(1);
+
         this.circ = circ;
         this.comp = comp;
 
-        new SyntaxHighlighter(getCodeArea()).start("v");
+        new SyntaxHighlighter(getTextArea()).start("v");
         StringBuilder builder = new StringBuilder();
 
         for(String s: comp.getFactory().getHDLGenerator(comp.getAttributeSet()).getArchitecture(
@@ -49,18 +60,18 @@ public class CodeEditor extends TextEditor {
             builder.append(s).append("\n");
         }
 
-        IntFunction<Node> noFactory = LineNumberFactory.get(getCodeArea());
+        IntFunction<Node> noFactory = LineNumberFactory.get(getTextArea());
         IntFunction<Node> graphicFactory = line -> {
             HBox lineBox = new HBox(noFactory.apply(line));
             lineBox.getStyleClass().add("lineno-box");
             lineBox.setAlignment(Pos.CENTER_LEFT);
             return lineBox;
         };
-        getCodeArea().setParagraphGraphicFactory(graphicFactory);
+        getTextArea().setParagraphGraphicFactory(graphicFactory);
 
-        getCodeArea().insertText(0, builder.toString());
+        getTextArea().insertText(0, builder.toString());
 
-        getCodeArea().setEditable(false);
+        getTextArea().setEditable(false);
 
     }
 
@@ -73,31 +84,36 @@ public class CodeEditor extends TextEditor {
 
         circ.registerProject(proj);
 
-        new SyntaxHighlighter(getCodeArea()).start(file.getName().split("\\.")[1]);
+        new SyntaxHighlighter(getTextArea()).start(file.getName().split("\\.")[1]);
 
-        IntFunction<Node> noFactory = LineNumberFactory.get(getCodeArea());
+        IntFunction<Node> noFactory = LineNumberFactory.get(getTextArea());
         IntFunction<Node> graphicFactory = line -> {
             HBox lineBox = new HBox(noFactory.apply(line));
             lineBox.getStyleClass().add("lineno-box");
             lineBox.setAlignment(Pos.CENTER_LEFT);
             return lineBox;
         };
-        getCodeArea().setParagraphGraphicFactory(graphicFactory);
+        getTextArea().setParagraphGraphicFactory(graphicFactory);
 
         switch (file.getName()){
+            case "TopLevelShell.v": extendEditorToolBarWithTopLevel();   break;
             case "VerilogModel.v":  extendEditorToolBarWithVerilog();    break;
             case "HLS.py":          extendEditorToolBarWithHLS();        break;
         }
 
-        getCodeArea().requestFocus();
+        getTextArea().requestFocus();
 
         if (file.length() > 0) {
 
             try {
-                getCodeArea().insertText(0, Files.readString(file.toPath()));
+                getTextArea().insertText(0, Files.readString(file.toPath()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+        } else if(file.getName().equals("TopLevelShell.v")) {
+
+            generateTopLevel();
 
         } else if(file.getName().equals("VerilogModel.v")){
 
@@ -116,7 +132,7 @@ public class CodeEditor extends TextEditor {
                 builder.append(s).append("\n");
             }
 
-            getCodeArea().insertText(0, builder.toString());
+            getTextArea().insertText(0, builder.toString());
 
         } else if(file.getName().equals("HLS.py")){
 
@@ -133,11 +149,11 @@ public class CodeEditor extends TextEditor {
                     "synthesize_verilog(os.path.abspath(__file__), 'cube', [l.ArrayType(32)], constraints)"
                     ;
 
-            getCodeArea().insertText(0, importSection);
+            getTextArea().insertText(0, importSection);
 
         }
 
-        getCodeArea().setEditable(proj.getLogisimFile().contains(circ));
+        getTextArea().setEditable(proj.getLogisimFile().contains(circ));
 
     }
 
@@ -148,22 +164,24 @@ public class CodeEditor extends TextEditor {
 
         this.file = file;
 
-        new SyntaxHighlighter(getCodeArea()).start(file.getName().split("\\.")[1]);
+        if (file.getName().split("\\.").length > 1) {
+            new SyntaxHighlighter(getTextArea()).start(file.getName().split("\\.")[1]);
+        }
 
-        IntFunction<Node> noFactory = LineNumberFactory.get(getCodeArea());
+        IntFunction<Node> noFactory = LineNumberFactory.get(getTextArea());
         IntFunction<Node> graphicFactory = line -> {
             HBox lineBox = new HBox(noFactory.apply(line));
             lineBox.getStyleClass().add("lineno-box");
             lineBox.setAlignment(Pos.CENTER_LEFT);
             return lineBox;
         };
-        getCodeArea().setParagraphGraphicFactory(graphicFactory);
+        getTextArea().setParagraphGraphicFactory(graphicFactory);
 
-        getCodeArea().requestFocus();
+        getTextArea().requestFocus();
 
         if (file.length() > 0) {
             try {
-                getCodeArea().insertText(0, Files.readString(file.toPath()));
+                getTextArea().insertText(0, Files.readString(file.toPath()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -185,7 +203,7 @@ public class CodeEditor extends TextEditor {
     }
 
 
-
+    @Override
     public void doSave(){
 
         FileOutputStream writer;
@@ -194,7 +212,7 @@ public class CodeEditor extends TextEditor {
 
             try {
 
-                if (getCodeArea().getText().isEmpty() || !proj.getLogisimFile().contains(circ)){
+                if (getTextArea().getText().isEmpty() || !proj.getLogisimFile().contains(circ)){
                     return;
                 }
 
@@ -204,9 +222,10 @@ public class CodeEditor extends TextEditor {
                     f.createNewFile();
                 }
                 writer = new FileOutputStream(f);
-                writer.write(getCodeArea().getText().getBytes());
+                writer.write(getTextArea().getText().getBytes());
                 writer.flush();
                 writer.close();
+
             } catch (IOException e) {
                 DialogManager.createStackTraceDialog("Error!", "Error during saving code editor content " + file.getName(), e);
                 e.printStackTrace();
@@ -220,7 +239,7 @@ public class CodeEditor extends TextEditor {
                     file.createNewFile();
                 }
                 writer = new FileOutputStream(file);
-                writer.write(getCodeArea().getText().getBytes());
+                writer.write(getTextArea().getText().getBytes());
                 writer.flush();
                 writer.close();
             } catch (IOException e) {
@@ -229,6 +248,58 @@ public class CodeEditor extends TextEditor {
             }
 
         }
+
+    }
+
+    @Override
+    public void doDelete() {
+
+        if (DialogManager.createConfirmDialog()) {
+
+            this.getTextArea().clear();
+
+            try {
+                if (file.exists()) {
+                    FileUtils.delete(file);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+    }
+
+
+    private void generateTopLevel(){
+
+        getTextArea().clear();
+
+        StringBuilder builder = new StringBuilder();
+
+        Reporter.report.setTerminal(proj.getTerminal());
+        Reporter.report.clearConsole();
+
+        MappableResourcesContainer mappableResourcesContainer = new MappableResourcesContainer(circ);
+        ToplevelHdlGeneratorFactory top = new ToplevelHdlGeneratorFactory(0, 0, circ, mappableResourcesContainer);
+
+        final var sheetNames = new ArrayList<String>();
+        circ.getNetList().designRuleCheckResult(true, sheetNames);
+
+        for(String s: top.getArchitecture(
+                circ.getNetList(), null,  ToplevelHdlGeneratorFactory.FPGA_TOP_LEVEL_NAME)) {
+            builder.append(s).append("\n");
+        }
+
+        getTextArea().insertText(0, builder.toString());
+
+    }
+
+    public void toSchematics(){
+
+    }
+
+    public void fromSchematics(){
 
     }
 
@@ -257,19 +328,12 @@ public class CodeEditor extends TextEditor {
 
     }
 
-    public void toSchematics(){
-
-    }
-
-    public void fromSchematics(){
-
-    }
 
     public void reloadFile(){
 
         try {
-            getCodeArea().clear();
-            getCodeArea().insertText(0, Files.readString(file.toPath()));
+            getTextArea().clear();
+            getTextArea().insertText(0, Files.readString(file.toPath()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -290,19 +354,19 @@ public class CodeEditor extends TextEditor {
     private final int prefWidth = 15;
     private final int prefHeight = 15;
 
-    private void extendEditorToolBarWithHLS(){
+    private void extendEditorToolBarWithTopLevel(){
 
-        Button toVerilog = new Button();
-        toVerilog.graphicProperty().setValue(IconsManager.getIcon("hls.png"));
-        toVerilog.setTooltip(new TextEditorToolBar.ToolTip("hls"));
-        toVerilog.setOnAction(event -> doHLS());
-        toVerilog.setPrefSize(prefWidth,prefHeight);
-        toVerilog.setMinSize(prefWidth,prefHeight);
-        toVerilog.setMaxSize(prefWidth,prefHeight);
+        Button renegTopLevel = new Button();
+        renegTopLevel.graphicProperty().setValue(IconsManager.getIcon("regen.gif"));
+        renegTopLevel.setTooltip(new TextEditorToolBar.ToolTip("regenTopLevel"));
+        renegTopLevel.setOnAction(event -> generateTopLevel());
+        renegTopLevel.setPrefSize(prefWidth,prefHeight);
+        renegTopLevel.setMinSize(prefWidth,prefHeight);
+        renegTopLevel.setMaxSize(prefWidth,prefHeight);
 
         getTextEditorToolBar().getItems().addAll(
                 new Separator(),
-                toVerilog
+                renegTopLevel
         );
 
     }
@@ -329,6 +393,23 @@ public class CodeEditor extends TextEditor {
                 new Separator(),
                 toSchematics,
                 fromSchematics
+        );
+
+    }
+
+    private void extendEditorToolBarWithHLS(){
+
+        Button toVerilog = new Button();
+        toVerilog.graphicProperty().setValue(IconsManager.getIcon("hls.png"));
+        toVerilog.setTooltip(new TextEditorToolBar.ToolTip("hls"));
+        toVerilog.setOnAction(event -> doHLS());
+        toVerilog.setPrefSize(prefWidth,prefHeight);
+        toVerilog.setMinSize(prefWidth,prefHeight);
+        toVerilog.setMaxSize(prefWidth,prefHeight);
+
+        getTextEditorToolBar().getItems().addAll(
+                new Separator(),
+                toVerilog
         );
 
     }

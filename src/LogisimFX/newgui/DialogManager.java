@@ -190,6 +190,22 @@ public class DialogManager {
     }
 
 
+    public static boolean createConfirmDialog(){
+
+        lc.changeBundle("gui");
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("LogisimFX");
+        //alert.setHeaderText(lc.get("confirmCloseTitle"));
+        alert.setHeaderText(lc.get("confirmAction"));
+
+        ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().add(IconsManager.LogisimFX);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.get() == ButtonType.OK;
+
+    }
+
     public static int createConfirmCloseDialog(Project proj){
 
         lc.changeBundle("gui");

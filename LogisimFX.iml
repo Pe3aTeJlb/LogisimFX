@@ -12,8 +12,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="controlsfx-8.40.12" level="project" />
-    <orderEntry type="library" name="lib" level="project" />
     <orderEntry type="library" name="JavaFX-DockLib" level="project" />
     <orderEntry type="library" name="richtextfx-fat-0.10.6" level="project" />
     <orderEntry type="library" name="commons-text-1.10.0" level="project" />
@@ -23,11 +21,8 @@
     <orderEntry type="library" name="slf4j-simple-2.0.7" level="project" />
     <orderEntry type="library" name="slf4j-api-2.0.7" level="project" />
     <orderEntry type="library" name="commons-io-2.11.0" level="project" />
-    <orderEntry type="library" name="pty4j-0.12.10" level="project" />
     <orderEntry type="library" name="docker-java-3.3.0" level="project" />
-    <orderEntry type="library" name="jna-platform-5.13.0" level="project" />
-    <orderEntry type="library" name="jna-5.13.0" level="project" />
-    <orderEntry type="library" name="annotations-24.0.1" level="project" />
-    <orderEntry type="library" name="purejavacomm-0.0.11.1" level="project" />
+    <orderEntry type="library" name="lib" level="project" />
+    <orderEntry type="library" name="controlsfx-8.40.12" level="project" />
   </component>
 </module>

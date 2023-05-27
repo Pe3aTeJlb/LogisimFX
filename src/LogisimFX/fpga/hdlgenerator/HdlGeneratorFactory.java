@@ -12,6 +12,7 @@ package LogisimFX.fpga.hdlgenerator;
 import LogisimFX.data.AttributeSet;
 import LogisimFX.fpga.designrulecheck.Netlist;
 import LogisimFX.fpga.designrulecheck.netlistComponent;
+import LogisimFX.proj.Project;
 import LogisimFX.util.LineBuffer;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public interface HdlGeneratorFactory {
 	String FPGA_TOP_LEVEL_NAME = "logisimfxTopLevelShell";
 
 	boolean generateAllHDLDescriptions(
-			Set<String> handledComponents, String workingDirectory, List<String> hierarchy);
+			Project proj, Set<String> handledComponents, String workingDirectory, List<String> hierarchy);
 
 	List<String> getArchitecture(Netlist theNetlist, AttributeSet attrs, String componentName);
 

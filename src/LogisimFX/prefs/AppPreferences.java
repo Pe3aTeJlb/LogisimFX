@@ -137,6 +137,10 @@ public class AppPreferences {
 	public static final PrefMonitor<String> WINDOW_STYLE
 			= create(new PrefMonitorString("windowStyle", Application.STYLESHEET_MODENA));
 
+
+	public static final  PrefMonitor<String> DOCKER_IMAGE
+			= create(new PrefMonitorString("dockerImage", "pe3atejlb/logisimfx-f4pga:latest"));
+
 	//
 	// methods for accessing preferences
 	//

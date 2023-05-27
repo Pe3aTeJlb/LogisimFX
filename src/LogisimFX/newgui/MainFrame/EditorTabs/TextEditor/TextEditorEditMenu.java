@@ -35,7 +35,7 @@ public class TextEditorEditMenu {
 
         editHandler = (TextEditHandler) textEditor.getEditHandler();
 
-        textEditor.getCodeArea().getCaretSelectionBind().selectedTextProperty().addListener(change -> calculateEnabled());
+        textEditor.getTextArea().getCaretSelectionBind().selectedTextProperty().addListener(change -> calculateEnabled());
 
         Undo = new MenuItem();
         Undo.setAccelerator(KeyCombination.keyCombination("Ctrl+Z"));

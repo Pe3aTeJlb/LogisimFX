@@ -15,7 +15,11 @@ import LogisimFX.fpga.designrulecheck.netlistComponent;
 import LogisimFX.fpga.file.FileWriter;
 import LogisimFX.util.CollectionUtil;
 import LogisimFX.util.LineBuffer;
+import org.apache.commons.io.FileUtils;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 
 public class Hdl {
@@ -365,6 +369,16 @@ public class Hdl {
 		final var outFile = FileWriter.getFilePointer(targetDirectory, componentName);
 		if (outFile == null) return false;
 		return FileWriter.writeContents(outFile, contents);
+	}
+
+	public static void copyExistingArchitecture(String targetDirectory, String componentName, File architecture){
+		final var outFile = FileWriter.getFilePointer(targetDirectory, componentName);
+		if (outFile == null) return;
+		try {
+			FileUtils.copyFile(architecture, outFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static Map<String, String> getNetMap(String sourceName, boolean floatingPinTiedToGround,

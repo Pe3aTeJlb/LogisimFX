@@ -258,6 +258,7 @@ public class ProjectExplorerTreeView extends AbstractTreeExplorer<Object> {
 
                             setText(((File)item).getName());
                             setGraphic(IconsManager.getIcon("file.gif"));
+                            setContextMenu(ContextMenuManager.FileContextMenu(proj, (File)item));
 
                         } else {
                             setText("you fucked up");

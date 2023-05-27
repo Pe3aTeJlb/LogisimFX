@@ -3,7 +3,6 @@ package LogisimFX.newgui.MainFrame.SystemTabs.TerminalTab;
 import LogisimFX.IconsManager;
 import LogisimFX.Main;
 import LogisimFX.circuit.WireSet;
-import LogisimFX.fpga.designrulecheck.SimpleDrcContainer;
 import LogisimFX.newgui.MainFrame.EditorTabs.EditHandler;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.LayoutEditor;
 import LogisimFX.proj.Project;
@@ -144,14 +143,15 @@ public class Terminal extends VBox {
 			button.setMaxSize(15,15);
 			button.getStyleClass().add(backgroundStyleClass);
 
-			if (!drcContainers.isEmpty() && drcContainers.containsKey(line) && drcContainers.get(line).hasCircuit()){
-				SimpleDrcContainer drc = drcContainers.get(line);
+			if (!drcContainers.isEmpty() && drcContainers.containsKey(line) && (
+					drcContainers.get(line).hasCircuit() || drcContainers.get(line).hasFile())){
+				TerminalMessageContainer drc = drcContainers.get(line);
 				button.setOnAction(event -> {
 					if (curDRCContainer != null){
-						if (!curDRCContainer.getDrcComponents().isEmpty()) {
+						if (curDRCContainer.getDrcComponents() != null && !curDRCContainer.getDrcComponents().isEmpty()) {
 							layoutEditor.getLayoutCanvas().setHighlightedComponent(null);
 						}
-						if (!curDRCContainer.getDrcWires().isEmpty()) {
+						if (curDRCContainer.getDrcWires() != null && !curDRCContainer.getDrcWires().isEmpty()) {
 							layoutEditor.getLayoutCanvas().setHighlightedWires(WireSet.EMPTY);
 						}
 					}
@@ -510,15 +510,15 @@ public class Terminal extends VBox {
 	}
 
 
-	HashMap<Integer, SimpleDrcContainer> drcContainers = new HashMap<>();
+	HashMap<Integer, TerminalMessageContainer> drcContainers = new HashMap<>();
 	LayoutEditor layoutEditor;
-	SimpleDrcContainer curDRCContainer = null;
+	TerminalMessageContainer curDRCContainer = null;
 
 	public void printError(Exception e){
 		printError(e.getMessage());
 	}
 
-	public void printError(SimpleDrcContainer error){
+	public void printError(TerminalMessageContainer error){
 		drcContainers.put(terminalArea.getCurrentParagraph(), error);
 		printError(error.toString());
 	}
@@ -527,7 +527,7 @@ public class Terminal extends VBox {
 		terminalArea.append(error+"\n", errorStyleClass);
 	}
 
-	public void printWarning(SimpleDrcContainer warning){
+	public void printWarning(TerminalMessageContainer warning){
 		drcContainers.put(terminalArea.getCurrentParagraph(), warning);
 		printWarning(warning.toString());
 	}
@@ -536,7 +536,7 @@ public class Terminal extends VBox {
 		terminalArea.append(warning+"\n", warningStyleClass);
 	}
 
-	public void printInfo(SimpleDrcContainer info){
+	public void printInfo(TerminalMessageContainer info){
 		drcContainers.put(terminalArea.getCurrentParagraph(), info);
 		printInfo(info.toString());
 	}
@@ -550,11 +550,11 @@ public class Terminal extends VBox {
 		drcContainers.clear();
 	}
 
-	private void generateDrcTrace(SimpleDrcContainer dc) {
+	private void generateDrcTrace(TerminalMessageContainer dc) {
 
 		if (dc.hasCircuit()) {
 
-			proj.getFrameController().selectCircLayoutEditor(dc.getCircuit());
+			proj.getFrameController().addCircLayoutEditor(dc.getCircuit());
 			layoutEditor = (LayoutEditor) proj.getFrameController().getEditor();
 
 			if (dc.getDrcComponents() != null && !dc.getDrcComponents().isEmpty()) {
@@ -565,6 +565,10 @@ public class Terminal extends VBox {
 				layoutEditor.getLayoutCanvas().setHighlightedWires(new WireSet(dc.getDrcWires()));
 			}
 
+		}
+
+		if (dc.hasFile()){
+			proj.getFrameController().addCodeEditor(dc.getFile());
 		}
 
 	}

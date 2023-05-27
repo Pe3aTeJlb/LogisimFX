@@ -19,13 +19,13 @@ public class TextEditHandler extends EditHandler {
     @Override
     public boolean computeEnabled(String from) {
 
-        if(from.equals("UNDO")){ return textEditor.getCodeArea().getUndoManager().isUndoAvailable();}
-        if(from.equals("REDO")){ return textEditor.getCodeArea().getUndoManager().isRedoAvailable();}
-        if(from.equals("CUT")){ return !textEditor.getCodeArea().getSelectedText().isEmpty();}
-        if(from.equals("COPY")){ return !textEditor.getCodeArea().getSelectedText().isEmpty();}
+        if(from.equals("UNDO")){ return textEditor.getTextArea().getUndoManager().isUndoAvailable();}
+        if(from.equals("REDO")){ return textEditor.getTextArea().getUndoManager().isRedoAvailable();}
+        if(from.equals("CUT")){ return !textEditor.getTextArea().getSelectedText().isEmpty();}
+        if(from.equals("COPY")){ return !textEditor.getTextArea().getSelectedText().isEmpty();}
         if(from.equals("PASTE")){ return Clipboard.getSystemClipboard().hasString();}
-        if(from.equals("DELETE")){ return !textEditor.getCodeArea().getSelectedText().isEmpty();}
-        if(from.equals("DUPLICATE")){ return !textEditor.getCodeArea().getSelectedText().isEmpty();}
+        if(from.equals("DELETE")){ return !textEditor.getTextArea().getSelectedText().isEmpty();}
+        if(from.equals("DUPLICATE")){ return !textEditor.getTextArea().getSelectedText().isEmpty();}
         if(from.equals("SELECT_ALL")){ return true;}
         return false;
 

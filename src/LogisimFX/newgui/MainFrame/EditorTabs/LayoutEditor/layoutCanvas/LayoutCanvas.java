@@ -641,7 +641,7 @@ public class LayoutCanvas extends Canvas {
             }
 
             //Accidentally press on canvas happens before press on tab content, so copy it for tab content
-            Event.fireEvent(layoutEditor, event.copyFor(event.getSource(), layoutEditor));
+            //Event.fireEvent(layoutEditor, event.copyFor(event.getSource(), layoutEditor));
 
         });
 

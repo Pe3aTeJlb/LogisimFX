@@ -7,16 +7,17 @@
  * This is free software released under GNU GPLv3 license
  */
 
-package LogisimFX.fpga.designrulecheck;
+package LogisimFX.newgui.MainFrame.SystemTabs.TerminalTab;
 
 import LogisimFX.circuit.Circuit;
 import LogisimFX.circuit.Wire;
 import LogisimFX.comp.Component;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SimpleDrcContainer {
+public class TerminalMessageContainer {
 
 	public static final int LEVEL_NORMAL = 1;
 	public static final int LEVEL_SEVERE = 2;
@@ -27,38 +28,39 @@ public class SimpleDrcContainer {
 	private Set<Component> drcComponents;
 	private Set<Wire> drcWires;
 	private Circuit myCircuit;
+	private File file;
 	private int listNumber;
 	private final boolean suppressCount;
 
-	public SimpleDrcContainer(String message, int level) {
+	public TerminalMessageContainer(String message, int level) {
 		this.message = message;
 		this.severityLevel = level;
 		this.listNumber = 0;
 		this.suppressCount = false;
 	}
 
-	public SimpleDrcContainer(String message, int level, boolean supressCount) {
+	public TerminalMessageContainer(String message, int level, boolean supressCount) {
 		this.message = message;
 		this.severityLevel = level;
 		this.listNumber = 0;
 		this.suppressCount = supressCount;
 	}
 
-	public SimpleDrcContainer(Object message, int level) {
+	public TerminalMessageContainer(Object message, int level) {
 		this.message = message.toString();
 		this.severityLevel = level;
 		this.listNumber = 0;
 		this.suppressCount = false;
 	}
 
-	public SimpleDrcContainer(Object message, int level, boolean supressCount) {
+	public TerminalMessageContainer(Object message, int level, boolean supressCount) {
 		this.message = message.toString();
 		this.severityLevel = level;
 		this.listNumber = 0;
 		this.suppressCount = supressCount;
 	}
 
-	public SimpleDrcContainer(Circuit circ, Object message, int level) {
+	public TerminalMessageContainer(Circuit circ, Object message, int level) {
 		this.message = message.toString();
 		this.severityLevel = level;
 		this.myCircuit = circ;
@@ -66,12 +68,28 @@ public class SimpleDrcContainer {
 		this.suppressCount = false;
 	}
 
-	public SimpleDrcContainer(Circuit circ, Object message, int level, boolean supressCount) {
+	public TerminalMessageContainer(Circuit circ, Object message, int level, boolean supressCount) {
 		this.message = message.toString();
 		this.severityLevel = level;
 		this.myCircuit = circ;
 		this.listNumber = 0;
 		this.suppressCount = supressCount;
+	}
+
+	public TerminalMessageContainer(File file, Object message, int level){
+		this.message = message.toString();
+		this.severityLevel = level;
+		this.file = file;
+		this.listNumber = 0;
+		this.suppressCount = false;
+	}
+
+	public TerminalMessageContainer(Circuit circ, File file, Object message, int level){
+		this.message = message.toString();
+		this.severityLevel = level;
+		this.file = file;
+		this.listNumber = 0;
+		this.suppressCount = false;
 	}
 
 	@Override
@@ -85,7 +103,7 @@ public class SimpleDrcContainer {
 
 	public boolean isDrcInfoPresent() {
 		if (drcComponents == null || myCircuit == null) return false;
-		return !drcComponents.isEmpty();
+		return !drcComponents.isEmpty() && file == null;
 	}
 
 	public Circuit getCircuit() {
@@ -94,6 +112,14 @@ public class SimpleDrcContainer {
 
 	public boolean hasCircuit() {
 		return (myCircuit != null);
+	}
+
+	public boolean hasFile(){
+		return (file != null);
+	}
+
+	public File getFile(){
+		return file;
 	}
 
 	public void addMarkComponent(Component comp) {

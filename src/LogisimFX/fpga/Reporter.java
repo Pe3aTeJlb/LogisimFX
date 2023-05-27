@@ -10,7 +10,7 @@
 package LogisimFX.fpga;
 
 import LogisimFX.Startup;
-import LogisimFX.fpga.designrulecheck.SimpleDrcContainer;
+import LogisimFX.newgui.MainFrame.SystemTabs.TerminalTab.TerminalMessageContainer;
 import LogisimFX.newgui.MainFrame.SystemTabs.TerminalTab.Terminal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,13 +35,23 @@ public class Reporter {
 		}
 	}
 
+	public void addInfo(Object message) {
+		if (Startup.isTty) {
+			if (message instanceof String) logger.info((String) message);
+		} else {
+			terminal.printInfo(message instanceof String
+					? new TerminalMessageContainer(message, TerminalMessageContainer.LEVEL_NORMAL)
+					: (TerminalMessageContainer) message);
+		}
+	}
+
 
 
 	public void addSevereWarning(String message) {
 		if (Startup.isTty) {
 			logger.warn(message);
 		} else {
-			terminal.printWarning(new SimpleDrcContainer(message, SimpleDrcContainer.LEVEL_SEVERE));
+			terminal.printWarning(new TerminalMessageContainer(message, TerminalMessageContainer.LEVEL_SEVERE));
 		}
 	}
 
@@ -49,7 +59,7 @@ public class Reporter {
 		if (Startup.isTty) {
 			logger.warn(message);
 		} else {
-			terminal.printWarning(new SimpleDrcContainer(message, SimpleDrcContainer.LEVEL_NORMAL, true));
+			terminal.printWarning(new TerminalMessageContainer(message, TerminalMessageContainer.LEVEL_NORMAL, true));
 		}
 	}
 
@@ -58,8 +68,8 @@ public class Reporter {
 			if (message instanceof String) logger.warn((String) message);
 		} else {
 			terminal.printWarning(message instanceof String
-					? new SimpleDrcContainer(message, SimpleDrcContainer.LEVEL_NORMAL)
-					: (SimpleDrcContainer) message);
+					? new TerminalMessageContainer(message, TerminalMessageContainer.LEVEL_NORMAL)
+					: (TerminalMessageContainer) message);
 		}
 	}
 
@@ -69,7 +79,7 @@ public class Reporter {
 		if (Startup.isTty) {
 			logger.error(message);
 		} else {
-			terminal.printError(new SimpleDrcContainer(message, SimpleDrcContainer.LEVEL_NORMAL, true));
+			terminal.printError(new TerminalMessageContainer(message, TerminalMessageContainer.LEVEL_NORMAL, true));
 		}
 	}
 
@@ -78,8 +88,8 @@ public class Reporter {
 			if (message instanceof String) logger.error((String) message);
 		} else {
 			terminal.printError((message instanceof String)
-					? new SimpleDrcContainer(message, SimpleDrcContainer.LEVEL_NORMAL)
-					: (SimpleDrcContainer)message);
+					? new TerminalMessageContainer(message, TerminalMessageContainer.LEVEL_NORMAL)
+					: (TerminalMessageContainer)message);
 		}
 	}
 
@@ -91,7 +101,7 @@ public class Reporter {
 		if (Startup.isTty) {
 			logger.error(message);
 		} else {
-			terminal.printError(new SimpleDrcContainer(message, SimpleDrcContainer.LEVEL_FATAL));
+			terminal.printError(new TerminalMessageContainer(message, TerminalMessageContainer.LEVEL_FATAL));
 		}
 	}
 
@@ -99,7 +109,7 @@ public class Reporter {
 		if (Startup.isTty) {
 			logger.error(message);
 		} else {
-			terminal.printWarning(new SimpleDrcContainer(message, SimpleDrcContainer.LEVEL_SEVERE));
+			terminal.printWarning(new TerminalMessageContainer(message, TerminalMessageContainer.LEVEL_SEVERE));
 		}
 	}
 

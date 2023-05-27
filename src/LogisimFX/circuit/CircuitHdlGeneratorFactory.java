@@ -10,6 +10,7 @@
 package LogisimFX.circuit;
 
 import LogisimFX.data.AttributeSet;
+import LogisimFX.fpga.LC;
 import LogisimFX.fpga.Reporter;
 import LogisimFX.fpga.data.MapComponent;
 import LogisimFX.fpga.data.MappableResourcesContainer;
@@ -21,6 +22,8 @@ import LogisimFX.fpga.hdlgenerator.Hdl;
 import LogisimFX.fpga.hdlgenerator.TickComponentHdlGeneratorFactory;
 import LogisimFX.instance.Port;
 import LogisimFX.instance.StdAttr;
+import LogisimFX.newgui.MainFrame.SystemTabs.TerminalTab.TerminalMessageContainer;
+import LogisimFX.proj.Project;
 import LogisimFX.std.wiring.ClockHdlGeneratorFactory;
 import LogisimFX.util.LineBuffer;
 
@@ -83,15 +86,17 @@ public class CircuitHdlGeneratorFactory extends AbstractHdlGeneratorFactory {
 	}
 
 	@Override
-	public boolean generateAllHDLDescriptions(Set<String> handledComponents, String workingDir, List<String> hierarchy) {
-		return generateAllHDLDescriptions(handledComponents, workingDir, hierarchy, false);
+	public boolean generateAllHDLDescriptions(Project proj, Set<String> handledComponents, String workingDir, List<String> hierarchy) {
+		return generateAllHDLDescriptions(proj, handledComponents, workingDir, hierarchy, false);
 	}
 
 	public boolean generateAllHDLDescriptions(
+			Project proj,
 			Set<String> handledComponents,
 			String workingDir,
 			List<String> hierarchy,
 			boolean gatedInstance) {
+
 		if (myCircuit == null) {
 			return false;
 		}
@@ -158,7 +163,7 @@ public class CircuitHdlGeneratorFactory extends AbstractHdlGeneratorFactory {
 					CorrectLabel.getCorrectLabel(
 							thisCircuit.getComponent().getAttributeSet().getValue(StdAttr.LABEL)));
 			if (!worker.generateAllHDLDescriptions(
-					handledComponents, workingDir, hierarchy, thisCircuit.isGatedInstance())) {
+					proj, handledComponents, workingDir, hierarchy, thisCircuit.isGatedInstance())) {
 				return false;
 			}
 			hierarchy.remove(hierarchy.size() - 1);
@@ -167,15 +172,38 @@ public class CircuitHdlGeneratorFactory extends AbstractHdlGeneratorFactory {
 		var componentName = CorrectLabel.getCorrectLabel(myCircuit.getName());
 		if (gatedInstance) componentName = componentName.concat("_gated");
 		if (!handledComponents.contains(componentName)) {
-			if (!Hdl.writeArchitecture(
-					workPath + getRelativeDirectory(),
-					getArchitecture(myNetList, null, componentName),
-					componentName)) {
-				return false;
+
+			if (myCircuit.getVerilogModel(proj).exists()){
+				Hdl.copyExistingArchitecture(
+						workPath + getRelativeDirectory(),
+						componentName,
+						myCircuit.getVerilogModel(proj)
+				);
+
+				Reporter.report.addInfo(new TerminalMessageContainer(
+						myCircuit.getVerilogModel(proj),
+						LC.getFormatted("fileGeneratedFromVerilogModel",componentName),
+						TerminalMessageContainer.LEVEL_NORMAL
+				));
+
+			} else {
+
+				if (!Hdl.writeArchitecture(
+						workPath + getRelativeDirectory(),
+						getArchitecture(myNetList, null, componentName),
+						componentName)) {
+					return false;
+				}
+
+				Reporter.report.addInfo(LC.getFormatted("fileGeneratedFromSchematics",componentName));
+
 			}
+
 		}
 		handledComponents.add(componentName);
+
 		return true;
+
 	}
 
 	/* here the private handles are defined */

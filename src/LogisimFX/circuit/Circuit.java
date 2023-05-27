@@ -704,8 +704,6 @@ public class Circuit {
 	}
 
 
-	private boolean isAnnotated;
-
 	public Netlist getNetList() {
 		return netList;
 	}
@@ -734,12 +732,6 @@ public class Circuit {
 	}
 
 	public void annotate(boolean clearExistingLabels) {
-		/* If I am already completely annotated, return */
-		if (isAnnotated) {
-			// FIXME: hardcoded string
-			Reporter.report.addInfo("Nothing to annotate!");
-			return;
-		}
 		final var comps = new TreeSet<Component>((a, b) -> {
 			final Location aloc = a.getLocation();
 			final Location bloc = b.getLocation();
@@ -822,7 +814,6 @@ public class Circuit {
 					"Annotated one ore more pins in circuit \""
 							+ this.getName()
 							+ "\" this might have changed it's boxsize and might have impacted it's connections in circuits using this one!");
-		isAnnotated = true;
 		/* Now annotate all circuits below me */
 		for (final var subs : subCircuits) {
 			subs.annotate(clearExistingLabels);
@@ -832,7 +823,6 @@ public class Circuit {
 	//
 	// Annotation module for all components that require a non-zero-length label
 	public void clearAnnotationLevel() {
-		isAnnotated = false;
 		netList.clear();
 		for (final var comp : this.getNonWires()) {
 			if (comp.getFactory() instanceof SubcircuitFactory) {

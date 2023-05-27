@@ -7,7 +7,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 
-public class TextEditorToolBar extends ToolBar {
+public class
+TextEditorToolBar extends ToolBar {
 
 	public static class ToolTip extends Tooltip {
 
@@ -21,13 +22,11 @@ public class TextEditorToolBar extends ToolBar {
 	private final int prefWidth = 15;
 	private final int prefHeight = 15;
 
-	private Project proj;
-	private TextEditor codeEditor;
+	private TextEditor textEditor;
 
-	public TextEditorToolBar(Project project, TextEditor codeEditor){
+	public TextEditorToolBar(TextEditor textEditor){
 		super();
-		this.proj = project;
-		this.codeEditor = codeEditor;
+		this.textEditor = textEditor;
 		initButtons();
 		this.setMaxHeight(-1);
 		this.setMaxWidth(-1);
@@ -35,25 +34,43 @@ public class TextEditorToolBar extends ToolBar {
 
 	private void initButtons(){
 
-		Button find = new Button();
-		find.graphicProperty().setValue(IconsManager.getIcon("find.png"));
-		find.setTooltip(new ToolTip("codeAreaFindBtn"));
-		find.setOnAction(event -> codeEditor.openFindBar());
-		find.setPrefSize(prefWidth,prefHeight);
-		find.setMinSize(prefWidth,prefHeight);
-		find.setMaxSize(prefWidth,prefHeight);
+		Button findBtn = new Button();
+		findBtn.graphicProperty().setValue(IconsManager.getIcon("find.png"));
+		findBtn.setTooltip(new ToolTip("codeAreaFindBtn"));
+		findBtn.setOnAction(event -> textEditor.openFindBar());
+		findBtn.setPrefSize(prefWidth,prefHeight);
+		findBtn.setMinSize(prefWidth,prefHeight);
+		findBtn.setMaxSize(prefWidth,prefHeight);
 
-		Button findAndReplace = new Button();
-		findAndReplace.graphicProperty().setValue(IconsManager.getIcon("findreplace.png"));
-		findAndReplace.setTooltip(new ToolTip("codeAreaFindAndReplaceBtn"));
-		findAndReplace.setOnAction(event -> codeEditor.openReplaceBar());
-		findAndReplace.setPrefSize(prefWidth,prefHeight);
-		findAndReplace.setMinSize(prefWidth,prefHeight);
-		findAndReplace.setMaxSize(prefWidth,prefHeight);
+		Button findAndReplaceBtn = new Button();
+		findAndReplaceBtn.graphicProperty().setValue(IconsManager.getIcon("findreplace.png"));
+		findAndReplaceBtn.setTooltip(new ToolTip("codeAreaFindAndReplaceBtn"));
+		findAndReplaceBtn.setOnAction(event -> textEditor.openReplaceBar());
+		findAndReplaceBtn.setPrefSize(prefWidth,prefHeight);
+		findAndReplaceBtn.setMinSize(prefWidth,prefHeight);
+		findAndReplaceBtn.setMaxSize(prefWidth,prefHeight);
+
+		Button saveFileBtn = new Button();
+		saveFileBtn.graphicProperty().setValue(IconsManager.getIcon("savefile.gif"));
+		saveFileBtn.setTooltip(new ToolTip("codeAreaSaveBtn"));
+		saveFileBtn.setOnAction(event -> textEditor.doSave());
+		saveFileBtn.setPrefSize(prefWidth,prefHeight);
+		saveFileBtn.setMinSize(prefWidth,prefHeight);
+		saveFileBtn.setMaxSize(prefWidth,prefHeight);
+
+		Button deleteFileBtn = new Button();
+		deleteFileBtn.graphicProperty().setValue(IconsManager.getIcon("deletefile.gif"));
+		deleteFileBtn.setTooltip(new ToolTip("codeAreaDeleteBtn"));
+		deleteFileBtn.setOnAction(event -> textEditor.doDelete());
+		deleteFileBtn.setPrefSize(prefWidth,prefHeight);
+		deleteFileBtn.setMinSize(prefWidth,prefHeight);
+		deleteFileBtn.setMaxSize(prefWidth,prefHeight);
 
 		getItems().addAll(
-				find,
-				findAndReplace
+				findBtn,
+				findAndReplaceBtn,
+				saveFileBtn,
+				deleteFileBtn
 		);
 
 	}

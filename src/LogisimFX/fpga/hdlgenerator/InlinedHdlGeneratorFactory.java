@@ -12,6 +12,7 @@ package LogisimFX.fpga.hdlgenerator;
 import LogisimFX.data.AttributeSet;
 import LogisimFX.fpga.designrulecheck.Netlist;
 import LogisimFX.fpga.designrulecheck.netlistComponent;
+import LogisimFX.proj.Project;
 import LogisimFX.util.LineBuffer;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class InlinedHdlGeneratorFactory implements HdlGeneratorFactory {
 
 	@Override
 	public boolean generateAllHDLDescriptions(
-			Set<String> handledComponents, String workingDirectory, List<String> hierarchy) {
+			Project proj, Set<String> handledComponents, String workingDirectory, List<String> hierarchy) {
 		throw new IllegalAccessError("BUG: generateAllHDLDescriptions not supported");
 	}
 

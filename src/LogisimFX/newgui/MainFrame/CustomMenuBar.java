@@ -824,15 +824,15 @@ public class CustomMenuBar extends MenuBar {
 
         MenuItem generateBit = new MenuItem();
         generateBit.textProperty().bind(localizer.createStringBinding("fpgaGenerateBitFile"));
-        //generateBit.setOnAction(event -> proj.getFpgaToolchainOrchestrator().exportHDLFiles(0, 0));
+        generateBit.setOnAction(event -> proj.getFpgaToolchainOrchestrator().generateBitFile(0, 0));
 
-        SeparatorMenuItem sp3 = new SeparatorMenuItem();
+        //SeparatorMenuItem sp3 = new SeparatorMenuItem();
 
-        MenuItem uploadToBoard = new MenuItem();
-        uploadToBoard.textProperty().bind(localizer.createStringBinding("fpgaUploadToBoard"));
+        //MenuItem uploadToBoard = new MenuItem();
+        //uploadToBoard.textProperty().bind(localizer.createStringBinding("fpgaUploadToBoard"));
         //uploadToBoard.setOnAction(event -> proj.getFpgaToolchainOrchestrator().exportHDLFiles(0, 0));
 
-        SeparatorMenuItem sp4 = new SeparatorMenuItem();
+        //SeparatorMenuItem sp4 = new SeparatorMenuItem();
 
 
         FPGAMenu.getItems().addAll(
@@ -843,10 +843,10 @@ public class CustomMenuBar extends MenuBar {
                 openProjectConstrains,
                 sp2,
                 exportFiles,
-                generateBit,
-                sp3,
-                uploadToBoard,
-                sp4
+                generateBit
+                //sp3,
+                //uploadToBoard,
+                //sp4
         );
 
         this.getMenus().add(FPGAMenu);

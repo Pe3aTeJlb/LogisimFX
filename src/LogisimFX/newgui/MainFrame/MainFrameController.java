@@ -1654,6 +1654,31 @@ public class MainFrameController extends AbstractController {
     }
 
 
+    public AppearanceEditor getAppearanceEditorFor(Circuit cir){
+        if (openedAppearanceEditors.containsKey(cir)) {
+            return (AppearanceEditor) openedAppearanceEditors.get(cir).getContent();
+        } else {
+            return null;
+        }
+    }
+
+    public LayoutEditor getLayoutEditorFor(Circuit cir){
+        if (openedLayoutEditors.containsKey(cir)) {
+            return (LayoutEditor) openedLayoutEditors.get(cir).getContent();
+        } else {
+            return null;
+        }
+    }
+
+    public CodeEditor getCodeEditorFor(File file){
+        if (openedCodeEditors.containsKey(file)) {
+            return (CodeEditor) openedCodeEditors.get(file).getContent();
+        } else {
+            return null;
+        }
+    }
+
+
     @Override
     public void onClose() {
 

@@ -17,6 +17,7 @@ import LogisimFX.fpga.designrulecheck.netlistComponent;
 import LogisimFX.fpga.file.FileWriter;
 import LogisimFX.instance.Port;
 import LogisimFX.instance.StdAttr;
+import LogisimFX.proj.Project;
 import LogisimFX.std.wiring.ClockHdlGeneratorFactory;
 import LogisimFX.util.LineBuffer;
 import LogisimFX.util.StringUtil;
@@ -51,6 +52,7 @@ public class AbstractHdlGeneratorFactory implements HdlGeneratorFactory {
 	/* Here the common predefined methods are defined */
 	@Override
 	public boolean generateAllHDLDescriptions(
+			Project proj,
 			Set<String> handledComponents,
 			String workingDirectory,
 			List<String> hierarchy) {

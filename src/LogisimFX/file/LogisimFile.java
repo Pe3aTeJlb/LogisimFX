@@ -29,7 +29,6 @@ import javax.xml.transform.TransformerException;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 public class LogisimFile extends Library implements LibraryEventSource {
@@ -83,7 +82,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 	private Path otherDir;
 
 	public static String CIRCUIT = "circuit";
-	public static String FPGA = "fpga";
+	public static String FPGA_BUILD = "fpgaBuild";
 	public static String LIB = "lib";
 	public static String OTHERS = "other";
 
@@ -138,7 +137,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 				circuitDir = new File(projectDir + File.separator + CIRCUIT).toPath();
 				circuitDir.toFile().mkdirs();
 
-				fpgaDir = new File(projectDir + File.separator + FPGA).toPath();
+				fpgaDir = new File(projectDir + File.separator + FPGA_BUILD).toPath();
 				fpgaDir.toFile().mkdirs();
 
 				libDir = new File(projectDir + File.separator + LIB).toPath();

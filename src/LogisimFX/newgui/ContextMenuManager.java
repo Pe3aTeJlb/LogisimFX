@@ -33,6 +33,7 @@ import LogisimFX.file.Loader;
 import LogisimFX.tools.MenuExtender;
 
 import javafx.scene.control.*;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -180,6 +181,53 @@ public class ContextMenuManager {
                 GetCircuitStatistics,
                 SetAsMain,
                 RemoveCirc
+        );
+
+        return contextMenu;
+
+    }
+
+    public static ContextMenu FileContextMenu(Project proj, File file){
+
+        lc.changeBundle("gui");
+
+        ContextMenu contextMenu = new ContextMenu();
+
+        MenuItem saveItem = new MenuItem();
+        saveItem.textProperty().bind(lc.createStringBinding("codeAreaSaveBtn"));
+        saveItem.setDisable(proj.getFrameController().getCodeEditorFor(file) == null);
+        saveItem.setOnAction(event -> {
+            if (proj.getFrameController().getCodeEditorFor(file) != null){
+                proj.getFrameController().getCodeEditorFor(file).doSave();
+            }
+        });
+
+        MenuItem deleteItem = new MenuItem();
+        deleteItem.textProperty().bind(lc.createStringBinding("codeAreaDeleteBtn"));
+        deleteItem.setOnAction(event -> {
+
+            if (DialogManager.createConfirmDialog()) {
+
+                if (proj.getFrameController().getCodeEditorFor(file) != null){
+                    proj.getFrameController().getCodeEditorFor(file).doDelete();
+                } else {
+                    try {
+                        if (file.exists()) {
+                            FileUtils.delete(file);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+
+        });
+
+
+        contextMenu.getItems().addAll(
+                saveItem,
+                deleteItem
         );
 
         return contextMenu;
