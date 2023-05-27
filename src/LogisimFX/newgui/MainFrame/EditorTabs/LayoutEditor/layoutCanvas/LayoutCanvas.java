@@ -136,13 +136,13 @@ public class LayoutCanvas extends Canvas {
                 setErrorMessage(null, null);
 */
             }
-
+/*
             if (act != ProjectEvent.ACTION_SELECTION
                     && act != ProjectEvent.ACTION_START
                     && act != ProjectEvent.UNDO_START) {
                 proj.getSimulator().requestPropagate();
             }
-
+*/
             if (act == ProjectEvent.ACTION_SET_TOOL) {
 
                 Tool t = event.getTool();
@@ -631,7 +631,7 @@ public class LayoutCanvas extends Canvas {
                 dragTool = proj.getTool();
                 if (dragTool != null) {
                     dragTool.mousePressed(this, getGraphics(), new CME(event));
-                    proj.getSimulator().requestPropagate();
+                    //proj.getSimulator().requestPropagate();
                 }
             }
 
@@ -739,7 +739,7 @@ public class LayoutCanvas extends Canvas {
                 tool.mouseMoved(this, getGraphics(), new CME(event));
             }
 
-            proj.getSimulator().requestPropagate();
+            //proj.getSimulator().requestPropagate();
 
         });
 
