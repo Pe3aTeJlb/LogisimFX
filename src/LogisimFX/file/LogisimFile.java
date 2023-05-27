@@ -96,15 +96,6 @@ public class LogisimFile extends Library implements LibraryEventSource {
 					if (Files.exists(LOGISIMFX_TEMP_DIR)) {
 						FileUtils.deleteDirectory(LOGISIMFX_TEMP_DIR.toFile());
 					}
-					/*for pty4j
-					if (Files.exists(Paths.get(PtyUtil.resolveNativeLibrary().getParent()))){
-						System.out.println((PtyUtil.resolveNativeLibrary().toString()));
-						//FileUtils.delete(PtyUtil.resolveNativeLibrary());
-						FileUtils.forceDeleteOnExit(PtyUtil.resolveNativeLibrary());
-						FileUtils.forceDeleteOnExit(Paths.get(PtyUtil.resolveNativeLibrary().getParent()).toFile());
-						//FileUtils.deleteDirectory(Paths.get(PtyUtil.resolveNativeLibrary().getParent()).toFile());
-					}
-					*/
 				} catch (IOException ex) {
 					ex.printStackTrace();
 				}
