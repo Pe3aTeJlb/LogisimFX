@@ -63,6 +63,11 @@
     -fx-background-color: #000000;
 }
 
+.caret {
+    -fx-fill: #FFFFFF;
+    -fx-stroke: #FFFFFF;
+}
+
 .terminal-info {
     -fx-fill: #FFFFFF;
     -fx-font-weight: bold;

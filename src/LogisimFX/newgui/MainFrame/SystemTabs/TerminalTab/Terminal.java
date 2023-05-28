@@ -7,6 +7,8 @@ import LogisimFX.newgui.MainFrame.EditorTabs.EditHandler;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.LayoutEditor;
 import LogisimFX.proj.Project;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.Event;
 import javafx.geometry.Pos;
@@ -17,15 +19,24 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.transform.Scale;
+import org.apache.commons.lang3.SystemUtils;
 import org.fxmisc.flowless.ScaledVirtualized;
 import org.fxmisc.flowless.VirtualizedScrollPane;
+import org.fxmisc.richtext.Caret;
 import org.fxmisc.richtext.StyleClassedTextArea;
 import org.fxmisc.richtext.model.PlainTextChange;
 import org.fxmisc.richtext.util.UndoUtils;
 import org.fxmisc.undo.UndoManager;
+import pty4j.PtyProcess;
+import pty4j.PtyProcessBuilder;
+import pty4j.windows.WinPty;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntFunction;
 import java.util.regex.Matcher;
@@ -34,7 +45,9 @@ import java.util.regex.Pattern;
 public class Terminal extends VBox {
 
 	private Project proj;
-/*
+
+	private static int terminalCount = 0;
+
 	private PtyProcess process;
 	private Path terminalPath;
 	private String[] termCommand;
@@ -46,10 +59,8 @@ public class Terminal extends VBox {
 
 	private String windowsTerminalStarter = "cmd.exe";
 	private String unixTerminalStarter = "/bin/bash -i";
-*/
 
-	private TerminalHandler editHandler;
-	private TerminalEditMenu menu;
+	private String curExecPath = "";
 
 	private VirtualizedScrollPane<?> virtualizedScrollPane;
 	private ScaledVirtualized<StyleClassedTextArea> scaleVirtualized;
@@ -71,7 +82,11 @@ public class Terminal extends VBox {
 
 		super();
 
+		terminalCount += 1;
+
 		this.proj = project;
+
+		curExecPath = getJarPath();
 
 		initFindBar();
 		initTerminalArea();
@@ -79,27 +94,40 @@ public class Terminal extends VBox {
 		this.getChildren().addAll(findBar, virtualizedScrollPane);
 
 		this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-			if (event.getCode() == KeyCode.ESCAPE) {
-				findBar.setVisible(false);
 
-				findBar.setMinHeight(0);
-				findBar.setMaxHeight(0);
+			if (event.getCode() == KeyCode.F && event.isControlDown()){
+				triggerFindBar();
+			} else if (event.getCode() == KeyCode.C && event.isControlDown()){
+				copy();
+			} else if (event.getCode() == KeyCode.V && event.isControlDown()) {
+				paste();
+			} else if (event.getCode() == KeyCode.ESCAPE) {
+				closeFindBar();
+			} else if (event.getCode() == KeyCode.ENTER) {
+				executeInput();
+			} else if (event.getCode().isWhitespaceKey() || event.getCode().isDigitKey() ||
+					(event.getCode().isLetterKey() && !event.isShortcutDown()) || event.getCode().isKeypadKey()) {
 
-				removeHighlightedTxt(coordinateList, terminalArea, currWordIndex);
-				/*
-				 * After closing the popup dialog the color of keywords is also changed.
-				 * So in order to re-highlight the syntax I am appending and deleting the text to fire plaintext change event.
-				 * I think, there are some better way, but until that I am going with this one.
-				 */
-				terminalArea.appendText(" ");
-				int len = terminalArea.getText().length();
-				terminalArea.deleteText(len-1, len);
+				int paragraph = terminalArea.getParagraphs().size() - 1;
+				int column = terminalArea.getCaretColumn();
+/*
+				if (terminalArea.getCurrentParagraph() != paragraph){
+					terminalArea.moveTo(paragraph, terminalArea.getText(paragraph).length());
+				} else {
+
+					if (column < curExecPath.length()){
+						column = curExecPath.length();
+						terminalArea.moveTo(terminalArea.getCurrentParagraph(), column);
+					} else if (column > terminalArea.getText(paragraph).length()){
+						column = terminalArea.getText(paragraph).length();
+						terminalArea.moveTo(terminalArea.getCurrentParagraph(), column);
+					}
+
+				}*/
 
 			}
-		});
 
-		editHandler = new TerminalHandler(this);
-		menu = new TerminalEditMenu(this);
+		});
 
 		try {
 			initializeProcess();
@@ -167,11 +195,13 @@ public class Terminal extends VBox {
 		};
 		terminalArea.setParagraphGraphicFactory(graphicFactory);
 
-		terminalArea.setEditable(false);
 		terminalArea.requestFocus();
+		terminalArea.setShowCaret(Caret.CaretVisibility.AUTO);
+		terminalArea.requestFollowCaret();
 
 		this.getStylesheets().add("/LogisimFX/resources/css/default.css");
 		terminalArea.getStyleClass().add(backgroundStyleClass);
+
 
 	}
 
@@ -209,6 +239,8 @@ public class Terminal extends VBox {
 		findBar.setMaxHeight(0);
 
 	}
+
+
 
 	public void find() {
 		if (findTxtFld.getText().isEmpty()) return;
@@ -299,6 +331,16 @@ public class Terminal extends VBox {
 		terminalArea.paste();
 	}
 
+	public void triggerFindBar(){
+
+		if (findBar.isVisible()){
+			closeFindBar();
+		} else {
+			openFindBar();
+		}
+
+	}
+
 	public void openFindBar(){
 
 		findBar.setVisible(true);
@@ -309,6 +351,11 @@ public class Terminal extends VBox {
 
 	}
 
+	private void closeFindBar(){
+		findBar.setVisible(false);
+		findBar.setMinHeight(0);
+		findBar.setMaxHeight(0);
+	}
 
 	private void zoom(double delta){
 
@@ -343,23 +390,8 @@ public class Terminal extends VBox {
 
 
 
-	public StyleClassedTextArea getTerminalArea(){
-		return terminalArea;
-	}
-
-	public List<MenuItem> getEditMenuItems(){
-		return menu.getMenuItems();
-	}
-
-	public EditHandler getEditHandler(){
-		return editHandler;
-	}
-
-
-
 	private void initializeProcess() throws Exception {
 
-/*
 		terminalPath = Paths.get(getJarPath());
 
 		outputWriterProperty = new SimpleObjectProperty<>();
@@ -371,13 +403,13 @@ public class Terminal extends VBox {
 
 		inputReaderProperty.addListener((observable, oldValue, newValue) -> {
 			ThreadHelper.start(() -> {
-				printReader(newValue);
+				printReader(newValue, infoStyleClass);
 			});
 		});
 
 		errorReaderProperty.addListener((observable, oldValue, newValue) -> {
 			ThreadHelper.start(() -> {
-				printReader(newValue);
+				printReader(newValue, errorStyleClass);
 			});
 		});
 
@@ -401,10 +433,43 @@ public class Terminal extends VBox {
 		setInputReader(new BufferedReader(new InputStreamReader(process.getInputStream(), defaultCharEncoding)));
 		setErrorReader(new BufferedReader(new InputStreamReader(process.getErrorStream(), defaultCharEncoding)));
 		setOutputWriter(new BufferedWriter(new OutputStreamWriter(process.getOutputStream(), defaultCharEncoding)));
-*/
+
 	}
 
-/*
+
+	public void executeAsProcess(String command) {
+
+		try {
+
+			terminalArea.append(getJarPath()+">"+command+"\n", infoStyleClass);
+			Process process = Runtime.getRuntime().exec(command);
+
+			BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			BufferedReader errors = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+
+			input.lines().forEach(string -> terminalArea.append(string+"\n", infoStyleClass));
+			errors.lines().forEach(string -> terminalArea.append(string+"\n", errorStyleClass));
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public Process silentExecuteAsProcess(String command) {
+		try {
+			return Runtime.getRuntime().exec(command);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
+	public void executeInput() {
+		execute("python --version");
+	}
+
 	public void execute(String command) {
 		try {
 			commandQueue.put(command);
@@ -416,6 +481,7 @@ public class Terminal extends VBox {
 				final String commandToExecute = commandQueue.poll();
 				getOutputWriter().write(commandToExecute);
 				getOutputWriter().flush();
+				getOutputWriter().write(getCurExecPath());
 			} catch (final IOException e) {
 				e.printStackTrace();
 			}
@@ -437,60 +503,43 @@ public class Terminal extends VBox {
 				e.printStackTrace();
 			}
 		});
+	}
 
-		private void printReader(Reader bufferedReader) {
+	private void printReader(Reader bufferedReader, String type) {
 		try {
+			
 			int nRead;
-			final char[] data = new char[1 * 1024];
+			final char[] data = new char[1024];
 
 			while ((nRead = bufferedReader.read(data, 0, data.length)) != -1) {
 				final StringBuilder builder = new StringBuilder(nRead);
 				builder.append(data, 0, nRead);
 				System.out.println(builder.toString());
-				print(builder.toString());
+				print(builder.toString(), type);
 			}
+/*
+			StringBuilder sb = new StringBuilder();
+			char[] buf = new char[1024];
+			do {
+				int len = bufferedReader.read(buf, 0, buf.length);
+				if (len > 0) {
+					sb.append(buf, 0, len);
+				}
+			} while (bufferedReader.ready());
+
+			System.out.println(sb.toString());
+
+			print(sb.toString(), type);*/
 
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	protected void print(String text) {
-		ThreadHelper.runActionLater(() -> {
-			this.getTerminalArea().insertText(getTerminalArea().getCaretPosition(), text);
-		});
+
+	private String getCurExecPath(){
+		return "execpath>";
 	}
-
-	}*/
-
-	public void execute(String command) {
-
-		try {
-
-			terminalArea.append(getJarPath()+">"+command+"\n", infoStyleClass);
-			Process process = Runtime.getRuntime().exec(command);
-
-			BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
-			BufferedReader errors = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-
-			input.lines().forEach(string -> terminalArea.append(string+"\n", infoStyleClass));
-			errors.lines().forEach(string -> terminalArea.append(string+"\n", errorStyleClass));
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	public Process silentExecute(String command) {
-		try {
-			return Runtime.getRuntime().exec(command);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
 
 	public static String getJarPath() {
 
@@ -545,6 +594,10 @@ public class Terminal extends VBox {
 		terminalArea.append(info+"\n", infoStyleClass);
 	}
 
+	protected void print(String text, String type) {
+		ThreadHelper.runActionLater(() -> terminalArea.append(text+"\n", type));
+	}
+
 	public void clearTerminal(){
 		terminalArea.clear();
 		drcContainers.clear();
@@ -573,7 +626,13 @@ public class Terminal extends VBox {
 
 	}
 
-/*
+
+
+	public StyleClassedTextArea getTerminalArea(){
+		return terminalArea;
+	}
+
+
 	public ObjectProperty<Reader> inputReaderProperty() {
 		return inputReaderProperty;
 	}
@@ -611,37 +670,18 @@ public class Terminal extends VBox {
 	public void setOutputWriter(Writer writer) {
 		outputWriterProperty.set(writer);
 	}
-*/
-/*
-	@Override
-	public void copyAccelerators(){
-		if (this.getScene() != proj.getFrameController().getStage().getScene()){
-			this.getScene().getAccelerators().putAll(
-					proj.getFrameController().getStage().getScene().getAccelerators()
-			);
-		}
-	}
-*/
+
+
 
 	public void terminateListeners(){
-		/*
 		if (process != null) {
-			System.out.println(process.isAlive());
-			try {
-				process.getErrorStream().close();
-				process.getInputStream().close();
-				process.getOutputStream().close();
-				process.destroy();
-				System.out.println(process.waitFor(1, TimeUnit.SECONDS));
-				System.out.println(process.isAlive() + " ");
-				System.out.println(process.exitValue());
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
+			process.destroy();
+			if (terminalCount == 1){
+				process.unloadJNALibraries();
 			}
 			process = null;
-		}*/
+			terminalCount -= 1;
+		}
 	}
 
 }
