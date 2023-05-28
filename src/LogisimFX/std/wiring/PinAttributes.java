@@ -6,6 +6,7 @@
 
 package LogisimFX.std.wiring;
 
+import LogisimFX.circuit.RadixOption;
 import LogisimFX.comp.EndData;
 import LogisimFX.data.Attribute;
 import LogisimFX.data.BitWidth;
@@ -20,7 +21,7 @@ class PinAttributes extends ProbeAttributes {
 
 	private static final List<Attribute<?>> ATTRIBUTES
 		= Arrays.asList(StdAttr.FPGA_SUPPORTED,
-			StdAttr.FACING, Pin.ATTR_TYPE, StdAttr.WIDTH, Pin.ATTR_TRISTATE,
+			StdAttr.FACING, Pin.ATTR_TYPE, StdAttr.WIDTH, RadixOption.ATTRIBUTE, Pin.ATTR_TRISTATE,
 			Pin.ATTR_PULL, StdAttr.LABEL, Pin.ATTR_LABEL_LOC, StdAttr.LABEL_FONT);
 
 	BitWidth width = BitWidth.ONE;
@@ -69,6 +70,12 @@ class PinAttributes extends ProbeAttributes {
 			pull = value;
 		} else if (attr == StdAttr.FPGA_SUPPORTED){
 			fpga = (Boolean) value;
+		} else if (attr == RadixOption.ATTRIBUTE) {
+			if (width.getWidth() == 1) {
+				super.setValue(RadixOption.ATTRIBUTE, RadixOption.RADIX_2);
+			} else  {
+				super.setValue(attr, value);
+			}
 		} else {
 			super.setValue(attr, value);
 			return;

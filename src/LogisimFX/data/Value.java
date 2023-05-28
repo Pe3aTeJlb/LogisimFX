@@ -30,6 +30,12 @@ public class Value {
 	public static final Color ERROR_COLOR = Color.rgb(192, 0, 0);
 	public static final Color WIDTH_ERROR_COLOR = Color.rgb(255, 123, 0);
 	public static final Color MULTI_COLOR = Color.BLACK;
+
+	public static char TRUECHAR = '1';
+	public static char FALSECHAR = '0';
+	public static char UNKNOWNCHAR = 'u';
+	public static char ERRORCHAR = 'e';
+	public static char DONTCARECHAR = '-';
 	
 	private static final Cache cache = new Cache();
 
@@ -218,6 +224,16 @@ public class Value {
 		if (error != 0) return -1;
 		if (unknown != 0) return -1;
 		return value;
+	}
+
+	public float toFloatValue() {
+		if (error != 0 || unknown != 0 || width != 32) return Float.NaN;
+		return Float.intBitsToFloat(value);
+	}
+
+	public double toDoubleValue() {
+		if (error != 0 || unknown != 0 || width != 64) return Double.NaN;
+		return Double.longBitsToDouble(value);
 	}
 
 	@Override

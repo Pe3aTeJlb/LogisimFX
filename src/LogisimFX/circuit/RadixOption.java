@@ -16,6 +16,7 @@ public abstract class RadixOption extends AttributeOption {
 	public static final RadixOption RADIX_10_UNSIGNED = new Radix10Unsigned();
 	public static final RadixOption RADIX_10_SIGNED = new Radix10Signed();
 	public static final RadixOption RADIX_16 = new Radix16();
+	public static final RadixOption RADIX_FLOAT = new RadixFloat();
 
 	public static final RadixOption[] OPTIONS = {
 		RADIX_2, RADIX_8, RADIX_10_SIGNED, RADIX_10_UNSIGNED, RADIX_16
@@ -64,7 +65,11 @@ public abstract class RadixOption extends AttributeOption {
 	public int getMaxLength(Value value) {
 		return getMaxLength(value.getBitWidth());
 	}
-	
+
+	public String getIndexChar() {
+		return "";
+	}
+
 	private static class Radix2 extends RadixOption {
 		private Radix2() {
 			super("2", LC.createStringBinding("radix2"));
@@ -85,6 +90,11 @@ public abstract class RadixOption extends AttributeOption {
 			int bits = width.getWidth();
 			if (bits <= 1) return 1;
 			return bits + ((bits - 1) / 4);
+		}
+
+		@Override
+		public String getIndexChar() {
+			return "b";
 		}
 	}
 	
@@ -162,6 +172,11 @@ public abstract class RadixOption extends AttributeOption {
 		public int getMaxLength(BitWidth width) {
 			return Math.max(1, (width.getWidth() + 2) / 3);
 		}
+
+		@Override
+		public String getIndexChar() {
+			return "o";
+		}
 	}
 	
 	private static class Radix16 extends RadixOption {
@@ -177,6 +192,32 @@ public abstract class RadixOption extends AttributeOption {
 		@Override
 		public int getMaxLength(BitWidth width) {
 			return Math.max(1, (width.getWidth() + 3) / 4);
+		}
+
+		@Override
+		public String getIndexChar() {
+			return "h";
+		}
+	}
+
+	private static class RadixFloat extends RadixOption {
+		private RadixFloat() {
+			super("float", LC.createStringBinding("radixFloat"));
+		}
+
+		@Override
+		public int getMaxLength(BitWidth width) {
+			return width.getWidth() == 64 ? 24 : 12;
+		}
+
+		@Override
+		public String toString(Value value) {
+			return value.getWidth() == 64 ? Double.toString(value.toDoubleValue()) : Float.toString(value.toFloatValue());
+		}
+
+		@Override
+		public String getIndexChar() {
+			return "f";
 		}
 	}
 }
