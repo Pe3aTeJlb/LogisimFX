@@ -261,7 +261,7 @@ public class FPGAToolchainOrchestrator {
 				return;
 			}
 		}
-
+/*
 
 		final ToplevelHdlGeneratorFactory top = new ToplevelHdlGeneratorFactory(fpgaClockFreq, frequency, topLevelCirc, mappableResourcesContainer);
 
@@ -288,7 +288,7 @@ public class FPGAToolchainOrchestrator {
 						topLevelCirc.getNetList(), null, ToplevelHdlGeneratorFactory.FPGA_TOP_LEVEL_NAME),
 						ToplevelHdlGeneratorFactory.FPGA_TOP_LEVEL_NAME
 				);
-
+*/
 
 
 	}

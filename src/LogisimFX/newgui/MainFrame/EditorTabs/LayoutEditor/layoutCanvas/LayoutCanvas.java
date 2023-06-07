@@ -635,9 +635,11 @@ public class LayoutCanvas extends Canvas {
                 }
             }
 
-            if(event.getButton() == MouseButton.SECONDARY){
+            if(event.getButton() == MouseButton.SECONDARY) {
                 dragTool = new MenuTool();
                 dragTool.mousePressed(this, getGraphics(), new CME(event));
+                setHighlightedComponent(null);
+                setHighlightedWires(WireSet.EMPTY);
             }
 
             //Accidentally press on canvas happens before press on tab content, so copy it for tab content

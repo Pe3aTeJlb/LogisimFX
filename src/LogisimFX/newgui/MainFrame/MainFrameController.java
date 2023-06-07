@@ -1409,13 +1409,11 @@ public class MainFrameController extends AbstractController {
 
 
     public void updateFilepath(File oldFile, File newFile){
-
         if (openedCodeEditors.containsKey(oldFile)) {
             DraggableTab tab = openedCodeEditors.get(oldFile);
             openedCodeEditors.remove(oldFile);
             openedCodeEditors.put(newFile, tab);
         }
-
     }
 
     public void reloadFile(File file){
@@ -1682,7 +1680,7 @@ public class MainFrameController extends AbstractController {
     @Override
     public void onClose() {
 
-        terminal.terminateListeners();
+        terminal.terminate();
 
         for (Tab tab: openedLayoutEditors.values()){
             ((LayoutEditor) tab.getContent()).terminateListeners();

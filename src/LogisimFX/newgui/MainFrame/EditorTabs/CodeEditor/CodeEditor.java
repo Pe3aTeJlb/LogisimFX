@@ -317,7 +317,6 @@ public class CodeEditor extends TextEditor {
             doSave();
 
             //reload verilog model
-
             proj.getFrameController().reloadFile(circ.getVerilogModel(proj));
             proj.getFrameController().addCodeEditor(circ, circ.getVerilogModel(proj));
 

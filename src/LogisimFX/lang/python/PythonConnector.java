@@ -19,13 +19,13 @@ public class PythonConnector {
 
 		try {
 
-			Process process = proj.getTerminal().silentExecuteAsProcess("python --version");
+			Process process = proj.getTerminal().silentExecuteAsNonPty("python --version");
 			try (BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
 				version = input.readLine();
 			}
 
 			if (!PYTHON_VERSION.matcher(version).matches()){
-				Process process2 = proj.getTerminal().silentExecuteAsProcess("python3 --version");
+				Process process2 = proj.getTerminal().silentExecuteAsNonPty("python3 --version");
 				try (BufferedReader input = new BufferedReader(new InputStreamReader(process2.getInputStream()))) {
 					version = input.readLine();
 				}
@@ -44,7 +44,7 @@ public class PythonConnector {
 	}
 
 	public static void executeFile(Project proj, File file){
-		proj.getTerminal().execute("python \"" + file.toString()+"\"");
+		proj.getTerminal().executeAsNonPty("python \"" + file.toString()+"\"");
 	}
 
 }

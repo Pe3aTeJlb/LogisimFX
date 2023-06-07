@@ -19,6 +19,11 @@
 
 /*CodeEditor*/
 
+.styled-text-area {
+    -fx-font-size: 10px;
+    -fx-font-family: 'JetBrains Mono' !important;
+}
+
 .preprocessor {
     -fx-fill: #8000FF !important;
     -fx-font-weight: bold;
@@ -56,33 +61,4 @@
 }
 .comment {
 	-fx-fill: #75715E !important;
-}
-
-/*Terminal*/
-.terminal-background {
-    -fx-background-color: #000000;
-}
-
-.caret {
-    -fx-fill: #FFFFFF;
-    -fx-stroke: #FFFFFF;
-}
-
-.terminal-info {
-    -fx-fill: #FFFFFF;
-    -fx-font-weight: bold;
-}
-
-.terminal-warning {
-    -fx-fill: #FFD800;
-    -fx-font-weight: bold;
-}
-
-.terminal-error {
-    -fx-fill: #FF0000;
-    -fx-font-weight: bold;
-}
-
-.terminal-link {
-    -fx-background-color: #000000;
 }
