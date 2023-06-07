@@ -152,7 +152,7 @@ public class Pin extends InstanceFactory {
 		Direction dir = painter.getAttributeSet().getValue(StdAttr.FACING);
 		int westTranslate = (isOutput) ? width : width + 10;
 		if (dir == Direction.WEST) {
-			g.rotate(-Math.PI);
+			g.rotate(-180);
 			g.c.translate(westTranslate, 0);
 		}
 		if (!painter.getShowState()) {
@@ -181,7 +181,7 @@ public class Pin extends InstanceFactory {
 					g.c.strokeLine(x - 4, 0, x + 4, 0);
 					if (dir == Direction.WEST) {
 						g.c.translate(-westTranslate, 0);
-						g.rotate(Math.PI);
+						g.rotate(180);
 					}
 					return;
 				}
@@ -218,7 +218,7 @@ public class Pin extends InstanceFactory {
 		}
 		if (dir == Direction.WEST) {
 			g.c.translate(-westTranslate, 0);
-			g.rotate(Math.PI);
+			g.rotate(180);
 		}
 	}
 
@@ -242,19 +242,19 @@ public class Pin extends InstanceFactory {
 		int rheight = height;
 		double rotation = 0;
 		if (dir == Direction.NORTH) {
-			rotation = -Math.PI / 2;
+			rotation = -90;
 			xpos = x + width / 2;
 			ypos = y;
 			rwidth = height;
 			rheight = width;
 		} else if (dir == Direction.SOUTH) {
-			rotation = Math.PI / 2;
+			rotation = 90;
 			xpos = x + width / 2;
 			ypos = y + height;
 			rwidth = height;
 			rheight = width;
 		} else if (dir == Direction.WEST) {
-			rotation = Math.PI;
+			rotation = 180;
 			xpos = x;
 			ypos = y + height / 2;
 		}
@@ -303,19 +303,19 @@ public class Pin extends InstanceFactory {
 		int rheight = height;
 		double rotation = 0;
 		if (dir == Direction.NORTH) {
-			rotation = -Math.PI / 2;
+			rotation = -90;
 			xpos = x + width / 2;
 			ypos = y;
 			rwidth = height;
 			rheight = width;
 		} else if (dir == Direction.SOUTH) {
-			rotation = Math.PI / 2;
+			rotation = 90;
 			xpos = x + width / 2;
 			ypos = y + height;
 			rwidth = height;
 			rheight = width;
 		} else if (dir == Direction.WEST) {
-			rotation = Math.PI;
+			rotation = 180;
 			xpos = x;
 			ypos = y + height / 2;
 		}
