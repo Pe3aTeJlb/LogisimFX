@@ -274,24 +274,7 @@ public class CodeEditor extends TextEditor {
     private void generateTopLevel(){
 
         getTextArea().clear();
-
-        StringBuilder builder = new StringBuilder();
-
-        Reporter.report.setTerminal(proj.getTerminal());
-        Reporter.report.clearConsole();
-
-        MappableResourcesContainer mappableResourcesContainer = new MappableResourcesContainer(circ);
-        ToplevelHdlGeneratorFactory top = new ToplevelHdlGeneratorFactory(0, 0, circ, mappableResourcesContainer);
-
-        final var sheetNames = new ArrayList<String>();
-        circ.getNetList().designRuleCheckResult(true, sheetNames);
-
-        for(String s: top.getArchitecture(
-                circ.getNetList(), null,  ToplevelHdlGeneratorFactory.FPGA_TOP_LEVEL_NAME)) {
-            builder.append(s).append("\n");
-        }
-
-        getTextArea().insertText(0, builder.toString());
+        getTextArea().insertText(0, proj.getFpgaToolchainOrchestrator().getTopLevelShellCode(circ));
 
     }
 

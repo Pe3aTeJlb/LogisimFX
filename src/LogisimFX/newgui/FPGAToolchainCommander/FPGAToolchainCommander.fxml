@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="550.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LogisimFX.newgui.FPGAToolchainCommander.FPGAToolchainCommanderController">
+   <children>
+      <VBox alignment="CENTER_LEFT" layoutX="15.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="250.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <children>
+            <Label fx:id="DockerImageLbl" text="1. Docker image" />
+            <AnchorPane style="-fx-border-color: #C0C0C0;">
+               <children>
+                  <GridPane alignment="CENTER_RIGHT" hgap="5.0" vgap="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <columnConstraints>
+                        <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="224.0" minWidth="10.0" prefWidth="207.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="71.0" minWidth="9.0" prefWidth="26.0" />
+                     </columnConstraints>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <TextField fx:id="DockerImageTxtfld" />
+                        <Button fx:id="DockerImageInfoBtn" mnemonicParsing="false" prefHeight="15.0" prefWidth="15.0" text="?" GridPane.columnIndex="1" />
+                     </children>
+                  </GridPane>
+               </children>
+            </AnchorPane>
+         </children>
+      </VBox>
+      <VBox alignment="CENTER_LEFT" layoutX="9.0" layoutY="81.0" prefHeight="250.0" prefWidth="250.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="80.0">
+         <children>
+            <Label fx:id="BoardLbl" text="2. Target Board" />
+            <AnchorPane style="-fx-border-color: #C0C0C0;" VBox.vgrow="ALWAYS">
+               <children>
+                  <GridPane alignment="CENTER_RIGHT" hgap="5.0" vgap="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="100.0" />
+                     </columnConstraints>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <ChoiceBox fx:id="BoardChbx" prefWidth="250.0" />
+                        <ImageView fx:id="BoardImg" fitHeight="130.0" fitWidth="240.0" pickOnBounds="true" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+                        <Button fx:id="BoardIOMapperBtn" mnemonicParsing="false" prefWidth="250.0" text="Button" GridPane.rowIndex="2" />
+                     </children>
+                  </GridPane>
+               </children>
+            </AnchorPane>
+         </children>
+      </VBox>
+      <VBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="350.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="120.0" prefWidth="250.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="340.0">
+         <children>
+            <Label fx:id="ConstrainsLbl" text="3. xdc" />
+            <AnchorPane style="-fx-border-color: #C0C0C0;">
+               <children>
+                  <GridPane alignment="CENTER_RIGHT" hgap="5.0" vgap="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <columnConstraints>
+                        <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <CheckBox fx:id="ConstrainsChckBx" mnemonicParsing="false" prefWidth="250.0" text="CheckBox" />
+                        <ChoiceBox fx:id="ConstrainsChbx" prefWidth="250.0" GridPane.rowIndex="1" />
+                        <Button fx:id="OpenConstrainsBtn" mnemonicParsing="false" prefWidth="250.0" text="Button" GridPane.rowIndex="2" />
+                     </children>
+                  </GridPane>
+               </children>
+            </AnchorPane>
+         </children>
+      </VBox>
+      <VBox layoutX="290.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="250.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <children>
+            <Label fx:id="ClockSettingsLbl" text="4. Clock settings" VBox.vgrow="ALWAYS" />
+            <AnchorPane style="-fx-border-color: #C0C0C0;" VBox.vgrow="ALWAYS">
+               <children>
+                  <GridPane alignment="CENTER_RIGHT" hgap="5.0" vgap="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <columnConstraints>
+                      <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="-Infinity" prefWidth="100.0" />
+                      <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <TextField fx:id="ClockSettingsDividerTxtfld" prefWidth="150.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+                        <Label fx:id="ClockSettingsDividerLbl" text="Label" GridPane.rowIndex="1" />
+                        <Label fx:id="ClockSettingsFreqLbl" text="Label" />
+                        <TextField fx:id="ClockSettingsFreqTxtfld" prefWidth="150.0" GridPane.columnIndex="1" />
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </GridPane>
+               </children>
+            </AnchorPane>
+         </children>
+      </VBox>
+      <VBox alignment="CENTER_LEFT" layoutX="275.0" layoutY="110.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="250.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="120.0">
+         <children>
+            <Label fx:id="AnnotationLbl" text="5. Annotation" />
+            <AnchorPane style="-fx-border-color: #C0C0C0;" VBox.vgrow="ALWAYS">
+               <children>
+                  <GridPane alignment="CENTER_RIGHT" hgap="5.0" vgap="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <columnConstraints>
+                        <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="-Infinity" />
+                     </columnConstraints>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <ChoiceBox fx:id="AnnotationTypeChbx" prefWidth="240.0" />
+                        <Button fx:id="AnnotationBtn" mnemonicParsing="false" prefWidth="240.0" text="Button" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+                     </children>
+                  </GridPane>
+               </children>
+            </AnchorPane>
+         </children>
+      </VBox>
+      <VBox alignment="CENTER_LEFT" layoutX="290.0" layoutY="240.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="250.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="230.0">
+         <children>
+            <Label fx:id="ActionLbl" text="6. Action" />
+            <AnchorPane style="-fx-border-color: #C0C0C0;">
+               <children>
+                  <GridPane alignment="CENTER_RIGHT" hgap="5.0" vgap="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <columnConstraints>
+                        <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="-Infinity" />
+                     </columnConstraints>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <ChoiceBox fx:id="MainCircChbx" prefWidth="150.0" GridPane.columnIndex="1" />
+                        <ChoiceBox fx:id="Actionchbx" prefHeight="22.0" prefWidth="250.0" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+                        <Label fx:id="MainCircLbl" text="Label" />
+                        <CheckBox fx:id="TopLevelChckBx" mnemonicParsing="false" text="CheckBox" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                     </children>
+                  </GridPane>
+               </children>
+            </AnchorPane>
+         </children>
+      </VBox>
+      <VBox alignment="CENTER_LEFT" layoutX="290.0" layoutY="355.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="120.0" prefWidth="250.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="340.0">
+         <children>
+            <Label fx:id="ActionLbl1" />
+            <AnchorPane style="-fx-border-color: #C0C0C0;" VBox.vgrow="ALWAYS">
+               <children>
+                  <Button fx:id="ExecuteBtn" layoutX="1.0" layoutY="42.0" mnemonicParsing="false" prefWidth="250.0" text="Button" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+               </children>
+            </AnchorPane>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

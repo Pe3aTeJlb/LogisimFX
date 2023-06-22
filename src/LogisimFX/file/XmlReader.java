@@ -6,6 +6,7 @@
 
 package LogisimFX.file;
 
+import LogisimFX.circuit.CircuitMapInfo;
 import LogisimFX.draw.model.AbstractCanvasObject;
 import LogisimFX.LogisimVersion;
 import LogisimFX.Main;
@@ -16,12 +17,16 @@ import LogisimFX.data.Attribute;
 import LogisimFX.data.AttributeDefaultProvider;
 import LogisimFX.data.AttributeSet;
 import LogisimFX.data.Location;
+import LogisimFX.fpga.FPGAToolchainOrchestratorData;
+import LogisimFX.fpga.data.BoardRectangle;
+import LogisimFX.fpga.data.MapComponent;
 import LogisimFX.instance.Instance;
 import LogisimFX.newgui.MainFrame.FrameLayout;
 import LogisimFX.std.wiring.Pin;
 import LogisimFX.tools.Library;
 import LogisimFX.tools.Tool;
 import LogisimFX.util.InputEventUtil;
+import LogisimFX.util.StringUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -132,12 +137,28 @@ class XmlReader {
 						e.printStackTrace();
 					}
 				}
+				String iomapPath = circElt.getAttribute("iomap");
+				if (iomapPath != null && !iomapPath.equals("")){
+					try {
+						InputStream in = new FileInputStream(Paths.get(file.getProjectDir() + File.separator + iomapPath).toFile());
+						Document doc = loadXmlFrom(in);
+						circElt.appendChild(circElt.getOwnerDocument().importNode(doc.getDocumentElement(),true));
+						in.close();
+					} catch (IOException | SAXException e) {
+						e.printStackTrace();
+					}
+				}
 				//else do old circ file
 				CircuitData circData = new CircuitData(circElt, new Circuit(name));
 				file.addCircuit(circData.circuit);
 				circData.knownComponents = loadKnownComponents(circElt);
 				for (Element appearElt : XmlIterator.forChildElements(circElt, "appear")) {
 					loadAppearance(appearElt, circData, name);
+				}
+				for (Element boardMap : XmlIterator.forChildElements(circElt, "boardmap")) {
+					String boardName = boardMap.getAttribute("boardname");
+					if (StringUtil.isNullOrEmpty(boardName)) continue;
+					loadMap(boardMap, boardName, circData.circuit);
 				}
 				circuitsData.add(circData);
 			}
@@ -157,8 +178,10 @@ class XmlReader {
 					initMouseMappings(sub_elt);
 				} else if (name.equals("toolbar")) {
 					initToolbarData(sub_elt);
-				} else if (name.equals("layout")){
+				} else if (name.equals("layout")) {
 					initMainFrameLayout(sub_elt);
+				} else if (name.equals("fpgaOrchestrator")){
+					initFPGAToolchainOrchestrator(sub_elt);
 				} else if (name.equals("main")) {
 					String main = sub_elt.getAttribute("name");
 					Circuit circ = file.getCircuit(main);
@@ -270,6 +293,46 @@ class XmlReader {
 					circData.appearance.addAll(shapes);
 				}
 			}
+		}
+
+		void loadMap(Element board, String boardName, Circuit circ) {
+			HashMap<String, CircuitMapInfo> map = new HashMap<>();
+			for (Element cmap : XmlIterator.forChildElements(board, "mc")) {
+				int x, y, w, h;
+				String key = cmap.getAttribute("key");
+				if (StringUtil.isNullOrEmpty(key)) continue;
+				if (cmap.hasAttribute("open")) {
+					map.put(key, new CircuitMapInfo());
+				} else if (cmap.hasAttribute("vconst")) {
+					long v;
+					try {
+						v = Long.parseLong(cmap.getAttribute("vconst"));
+					} catch (NumberFormatException e) {
+						continue;
+					}
+					map.put(key, new CircuitMapInfo(v));
+				} else if (cmap.hasAttribute("valx")
+						&& cmap.hasAttribute("valy")
+						&& cmap.hasAttribute("valw")
+						&& cmap.hasAttribute("valh")) {
+					/* Backward compatibility: */
+					try {
+						x = Integer.parseUnsignedInt(cmap.getAttribute("valx"));
+						y = Integer.parseUnsignedInt(cmap.getAttribute("valy"));
+						w = Integer.parseUnsignedInt(cmap.getAttribute("valw"));
+						h = Integer.parseUnsignedInt(cmap.getAttribute("valh"));
+					} catch (NumberFormatException e) {
+						continue;
+					}
+					final var br = new BoardRectangle(x, y, w, h);
+					map.put(key, new CircuitMapInfo(br));
+				} else {
+					CircuitMapInfo cmapi = MapComponent.getMapInfo(cmap);
+					if (cmapi != null)
+						map.put(key, cmapi);
+				}
+			}
+			if (!map.isEmpty()) circ.addLoadedMap(boardName, map);
 		}
 
 		private void initMouseMappings(Element elt) {
@@ -578,6 +641,29 @@ class XmlReader {
 
 			}
 
+		}
+
+		private void initFPGAToolchainOrchestrator(Element elt){
+
+			FPGAToolchainOrchestratorData fpga = file.getOptions().getFPGAToolchainOrchestratorData();
+
+			for (Element sub_elt : XmlIterator.forChildElements(elt)) {
+				String name = sub_elt.getTagName();
+				if(name.equals("dockerImg")){
+					fpga.setDockerImg(sub_elt.getAttribute("name"));
+				} else if(name.equals("board")) {
+					fpga.setBoardName(sub_elt.getAttribute("name"));
+				} else if(name.equals("generateConstrains")) {
+					fpga.setGenerateConstrains(Boolean.parseBoolean(sub_elt.getAttribute("gen")));
+				} else if(name.equals("frequency")) {
+					fpga.setFreq(Double.parseDouble(sub_elt.getAttribute("val")));
+				} else if(name.equals("divider")) {
+					fpga.setDiv(Double.parseDouble(sub_elt.getAttribute("val")));
+				} else if(name.equals("generateTopLevel")){
+					fpga.setGenerateConstrains(Boolean.parseBoolean(sub_elt.getAttribute("gen")));
+				}
+			}
+			
 		}
 
 	}

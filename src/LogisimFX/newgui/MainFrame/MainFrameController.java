@@ -67,7 +67,7 @@ import java.util.*;
 
 public class MainFrameController extends AbstractController {
 
-    //Check Frame of com.cburch.logisim.gui.main
+    //Check Frame of LogisimFX.gui.main
 
     private Stage stage;
     private boolean sceneGraphPerformed;

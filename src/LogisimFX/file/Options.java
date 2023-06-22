@@ -7,6 +7,7 @@
 package LogisimFX.file;
 
 import LogisimFX.data.*;
+import LogisimFX.fpga.FPGAToolchainOrchestratorData;
 import LogisimFX.newgui.MainFrame.FrameLayout;
 
 public class Options {
@@ -36,6 +37,7 @@ public class Options {
 	private AttributeSet attrs;
 	private MouseMappings mappings;
 	private ToolbarData toolbar;
+	private FPGAToolchainOrchestratorData orchestratorData;
 	private FrameLayout layout;
 
 	public Options() {
@@ -43,6 +45,7 @@ public class Options {
 		mappings = new MouseMappings();
 		toolbar = new ToolbarData();
 		layout = new FrameLayout();
+		orchestratorData = new FPGAToolchainOrchestratorData();
 	}
 
 	public AttributeSet getAttributeSet() {
@@ -61,11 +64,16 @@ public class Options {
 		return layout;
 	}
 
+	public FPGAToolchainOrchestratorData getFPGAToolchainOrchestratorData(){
+		return orchestratorData;
+	}
+
 	public void copyFrom(Options other, LogisimFile dest) {
 		AttributeSets.copy(other.attrs, this.attrs);
 		this.toolbar.copyFrom(other.toolbar, dest);
 		this.mappings.copyFrom(other.mappings, dest);
 		this.layout.copyFrom(other.layout, dest);
+		this.orchestratorData.copyFrom(other.orchestratorData, dest);
 	}
 
 }

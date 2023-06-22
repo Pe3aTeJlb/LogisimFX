@@ -12,6 +12,7 @@ import LogisimFX.comp.*;
 import LogisimFX.data.*;
 import LogisimFX.file.LogisimFile;
 import LogisimFX.fpga.Reporter;
+import LogisimFX.fpga.data.MappableResourcesContainer;
 import LogisimFX.fpga.designrulecheck.Netlist;
 import LogisimFX.instance.StdAttr;
 import LogisimFX.localization.LC_util;
@@ -207,10 +208,13 @@ public class Circuit {
 	private WeakHashMap<Component, Circuit> circuitsUsingThis;
 
 	private final Netlist netList;
+	private final Map<String, MappableResourcesContainer> myMappableResources;
+	private final Map<String, Map<String, CircuitMapInfo>> loadedMaps;
 
 	private ArrayList<String> hdlSubPaths = new ArrayList<>();
 	private String circSchPath;
 	private String circAppPath;
+	private String circIOPath;
 
 	private Project proj;
 
@@ -222,6 +226,8 @@ public class Circuit {
 		locker = new CircuitLocker();
 		circuitsUsingThis = new WeakHashMap<>();
 		netList = new Netlist(this);
+		myMappableResources = new HashMap<>();
+		loadedMaps = new HashMap<>();
 
 		this.addCircuitListener(myComponentListener);
 		nameProperty().set(name);
@@ -232,6 +238,7 @@ public class Circuit {
 
 		circSchPath = "circuit"+File.separator+name+File.separator+name+".sch";
 		circAppPath = "circuit"+File.separator+name+File.separator+name+".app";
+		circIOPath = "circuit"+File.separator+name+File.separator+"IO.map";
 
 	}
 
@@ -242,7 +249,8 @@ public class Circuit {
 	private void updateFilePaths(String newName) {
 
 		circSchPath = circSchPath.replace(nameProperty().get(), newName);
-		circAppPath = circSchPath.replace(nameProperty().get(), newName);
+		circAppPath = circAppPath.replace(nameProperty().get(), newName);
+		circIOPath = circIOPath.replace(nameProperty().get(), newName);
 
 		for (String oldPath : ((ArrayList<String>) hdlSubPaths.clone())) {
 			String newPath = oldPath.replace(nameProperty().get(), newName);
@@ -704,10 +712,6 @@ public class Circuit {
 	}
 
 
-	public Netlist getNetList() {
-		return netList;
-	}
-
 	private static String getAnnotationName(Component comp) {
 		String componentName;
 		/* Pins are treated specially */
@@ -832,6 +836,59 @@ public class Circuit {
 	}
 
 
+	//Circuit comps map
+
+	public Netlist getNetList() {
+		return netList;
+	}
+
+	public void addLoadedMap(String boardName, Map<String, CircuitMapInfo> map) {
+		loadedMaps.put(boardName, map);
+	}
+
+	public boolean haveBoardMapNamestoSave(){
+		return !loadedMaps.keySet().isEmpty() || !myMappableResources.keySet().isEmpty();
+	}
+
+	public Set<String> getBoardMapNamestoSave() {
+		final var ret = new HashSet<String>();
+		ret.addAll(loadedMaps.keySet());
+		ret.addAll(myMappableResources.keySet());
+		return ret;
+	}
+
+	public Map<String, CircuitMapInfo> getMapInfo(String boardName) {
+		if (myMappableResources.containsKey(boardName))
+			return myMappableResources.get(boardName).getCircuitMap();
+		if (loadedMaps.containsKey(boardName))
+			return loadedMaps.get(boardName);
+		return new HashMap<>();
+	}
+
+	public void setBoardMap(String boardName, MappableResourcesContainer map) {
+		if (loadedMaps.containsKey(boardName)) {
+			for (final var key : loadedMaps.get(boardName).keySet()) {
+				final var cmap = loadedMaps.get(boardName).get(key);
+				map.tryMap(key, cmap);
+			}
+			loadedMaps.remove(boardName);
+		}
+		myMappableResources.put(boardName, map);
+	}
+
+	public MappableResourcesContainer getBoardMap(String boardName) {
+		if (myMappableResources.containsKey(boardName)) {
+			return myMappableResources.get(boardName);
+		}
+		return null;
+	}
+
+	public Set<String> getMapableBoards() {
+		return myMappableResources.keySet();
+	}
+
+
+
 	public File getAppearanceFile(Project proj){
 		return Paths.get(proj.getLogisimFile().getCircuitDir() + File.separator + circAppPath).toFile();
 	}
@@ -846,6 +903,14 @@ public class Circuit {
 
 	public Path getSchematicsRelativePath(){
 		return Paths.get(circSchPath);
+	}
+
+	public File getIOMapFile(Project proj){
+		return Paths.get(proj.getLogisimFile().getCircuitDir() + File.separator + circIOPath).toFile();
+	}
+
+	public Path getIOMapRelativePath(){
+		return Paths.get(circIOPath);
 	}
 
 	public File getVerilogModel(Project proj){
@@ -869,6 +934,14 @@ public class Circuit {
 				proj.getLogisimFile().getProjectDir() +
 						File.separator +
 						hdlSubPaths.stream().filter(f -> f.split(nameProperty().get())[1].substring(1).equals("HLS.py")).findFirst().get()
+		).toFile();
+	}
+
+	public File getMapFile(Project proj){
+		return Paths.get(
+				proj.getLogisimFile().getProjectDir() +
+						File.separator +
+						hdlSubPaths.stream().filter(f -> f.split(nameProperty().get())[1].substring(1).equals("IO.map")).findFirst().get()
 		).toFile();
 	}
 

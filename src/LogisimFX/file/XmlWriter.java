@@ -6,6 +6,7 @@
 
 package LogisimFX.file;
 
+import LogisimFX.circuit.CircuitMapInfo;
 import LogisimFX.draw.model.AbstractCanvasObject;
 import LogisimFX.LogisimVersion;
 import LogisimFX.Main;
@@ -16,6 +17,7 @@ import LogisimFX.comp.ComponentFactory;
 import LogisimFX.data.Attribute;
 import LogisimFX.data.AttributeDefaultProvider;
 import LogisimFX.data.AttributeSet;
+import LogisimFX.fpga.data.MapComponent;
 import LogisimFX.tools.Library;
 import LogisimFX.tools.Tool;
 import LogisimFX.util.InputEventUtil;
@@ -113,6 +115,10 @@ class XmlWriter {
 				circ.setAttribute("app", circuit.getAppearanceRelativePath().toString());
 			}
 
+			if (circuit.haveBoardMapNamestoSave()){
+				circ.setAttribute("iomap", circuit.getIOMapRelativePath().toString());
+			}
+
 			ret.appendChild(circ);
 
 			exportCircuit(circuit);
@@ -120,6 +126,8 @@ class XmlWriter {
 		}
 
 		ret.appendChild(fromMainFrameLayout());
+
+		ret.appendChild(fromFPGAToolchainOrchestrator());
 
 		return ret;
 	}
@@ -270,6 +278,10 @@ class XmlWriter {
 		return ret;
 	}
 
+	Element fromFPGAToolchainOrchestrator(){
+		return file.getOptions().getFPGAToolchainOrchestratorData().getData(doc);
+	}
+
 	void addAttributeSetContent(Document doc, Element elt, AttributeSet attrs,
 			AttributeDefaultProvider source) {
 		if (attrs == null) return;
@@ -322,26 +334,76 @@ class XmlWriter {
 			exportToFile(doc, Paths.get(file.getProjectDir() + File.separator + circuit.getSchematicsRelativePath()).toFile());
 
 			if (!circuit.getAppearance().isDefaultAppearance()){
+				exportAppearance(circuit);
+			}
 
-				docFactory = DocumentBuilderFactory.newInstance();
-				docBuilder = docFactory.newDocumentBuilder();
-				doc = docBuilder.newDocument();
+			if (circuit.haveBoardMapNamestoSave()){
+				exportIOMap(circuit);
+			}
 
-				Element appear = doc.createElement("appear");
-				doc.appendChild(appear);
+		} catch (ParserConfigurationException | TransformerException e) {
+			e.printStackTrace();
+		}
 
-				for (Object o : circuit.getAppearance().getObjectsFromBottom()) {
-					if (o instanceof AbstractCanvasObject) {
-						Element elt = ((AbstractCanvasObject) o).toSvgElement(doc);
-						if (elt != null) {
-							appear.appendChild(elt);
-						}
+	}
+
+	private void exportAppearance(Circuit circuit){
+
+		try{
+
+			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+			Document doc = docBuilder.newDocument();
+
+			Element appear = doc.createElement("appear");
+			doc.appendChild(appear);
+
+			for (Object o : circuit.getAppearance().getObjectsFromBottom()) {
+				if (o instanceof AbstractCanvasObject) {
+					Element elt = ((AbstractCanvasObject) o).toSvgElement(doc);
+					if (elt != null) {
+						appear.appendChild(elt);
 					}
 				}
+			}
 
-				exportToFile(doc, Paths.get(file.getProjectDir() + File.separator + circuit.getAppearanceRelativePath()).toFile());
+			exportToFile(doc, Paths.get(file.getProjectDir() + File.separator + circuit.getAppearanceRelativePath()).toFile());
+
+		} catch (ParserConfigurationException | TransformerException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	private void exportIOMap(Circuit circuit){
+
+		try{
+
+			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+			Document doc = docBuilder.newDocument();
+
+			for (String boardName : circuit.getBoardMapNamestoSave()) {
+
+				Element ret = doc.createElement("boardmap");
+				ret.setAttribute("boardname", boardName);
+				for (String key : circuit.getMapInfo(boardName).keySet()) {
+					Element map = doc.createElement("mc");
+					CircuitMapInfo mapInfo = circuit.getMapInfo(boardName).get(key);
+					MapComponent nmap = mapInfo.getMap();
+					if (nmap != null) {
+						nmap.getMapElement(map);
+					} else {
+						map.setAttribute("key", key);
+						MapComponent.getComplexMap(map, mapInfo);
+					}
+					ret.appendChild(map);
+				}
+				doc.appendChild(ret);
 
 			}
+
+			exportToFile(doc, Paths.get(file.getProjectDir() + File.separator + circuit.getIOMapRelativePath()).toFile());
 
 		} catch (ParserConfigurationException | TransformerException e) {
 			e.printStackTrace();

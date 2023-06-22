@@ -1166,14 +1166,12 @@ public class Netlist {
 		if (toplevel) {
 			for (final var comp : myInputPorts) {
 				final var myHierarchyName = new ArrayList<>(hierarchy);
-				System.out.println(comp);
 				myHierarchyName.add(
 						CorrectLabel.getCorrectLabel(
 								comp.getComponent().getAttributeSet().getValue(StdAttr.LABEL)));
 				components.put(myHierarchyName, comp);
 			}
 			for (final var comp : myInOutPorts) {
-				System.out.println(comp);
 				final var myHierarchyName = new ArrayList<>(hierarchy);
 				myHierarchyName.add(
 						CorrectLabel.getCorrectLabel(
@@ -1181,7 +1179,6 @@ public class Netlist {
 				components.put(myHierarchyName, comp);
 			}
 			for (final var comp : myOutputPorts) {
-				System.out.println(comp);
 				final var myHierarchyName = new ArrayList<>(hierarchy);
 				myHierarchyName.add(
 						CorrectLabel.getCorrectLabel(

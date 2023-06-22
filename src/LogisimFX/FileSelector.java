@@ -6,6 +6,7 @@
 package LogisimFX;
 
 import LogisimFX.localization.LC_file;
+import LogisimFX.localization.LC_fpga;
 import LogisimFX.localization.LC_gui;
 import LogisimFX.prefs.AppPreferences;
 import javafx.stage.DirectoryChooser;
@@ -32,6 +33,8 @@ public class FileSelector {
     private FileChooser.ExtensionFilter gif = new FileChooser.ExtensionFilter(LC_gui.getInstance().get("exportGifFilter"),"*.gif");
 
     private FileChooser.ExtensionFilter circlog = new FileChooser.ExtensionFilter(LC_file.getInstance().get("logisimFilter"),"*.circlog");
+
+    private FileChooser.ExtensionFilter map = new FileChooser.ExtensionFilter(LC_fpga.getInstance().get("mapFilter"),"*.map");
 
 
     private Window ownerWindow;
@@ -152,6 +155,22 @@ public class FileSelector {
 
     }
 
+    public File openMapFile(){
+
+        updateLocale();
+
+        if (tempFile != null) fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
+
+        setMapFilter();
+
+        tempFile = fileChooser.showOpenDialog(ownerWindow);
+
+        if (tempFile != null) AppPreferences.DIALOG_DIRECTORY.set(tempFile.getParent());
+
+        return tempFile;
+
+    }
+
     public File saveCircFile(){
 
         updateLocale();
@@ -248,6 +267,22 @@ public class FileSelector {
 
     }
 
+    public File saveMapFile(){
+
+        updateLocale();
+
+        if (tempFile != null) fileChooser.setInitialDirectory(tempFile.getAbsoluteFile());
+
+        setMapFilter();
+
+        tempFile = fileChooser.showSaveDialog(ownerWindow);
+
+        if (tempFile != null) AppPreferences.DIALOG_DIRECTORY.set(tempFile.getParent());
+
+        return tempFile;
+
+    }
+
 
     public void setCircFilter(){
 
@@ -301,6 +336,11 @@ public class FileSelector {
 
     }
 
+    public void setMapFilter(){
+        fileChooser.getExtensionFilters().clear();
+        fileChooser.getExtensionFilters().add(map);
+        fileChooser.setSelectedExtensionFilter(map);
+    }
 
 
     public void setSelectedFile(File f){

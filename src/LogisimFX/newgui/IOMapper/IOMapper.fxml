@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LogisimFX.newgui.IOMapper.IOMapperController">
+   <children>
+      <HBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="300.0" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <VBox alignment="TOP_CENTER" maxWidth="-Infinity" prefWidth="200.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="UnmappedCompsLbl" text="Label" />
+                  <TreeView fx:id="UnmappedCompsTrvw" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+               </children>
+            </VBox>
+            <VBox alignment="TOP_CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="MappedCompsLbl" text="Label" />
+                  <TreeView fx:id="MappedCompsTrvw" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+               </children>
+            </VBox>
+            <VBox alignment="TOP_CENTER" fillWidth="false" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="ConstantsLbl" text="Label" />
+                  <VBox alignment="CENTER" spacing="10.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Button fx:id="ConstantZeroBtn" mnemonicParsing="false" prefWidth="150.0" text="Button" />
+                        <Button fx:id="ConstantOneBtn" mnemonicParsing="false" prefWidth="150.0" text="Button" />
+                        <Button fx:id="ConstantConstantBtn" mnemonicParsing="false" prefWidth="150.0" text="Button" />
+                        <Button fx:id="ConstantUnconnectedBtn" mnemonicParsing="false" prefWidth="150.0" text="Button" />
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+            <VBox alignment="TOP_CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="ActionsLbl" text="Label" />
+                  <VBox alignment="CENTER" spacing="10.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Button fx:id="ActionReleaseCompBtn" mnemonicParsing="false" prefWidth="150.0" text="Button" />
+                        <Button fx:id="ActionReleaseCompsBtn" mnemonicParsing="false" prefWidth="150.0" text="Button" />
+                        <Button fx:id="ActionLoadMapBtn" mnemonicParsing="false" prefWidth="150.0" text="Button" />
+                        <Button fx:id="ActionSaveMapBtn" mnemonicParsing="false" prefWidth="150.0" text="Button" />
+                        <Button fx:id="ActionDoneBtn" mnemonicParsing="false" prefWidth="150.0" text="Button" />
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </HBox>
+      <Pane fx:id="ImagePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="740.0" AnchorPane.bottomAnchor="0.0">
+         <children>
+            <ImageView fx:id="BoardImgVw" fitHeight="400.0" fitWidth="740.0" pickOnBounds="true" AnchorPane.bottomAnchor="5.0" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

@@ -8,16 +8,16 @@ import java.net.URLDecoder;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.regex.Pattern;
+import java.util.zip.ZipFile;
 
-public class ProjectConstrainsManager {
+public class FPGABoardsManager {
 
-	public final String CONSTRAINS_PATH = "LogisimFX/resources/constrains";
-	private ArrayList<String> constrainFiles;
+	public final String BOARDS_PATH = "LogisimFX/resources/boards";
+	private ArrayList<String> boardsFiles = new ArrayList<>();
 
-	public ProjectConstrainsManager() {
-		String[] files = getResourceFolderFiles(CONSTRAINS_PATH);
-		Arrays.sort(files);
-		constrainFiles = new ArrayList<>(Arrays.asList(files));
+	public FPGABoardsManager(){
+		boardsFiles.addAll(Arrays.asList(getResourceFolderFiles(BOARDS_PATH)));
 	}
 
 	private String[] getResourceFolderFiles(String path) {
@@ -71,8 +71,45 @@ public class ProjectConstrainsManager {
 
 	}
 
-	public ArrayList<String> getConstrainFiles() {
-		return constrainFiles;
+
+
+	@SuppressWarnings("serial")
+	private static class SortedArrayList<T> extends ArrayList<T> {
+
+		@SuppressWarnings("unchecked")
+		public void insertSorted(T value) {
+			add(value);
+			Comparable<T> cmp = (Comparable<T>) value;
+			for (int i = size() - 1; i > 0 && cmp.compareTo(get(i - 1)) < 0; i--) {
+				Collections.swap(this, i, i - 1);
+			}
+		}
+	}
+
+	public List<String> getBoardNames() {
+		final var ret = new SortedArrayList<String>();
+		for (final var board : boardsFiles) {
+			ret.insertSorted(getBoardName(board));
+		}
+		return ret;
+	}
+
+	public String getBoardName(String boardIdentifier) {
+		final var parts =
+				boardIdentifier.contains("url:")
+						? boardIdentifier.split("/")
+						: boardIdentifier.split(Pattern.quote(File.separator));
+		return parts[parts.length - 1].replace(".xml", "");
+	}
+
+	public String getBoardFilePath(String boardName) {
+		if (boardName == null) return null;
+		for (final var board : boardsFiles) {
+			if (getBoardName(board).equals(boardName)) {
+				return board;
+			}
+		}
+		return null;
 	}
 
 }
