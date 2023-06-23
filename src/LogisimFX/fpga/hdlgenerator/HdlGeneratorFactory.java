@@ -27,7 +27,7 @@ public interface HdlGeneratorFactory {
 	String LOCAL_INPUT_BUBBLE_BUS_NAME = "logisimfxInputBubbles";
 	String LOCAL_OUTPUT_BUBBLE_BUS_NAME = "logisimfxOutputBubbles";
 	String LOCAL_INOUT_BUBBLE_BUS_NAME = "logisimfxInOutBubbles";
-	String FPGA_TOP_LEVEL_NAME = "logisimfxTopLevelShell";
+	String FPGA_TOP_LEVEL_NAME = "TopLevelShell";
 
 	boolean generateAllHDLDescriptions(
 			Project proj, Set<String> handledComponents, String workingDirectory, List<String> hierarchy);

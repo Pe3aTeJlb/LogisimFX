@@ -100,7 +100,6 @@ public class MappableResourcesContainer {
 	}
 
 	public void tryMap(String mapKey, CircuitMapInfo cmap) {
-		System.out.println("try map " + mapKey + " " + cmap);
 		var key = getHierarchyName(mapKey);
 		if (!myMappableResources.containsKey(key)) return;
 		if (mapKey.contains("#")) myMappableResources.get(key).tryMap(mapKey, cmap, myIOComponents);

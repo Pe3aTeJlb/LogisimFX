@@ -113,10 +113,12 @@ class XmlWriter {
 
 			if (!circuit.getAppearance().isDefaultAppearance()){
 				circ.setAttribute("app", circuit.getAppearanceRelativePath().toString());
+				exportAppearance(circuit);
 			}
 
 			if (circuit.haveBoardMapNamestoSave()){
 				circ.setAttribute("iomap", circuit.getIOMapRelativePath().toString());
+				exportIOMap(circuit);
 			}
 
 			ret.appendChild(circ);
@@ -237,7 +239,7 @@ class XmlWriter {
 			ret.appendChild(appear);
 		}
 		for (Wire w : circuit.getWires()) {
-			ret.appendChild(fromWire(w));
+			ret.appendChild(fromWire(doc, w));
 		}
 		for (Component comp : circuit.getNonWires()) {
 			Element elt = fromComponent(doc, comp);
@@ -271,7 +273,7 @@ class XmlWriter {
 		return ret;
 	}
 
-	Element fromWire(Wire w) {
+	Element fromWire(Document doc, Wire w) {
 		Element ret = doc.createElement("wire");
 		ret.setAttribute("from", w.getEnd0().toString());
 		ret.setAttribute("to", w.getEnd1().toString());
@@ -324,7 +326,7 @@ class XmlWriter {
 			addAttributeSetContent(doc, circ, circuit.getStaticAttributes(), null);
 
 			for (Wire w : circuit.getWires()) {
-				circ.appendChild(fromWire(w));
+				circ.appendChild(fromWire(doc, w));
 			}
 			for (Component comp : circuit.getNonWires()) {
 				Element elt = fromComponent(doc, comp);
@@ -332,14 +334,6 @@ class XmlWriter {
 			}
 
 			exportToFile(doc, Paths.get(file.getProjectDir() + File.separator + circuit.getSchematicsRelativePath()).toFile());
-
-			if (!circuit.getAppearance().isDefaultAppearance()){
-				exportAppearance(circuit);
-			}
-
-			if (circuit.haveBoardMapNamestoSave()){
-				exportIOMap(circuit);
-			}
 
 		} catch (ParserConfigurationException | TransformerException e) {
 			e.printStackTrace();

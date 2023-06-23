@@ -361,7 +361,6 @@ public class MainFrameController extends AbstractController {
             }
 
             //Restore workspace tabs
-
             restoreTabPaneLayout(mainWindowDescriptor.tabPaneLayoutDescriptors, mainWinWorkspace, true);
 
             //SubWindows
@@ -424,6 +423,8 @@ public class MainFrameController extends AbstractController {
             DraggableTabPane tabPane = new DraggableTabPane(stage, TabGroup.WorkSpace);
             tabPane.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
             tabPane.setProject(proj);
+            //must set workpane here in case of proper title computing
+            setWorkPane(tabPane);
 
             DraggableTab tab = null;
             selectedTab = null;

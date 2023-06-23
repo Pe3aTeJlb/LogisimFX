@@ -47,8 +47,6 @@ class WireFactory extends AbstractComponentFactory {
 	@Override
 	public Component createComponent(Location loc, AttributeSet attrs) {
 
-		attrs.setValue(StdAttr.FPGA_SUPPORTED, Boolean.TRUE);
-
 		Object dir = attrs.getValue(Wire.dir_attr);
 		int len = attrs.getValue(Wire.len_attr).intValue();
 		double rot = attrs.getValue(Wire.rot_attr).doubleValue();

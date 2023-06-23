@@ -16,7 +16,12 @@ import java.util.zip.ZipOutputStream;
 public class ZipUtils {
 
 	public static void zipFolder(Path sourceDirectoryPath, Path zipPath) throws IOException {
-		Path zipFilePath = Files.createFile(zipPath);
+		Path zipFilePath;
+		if (!zipPath.toFile().exists()) {
+			zipFilePath = Files.createFile(zipPath);
+		} else {
+			zipFilePath = zipPath;
+		}
 
 		try (ZipOutputStream zipOutputStream = new ZipOutputStream(Files.newOutputStream(zipFilePath))) {
 
