@@ -370,7 +370,6 @@ public class ProjectExplorerTreeView extends AbstractTreeExplorer<Object> {
             if (tool instanceof AddTool) {
                 ComponentFactory fact = ((AddTool) tool).getFactory(false);
                 if (fact instanceof SubcircuitFactory) {
-                    System.out.println("    1 "+ addCircNode((AddTool)tool));
                     l.getChildren().add(addCircNode((AddTool)tool));
                 } else {
                     l.getChildren().add(new TreeItem<>(tool));

@@ -182,7 +182,7 @@ public class FPGAToolchainCommanderController extends AbstractController {
 		});
 		BoardImg.setImage(orchestrator.getBoardInformation().getImage());
 		BoardIOMapperBtn.textProperty().bind(LC.createStringBinding("openIOMapper"));
-		BoardIOMapperBtn.setOnAction(event ->orchestrator.mapComponents());
+		BoardIOMapperBtn.setOnAction(event -> orchestrator.mapComponents());
 
 
 		ConstrainsLbl.textProperty().bind(LC.createStringBinding("constrainsFile"));
@@ -329,7 +329,6 @@ public class FPGAToolchainCommanderController extends AbstractController {
 			recalculateFrequency();
 			return;
 		}
-		System.out.println(corfreq);
 		setSelectedFrequency(corfreq);
 	}
 

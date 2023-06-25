@@ -60,7 +60,7 @@ public class FPGAToolchainOrchestrator {
 			"TARGET := {2}\n\n"+
 			"# Sources" +
 			"SOURCES := {3}\n\n" +
-			"# XDC file" +
+			"# XDC file\n" +
 			"XDC := {4}\n\n"+
 			"include /shared/f4pga-examples/common/common.mk";
 
@@ -302,12 +302,23 @@ public class FPGAToolchainOrchestrator {
 		Reporter.report.setTerminal(proj.getTerminal());
 		Reporter.report.clearConsole();
 
-		String destDir = null;
+		if (!performDrc(proj.getLogisimFile().getMainCircuit().getName())) {
+			return;
+		}
+
+		getMappableResourcesContainer();
+
+		File bitOutdir = null;
+		Path destDir = null;
 
 		if (type == EXPORT_FILES){
 			destDir = getUserDestDir();
 		} else if (type == GENERATE_BIT_FILE){
-			destDir = getFPGADestDir();
+			//Choose output directory
+			FileSelector fileSelector = new FileSelector(proj.getFrameController().getStage());
+			bitOutdir = fileSelector.chooseDirectory(LC.get("fileDirectorySelect"));
+			if (bitOutdir == null) return;
+			destDir = getLogisimFXFPGADir();
 		}
 		if (destDir == null) return;
 
@@ -315,15 +326,19 @@ public class FPGAToolchainOrchestrator {
 		exportHDL(destDir, frequency);
 
 		//Generate makefile in fpgaBuild
-		generateMakefile();
+		generateMakefile(destDir);
 
 		//Process board constrains file
-		processBoardConstrainsFile();
+		processBoardConstrainsFile(destDir);
+
+		if (type == GENERATE_BIT_FILE){
+			executeDocker(bitOutdir.toString());
+		}
 
 	}
 
 
-	private String getUserDestDir(){
+	private Path getUserDestDir(){
 
 		//Choose output directory
 		FileSelector fileSelector = new FileSelector(proj.getFrameController().getStage());
@@ -331,8 +346,8 @@ public class FPGAToolchainOrchestrator {
 
 		if (dir == null) return null;
 
-		//Project directory
-		String projDir = dir + File.separator + proj.getLogisimFile().getName();
+		//Generate Project directory
+		Path projDir = Paths.get(dir.toString() + File.separator + proj.getLogisimFile().getName());
 
 		if (!cleanDirectory(projDir)) {
 			Reporter.report.addFatalError(
@@ -345,8 +360,9 @@ public class FPGAToolchainOrchestrator {
 			return null;
 		}
 
+		//Generate directory for output relative to current toplevel circuit
 		Circuit topLevelCirc = proj.getLogisimFile().getMainCircuit();
-		projDir = projDir + File.separator + topLevelCirc.getName();
+		projDir = Paths.get(projDir.toString() + File.separator + topLevelCirc.getName());
 
 		if (!genDirectory(projDir)) {
 			Reporter.report.addFatalError("Unable to create directory: \"" + projDir + "\"");
@@ -357,51 +373,39 @@ public class FPGAToolchainOrchestrator {
 
 	}
 
-	private String getFPGADestDir(){
+	private Path getLogisimFXFPGADir(){
 
-		String projDir = proj.getLogisimFile().getFpgaDir().toString();
-
-		if (!cleanDirectory(projDir)) {
+		if (!cleanDirectory(proj.getLogisimFile().getFpgaDir())) {
 			Reporter.report.addFatalError(
-					"Unable to cleanup old project files in directory: \"" + projDir + "\"");
+					"Unable to cleanup old project files in directory: \"" + proj.getLogisimFile().getFpgaDir() + "\"");
 			return null;
 		}
 
-		if (!genDirectory(projDir)) {
-			Reporter.report.addFatalError("Unable to create directory: \"" + projDir + "\"");
+		if (!genDirectory(proj.getLogisimFile().getFpgaDir())) {
+			Reporter.report.addFatalError("Unable to create directory: \"" + proj.getLogisimFile().getFpgaDir() + "\"");
 			return null;
 		}
 
-		return projDir;
+		return proj.getLogisimFile().getFpgaDir();
 
 	}
 
 
-	private void exportHDL(String dir, double frequency) {
+	private void exportHDL(Path destDir, double frequency) {
 
 		//Annotate all components
 		annotate(false);
-
-		//perform DRC check
-		if (!performDrc(proj.getLogisimFile().getMainCircuit().getName())) {
-			return;
-		}
 
 		if (frequency <= 0) frequency = 1;
 		if (frequency > (boardInformation.fpga.getClockFrequency() / 4)) {
 			frequency = boardInformation.fpga.getClockFrequency() / 4;
 		}
 
-		writeHDL(dir, frequency);
+		writeHDL(destDir, frequency);
 
 	}
 
-	private void writeHDL(String projDir, double frequency) {
-
-		if (!genDirectory(projDir)) {
-			Reporter.report.addFatalError("Unable to create directory: \"" + projDir + "\"");
-			return;
-		}
+	private void writeHDL(Path destDir, double frequency) {
 
 		Circuit topLevelCirc = proj.getLogisimFile().getMainCircuit();
 
@@ -411,7 +415,7 @@ public class FPGAToolchainOrchestrator {
 			Reporter.report.addFatalError("Internal error on HDL generation, null pointer exception");
 			return;
 		}
-		if (!worker.generateAllHDLDescriptions(proj, generatedHDLComponents, projDir, null)) {
+		if (!worker.generateAllHDLDescriptions(proj, generatedHDLComponents, destDir.toString(), null)) {
 			return;
 		}
 		/* Here we generate the top-level shell */
@@ -423,7 +427,7 @@ public class FPGAToolchainOrchestrator {
 							frequency /* , boardFreq.isSelected() */);
 
 			if (!Hdl.writeArchitecture(
-					projDir + ticker.getRelativeDirectory(),
+					destDir.toString() + File.separator + ticker.getRelativeDirectory(),
 					ticker.getArchitecture(
 							topLevelCirc.getNetList(), null, TickComponentHdlGeneratorFactory.HDL_IDENTIFIER),
 					TickComponentHdlGeneratorFactory.HDL_IDENTIFIER)) {
@@ -442,7 +446,7 @@ public class FPGAToolchainOrchestrator {
 					topLevelCirc.getNetList().getAllClockSources().get(0).getFactory().getHDLName(null);
 
 			if (!Hdl.writeArchitecture(
-					projDir + clockGen.getRelativeDirectory(),
+					destDir.toString() + File.separator + clockGen.getRelativeDirectory(),
 					clockGen.getArchitecture(topLevelCirc.getNetList(), null, compName),
 					compName)) {
 				return;
@@ -458,7 +462,7 @@ public class FPGAToolchainOrchestrator {
 					final String name = LedArrayGenericHdlGeneratorFactory.getSpecificHDLName(type);
 					if (worker != null && name != null) {
 						if (!Hdl.writeArchitecture(
-								projDir + worker.getRelativeDirectory(),
+								destDir.toString() + File.separator + worker.getRelativeDirectory(),
 								worker.getArchitecture(topLevelCirc.getNetList(), null, name),
 								name)) {
 							return;
@@ -470,7 +474,7 @@ public class FPGAToolchainOrchestrator {
 
 		if (generateTopLevel) {
 			Hdl.writeArchitecture(
-					projDir + top.getRelativeDirectory(),
+					destDir.toString() + File.separator + top.getRelativeDirectory(),
 					top.getArchitecture(
 							topLevelCirc.getNetList(), null, ToplevelHdlGeneratorFactory.FPGA_TOP_LEVEL_NAME),
 					ToplevelHdlGeneratorFactory.FPGA_TOP_LEVEL_NAME
@@ -478,7 +482,7 @@ public class FPGAToolchainOrchestrator {
 		} else {
 			try {
 				FileUtils.copyFileToDirectory(topLevelCirc.getTopLevelShell(proj),
-						Paths.get(projDir + top.getRelativeDirectory()).toFile());
+						Paths.get(destDir.toString() + File.separator + top.getRelativeDirectory()).toFile());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -487,7 +491,44 @@ public class FPGAToolchainOrchestrator {
 	}
 
 
-	private void processBoardConstrainsFile(){
+	private void generateMakefile(Path destDir){
+
+		StringBuilder files = new StringBuilder();
+
+		try (Stream<Path> paths = Files.walk(destDir)) {
+			paths.filter(Files::isRegularFile).forEach(
+					path -> files.append("${current_dir}")
+							.append(
+									path.toString().replace(destDir.toString(), "")
+											.replace("\\", "/")
+							)
+							.append(" \\ \n")
+			);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		files.append(" \\");
+
+		files.replace(files.length()-4, files.length(), "");
+
+		String content  = makefilecontent.
+				replace("{1}", proj.getLogisimFile().getMainCircuit().getTopLevelShell(proj).getName()).
+				replace("{2}", boardInformation.fpga.getF4pgatarget()).
+				replace("{3}", files.toString()).
+				replace("{4}", "${current_dir}/"+boardConstrainsFile.getName());
+
+
+		try {
+			FileUtils.write(new File(destDir+File.separator+"makefile.mk"), content);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+
+	private void processBoardConstrainsFile(Path destDir){
 
 		if (generateConstrainsFile){
 			generateBoardConstrainsFile();
@@ -506,13 +547,12 @@ public class FPGAToolchainOrchestrator {
 				Reporter.report.addWarning(mc);
 			}
 
-			//Copy constrains.xdc to fpgaBuild
-			try {
-				FileUtils.copyFileToDirectory(boardConstrainsFile, proj.getLogisimFile().getFpgaDir().toFile());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		}
 
+		try {
+			FileUtils.copyFileToDirectory(boardConstrainsFile, destDir.toFile());
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 
 	}
@@ -608,44 +648,14 @@ public class FPGAToolchainOrchestrator {
 	}
 
 
-	private void generateMakefile(){
-
-		StringBuilder files = new StringBuilder();
-
-		try (Stream<Path> paths = Files.walk(proj.getLogisimFile().getFpgaDir())) {
-			paths.filter(Files::isRegularFile).forEach(
-					path -> files.append("${current_dir}")
-							.append(
-									path.toString().replace(proj.getLogisimFile().getFpgaDir().toString(), "")
-											.replace("\\", "/")
-							)
-							.append(" \\ \n")
-			);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		files.replace(files.length()-4, files.length(), "");
-
-		String content  = makefilecontent.
-				replace("{1}", proj.getLogisimFile().getMainCircuit().getTopLevelShell(proj).getName()).
-				replace("{2}", boardInformation.fpga.getF4pgatarget()).
-				replace("{3}", files.toString()).
-				replace("{4}", "${current_dir}/"+boardConstrainsFile.getName());
-
-
-		try {
-			FileUtils.write(new File(proj.getLogisimFile().getFpgaDir()+File.separator+"makefile.mk"), content);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	private void executeDocker(String outdir){
 
 	}
 
 
-	private boolean genDirectory(String dirPath) {
+	private boolean genDirectory(Path dirPath) {
 		try {
-			File dir = new File(dirPath);
+			File dir = dirPath.toFile();
 			return dir.exists() || dir.mkdirs();
 		} catch (Exception e) {
 			Reporter.report.addFatalError("Could not check/create directory :" + dirPath);
@@ -653,13 +663,13 @@ public class FPGAToolchainOrchestrator {
 		}
 	}
 
-	private boolean cleanDirectory(String dir) {
+	private boolean cleanDirectory(Path dir) {
 		try {
-			final File thisDir = new File(dir);
+			final File thisDir = dir.toFile();
 			if (!thisDir.exists()) return true;
 			for (File theFiles : thisDir.listFiles()) {
 				if (theFiles.isDirectory()) {
-					if (!cleanDirectory(theFiles.getPath())) return false;
+					if (!cleanDirectory(theFiles.toPath())) return false;
 				} else {
 					if (!theFiles.delete()) return false;
 				}
@@ -736,82 +746,6 @@ public class FPGAToolchainOrchestrator {
 		}
 
 		return builder.toString();
-
-	}
-
-
-
-	private void exportHDLFiles() {
-
-		Reporter.report.setTerminal(proj.getTerminal());
-		Reporter.report.clearConsole();
-
-		//Choose output directory
-		FileSelector fileSelector = new FileSelector(proj.getFrameController().getStage());
-		File dir = fileSelector.chooseDirectory(LC.get("fileDirectorySelect"));
-
-		if (dir == null) return;
-
-		//Project directory
-		String projDir = dir + File.separator + proj.getLogisimFile().getName();
-
-		if (!cleanDirectory(projDir)) {
-			Reporter.report.addFatalError(
-					"Unable to cleanup old project files in directory: \"" + projDir + "\"");
-			return;
-		}
-
-		if (!genDirectory(projDir)) {
-			Reporter.report.addFatalError("Unable to create directory: \"" + projDir + "\"");
-			return;
-		}
-
-		Circuit topLevelCirc = proj.getLogisimFile().getMainCircuit();
-		projDir = projDir + File.separator + topLevelCirc.getName();
-
-		if (!genDirectory(projDir)) {
-			Reporter.report.addFatalError("Unable to create directory: \"" + projDir + "\"");
-			return;
-		}
-
-		exportHDL(projDir, frequency);
-
-	}
-
-	private void generateBitFile(){
-
-		//Clear terminal
-		Reporter.report.setTerminal(proj.getTerminal());
-		Reporter.report.clearConsole();
-
-		if (!boardConstrainsFile.exists()){
-			Reporter.report.addFatalError(LC.get("boardConstrainsFileNotExist"));
-			return;
-		}
-		if (boardConstrainsFile.length() == 0){
-			TerminalMessageContainer mc = new TerminalMessageContainer(
-					boardConstrainsFile,
-					LC.get("boardConstrainsFileEmpty"),
-					TerminalMessageContainer.LEVEL_SEVERE
-			);
-			Reporter.report.addWarning(mc);
-		}
-
-		//Export .v files to fpgaBuild
-		exportHDL(proj.getLogisimFile().getFpgaDir().toString(), frequency);
-
-		//Generate makefile in fpgaBuild
-		generateMakefile();
-
-		//Copy constrains.xdc to fpgaBuild
-		try {
-			FileUtils.copyFileToDirectory(boardConstrainsFile, proj.getLogisimFile().getFpgaDir().toFile());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		//Start Docker
-
 
 	}
 

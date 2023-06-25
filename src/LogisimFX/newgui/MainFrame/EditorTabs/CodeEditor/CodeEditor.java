@@ -69,7 +69,7 @@ public class CodeEditor extends TextEditor {
         };
         getTextArea().setParagraphGraphicFactory(graphicFactory);
 
-        getTextArea().insertText(0, builder.toString());
+        getTextArea().appendText(builder.toString());
 
         getTextArea().setEditable(false);
 
@@ -106,7 +106,7 @@ public class CodeEditor extends TextEditor {
         if (file.length() > 0) {
 
             try {
-                getTextArea().insertText(0, Files.readString(file.toPath()));
+                getTextArea().appendText(Files.readString(file.toPath()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -117,22 +117,7 @@ public class CodeEditor extends TextEditor {
 
         } else if(file.getName().equals("VerilogModel.v")){
 
-            StringBuilder builder = new StringBuilder();
-            SubcircuitFactory factory = circ.getSubcircuitFactory();
-                /*
-                for (String s : ((CircuitHdlGeneratorFactory) factory.getHDLGenerator(circ.getStaticAttributes())).getModuleFunctionality(
-                        circ.getNetList(), circ.getStaticAttributes()
-                ).get()) {
-                    builder.append(s).append("\n");
-                }
-                */
-
-            for(String s: factory.getHDLGenerator(circ.getStaticAttributes()).getArchitecture(
-                    circ.getNetList(), circ.getStaticAttributes(), factory.getHDLName(circ.getStaticAttributes()))) {
-                builder.append(s).append("\n");
-            }
-
-            getTextArea().insertText(0, builder.toString());
+           fromSchematics();
 
         } else if(file.getName().equals("HLS.py")){
 
@@ -149,7 +134,7 @@ public class CodeEditor extends TextEditor {
                     "synthesize_verilog(os.path.abspath(__file__), 'cube', [l.ArrayType(32)], constraints)"
                     ;
 
-            getTextArea().insertText(0, importSection);
+            getTextArea().appendText(importSection);
 
         }
 
@@ -181,7 +166,7 @@ public class CodeEditor extends TextEditor {
 
         if (file.length() > 0) {
             try {
-                getTextArea().insertText(0, Files.readString(file.toPath()));
+                getTextArea().appendText(Files.readString(file.toPath()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -274,7 +259,7 @@ public class CodeEditor extends TextEditor {
     private void generateTopLevel(){
 
         getTextArea().clear();
-        getTextArea().insertText(0, proj.getFpgaToolchainOrchestrator().getTopLevelShellCode(circ));
+        getTextArea().appendText(proj.getFpgaToolchainOrchestrator().getTopLevelShellCode(circ));
 
     }
 
@@ -283,6 +268,25 @@ public class CodeEditor extends TextEditor {
     }
 
     public void fromSchematics(){
+
+        getTextArea().clear();
+
+        StringBuilder builder = new StringBuilder();
+        SubcircuitFactory factory = circ.getSubcircuitFactory();
+                /*
+                for (String s : ((CircuitHdlGeneratorFactory) factory.getHDLGenerator(circ.getStaticAttributes())).getModuleFunctionality(
+                        circ.getNetList(), circ.getStaticAttributes()
+                ).get()) {
+                    builder.append(s).append("\n");
+                }
+                */
+
+        for(String s: factory.getHDLGenerator(circ.getStaticAttributes()).getArchitecture(
+                circ.getNetList(), circ.getStaticAttributes(), factory.getHDLName(circ.getStaticAttributes()))) {
+            builder.append(s).append("\n");
+        }
+
+        getTextArea().appendText(builder.toString());
 
     }
 
@@ -315,7 +319,7 @@ public class CodeEditor extends TextEditor {
 
         try {
             getTextArea().clear();
-            getTextArea().insertText(0, Files.readString(file.toPath()));
+            getTextArea().appendText(Files.readString(file.toPath()));
         } catch (IOException e) {
             e.printStackTrace();
         }

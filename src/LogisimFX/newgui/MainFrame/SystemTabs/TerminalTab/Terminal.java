@@ -186,7 +186,6 @@ public class Terminal extends terminalfx.Terminal {
 			}
 
 			if (dc.hasFile()) {
-				System.out.println("code");
 				proj.getFrameController().addCodeEditor(dc.getFile());
 			}
 
@@ -196,7 +195,6 @@ public class Terminal extends terminalfx.Terminal {
 
 
 	public void execute(String command) {
-		System.out.println("command " + command);
 		byte[] enter = new byte[1];
 		enter[0] = getProcess().getEnterKeyCode();
 		command += new String(enter);
