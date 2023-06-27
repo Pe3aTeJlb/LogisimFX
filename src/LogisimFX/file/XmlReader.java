@@ -116,7 +116,12 @@ class XmlReader {
 				String schPath = circElt.getAttribute("sch");
 				if (schPath != null && !schPath.equals("")){
 					try {
-						InputStream in = new FileInputStream(Paths.get(file.getProjectDir() + File.separator + schPath).toFile());
+						InputStream in;
+						if (isLib){
+							in = new FileInputStream(Paths.get(baseLogisimFile.getProjectDir() + File.separator + schPath).toFile());
+						} else {
+							in = new FileInputStream(Paths.get(file.getProjectDir() + File.separator + schPath).toFile());
+						}
 						Document doc = loadXmlFrom(in);
 						for (int i = 0; i < doc.getDocumentElement().getChildNodes().getLength(); i++){
 							circElt.appendChild(circElt.getOwnerDocument().importNode(doc.getDocumentElement().getChildNodes().item(i),true));
@@ -129,7 +134,12 @@ class XmlReader {
 				String appPath = circElt.getAttribute("app");
 				if (appPath != null && !appPath.equals("")){
 					try {
-						InputStream in = new FileInputStream(Paths.get(file.getProjectDir() + File.separator + appPath).toFile());
+						InputStream in;
+						if (isLib){
+							in = new FileInputStream(Paths.get(baseLogisimFile.getProjectDir() + File.separator + appPath).toFile());
+						} else {
+							in = new FileInputStream(Paths.get(file.getProjectDir() + File.separator + appPath).toFile());
+						}
 						Document doc = loadXmlFrom(in);
 						circElt.appendChild(circElt.getOwnerDocument().importNode(doc.getDocumentElement(),true));
 						in.close();
@@ -140,7 +150,12 @@ class XmlReader {
 				String iomapPath = circElt.getAttribute("iomap");
 				if (iomapPath != null && !iomapPath.equals("")){
 					try {
-						InputStream in = new FileInputStream(Paths.get(file.getProjectDir() + File.separator + iomapPath).toFile());
+						InputStream in;
+						if (isLib){
+							in = new FileInputStream(Paths.get(baseLogisimFile.getProjectDir() + File.separator + iomapPath).toFile());
+						} else {
+							in = new FileInputStream(Paths.get(file.getProjectDir() + File.separator + iomapPath).toFile());
+						}
 						Document doc = loadXmlFrom(in);
 						circElt.appendChild(circElt.getOwnerDocument().importNode(doc.getDocumentElement(),true));
 						in.close();
@@ -150,6 +165,12 @@ class XmlReader {
 				}
 				//else do old circ file
 				CircuitData circData = new CircuitData(circElt, new Circuit(name));
+				/*
+				if (isLib){
+					baseLogisimFile.addCircuit(circData.circuit);
+				} else {
+					file.addCircuit(circData.circuit);
+				}*/
 				file.addCircuit(circData.circuit);
 				circData.knownComponents = loadKnownComponents(circElt);
 				for (Element appearElt : XmlIterator.forChildElements(circElt, "appear")) {

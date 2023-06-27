@@ -228,6 +228,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 	}
 
 	public boolean contains(Circuit circ) {
+		//return true;
 		for (AddTool tool : tools) {
 			SubcircuitFactory factory = (SubcircuitFactory) tool.getFactory();
 			if (factory.getSubcircuit() == circ) return true;
