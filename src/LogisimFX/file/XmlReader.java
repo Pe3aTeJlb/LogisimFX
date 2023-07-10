@@ -165,12 +165,9 @@ class XmlReader {
 				}
 				//else do old circ file
 				CircuitData circData = new CircuitData(circElt, new Circuit(name));
-				/*
 				if (isLib){
-					baseLogisimFile.addCircuit(circData.circuit);
-				} else {
-					file.addCircuit(circData.circuit);
-				}*/
+					baseLogisimFile.addLibCircuit(circData.circuit);
+				}
 				file.addCircuit(circData.circuit);
 				circData.knownComponents = loadKnownComponents(circElt);
 				for (Element appearElt : XmlIterator.forChildElements(circElt, "appear")) {

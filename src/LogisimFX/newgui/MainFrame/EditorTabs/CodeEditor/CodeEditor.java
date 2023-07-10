@@ -117,7 +117,17 @@ public class CodeEditor extends TextEditor {
 
         } else if(file.getName().equals("VerilogModel.v")){
 
-           fromSchematics();
+            getTextArea().clear();
+
+            StringBuilder builder = new StringBuilder();
+            SubcircuitFactory factory = circ.getSubcircuitFactory();
+
+            for(String s: factory.getHDLGenerator(circ.getStaticAttributes()).getArchitecture(
+                    circ.getNetList(), circ.getStaticAttributes(), factory.getHDLName(circ.getStaticAttributes()))) {
+                builder.append(s).append("\n");
+            }
+
+            getTextArea().appendText(builder.toString());
 
         } else if(file.getName().equals("HLS.py")){
 
@@ -264,6 +274,26 @@ public class CodeEditor extends TextEditor {
     }
 
     public void toSchematics(){
+/*
+        if (PythonConnector.isPythonPresent(proj)) {
+
+            String pathToLib = PythonConnector.getLibPath("yowsap_yosys");
+
+            //Save HLS file and execute it
+            replace("path_to_lib_do_not_change_this_line", pathToLib);
+            doSave();
+            PythonConnector.executeFile(proj, file);
+            replace(pathToLib.replace("/", File.separator+File.separator).replace("\\", File.separator+File.separator),"path_to_lib_do_not_change_this_line");
+            doSave();
+
+            //reload verilog model
+            proj.getFrameController().reloadFile(circ.getVerilogModel(proj));
+            proj.getFrameController().addCodeEditor(circ, circ.getVerilogModel(proj));
+
+
+        } else {
+            DialogManager.createErrorDialog("Error", "Python3 required");
+        }*/
 
     }
 
@@ -271,15 +301,10 @@ public class CodeEditor extends TextEditor {
 
         getTextArea().clear();
 
+        proj.getFpgaToolchainOrchestrator().annotate();
+
         StringBuilder builder = new StringBuilder();
         SubcircuitFactory factory = circ.getSubcircuitFactory();
-                /*
-                for (String s : ((CircuitHdlGeneratorFactory) factory.getHDLGenerator(circ.getStaticAttributes())).getModuleFunctionality(
-                        circ.getNetList(), circ.getStaticAttributes()
-                ).get()) {
-                    builder.append(s).append("\n");
-                }
-                */
 
         for(String s: factory.getHDLGenerator(circ.getStaticAttributes()).getArchitecture(
                 circ.getNetList(), circ.getStaticAttributes(), factory.getHDLName(circ.getStaticAttributes()))) {

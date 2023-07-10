@@ -832,9 +832,9 @@ public class Pin extends InstanceFactory {
 			Direction dir = state.getAttributeValue(StdAttr.FACING);
 			Bounds bds = state.getInstance().getBounds();
 			if (dir == Direction.EAST || dir == Direction.WEST)
-				row = (bds.getY() + bds.getHeight() - (int) e.event.getY()) / 20;
-			else if (dir == Direction.NORTH) row = (bds.getX() + bds.getWidth() - (int)e.event.getX()) / 20;
-			else row = ((int)e.event.getX() - bds.getX()) / 20;
+				row = (bds.getY() + bds.getHeight() - e.localY) / 20;
+			else if (dir == Direction.NORTH) row = (bds.getX() + bds.getWidth() - e.localX) / 20;
+			else row = (e.localX - bds.getX()) / 20;
 			return row;
 		}
 
@@ -845,9 +845,9 @@ public class Pin extends InstanceFactory {
 			Bounds bds = state.getInstance().getBounds();
 			if (dir == Direction.EAST || dir == Direction.WEST) {
 				int offset = dir == Direction.EAST ? 20 : 10;
-				col = (bds.getX() + bds.getWidth() - (int)e.event.getX() - offset) / distance;
-			} else if (dir == Direction.NORTH) col = ((int)e.event.getY() - bds.getY() - 20) / distance;
-			else col = (bds.getY() + bds.getHeight() - (int)e.event.getY() - 20) / distance;
+				col = (bds.getX() + bds.getWidth() - e.localX - offset) / distance;
+			} else if (dir == Direction.NORTH) col = (e.localY - bds.getY() - 20) / distance;
+			else col = (bds.getY() + bds.getHeight() - e.localY - 20) / distance;
 
 			return col;
 		}

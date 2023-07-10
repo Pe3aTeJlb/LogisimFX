@@ -11,6 +11,7 @@ import LogisimFX.fpga.hdlgenerator.HdlGeneratorFactory;
 import LogisimFX.fpga.hdlgenerator.TickComponentHdlGeneratorFactory;
 import LogisimFX.fpga.hdlgenerator.ToplevelHdlGeneratorFactory;
 import LogisimFX.newgui.FrameManager;
+import LogisimFX.newgui.MainFrame.SystemTabs.TerminalTab.Terminal;
 import LogisimFX.newgui.MainFrame.SystemTabs.TerminalTab.TerminalMessageContainer;
 import LogisimFX.proj.Project;
 import LogisimFX.std.io.LedArrayGenericHdlGeneratorFactory;
@@ -273,6 +274,17 @@ public class FPGAToolchainOrchestrator {
 		}
 
 		root.annotate(ClearExistingLabels);
+		Reporter.report.addInfo(LC.get("FpgaGuiAnnotationDone"));
+
+	}
+
+	public void annotate() {
+
+		Reporter.report.setTerminal(proj.getTerminal());
+		proj.getLogisimFile().getMainCircuit().annotate(false);
+		if (!performDrc(proj.getLogisimFile().getMainCircuit().getName())) {
+			return;
+		}
 		Reporter.report.addInfo(LC.get("FpgaGuiAnnotationDone"));
 
 	}
@@ -649,6 +661,11 @@ public class FPGAToolchainOrchestrator {
 
 
 	private void executeDocker(String outdir){
+
+		Terminal t = proj.getTerminal();
+
+		t.execute("docker --version");
+		t.execute("docker images");
 
 	}
 

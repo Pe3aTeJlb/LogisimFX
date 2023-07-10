@@ -67,6 +67,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 	private LinkedList<String> messages = new LinkedList<>();
 	private Options options = new Options();
 	private LinkedList<AddTool> tools = new LinkedList<>();
+	private LinkedList<AddTool> libtools = new LinkedList<>();
 	private LinkedList<Library> libraries = new LinkedList<>();
 	private Circuit main = null;
 	private Circuit current = null;
@@ -224,12 +225,20 @@ public class LogisimFile extends Library implements LibraryEventSource {
 			SubcircuitFactory factory = (SubcircuitFactory) tool.getFactory();
 			if (name.equals(factory.getName())) return factory.getSubcircuit();
 		}
+		for (AddTool tool : libtools) {
+			SubcircuitFactory factory = (SubcircuitFactory) tool.getFactory();
+			if (name.equals(factory.getName())) return factory.getSubcircuit();
+		}
 		return null;
 	}
 
 	public boolean contains(Circuit circ) {
 		//return true;
 		for (AddTool tool : tools) {
+			SubcircuitFactory factory = (SubcircuitFactory) tool.getFactory();
+			if (factory.getSubcircuit() == circ) return true;
+		}
+		for (AddTool tool : libtools) {
 			SubcircuitFactory factory = (SubcircuitFactory) tool.getFactory();
 			if (factory.getSubcircuit() == circ) return true;
 		}
@@ -240,6 +249,10 @@ public class LogisimFile extends Library implements LibraryEventSource {
 
 		List<Circuit> ret = new ArrayList<>(tools.size());
 		for (AddTool tool : tools) {
+			SubcircuitFactory factory = (SubcircuitFactory) tool.getFactory();
+			ret.add(factory.getSubcircuit());
+		}
+		for (AddTool tool : libtools) {
 			SubcircuitFactory factory = (SubcircuitFactory) tool.getFactory();
 			ret.add(factory.getSubcircuit());
 		}
@@ -331,6 +344,10 @@ public class LogisimFile extends Library implements LibraryEventSource {
 		addCircuit(circuit, tools.size());
 	}
 
+	public void addLibCircuit(Circuit circuit) {
+		addLibCircuit(circuit, libtools.size());
+	}
+
 	public void addCircuit(Circuit circuit, int index) {
 
 		AddTool tool = new AddTool(circuit.getSubcircuitFactory());
@@ -340,6 +357,11 @@ public class LogisimFile extends Library implements LibraryEventSource {
 
 		updateCircuitPos();
 
+	}
+
+	public void addLibCircuit(Circuit circuit, int index) {
+		AddTool tool = new AddTool(circuit.getSubcircuitFactory());
+		libtools.add(index, tool);
 	}
 
 	public void removeCircuit(Circuit circuit) {

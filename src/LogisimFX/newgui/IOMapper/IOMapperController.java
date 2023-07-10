@@ -101,8 +101,6 @@ public class IOMapperController extends AbstractController {
 	private FPGAToolchainOrchestrator orchestrator;
 	private MappableResourcesContainer mapInfo;
 
-	private static int o = 0;
-
 	@FXML
 	public void initialize() {
 	}
