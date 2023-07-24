@@ -4,11 +4,7 @@ import LogisimFX.Main;
 import LogisimFX.circuit.WireSet;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.LayoutEditor;
 import LogisimFX.proj.Project;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Worker;
 import javafx.scene.paint.Color;
-import netscape.javascript.JSObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.html.HTMLIFrameElement;
@@ -233,9 +229,8 @@ public class Terminal extends terminalfx.Terminal {
 		try {
 			return Runtime.getRuntime().exec(command);
 		} catch (IOException e) {
-			e.printStackTrace();
+			return null;
 		}
-		return null;
 	}
 
 

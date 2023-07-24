@@ -152,7 +152,7 @@ class ExtractedNative {
         }
       }
     }
-    return LogisimFile.LOGISIMFX_RUNTIME;
+    return LogisimFile.LOGISIMFX_TEMP_RUNTIME;
   }
 
   private boolean isUpToDate(@NotNull Set<String> bundledResourceNames, @NotNull Map<String, Path> resourceToFileMap) {

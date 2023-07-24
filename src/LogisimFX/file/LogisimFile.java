@@ -6,6 +6,7 @@
 
 package LogisimFX.file;
 
+import LogisimFX.lang.python.PythonConnector;
 import LogisimFX.newgui.FrameManager;
 import LogisimFX.circuit.Circuit;
 import LogisimFX.circuit.SubcircuitFactory;
@@ -76,8 +77,10 @@ public class LogisimFile extends Library implements LibraryEventSource {
 	public SimpleStringProperty obsPos = new SimpleStringProperty("undefined2");
 	public SimpleBooleanProperty isMain = new SimpleBooleanProperty(false);
 
+	//Пути к temp директориям
 	public static Path LOGISIMFX_TEMP_DIR;
-	public static Path LOGISIMFX_RUNTIME;
+	public static Path LOGISIMFX_TEMP_RUNTIME;
+	public static Path LOGISIMFX_RUNTIME; //Путь к runtime директории в user.home
 	private Path projectDir;
 	private Path circuitDir;
 	private Path fpgaDir;
@@ -122,7 +125,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 
 			if (LOGISIMFX_TEMP_DIR == null) {
 				LOGISIMFX_TEMP_DIR = Files.createTempDirectory("LogisimFX-");
-				LOGISIMFX_RUNTIME = Files.createDirectories(Paths.get(LOGISIMFX_TEMP_DIR+File.separator+"runtime"));
+				LOGISIMFX_TEMP_RUNTIME = Files.createDirectories(Paths.get(LOGISIMFX_TEMP_DIR+File.separator+"runtime"));
 			}
 
 			if (!isLib) {
@@ -141,6 +144,17 @@ public class LogisimFile extends Library implements LibraryEventSource {
 				otherDir = new File(projectDir + File.separator + OTHERS).toPath();
 				otherDir.toFile().mkdirs();
 
+			}
+
+			LOGISIMFX_RUNTIME = Paths.get(System.getProperty("user.home") + File.separator + "logisimfx_runtime");
+			if (!LOGISIMFX_RUNTIME.toFile().exists()){
+				LOGISIMFX_RUNTIME = Files.createDirectory(
+						Paths.get(System.getProperty("user.home") + File.separator + "logisimfx_runtime")
+				);
+			}
+
+			if (FileUtils.isEmptyDirectory(LOGISIMFX_RUNTIME.toFile())){
+				PythonConnector.unpackVenv();
 			}
 
 		} catch (IOException e) {

@@ -8,10 +8,7 @@ package LogisimFX.newgui.MainFrame.EditorTabs.CodeEditor;
 import LogisimFX.IconsManager;
 import LogisimFX.circuit.*;
 import LogisimFX.comp.Component;
-import LogisimFX.fpga.Reporter;
-import LogisimFX.fpga.data.MappableResourcesContainer;
-import LogisimFX.fpga.designrulecheck.Netlist;
-import LogisimFX.fpga.hdlgenerator.ToplevelHdlGeneratorFactory;
+import LogisimFX.file.LogisimFile;
 import LogisimFX.newgui.DialogManager;
 import LogisimFX.newgui.MainFrame.EditorTabs.TextEditor.TextEditor;
 import LogisimFX.newgui.MainFrame.EditorTabs.TextEditor.TextEditorToolBar;
@@ -28,8 +25,8 @@ import org.fxmisc.richtext.LineNumberFactory;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.function.IntFunction;
 
 
@@ -131,7 +128,8 @@ public class CodeEditor extends TextEditor {
 
         } else if(file.getName().equals("HLS.py")){
 
-            String importSection = "import sys\n" +
+            String importSection =
+                    "import sys\n" +
                     "import os\n" +
                     "sys.path.append(r'path_to_lib_do_not_change_this_line')\n"+
                     "from sfgen import * \n" +
@@ -274,26 +272,49 @@ public class CodeEditor extends TextEditor {
     }
 
     public void toSchematics(){
-/*
+
         if (PythonConnector.isPythonPresent(proj)) {
 
-            String pathToLib = PythonConnector.getLibPath("yowsap_yosys");
-
-            //Save HLS file and execute it
-            replace("path_to_lib_do_not_change_this_line", pathToLib);
-            doSave();
-            PythonConnector.executeFile(proj, file);
-            replace(pathToLib.replace("/", File.separator+File.separator).replace("\\", File.separator+File.separator),"path_to_lib_do_not_change_this_line");
             doSave();
 
-            //reload verilog model
-            proj.getFrameController().reloadFile(circ.getVerilogModel(proj));
-            proj.getFrameController().addCodeEditor(circ, circ.getVerilogModel(proj));
+            File python_yosys_runtime_file = null;
+            try {
+                python_yosys_runtime_file = File.createTempFile("yosys-","", LogisimFile.LOGISIMFX_TEMP_RUNTIME.toFile());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
+            String python_yosys_to_json =
+                    "import yowasp_yosys\n" +
+                    "from yowasp_yosys import *\n" +
+                    "run_yosys([" +
+                            "'-l', " +
+                            "'"+circ.getName()+".log'," +
+                            "'-p', "+
+                            "'read_verilog "+ circ.getVerilogModel(proj).getName() + "; " +
+                            "hierarchy -check; " +
+                            "proc; opt; " +
+                            "fsm; opt; " +
+                            "fsm_map; opt;" +
+                            " memory; opt; " +
+                            "techmap; opt; " +
+                            "write_json " + circ.getName() + ".json'"+
+                    "])";
+
+            try {
+                FileUtils.write(python_yosys_runtime_file, python_yosys_to_json, StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            PythonConnector.activateVenv(proj);
+            proj.getTerminal().execute("cd " + file.getParent());
+            PythonConnector.executeFile(proj, python_yosys_runtime_file);
+            PythonConnector.deactivateVenv(proj);
 
         } else {
-            DialogManager.createErrorDialog("Error", "Python3 required");
-        }*/
+            DialogManager.createErrorDialog("Error", "Python 3 required");
+        }
 
     }
 
@@ -324,7 +345,9 @@ public class CodeEditor extends TextEditor {
             //Save HLS file and execute it
             replace("path_to_lib_do_not_change_this_line", pathToLib);
             doSave();
+            PythonConnector.activateVenv(proj);
             PythonConnector.executeFile(proj, file);
+            PythonConnector.deactivateVenv(proj);
             replace(pathToLib.replace("/", File.separator+File.separator).replace("\\", File.separator+File.separator),"path_to_lib_do_not_change_this_line");
             doSave();
 
