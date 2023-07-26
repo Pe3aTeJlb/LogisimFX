@@ -83,9 +83,9 @@ public class Terminal extends TerminalView {
 		envs.put("TERM", "xterm");
 
 		if (Objects.nonNull(terminalPath) && Files.exists(terminalPath)) {
-			this.process = new PtyProcessBuilder().setCommand(termCommand).setEnvironment(envs).setDirectory(terminalPath.toString()).start();
+			this.process = new PtyProcessBuilder().setCommand(termCommand).setRedirectErrorStream(true).setEnvironment(envs).setDirectory(terminalPath.toString()).start();
 		} else {
-			this.process = new PtyProcessBuilder().setCommand(termCommand).setEnvironment(envs).start();
+			this.process = new PtyProcessBuilder().setCommand(termCommand).setRedirectErrorStream(true).setEnvironment(envs).start();
 		}
 
 		columnsProperty().addListener(evt -> updateWinSize());

@@ -29,14 +29,14 @@ public class PythonConnector {
 
 		try {
 
-			Process process = proj.getTerminal().silentExecuteAsNonPty("python --version");
+			Process process = proj.getTerminal().executeAsNonPty("python --version");
 			if (process == null) return false;
 			try (BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
 				version = input.readLine();
 			}
 
 			if (!PYTHON_VERSION.matcher(version).matches()) {
-				Process process2 = proj.getTerminal().silentExecuteAsNonPty("python3 --version");
+				Process process2 = proj.getTerminal().executeAsNonPty("python3 --version");
 				if (process == null) return false;
 				try (BufferedReader input = new BufferedReader(new InputStreamReader(process2.getInputStream()))) {
 					version = input.readLine();
@@ -51,24 +51,24 @@ public class PythonConnector {
 
 	}
 
-	public static void activateVenv(Project proj){
+	public static Thread activateVenv(Project proj){
 		if (Platform.isWindows()) {
-			proj.getTerminal().execute(LOGISIMFX_VENV_SCRIPTS + File.separator + "activate.bat");
+			return proj.getTerminal().execute(LOGISIMFX_VENV_SCRIPTS + File.separator + "activate.bat");
 		} else {
-
+			return proj.getTerminal().execute(LOGISIMFX_VENV_SCRIPTS + File.separator + "activate.bat");
 		}
 	}
 
-	public static void deactivateVenv(Project proj){
+	public static Thread deactivateVenv(Project proj){
 		if (Platform.isWindows()) {
-			proj.getTerminal().execute(LOGISIMFX_VENV_SCRIPTS + File.separator + "deactivate.bat");
+			return proj.getTerminal().execute(LOGISIMFX_VENV_SCRIPTS + File.separator + "deactivate.bat");
 		} else {
-
+			return proj.getTerminal().execute(LOGISIMFX_VENV_SCRIPTS + File.separator + "deactivate.bat");
 		}
 	}
 
-	public static void executeFile(Project proj, File file) {
-		proj.getTerminal().execute("python \"" + file.toString() + "\"");
+	public static Thread executeFile(Project proj, File file) {
+		return proj.getTerminal().execute("python \"" + file.toString() + "\"");
 	}
 
 

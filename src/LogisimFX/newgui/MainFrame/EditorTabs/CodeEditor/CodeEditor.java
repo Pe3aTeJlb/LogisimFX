@@ -14,6 +14,7 @@ import LogisimFX.newgui.MainFrame.EditorTabs.TextEditor.TextEditor;
 import LogisimFX.newgui.MainFrame.EditorTabs.TextEditor.TextEditorToolBar;
 import LogisimFX.proj.Project;
 import LogisimFX.lang.python.PythonConnector;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -21,10 +22,9 @@ import javafx.scene.control.Separator;
 import javafx.scene.layout.HBox;
 import org.apache.commons.io.FileUtils;
 import org.fxmisc.richtext.LineNumberFactory;
+import terminalfx.helper.ThreadHelper;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.function.IntFunction;
@@ -32,420 +32,450 @@ import java.util.function.IntFunction;
 
 public class CodeEditor extends TextEditor {
 
-    private Component comp;
-    private Circuit circ;
-    private File file;
+	private Component comp;
+	private Circuit circ;
+	private File file;
 
-    //Comp viewer
-    public CodeEditor(Project project, Circuit circ, Component comp){
+	//Comp viewer
+	public CodeEditor(Project project, Circuit circ, Component comp) {
 
-        super(project);
+		super(project);
 
-        //remove find&replace and save
-        getTextEditorToolBar().getItems().remove(3);
-        getTextEditorToolBar().getItems().remove(2);
-        getTextEditorToolBar().getItems().remove(1);
+		//remove find&replace and save
+		getTextEditorToolBar().getItems().remove(3);
+		getTextEditorToolBar().getItems().remove(2);
+		getTextEditorToolBar().getItems().remove(1);
 
-        this.circ = circ;
-        this.comp = comp;
+		this.circ = circ;
+		this.comp = comp;
 
-        new SyntaxHighlighter(getTextArea()).start("v");
-        StringBuilder builder = new StringBuilder();
+		new SyntaxHighlighter(getTextArea()).start("v");
+		StringBuilder builder = new StringBuilder();
 
-        for(String s: comp.getFactory().getHDLGenerator(comp.getAttributeSet()).getArchitecture(
-                circ.getNetList(), comp.getAttributeSet(), comp.getFactory().getHDLName(comp.getAttributeSet()))) {
-            builder.append(s).append("\n");
-        }
+		for (String s : comp.getFactory().getHDLGenerator(comp.getAttributeSet()).getArchitecture(
+				circ.getNetList(), comp.getAttributeSet(), comp.getFactory().getHDLName(comp.getAttributeSet()))) {
+			builder.append(s).append("\n");
+		}
 
-        IntFunction<Node> noFactory = LineNumberFactory.get(getTextArea());
-        IntFunction<Node> graphicFactory = line -> {
-            HBox lineBox = new HBox(noFactory.apply(line));
-            lineBox.getStyleClass().add("lineno-box");
-            lineBox.setAlignment(Pos.CENTER_LEFT);
-            return lineBox;
-        };
-        getTextArea().setParagraphGraphicFactory(graphicFactory);
+		IntFunction<Node> noFactory = LineNumberFactory.get(getTextArea());
+		IntFunction<Node> graphicFactory = line -> {
+			HBox lineBox = new HBox(noFactory.apply(line));
+			lineBox.getStyleClass().add("lineno-box");
+			lineBox.setAlignment(Pos.CENTER_LEFT);
+			return lineBox;
+		};
+		getTextArea().setParagraphGraphicFactory(graphicFactory);
 
-        getTextArea().appendText(builder.toString());
+		getTextArea().appendText(builder.toString());
 
-        getTextArea().setEditable(false);
+		getTextArea().setEditable(false);
 
-    }
+	}
 
-    public CodeEditor(Project project, Circuit circ, File file){
+	public CodeEditor(Project project, Circuit circ, File file) {
 
-        super(project);
+		super(project);
 
-        this.file = file;
-        this.circ = circ;
+		this.file = file;
+		this.circ = circ;
 
-        circ.registerProject(proj);
+		circ.registerProject(proj);
 
-        new SyntaxHighlighter(getTextArea()).start(file.getName().split("\\.")[1]);
+		new SyntaxHighlighter(getTextArea()).start(file.getName().split("\\.")[1]);
 
-        IntFunction<Node> noFactory = LineNumberFactory.get(getTextArea());
-        IntFunction<Node> graphicFactory = line -> {
-            HBox lineBox = new HBox(noFactory.apply(line));
-            lineBox.getStyleClass().add("lineno-box");
-            lineBox.setAlignment(Pos.CENTER_LEFT);
-            return lineBox;
-        };
-        getTextArea().setParagraphGraphicFactory(graphicFactory);
+		IntFunction<Node> noFactory = LineNumberFactory.get(getTextArea());
+		IntFunction<Node> graphicFactory = line -> {
+			HBox lineBox = new HBox(noFactory.apply(line));
+			lineBox.getStyleClass().add("lineno-box");
+			lineBox.setAlignment(Pos.CENTER_LEFT);
+			return lineBox;
+		};
+		getTextArea().setParagraphGraphicFactory(graphicFactory);
 
-        switch (file.getName()){
-            case "TopLevelShell.v": extendEditorToolBarWithTopLevel();   break;
-            case "VerilogModel.v":  extendEditorToolBarWithVerilog();    break;
-            case "HLS.py":          extendEditorToolBarWithHLS();        break;
-        }
+		switch (file.getName()) {
+			case "TopLevelShell.v":
+				extendEditorToolBarWithTopLevel();
+				break;
+			case "VerilogModel.v":
+				extendEditorToolBarWithVerilog();
+				break;
+			case "HLS.py":
+				extendEditorToolBarWithHLS();
+				break;
+		}
 
-        getTextArea().requestFocus();
+		getTextArea().requestFocus();
 
-        if (file.length() > 0) {
+		if (file.length() > 0) {
 
-            try {
-                getTextArea().appendText(Files.readString(file.toPath()));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+			try {
+				getTextArea().appendText(Files.readString(file.toPath()));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 
-        } else if(file.getName().equals("TopLevelShell.v")) {
+		} else if (file.getName().equals("TopLevelShell.v")) {
 
-            generateTopLevel();
+			generateTopLevel();
 
-        } else if(file.getName().equals("VerilogModel.v")){
+		} else if (file.getName().equals("VerilogModel.v")) {
 
-            getTextArea().clear();
+			getTextArea().clear();
 
-            StringBuilder builder = new StringBuilder();
-            SubcircuitFactory factory = circ.getSubcircuitFactory();
+			StringBuilder builder = new StringBuilder();
+			SubcircuitFactory factory = circ.getSubcircuitFactory();
 
-            for(String s: factory.getHDLGenerator(circ.getStaticAttributes()).getArchitecture(
-                    circ.getNetList(), circ.getStaticAttributes(), factory.getHDLName(circ.getStaticAttributes()))) {
-                builder.append(s).append("\n");
-            }
+			for (String s : factory.getHDLGenerator(circ.getStaticAttributes()).getArchitecture(
+					circ.getNetList(), circ.getStaticAttributes(), factory.getHDLName(circ.getStaticAttributes()))) {
+				builder.append(s).append("\n");
+			}
 
-            getTextArea().appendText(builder.toString());
+			getTextArea().appendText(builder.toString());
 
-        } else if(file.getName().equals("HLS.py")){
+		} else if (file.getName().equals("HLS.py")) {
 
-            String importSection =
-                    "import sys\n" +
-                    "import os\n" +
-                    "sys.path.append(r'path_to_lib_do_not_change_this_line')\n"+
-                    "from sfgen import * \n" +
-                    "from sfgen.verilog_backend import * \n" +
-                    "#for more information visit https://github.com/dillonhuff/SFGen \n"+
-                    "def cube(x):\n" +
-                    "\tout = x*x*x\n" +
-                    "\treturn out\n"+
-                    "constraints = ScheduleConstraints() \n"+
-                    "synthesize_verilog(os.path.abspath(__file__), 'cube', [l.ArrayType(32)], constraints)"
-                    ;
-
-            getTextArea().appendText(importSection);
-
-        }
-
-        getTextArea().setEditable(proj.getLogisimFile().contains(circ));
+			String importSection =
+					"import sys\n" +
+							"import os\n" +
+							"sys.path.append(r'path_to_lib_do_not_change_this_line')\n" +
+							"from sfgen import * \n" +
+							"from sfgen.verilog_backend import * \n" +
+							"#for more information visit https://github.com/dillonhuff/SFGen \n\n\n" +
+							"def cube(x):\n" +
+							"\tout = x*x*x\n" +
+							"\treturn out\n\n\n" +
+							"constraints = ScheduleConstraints() \n" +
+							"synthesize_verilog(os.path.abspath(__file__), 'cube', [l.ArrayType(32)], constraints)";
+
+			getTextArea().appendText(importSection);
+
+		}
+
+		getTextArea().setEditable(proj.getLogisimFile().contains(circ));
 
-    }
+	}
 
-    //Code editor
-    public CodeEditor(Project project, File file){
+	//Code editor
+	public CodeEditor(Project project, File file) {
 
-        super(project);
+		super(project);
 
-        this.file = file;
+		this.file = file;
+
+		if (file.getName().split("\\.").length > 1) {
+			new SyntaxHighlighter(getTextArea()).start(file.getName().split("\\.")[1]);
+		}
+
+		IntFunction<Node> noFactory = LineNumberFactory.get(getTextArea());
+		IntFunction<Node> graphicFactory = line -> {
+			HBox lineBox = new HBox(noFactory.apply(line));
+			lineBox.getStyleClass().add("lineno-box");
+			lineBox.setAlignment(Pos.CENTER_LEFT);
+			return lineBox;
+		};
+		getTextArea().setParagraphGraphicFactory(graphicFactory);
 
-        if (file.getName().split("\\.").length > 1) {
-            new SyntaxHighlighter(getTextArea()).start(file.getName().split("\\.")[1]);
-        }
+		getTextArea().requestFocus();
 
-        IntFunction<Node> noFactory = LineNumberFactory.get(getTextArea());
-        IntFunction<Node> graphicFactory = line -> {
-            HBox lineBox = new HBox(noFactory.apply(line));
-            lineBox.getStyleClass().add("lineno-box");
-            lineBox.setAlignment(Pos.CENTER_LEFT);
-            return lineBox;
-        };
-        getTextArea().setParagraphGraphicFactory(graphicFactory);
+		if (file.length() > 0) {
+			try {
+				getTextArea().appendText(Files.readString(file.toPath()));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 
-        getTextArea().requestFocus();
+	}
 
-        if (file.length() > 0) {
-            try {
-                getTextArea().appendText(Files.readString(file.toPath()));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+	@Override
+	public String getEditorDescriptor() {
 
-    }
+		if (comp != null) {
+			return circ.getName() + " " + comp.getFactory().getName() + " " + comp.getLocation().toString();
+		} else if (circ != null) {
+			return circ.getHDLFile(proj, file.getName()).toString().split(proj.getLogisimFile().getProjectDir().getFileName().toString())[1].substring(1);
+		} else {
+			return file.toString().split(proj.getLogisimFile().getProjectDir().getFileName().toString())[1].substring(1);
+		}
 
-    @Override
-    public String getEditorDescriptor(){
+	}
 
-        if (comp != null){
-            return circ.getName() + " " + comp.getFactory().getName() + " " + comp.getLocation().toString();
-        } else if (circ != null){
-            return circ.getHDLFile(proj, file.getName()).toString().split(proj.getLogisimFile().getProjectDir().getFileName().toString())[1].substring(1);
-        } else {
-            return file.toString().split(proj.getLogisimFile().getProjectDir().getFileName().toString())[1].substring(1);
-        }
 
-    }
+	@Override
+	public void doSave() {
 
+		FileOutputStream writer;
+
+		if (comp == null && circ != null) {
 
-    @Override
-    public void doSave(){
+			try {
+
+				if (getTextArea().getText().isEmpty() || !proj.getLogisimFile().contains(circ)) {
+					return;
+				}
+
+				File f = circ.getHDLFile(proj, file.getName());
+				if (!f.exists()) {
+					f.getParentFile().mkdirs();
+					f.createNewFile();
+				}
+				writer = new FileOutputStream(f);
+				writer.write(getTextArea().getText().getBytes());
+				writer.flush();
+				writer.close();
 
-        FileOutputStream writer;
+			} catch (IOException e) {
+				DialogManager.createStackTraceDialog("Error!", "Error during saving code editor content " + file.getName(), e);
+				e.printStackTrace();
+			}
 
-        if (comp == null && circ != null){
+		} else {
 
-            try {
+			try {
+				if (!file.exists()) {
+					file.getParentFile().mkdirs();
+					file.createNewFile();
+				}
+				writer = new FileOutputStream(file);
+				writer.write(getTextArea().getText().getBytes());
+				writer.flush();
+				writer.close();
+			} catch (IOException e) {
+				DialogManager.createStackTraceDialog("Error!", "Error during saving code editor content " + file.getName(), e);
+				e.printStackTrace();
+			}
 
-                if (getTextArea().getText().isEmpty() || !proj.getLogisimFile().contains(circ)){
-                    return;
-                }
+		}
 
-                File f = circ.getHDLFile(proj, file.getName());
-                if (!f.exists()){
-                    f.getParentFile().mkdirs();
-                    f.createNewFile();
-                }
-                writer = new FileOutputStream(f);
-                writer.write(getTextArea().getText().getBytes());
-                writer.flush();
-                writer.close();
+	}
 
-            } catch (IOException e) {
-                DialogManager.createStackTraceDialog("Error!", "Error during saving code editor content " + file.getName(), e);
-                e.printStackTrace();
-            }
+	@Override
+	public void doDelete() {
 
-        } else {
+		if (DialogManager.createConfirmDialog()) {
 
-            try {
-                if (!file.exists()){
-                    file.getParentFile().mkdirs();
-                    file.createNewFile();
-                }
-                writer = new FileOutputStream(file);
-                writer.write(getTextArea().getText().getBytes());
-                writer.flush();
-                writer.close();
-            } catch (IOException e) {
-                DialogManager.createStackTraceDialog("Error!", "Error during saving code editor content " + file.getName(), e);
-                e.printStackTrace();
-            }
+			this.getTextArea().clear();
 
-        }
+			try {
+				if (file.exists()) {
+					FileUtils.delete(file);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 
-    }
+		}
 
-    @Override
-    public void doDelete() {
+	}
 
-        if (DialogManager.createConfirmDialog()) {
 
-            this.getTextArea().clear();
+	private void generateTopLevel() {
 
-            try {
-                if (file.exists()) {
-                    FileUtils.delete(file);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+		getTextArea().clear();
+		getTextArea().appendText(proj.getFpgaToolchainOrchestrator().getTopLevelShellCode(circ));
 
-        }
+	}
 
-    }
+	public void toSchematics() {
 
+		if (PythonConnector.isPythonPresent(proj)) {
 
-    private void generateTopLevel(){
+			doSave();
 
-        getTextArea().clear();
-        getTextArea().appendText(proj.getFpgaToolchainOrchestrator().getTopLevelShellCode(circ));
+			File python_yosys_runtime_file = null;
+			try {
+				python_yosys_runtime_file = File.createTempFile("yosys-", "", LogisimFile.LOGISIMFX_TEMP_RUNTIME.toFile());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 
-    }
+			String python_yosys_to_json =
+					"import yowasp_yosys\n" +
+							"from yowasp_yosys import *\n" +
+							"run_yosys([" +
+							"'-l', " +
+							"'" + circ.getName() + ".log'," +
+							"'-p', " +
+							"'read_verilog " + circ.getVerilogModel(proj).getName() + "; " +
+							"hierarchy -check; " +
+							"proc; opt; " +
+							"fsm; opt; " +
+							//"fsm_map; opt;" +
+							"memory; opt; " +
+							// "techmap; opt; " +
+							"write_json " + circ.getName() + ".json'" +
+							"])";
 
-    public void toSchematics(){
+			try {
+				FileUtils.write(python_yosys_runtime_file, python_yosys_to_json, StandardCharsets.UTF_8);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 
-        if (PythonConnector.isPythonPresent(proj)) {
+			File finalPython_yosys_runtime_file = python_yosys_runtime_file;
+			ThreadHelper.start(() -> {
 
-            doSave();
+				PythonConnector.activateVenv(proj);
+				proj.getTerminal().execute("cd " + file.getParent());
+				PythonConnector.executeFile(proj, finalPython_yosys_runtime_file);
+				PythonConnector.deactivateVenv(proj);
 
-            File python_yosys_runtime_file = null;
-            try {
-                python_yosys_runtime_file = File.createTempFile("yosys-","", LogisimFile.LOGISIMFX_TEMP_RUNTIME.toFile());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+			});
 
-            String python_yosys_to_json =
-                    "import yowasp_yosys\n" +
-                    "from yowasp_yosys import *\n" +
-                    "run_yosys([" +
-                            "'-l', " +
-                            "'"+circ.getName()+".log'," +
-                            "'-p', "+
-                            "'read_verilog "+ circ.getVerilogModel(proj).getName() + "; " +
-                            "hierarchy -check; " +
-                            "proc; opt; " +
-                            "fsm; opt; " +
-                            "fsm_map; opt;" +
-                            " memory; opt; " +
-                            "techmap; opt; " +
-                            "write_json " + circ.getName() + ".json'"+
-                    "])";
+		} else {
+			DialogManager.createErrorDialog("Error", "Python 3 required");
+		}
 
-            try {
-                FileUtils.write(python_yosys_runtime_file, python_yosys_to_json, StandardCharsets.UTF_8);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+	}
 
-            PythonConnector.activateVenv(proj);
-            proj.getTerminal().execute("cd " + file.getParent());
-            PythonConnector.executeFile(proj, python_yosys_runtime_file);
-            PythonConnector.deactivateVenv(proj);
+	public void fromSchematics() {
 
-        } else {
-            DialogManager.createErrorDialog("Error", "Python 3 required");
-        }
+		getTextArea().clear();
 
-    }
+		proj.getFpgaToolchainOrchestrator().annotate();
 
-    public void fromSchematics(){
+		StringBuilder builder = new StringBuilder();
+		SubcircuitFactory factory = circ.getSubcircuitFactory();
 
-        getTextArea().clear();
+		for (String s : factory.getHDLGenerator(circ.getStaticAttributes()).getArchitecture(
+				circ.getNetList(), circ.getStaticAttributes(), factory.getHDLName(circ.getStaticAttributes()))) {
+			builder.append(s).append("\n");
+		}
 
-        proj.getFpgaToolchainOrchestrator().annotate();
+		getTextArea().appendText(builder.toString());
 
-        StringBuilder builder = new StringBuilder();
-        SubcircuitFactory factory = circ.getSubcircuitFactory();
+	}
 
-        for(String s: factory.getHDLGenerator(circ.getStaticAttributes()).getArchitecture(
-                circ.getNetList(), circ.getStaticAttributes(), factory.getHDLName(circ.getStaticAttributes()))) {
-            builder.append(s).append("\n");
-        }
+	public void doHLS() {
 
-        getTextArea().appendText(builder.toString());
+		if (PythonConnector.isPythonPresent(proj)) {
 
-    }
+			String pathToLib = PythonConnector.getLibPath("sfgen");
 
-    public void doHLS(){
+			//Delete old verilog file
+			if (circ.getVerilogModel(proj).exists()) {
+				try {
+					FileUtils.delete(circ.getVerilogModel(proj));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 
-        if (PythonConnector.isPythonPresent(proj)) {
+			//Save HLS file and execute it
+			replace("path_to_lib_do_not_change_this_line", pathToLib);
+			doSave();
+			ThreadHelper.start(() -> {
 
-            String pathToLib = PythonConnector.getLibPath("sfgen");
+				//start venv, execute, close
+				try {
 
-            //Save HLS file and execute it
-            replace("path_to_lib_do_not_change_this_line", pathToLib);
-            doSave();
-            PythonConnector.activateVenv(proj);
-            PythonConnector.executeFile(proj, file);
-            PythonConnector.deactivateVenv(proj);
-            replace(pathToLib.replace("/", File.separator+File.separator).replace("\\", File.separator+File.separator),"path_to_lib_do_not_change_this_line");
-            doSave();
+					PythonConnector.activateVenv(proj).join();
+					PythonConnector.executeFile(proj, file).join();
+					PythonConnector.deactivateVenv(proj).join();
 
-            //reload verilog model
-            proj.getFrameController().reloadFile(circ.getVerilogModel(proj));
-            proj.getFrameController().addCodeEditor(circ, circ.getVerilogModel(proj));
+					Platform.runLater(() -> {
+						replace(pathToLib.replace("/", File.separator + File.separator).replace("\\", File.separator + File.separator), "path_to_lib_do_not_change_this_line");
+						doSave();
+						//reload verilog model
+						proj.getFrameController().reloadFile(circ.getVerilogModel(proj));
+						proj.getFrameController().addCodeEditor(circ, circ.getVerilogModel(proj));
+					});
 
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 
-        } else {
-            DialogManager.createErrorDialog("Error", "Python3 required");
-        }
+			});
 
-    }
+		} else {
+			DialogManager.createErrorDialog("Error", "Python3 required");
+		}
 
+	}
 
-    public void reloadFile(){
 
-        try {
-            getTextArea().clear();
-            getTextArea().appendText(Files.readString(file.toPath()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+	public void reloadFile() {
 
-    }
+		try {
+			getTextArea().clear();
+			getTextArea().appendText(Files.readString(file.toPath()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
+	}
 
-    public Component getComp(){
-        return comp;
-    }
 
-    public Circuit getCirc(){
-        return circ;
-    }
+	public Component getComp() {
+		return comp;
+	}
 
+	public Circuit getCirc() {
+		return circ;
+	}
 
 
-    private final int prefWidth = 15;
-    private final int prefHeight = 15;
+	private final int prefWidth = 15;
+	private final int prefHeight = 15;
 
-    private void extendEditorToolBarWithTopLevel(){
+	private void extendEditorToolBarWithTopLevel() {
 
-        Button renegTopLevel = new Button();
-        renegTopLevel.graphicProperty().setValue(IconsManager.getIcon("regen.gif"));
-        renegTopLevel.setTooltip(new TextEditorToolBar.ToolTip("regenTopLevel"));
-        renegTopLevel.setOnAction(event -> generateTopLevel());
-        renegTopLevel.setPrefSize(prefWidth,prefHeight);
-        renegTopLevel.setMinSize(prefWidth,prefHeight);
-        renegTopLevel.setMaxSize(prefWidth,prefHeight);
+		Button renegTopLevel = new Button();
+		renegTopLevel.graphicProperty().setValue(IconsManager.getIcon("regen.gif"));
+		renegTopLevel.setTooltip(new TextEditorToolBar.ToolTip("regenTopLevel"));
+		renegTopLevel.setOnAction(event -> generateTopLevel());
+		renegTopLevel.setPrefSize(prefWidth, prefHeight);
+		renegTopLevel.setMinSize(prefWidth, prefHeight);
+		renegTopLevel.setMaxSize(prefWidth, prefHeight);
 
-        getTextEditorToolBar().getItems().addAll(
-                new Separator(),
-                renegTopLevel
-        );
+		getTextEditorToolBar().getItems().addAll(
+				new Separator(),
+				renegTopLevel
+		);
 
-    }
+	}
 
-    private void extendEditorToolBarWithVerilog(){
+	private void extendEditorToolBarWithVerilog() {
 
-        Button toSchematics = new Button();
-        toSchematics.graphicProperty().setValue(IconsManager.getIcon("codetortl.gif"));
-        toSchematics.setTooltip(new TextEditorToolBar.ToolTip("codeToRTL"));
-        toSchematics.setOnAction(event -> toSchematics());
-        toSchematics.setPrefSize(prefWidth,prefHeight);
-        toSchematics.setMinSize(prefWidth,prefHeight);
-        toSchematics.setMaxSize(prefWidth,prefHeight);
+		Button toSchematics = new Button();
+		toSchematics.graphicProperty().setValue(IconsManager.getIcon("codetortl.gif"));
+		toSchematics.setTooltip(new TextEditorToolBar.ToolTip("codeToRTL"));
+		toSchematics.setOnAction(event -> toSchematics());
+		toSchematics.setPrefSize(prefWidth, prefHeight);
+		toSchematics.setMinSize(prefWidth, prefHeight);
+		toSchematics.setMaxSize(prefWidth, prefHeight);
 
-        Button fromSchematics = new Button();
-        fromSchematics.graphicProperty().setValue(IconsManager.getIcon("rtltocode.gif"));
-        fromSchematics.setTooltip(new TextEditorToolBar.ToolTip("RTLToCode"));
-        fromSchematics.setOnAction(event -> fromSchematics());
-        fromSchematics.setPrefSize(prefWidth,prefHeight);
-        fromSchematics.setMinSize(prefWidth,prefHeight);
-        fromSchematics.setMaxSize(prefWidth,prefHeight);
+		Button fromSchematics = new Button();
+		fromSchematics.graphicProperty().setValue(IconsManager.getIcon("rtltocode.gif"));
+		fromSchematics.setTooltip(new TextEditorToolBar.ToolTip("RTLToCode"));
+		fromSchematics.setOnAction(event -> fromSchematics());
+		fromSchematics.setPrefSize(prefWidth, prefHeight);
+		fromSchematics.setMinSize(prefWidth, prefHeight);
+		fromSchematics.setMaxSize(prefWidth, prefHeight);
 
-        getTextEditorToolBar().getItems().addAll(
-                new Separator(),
-                toSchematics,
-                fromSchematics
-        );
+		getTextEditorToolBar().getItems().addAll(
+				new Separator(),
+				toSchematics,
+				fromSchematics
+		);
 
-    }
+	}
 
-    private void extendEditorToolBarWithHLS(){
+	private void extendEditorToolBarWithHLS() {
 
-        Button toVerilog = new Button();
-        toVerilog.graphicProperty().setValue(IconsManager.getIcon("hls.png"));
-        toVerilog.setTooltip(new TextEditorToolBar.ToolTip("hls"));
-        toVerilog.setOnAction(event -> doHLS());
-        toVerilog.setPrefSize(prefWidth,prefHeight);
-        toVerilog.setMinSize(prefWidth,prefHeight);
-        toVerilog.setMaxSize(prefWidth,prefHeight);
+		Button toVerilog = new Button();
+		toVerilog.graphicProperty().setValue(IconsManager.getIcon("hls.png"));
+		toVerilog.setTooltip(new TextEditorToolBar.ToolTip("hls"));
+		toVerilog.setOnAction(event -> doHLS());
+		toVerilog.setPrefSize(prefWidth, prefHeight);
+		toVerilog.setMinSize(prefWidth, prefHeight);
+		toVerilog.setMaxSize(prefWidth, prefHeight);
 
-        getTextEditorToolBar().getItems().addAll(
-                new Separator(),
-                toVerilog
-        );
+		getTextEditorToolBar().getItems().addAll(
+				new Separator(),
+				toVerilog
+		);
 
-    }
+	}
 
 }

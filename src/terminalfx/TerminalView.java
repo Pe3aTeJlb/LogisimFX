@@ -29,6 +29,8 @@ public class TerminalView extends Pane {
 	private TerminalConfig terminalConfig = new TerminalConfig();
 	protected final CountDownLatch countDownLatch = new CountDownLatch(1);
 
+	private boolean isTerminalBusy = true;
+
 	public TerminalView() {
 		webView = new WebView();
 		columnsProperty = new ReadOnlyIntegerWrapper(150);
@@ -117,14 +119,51 @@ public class TerminalView extends Pane {
 			final char[] data = new char[1 * 1024];
 
 			while((nRead = bufferedReader.read(data, 0, data.length)) != -1) {
+				synchronized (this) {
+					isTerminalBusy = true;
+					notifyAll();
+				}
+				//System.out.println("unblocked " + isTerminalBusy);
 				final StringBuilder builder = new StringBuilder(nRead);
 				builder.append(data, 0, nRead);
+				//System.out.println(builder.toString());
 				print(builder.toString());
+				synchronized (this) {
+					isTerminalBusy = bufferedReader.ready();
+					notifyAll();
+				}
+				//System.out.println("busy. next read " + bufferedReader.ready());
 			}
 
 		} catch(final Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public Thread isTerminalBusy(Runnable command){
+		synchronized (this) {
+			isTerminalBusy = true;
+			notifyAll();
+		}
+		return ThreadHelper.start(() -> {
+			try {
+				//System.out.println("busy checker created " + isTerminalBusy);
+				ThreadHelper.start(command).join();
+				//System.out.println("command flushed " + isTerminalBusy);
+				synchronized (this){
+					while (isTerminalBusy){
+						try {
+							//System.out.println("waiting");
+							wait();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		});
 	}
 
 	@WebkitCall(from = "hterm")

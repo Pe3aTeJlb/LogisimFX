@@ -9,6 +9,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.html.HTMLIFrameElement;
 import terminalfx.config.TerminalConfig;
+import terminalfx.helper.ThreadHelper;
 
 import java.io.*;
 import java.util.*;
@@ -36,9 +37,11 @@ public class Terminal extends terminalfx.Terminal {
 		TerminalConfig darkConfig = new TerminalConfig();
 		darkConfig.setBackgroundColor(Color.rgb(16, 16, 16));
 		darkConfig.setForegroundColor(Color.rgb(240, 240, 240));
-		darkConfig.setCursorColor(Color.rgb(255, 0, 0, 0.5));
+		darkConfig.setCursorColor(Color.rgb(255, 255, 255));
+		darkConfig.setCursorBlink(true);
 
 		this.setTerminalConfig(darkConfig);
+
 /*
 		webEngine().getLoadWorker().stateProperty().addListener((ov, oldState, newState) -> {
 			if (newState == Worker.State.SUCCEEDED) {
@@ -190,12 +193,12 @@ public class Terminal extends terminalfx.Terminal {
 	}
 
 
-	public void execute(String command) {
+	public Thread execute(String command) {
 		byte[] enter = new byte[1];
 		enter[0] = getProcess().getEnterKeyCode();
 		command += new String(enter);
 		String finalCommand = command;
-		ThreadHelper.start(() -> {
+		return isTerminalBusy(() -> {
 			try {
 				getOutputWriter().write(finalCommand);
 				getOutputWriter().flush();
@@ -205,27 +208,7 @@ public class Terminal extends terminalfx.Terminal {
 		});
 	}
 
-	public void executeAsNonPty(String command) {
-
-		try {
-
-			Process process = Runtime.getRuntime().exec(command);
-
-			BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
-			BufferedReader errors = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-
-/*
-			terminalArea.append(getJarPath() + ">" + command + "\n", infoStyleClass);
-			input.lines().forEach(string -> terminalArea.append(string + "\n", infoStyleClass));
-			errors.lines().forEach(string -> terminalArea.append(string + "\n", errorStyleClass));
-*/
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	public Process silentExecuteAsNonPty(String command) {
+	public Process executeAsNonPty(String command) {
 		try {
 			return Runtime.getRuntime().exec(command);
 		} catch (IOException e) {
