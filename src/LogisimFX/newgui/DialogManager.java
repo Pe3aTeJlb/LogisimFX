@@ -388,7 +388,7 @@ public class DialogManager {
         ListViewDialog<Library> dialog = new ListViewDialog<>(null, libs);
 
         dialog.setTitle("LogisimFX");
-        dialog.setHeaderText(lc.get("unloadLibrariesDialogTitle"));
+        dialog.setHeaderText(lc.get("loadBuiltinDialogTitle"));
         dialog.setMultipleSelectionModel();
 
         ((Stage) dialog.getDialogPane().getScene().getWindow()).getIcons().add(IconsManager.LogisimFX);
