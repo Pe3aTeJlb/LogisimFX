@@ -15,6 +15,7 @@ import LogisimFX.std.memory.Memory;
 import LogisimFX.std.plexers.Plexers;
 import LogisimFX.std.verifiers.Verifiers;
 import LogisimFX.std.wiring.Wiring;
+import LogisimFX.std.yosys.YosysSpecial;
 import LogisimFX.tools.Library;
 import LogisimFX.tools.Tool;
 
@@ -26,20 +27,21 @@ import java.util.List;
 
 public class Builtin extends Library {
 
-	private List<Library> libraries = null;
+	private List<Library> libraries;
 
 	public Builtin() {
-		libraries = Arrays.asList(new Library[] {
-			new Base(),
-			new Gates(),
-			new Wiring(),
-			new Plexers(),
-			new Arithmetic(),
-			new Memory(),
-			new Io(),
-			new Components(),
-			new Verifiers()
-		});
+		libraries = Arrays.asList(
+				new Base(),
+				new Gates(),
+				new Wiring(),
+				new Plexers(),
+				new Arithmetic(),
+				new Memory(),
+				new Io(),
+				new Components(),
+				new YosysSpecial(),
+				new Verifiers()
+		);
 	}
 
 	@Override
