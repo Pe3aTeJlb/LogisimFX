@@ -34,6 +34,9 @@ public class Components extends Library {
 				new AddTool(new SimpleGrayCounter()),
 				new AddTool(new GrayCounter()));
 	}
+
+	@Override
+	public String getName() { return "Gray Tools"; }
 	
 	/** Returns the name of the library that the user will see. */ 
 	@Override
