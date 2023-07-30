@@ -41,9 +41,11 @@ public class Verifier extends Clock {
         super("Verifier", LC.createStringBinding("verifier"));
 
         setAttributes(new Attribute[] {
-                StdAttr.WIDTH, StdAttr.TRIGGER, Clock.ATTR_HIGH, Clock.ATTR_LOW, SEQUENCE_WIDTH
+                StdAttr.FPGA_SUPPORTED,
+                StdAttr.WIDTH, StdAttr.TRIGGER, Clock.ATTR_HIGH, Clock.ATTR_LOW, Clock.ATTR_PHASE, SEQUENCE_WIDTH
         }, new Object[] {
-                BitWidth.create(1), StdAttr.TRIG_HIGH, 1, 1, BitWidth.create(4)
+                Boolean.FALSE,
+                BitWidth.create(1), StdAttr.TRIG_HIGH, 1, 1, 0, BitWidth.create(4)
         });
 
         setKeyConfigurator(new BitWidthConfigurator(StdAttr.WIDTH));
