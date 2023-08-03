@@ -18,7 +18,6 @@ import javafx.util.Callback;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.function.Consumer;
 
 public class ListViewDialog<T> extends Dialog<T> {
 

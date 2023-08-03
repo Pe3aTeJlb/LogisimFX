@@ -11,17 +11,11 @@ package LogisimFX.std.memory;
 
 import LogisimFX.data.AttributeSet;
 import LogisimFX.fpga.designrulecheck.Netlist;
-import LogisimFX.fpga.designrulecheck.netlistComponent;
 import LogisimFX.fpga.hdlgenerator.AbstractHdlGeneratorFactory;
-import LogisimFX.fpga.hdlgenerator.Hdl;
 import LogisimFX.fpga.hdlgenerator.HdlParameters;
 import LogisimFX.fpga.hdlgenerator.HdlPorts;
 import LogisimFX.instance.Port;
-import LogisimFX.instance.StdAttr;
 import LogisimFX.util.LineBuffer;
-
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 public class RandomHdlGeneratorFactory extends AbstractHdlGeneratorFactory {
 

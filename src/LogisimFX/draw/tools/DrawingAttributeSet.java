@@ -14,7 +14,6 @@ import LogisimFX.util.EventSourceWeakSupport;
 import LogisimFX.util.UnmodifiableList;
 import javafx.scene.paint.Color;
 
-import java.util.List;
 import java.util.*;
 
 public class DrawingAttributeSet implements AttributeSet, Cloneable {

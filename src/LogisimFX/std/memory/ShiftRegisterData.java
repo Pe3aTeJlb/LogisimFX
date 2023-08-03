@@ -9,9 +9,7 @@ package LogisimFX.std.memory;
 import LogisimFX.data.BitWidth;
 import LogisimFX.data.Value;
 import LogisimFX.instance.InstanceData;
-import javafx.geometry.VPos;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ShiftRegisterData extends ClockState implements InstanceData {

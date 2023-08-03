@@ -7,10 +7,8 @@
 package LogisimFX.circuit;
 
 import LogisimFX.circuit.appear.CircuitAppearance;
-import LogisimFX.comp.Component;
 import LogisimFX.comp.*;
 import LogisimFX.data.*;
-import LogisimFX.file.LogisimFile;
 import LogisimFX.fpga.Reporter;
 import LogisimFX.fpga.data.MappableResourcesContainer;
 import LogisimFX.fpga.designrulecheck.Netlist;
@@ -31,7 +29,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.*;
 
 public class Circuit {

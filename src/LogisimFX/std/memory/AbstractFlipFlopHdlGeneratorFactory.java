@@ -14,7 +14,6 @@ import LogisimFX.data.AttributeOption;
 import LogisimFX.data.AttributeSet;
 import LogisimFX.fpga.designrulecheck.Netlist;
 import LogisimFX.fpga.hdlgenerator.AbstractHdlGeneratorFactory;
-import LogisimFX.fpga.hdlgenerator.Hdl;
 import LogisimFX.fpga.hdlgenerator.HdlParameters;
 import LogisimFX.fpga.hdlgenerator.HdlPorts;
 import LogisimFX.instance.Port;

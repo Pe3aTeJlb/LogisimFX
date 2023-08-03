@@ -8,7 +8,6 @@ package LogisimFX.circuit;
 
 import LogisimFX.comp.*;
 import LogisimFX.data.*;
-import LogisimFX.fpga.designrulecheck.Netlist;
 import LogisimFX.instance.StdAttr;
 import LogisimFX.proj.Project;
 import LogisimFX.tools.MenuExtender;

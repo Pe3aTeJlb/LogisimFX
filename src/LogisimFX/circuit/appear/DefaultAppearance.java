@@ -16,7 +16,6 @@ import LogisimFX.instance.Instance;
 import LogisimFX.instance.StdAttr;
 import javafx.scene.paint.Color;
 
-import java.util.List;
 import java.util.*;
 
 class DefaultAppearance {

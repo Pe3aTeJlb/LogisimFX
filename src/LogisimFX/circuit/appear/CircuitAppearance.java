@@ -18,7 +18,6 @@ import LogisimFX.instance.Instance;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.util.EventSourceWeakSupport;
 
-import java.util.List;
 import java.util.*;
 
 public class CircuitAppearance extends Drawing {

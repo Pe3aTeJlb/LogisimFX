@@ -2,7 +2,6 @@ package LogisimFX.newgui.MainFrame.EditorTabs.TextEditor;
 
 import LogisimFX.IconsManager;
 import LogisimFX.newgui.MainFrame.LC;
-import LogisimFX.proj.Project;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;

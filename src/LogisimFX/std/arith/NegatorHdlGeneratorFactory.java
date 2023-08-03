@@ -12,7 +12,6 @@ package LogisimFX.std.arith;
 import LogisimFX.data.AttributeSet;
 import LogisimFX.fpga.designrulecheck.Netlist;
 import LogisimFX.fpga.hdlgenerator.AbstractHdlGeneratorFactory;
-import LogisimFX.fpga.hdlgenerator.Hdl;
 import LogisimFX.instance.Port;
 import LogisimFX.instance.StdAttr;
 import LogisimFX.util.LineBuffer;

@@ -16,7 +16,6 @@ import LogisimFX.fpga.hdlgenerator.Hdl;
 import LogisimFX.fpga.hdlgenerator.InlinedHdlGeneratorFactory;
 import LogisimFX.fpga.hdlgenerator.WithSelectHdlGenerator;
 import LogisimFX.instance.StdAttr;
-import LogisimFX.std.io.HexDigit;
 import LogisimFX.util.LineBuffer;
 
 public class RomHdlGeneratorFactory extends InlinedHdlGeneratorFactory {

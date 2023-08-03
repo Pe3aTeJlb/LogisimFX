@@ -13,7 +13,6 @@ import LogisimFX.instance.InstanceState;
 import LogisimFX.newgui.AnalyzeFrame.Expression;
 import LogisimFX.newgui.AnalyzeFrame.Expressions;
 import LogisimFX.std.LC;
-import LogisimFX.std.arith.AdderHdlGeneratorFactory;
 import LogisimFX.util.LineBuffer;
 
 class AndGate extends AbstractGate {

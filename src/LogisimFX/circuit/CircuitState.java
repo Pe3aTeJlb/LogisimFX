@@ -23,8 +23,6 @@ import LogisimFX.std.wiring.Pin;
 import LogisimFX.util.ArraySet;
 import LogisimFX.util.SmallSet;
 
-import javafx.scene.paint.Paint;
-
 import java.util.*;
 
 public class CircuitState implements InstanceData {

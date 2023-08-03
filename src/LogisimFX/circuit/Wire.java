@@ -6,7 +6,6 @@
 
 package LogisimFX.circuit;
 
-import LogisimFX.comp.Component;
 import LogisimFX.comp.*;
 import LogisimFX.data.*;
 import LogisimFX.instance.StdAttr;

@@ -19,7 +19,6 @@ import LogisimFX.data.Direction;
 import LogisimFX.data.Location;
 import LogisimFX.newgui.MainFrame.EditorTabs.EditHandler;
 import LogisimFX.newgui.MainFrame.LC;
-import LogisimFX.proj.Action;
 import LogisimFX.proj.Project;
 
 import java.util.ArrayList;

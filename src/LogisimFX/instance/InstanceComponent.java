@@ -14,7 +14,6 @@ import java.util.List;
 import LogisimFX.comp.*;
 import LogisimFX.data.*;
 import LogisimFX.fpga.designrulecheck.CorrectLabel;
-import LogisimFX.fpga.designrulecheck.Netlist;
 import LogisimFX.newgui.DialogManager;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.tools.TextEditable;

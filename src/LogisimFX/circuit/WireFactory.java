@@ -12,7 +12,6 @@ import LogisimFX.comp.ComponentDrawContext;
 import LogisimFX.data.AttributeSet;
 import LogisimFX.data.Bounds;
 import LogisimFX.data.Location;
-import LogisimFX.instance.StdAttr;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 
 import javafx.beans.binding.StringBinding;

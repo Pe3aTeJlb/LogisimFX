@@ -30,7 +30,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
-import java.awt.event.MouseEvent;
 import java.math.BigInteger;
 
 public class Pin extends InstanceFactory {

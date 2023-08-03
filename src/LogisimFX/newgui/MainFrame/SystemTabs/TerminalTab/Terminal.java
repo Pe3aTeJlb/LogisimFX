@@ -9,7 +9,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.html.HTMLIFrameElement;
 import terminalfx.config.TerminalConfig;
-import terminalfx.helper.ThreadHelper;
 
 import java.io.*;
 import java.util.*;

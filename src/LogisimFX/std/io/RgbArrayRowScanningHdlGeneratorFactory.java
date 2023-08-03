@@ -11,7 +11,6 @@ package LogisimFX.std.io;
 
 import LogisimFX.data.AttributeSet;
 import LogisimFX.fpga.designrulecheck.Netlist;
-import LogisimFX.fpga.hdlgenerator.Hdl;
 import LogisimFX.fpga.hdlgenerator.TickComponentHdlGeneratorFactory;
 import LogisimFX.instance.Port;
 import LogisimFX.util.LineBuffer;

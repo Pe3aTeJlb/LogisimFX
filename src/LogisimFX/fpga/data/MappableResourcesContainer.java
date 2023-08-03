@@ -11,7 +11,6 @@ package LogisimFX.fpga.data;
 
 import LogisimFX.circuit.Circuit;
 import LogisimFX.circuit.CircuitMapInfo;
-import org.apache.commons.lang3.SerializationUtils;
 
 import java.util.*;
 

@@ -13,7 +13,6 @@ import LogisimFX.data.Bounds;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import LogisimFX.util.EventSourceWeakSupport;
 
-import java.util.List;
 import java.util.*;
 
 public class Drawing implements CanvasModel {

@@ -15,7 +15,6 @@ import LogisimFX.file.LogisimFileActions;
 import LogisimFX.newgui.DialogManager;
 import LogisimFX.proj.Project;
 import LogisimFX.tools.Library;
-import LogisimFX.util.ZipUtils;
 import org.apache.commons.io.FileUtils;
 
 

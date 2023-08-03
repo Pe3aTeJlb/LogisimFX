@@ -7,9 +7,7 @@ package LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor;
 
 import LogisimFX.IconsManager;
 import LogisimFX.circuit.Circuit;
-import LogisimFX.circuit.SubcircuitFactory;
 import LogisimFX.comp.Component;
-import LogisimFX.comp.ComponentFactory;
 import LogisimFX.instance.StdAttr;
 import LogisimFX.newgui.MainFrame.EditorTabs.EditHandler;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutEditHandler;
@@ -17,9 +15,6 @@ import LogisimFX.newgui.MainFrame.LC;
 import LogisimFX.newgui.MainFrame.EditorTabs.LayoutEditor.layoutCanvas.LayoutCanvas;
 import LogisimFX.newgui.MainFrame.EditorTabs.EditorBase;
 import LogisimFX.proj.Project;
-import LogisimFX.tools.AddTool;
-import LogisimFX.tools.Library;
-import LogisimFX.tools.Tool;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.Event;
@@ -31,7 +26,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;

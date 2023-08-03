@@ -9,7 +9,6 @@ import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
-import java.util.zip.ZipFile;
 
 public class FPGABoardsManager {
 

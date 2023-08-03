@@ -6,16 +6,10 @@
 package LogisimFX.newgui.HelpFrame;
 
 import LogisimFX.newgui.AbstractController;
-import LogisimFX.newgui.DialogManager;
 
 import javafx.fxml.FXML;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
-
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 public class HelpController extends AbstractController {
 

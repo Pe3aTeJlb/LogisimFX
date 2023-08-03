@@ -22,7 +22,6 @@ import LogisimFX.util.SmallSet;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
 
-import java.util.List;
 import java.util.*;
 
 class CircuitWires {

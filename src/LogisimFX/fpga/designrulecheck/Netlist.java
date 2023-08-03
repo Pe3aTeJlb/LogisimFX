@@ -24,7 +24,6 @@ import LogisimFX.std.wiring.Probe;
 import LogisimFX.std.wiring.Tunnel;
 import javafx.scene.paint.Color;
 
-import java.util.List;
 import java.util.*;
 
 public class Netlist {

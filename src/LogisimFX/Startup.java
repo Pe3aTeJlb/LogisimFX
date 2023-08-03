@@ -6,7 +6,6 @@
 
 package LogisimFX;
 
-import LogisimFX.fpga.Reporter;
 import LogisimFX.localization.LC_start;
 import LogisimFX.localization.Localizer;
 import LogisimFX.newgui.FrameManager;

@@ -9,7 +9,6 @@ import LogisimFX.fpga.FPGAToolchainOrchestrator;
 import LogisimFX.fpga.LC;
 import LogisimFX.newgui.AbstractController;
 import LogisimFX.newgui.DialogManager;
-import LogisimFX.newgui.FrameManager;
 import LogisimFX.newgui.MainFrame.ProjectCircuitActions;
 import LogisimFX.proj.Project;
 import LogisimFX.tools.AddTool;

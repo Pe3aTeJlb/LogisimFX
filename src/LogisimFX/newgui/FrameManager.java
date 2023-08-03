@@ -28,7 +28,6 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.List;
 
 /*
 FrameManager controls all frames generated during program execution.

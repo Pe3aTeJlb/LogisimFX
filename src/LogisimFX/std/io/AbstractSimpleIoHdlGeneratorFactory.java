@@ -9,7 +9,6 @@
 
 package LogisimFX.std.io;
 
-import LogisimFX.fpga.hdlgenerator.InlinedHdlGeneratorFactory;
 import LogisimFX.fpga.designrulecheck.Netlist;
 import LogisimFX.fpga.designrulecheck.netlistComponent;
 import LogisimFX.fpga.hdlgenerator.Hdl;

@@ -1,8 +1,5 @@
 package terminalfx;
 
-import javafx.scene.control.TabPane;
-import javafx.scene.paint.Color;
-import terminalfx.config.TerminalConfig;
 import terminalfx.helper.ThreadHelper;
 import javafx.application.Application;
 import javafx.application.Platform;
