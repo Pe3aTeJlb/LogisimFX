@@ -211,7 +211,7 @@ public class ComponentDrawContext {
 		int y = pt.getY();
 		if (getShowState()) {
 			CircuitState state = getCircuitState();
-			g.setColor(state.getValueColor(pt));
+			g.setColor(state.getValue(pt).getColor());
 		} else {
 			g.setColor(Color.BLACK);
 		}
@@ -230,7 +230,7 @@ public class ComponentDrawContext {
 			GraphicsUtil.drawText(g, label, x, y + 3,
 					GraphicsUtil.H_CENTER, GraphicsUtil.V_TOP);
 		}
-		g.toDefault();
+		g.setColor(curColor);
 
 	}
 
@@ -238,34 +238,35 @@ public class ComponentDrawContext {
 
 		EndData e = comp.getEnd(i);
 		Location pt = e.getLocation();
+		Color curColor = g.getColor();
 
 		if (getShowState()) {
 			CircuitState state = getCircuitState();
-			g.setColor(state.getValueColor(pt));
+			g.setColor(state.getValue(pt).getColor());
 		} else {
 			g.setColor(Color.BLACK);
 		}
 		g.c.fillOval(pt.getX() - PIN_OFFS, pt.getY() - PIN_OFFS, PIN_RAD, PIN_RAD);
 
-		g.toDefault();
+		g.setColor(curColor);
 
 	}
 
 	public void drawPins(Component comp) {
 
-
+		Color curColor = g.getColor();
 		for (EndData e : comp.getEnds()) {
 			Location pt = e.getLocation();
 			if (getShowState()) {
 				CircuitState state = getCircuitState();
-				g.setColor(state.getValueColor(pt));
+				g.setColor(state.getValue(pt).getColor());
 			} else {
 				g.setColor(Color.BLACK);
 			}
 			g.c.fillOval(pt.getX() - PIN_OFFS, pt.getY() - PIN_OFFS, PIN_RAD, PIN_RAD);
 		}
 
-		g.toDefault();
+		g.setColor(curColor);
 
 	}
 

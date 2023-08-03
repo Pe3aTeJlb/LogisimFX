@@ -274,13 +274,6 @@ public class CircuitState implements InstanceData {
 		return Value.createUnknown(wid);
 	}
 
-	public Paint getValueColor(Location pt) {
-		Value ret = values.get(pt);
-		if (ret != null) return ret.getColor();
-
-		return Value.UNKNOWN_COLOR;
-	}
-
 	public void setValue(Location pt, Value val, Component cause, int delay) {
 		if (base != null) base.setValue(this, pt, val, cause, delay);
 	}

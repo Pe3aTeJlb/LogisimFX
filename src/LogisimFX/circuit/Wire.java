@@ -258,7 +258,7 @@ public final class Wire implements Component, AttributeSet, CustomHandles,
 		Graphics g = context.getGraphics();
 
 		g.setLineWidth(WIDTH);
-		g.setColor(state.getValueColor(e0));
+		g.setColor(state.getValue(e0).getColor());
 		g.c.strokeLine(e0.getX(), e0.getY(), e1.getX(), e1.getY());
 
 	}
