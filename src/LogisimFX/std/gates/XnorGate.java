@@ -1,8 +1,8 @@
 /*
-* This file is part of LogisimFX. Copyright (c) 2022, Pplos Studio
-* Original code by Carl Burch (http://www.cburch.com), 2011.
-* License information is located in the Launch file
-*/
+ * This file is part of LogisimFX. Copyright (c) 2022, Pplos Studio
+ * Original code by Carl Burch (http://www.cburch.com), 2011.
+ * License information is located in the Launch file
+ */
 
 package LogisimFX.std.gates;
 
@@ -49,17 +49,12 @@ class XnorGate extends AbstractGate {
 
 	@Override
 	protected void paintShape(InstancePainter painter, int width, int height) {
-
 		PainterShaped.paintXor(painter, width, height);
-
 	}
 
 	@Override
-	protected void paintDinShape(InstancePainter painter, int width, int height,
-                                 int inputs) {
-
+	protected void paintDinShape(InstancePainter painter, int width, int height, int inputs) {
 		PainterDin.paintXnor(painter, width, height, false);
-
 	}
 
 	@Override
@@ -76,18 +71,16 @@ class XnorGate extends AbstractGate {
 
 	@Override
 	protected boolean shouldRepairWire(Instance instance, WireRepairData data) {
-
 		return !data.getPoint().equals(instance.getLocation());
-
 	}
 
 	@Override
 	protected Expression computeExpression(Expression[] inputs, int numInputs) {
-
 		return Expressions.not(XorGate.xorExpression(inputs, numInputs));
-
 	}
 
 	@Override
-	protected Value getIdentity() { return Value.FALSE; }
+	protected Value getIdentity() {
+		return Value.FALSE;
+	}
 }

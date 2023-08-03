@@ -1,8 +1,8 @@
 /*
-* This file is part of LogisimFX. Copyright (c) 2022, Pplos Studio
-* Original code by Carl Burch (http://www.cburch.com), 2011.
-* License information is located in the Launch file
-*/
+ * This file is part of LogisimFX. Copyright (c) 2022, Pplos Studio
+ * Original code by Carl Burch (http://www.cburch.com), 2011.
+ * License information is located in the Launch file
+ */
 
 package LogisimFX.std.gates;
 
@@ -44,16 +44,18 @@ abstract class AbstractGate extends InstanceFactory {
 	protected AbstractGate(String name, StringBinding desc, HdlGeneratorFactory generator) {
 		this(name, desc, false, generator);
 	}
-	
+
 	protected AbstractGate(String name, StringBinding desc, boolean isXor, HdlGeneratorFactory generator) {
 
 		super(name, desc, generator);
+
 		this.isXor = isXor;
+
 		setFacingAttribute(StdAttr.FACING);
 		setKeyConfigurator(JoinedConfigurator.create(
-			new IntegerConfigurator(GateAttributes.ATTR_INPUTS, 2,
-					GateAttributes.MAX_INPUTS, null),
-			new BitWidthConfigurator(StdAttr.WIDTH)));
+				new IntegerConfigurator(GateAttributes.ATTR_INPUTS, 2,
+						GateAttributes.MAX_INPUTS, null),
+				new BitWidthConfigurator(StdAttr.WIDTH)));
 
 	}
 
@@ -145,9 +147,7 @@ abstract class AbstractGate extends InstanceFactory {
 	//
 	@Override
 	public void paintGhost(InstancePainter painter) {
-
 		paintBase(painter);
-
 	}
 
 	@Override
@@ -157,7 +157,6 @@ abstract class AbstractGate extends InstanceFactory {
 		if (!painter.isPrintView() || painter.getGateShape() == AppPreferences.SHAPE_RECTANGULAR) {
 			painter.drawPorts();
 		}
-
 		painter.getGraphics().toDefault();
 
 	}
@@ -175,7 +174,9 @@ abstract class AbstractGate extends InstanceFactory {
 		int width = bds.getWidth();
 		int height = bds.getHeight();
 		if (facing == Direction.NORTH || facing == Direction.SOUTH) {
-			int t = width; width = height; height = t;
+			int t = width;
+			width = height;
+			height = t;
 		}
 		if (negated != 0) {
 			width -= 10;
@@ -328,10 +329,10 @@ abstract class AbstractGate extends InstanceFactory {
 	protected abstract Value getIdentity();
 
 	protected abstract void paintShape(InstancePainter painter,
-                                       int width, int height);
+									   int width, int height);
 
 	protected void paintRectangular(InstancePainter painter,
-                                    int width, int height) {
+									int width, int height) {
 
 		int don = negateOutput ? 10 : 0;
 		AttributeSet attrs = painter.getAttributeSet();
@@ -344,13 +345,13 @@ abstract class AbstractGate extends InstanceFactory {
 	}
 
 	protected abstract void paintDinShape(InstancePainter painter,
-                                          int width, int height, int inputs);
+										  int width, int height, int inputs);
 
 	protected abstract Value computeOutput(Value[] inputs, int numInputs,
-                                           InstanceState state);
+										   InstanceState state);
 
 	protected abstract Expression computeExpression(Expression[] inputs,
-                                                    int numInputs);
+													int numInputs);
 
 	protected boolean shouldRepairWire(Instance instance, WireRepairData data) {
 		return false;
@@ -440,7 +441,7 @@ abstract class AbstractGate extends InstanceFactory {
 		int negated = attrs.negated;
 		AttributeSet opts = state.getProject().getOptions().getAttributeSet();
 		boolean errorIfUndefined = opts.getValue(Options.ATTR_GATE_UNDEFINED)
-									.equals(Options.GATE_UNDEFINED_ERROR);
+				.equals(Options.GATE_UNDEFINED_ERROR);
 
 		Value[] inputs = new Value[inputCount];
 		int numInputs = 0;
@@ -558,7 +559,7 @@ abstract class AbstractGate extends InstanceFactory {
 				skipLowerEven = 30;
 			}
 		} else if (inputs == 4 && size >= 60) {
-			skipStart = -5; 
+			skipStart = -5;
 			skipDist = 20;
 			skipLowerEven = 0;
 		} else {
@@ -566,7 +567,7 @@ abstract class AbstractGate extends InstanceFactory {
 			skipDist = 10;
 			skipLowerEven = 10;
 		}
-		
+
 		int dy;
 		if ((inputs & 1) == 1) {
 			dy = skipStart * (inputs - 1) + skipDist * index;
@@ -580,7 +581,7 @@ abstract class AbstractGate extends InstanceFactory {
 		if (negatedBit == 1) {
 			dx += 10;
 		}
-		
+
 		if (facing == Direction.NORTH) {
 			return Location.create(dy, dx);
 		} else if (facing == Direction.SOUTH) {
@@ -592,7 +593,6 @@ abstract class AbstractGate extends InstanceFactory {
 		}
 
 	}
-
 
 
 	@Override

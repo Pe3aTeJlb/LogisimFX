@@ -119,9 +119,7 @@ class Buffer extends InstanceFactory {
 	//
 	@Override
 	public void paintGhost(InstancePainter painter) {
-
 		paintBase(painter);
-
 	}
 
 	@Override

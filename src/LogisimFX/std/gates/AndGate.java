@@ -60,24 +60,17 @@ class AndGate extends AbstractGate {
 
 	@Override
 	protected void paintShape(InstancePainter painter, int width, int height) {
-
 		PainterShaped.paintAnd(painter, width, height);
-
 	}
 
 	@Override
 	protected void paintDinShape(InstancePainter painter, int width, int height, int inputs) {
-
 		PainterDin.paintAnd(painter, width, height, false);
-
 	}
 
 	@Override
-	protected Value computeOutput(Value[] inputs, int numInputs,
-                                  InstanceState state) {
-
+	protected Value computeOutput(Value[] inputs, int numInputs, InstanceState state) {
 		return GateFunctions.computeAnd(inputs, numInputs);
-
 	}
 
 	@Override

@@ -37,10 +37,14 @@ public class Gates extends Library {
 	}
 
 	@Override
-	public String getName() { return "Gates"; }
+	public String getName() {
+		return "Gates";
+	}
 
 	@Override
-	public StringBinding getDisplayName() { return LC.createStringBinding("gatesLibrary"); }
+	public StringBinding getDisplayName() {
+		return LC.createStringBinding("gatesLibrary");
+	}
 
 	@Override
 	public List<Tool> getTools() {

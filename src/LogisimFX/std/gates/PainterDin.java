@@ -27,36 +27,23 @@ class PainterDin {
 	
 	private static HashMap<Integer,int[]> orLenArrays = new HashMap<Integer,int[]>();
 	
-	static void paintAnd(InstancePainter painter, int width, int height,
-                         boolean drawBubble) {
-
+	static void paintAnd(InstancePainter painter, int width, int height, boolean drawBubble) {
 		paint(painter, width, height, drawBubble, AND);
-
 	}
 
-	static void paintOr(InstancePainter painter, int width, int height,
-                        boolean drawBubble) {
-
+	static void paintOr(InstancePainter painter, int width, int height, boolean drawBubble) {
 		paint(painter, width, height, drawBubble, OR);
-
 	}
 
-	static void paintXor(InstancePainter painter, int width, int height,
-                         boolean drawBubble) {
-
+	static void paintXor(InstancePainter painter, int width, int height, boolean drawBubble) {
 		paint(painter, width, height, drawBubble, XOR);
-
 	}
 
-	static void paintXnor(InstancePainter painter, int width, int height,
-                          boolean drawBubble) {
-
+	static void paintXnor(InstancePainter painter, int width, int height, boolean drawBubble) {
 		paint(painter, width, height, drawBubble, XNOR);
-
 	}
 
-	private static void paint(InstancePainter painter, int width, int height,
-                              boolean drawBubble, int dinType) {
+	private static void paint(InstancePainter painter, int width, int height, boolean drawBubble, int dinType) {
 
 		Graphics g = painter.getGraphics();
 		int x = 0;
@@ -113,8 +100,7 @@ class PainterDin {
 
 	}
 
-	private static void paintOrLines(InstancePainter painter,
-                                     int width, int height, boolean hasBubble) {
+	private static void paintOrLines(InstancePainter painter, int width, int height, boolean hasBubble) {
 
 		GateAttributes baseAttrs = (GateAttributes) painter.getAttributeSet();
 		int inputs = baseAttrs.inputs;

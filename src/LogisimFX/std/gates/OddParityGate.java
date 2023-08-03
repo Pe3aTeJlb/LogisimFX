@@ -39,19 +39,13 @@ class OddParityGate extends AbstractGate {
 	}
 
 	@Override
-	protected void paintDinShape(InstancePainter painter, int width, int height,
-                                 int inputs) {
-
+	protected void paintDinShape(InstancePainter painter, int width, int height, int inputs) {
 		paintRectangular(painter, width, height);
-
 	}
 
 	@Override
-	protected Value computeOutput(Value[] inputs, int numInputs,
-                                  InstanceState state) {
-
+	protected Value computeOutput(Value[] inputs, int numInputs, InstanceState state) {
 		return GateFunctions.computeOddParity(inputs, numInputs);
-
 	}
 
 	@Override

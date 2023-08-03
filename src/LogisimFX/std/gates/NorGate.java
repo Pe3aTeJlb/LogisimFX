@@ -64,32 +64,22 @@ class NorGate extends AbstractGate {
 
 	@Override
 	protected void paintShape(InstancePainter painter, int width, int height) {
-
 		PainterShaped.paintOr(painter, width, height);
-
 	}
 
 	@Override
-	protected void paintDinShape(InstancePainter painter, int width, int height,
-                                 int inputs) {
-
+	protected void paintDinShape(InstancePainter painter, int width, int height, int inputs) {
 		PainterDin.paintOr(painter, width, height, true);
-
 	}
 
 	@Override
-	protected Value computeOutput(Value[] inputs, int numInputs,
-                                  InstanceState state) {
-
+	protected Value computeOutput(Value[] inputs, int numInputs, InstanceState state) {
 		return GateFunctions.computeOr(inputs, numInputs).not();
-
 	}
 
 	@Override
 	protected boolean shouldRepairWire(Instance instance, WireRepairData data) {
-
 		return !data.getPoint().equals(instance.getLocation());
-
 	}
 
 	@Override

@@ -25,6 +25,7 @@ import LogisimFX.circuit.Wire;
 import javafx.collections.ObservableList;
 
 public class CircuitBuilder {
+
 	private CircuitBuilder() { }
 	
 	public static CircuitMutation build(Circuit destCirc, AnalyzerModel model,

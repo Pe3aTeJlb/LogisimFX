@@ -59,22 +59,16 @@ class XorGate extends AbstractGate {
 
 	@Override
 	protected void paintShape(InstancePainter painter, int width, int height) {
-
 		PainterShaped.paintXor(painter, width, height);
-
 	}
 
 	@Override
-	protected void paintDinShape(InstancePainter painter, int width, int height,
-                                 int inputs) {
-
+	protected void paintDinShape(InstancePainter painter, int width, int height, int inputs) {
 		PainterDin.paintXor(painter, width, height, false);
-
 	}
 
 	@Override
-	protected Value computeOutput(Value[] inputs, int numInputs,
-                                  InstanceState state) {
+	protected Value computeOutput(Value[] inputs, int numInputs, InstanceState state) {
 
 		Object behavior = state.getAttributeValue(GateAttributes.ATTR_XOR);
 		if (behavior == GateAttributes.XOR_ODD) {
@@ -87,9 +81,7 @@ class XorGate extends AbstractGate {
 
 	@Override
 	protected boolean shouldRepairWire(Instance instance, WireRepairData data) {
-
 		return !data.getPoint().equals(instance.getLocation());
-
 	}
 
 	@Override
