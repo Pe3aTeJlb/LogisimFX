@@ -178,8 +178,6 @@ public class PainterShaped {
 			paintShield(g, 0, width, height);
 		}
 
-		g.toDefault();
-
 	}
 
 	static void paintNot(InstancePainter painter) {
@@ -216,8 +214,6 @@ public class PainterShaped {
 		Graphics g = painter.getGraphics();
 		paintOr(painter, width - 10, width - 10);
 		paintShield(g, -10, width - 10, height);
-
-		g.toDefault();
 
 	}
 
