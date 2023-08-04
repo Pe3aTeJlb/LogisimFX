@@ -224,6 +224,16 @@ public class LogisimFile extends Library implements LibraryEventSource {
 	}
 
 	@Override
+	public AddTool getTool(String name) {
+		for (AddTool tool : getTools()) {
+			if (tool.getName().equals(name)) {
+				return tool;
+			}
+		}
+		return null;
+	}
+
+	@Override
 	public List<Library> getLibraries() {
 		return libraries;
 	}
