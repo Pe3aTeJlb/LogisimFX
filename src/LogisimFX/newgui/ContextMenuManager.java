@@ -343,6 +343,8 @@ public class ContextMenuManager {
                 //CircuitState subState = getSubstate(superState, instance);
                 CircuitState subState = proj.getCurrentCircuit().getSubcircuitFactory().getSubstate(superState, instance);
                 if (subState == null) return;
+                proj.getFrameController().addCircLayoutEditor(((SubcircuitFactory)instance.getFactory()).getSubcircuit());
+                proj.setCurrentCircuit(proj.getCurrentCircuit());
                 proj.setCircuitState(subState);
 
             });
