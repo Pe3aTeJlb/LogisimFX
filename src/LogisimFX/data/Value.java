@@ -31,6 +31,20 @@ public class Value {
 	public static final Color WIDTH_ERROR_COLOR = Color.rgb(255, 123, 0);
 	public static final Color MULTI_COLOR = Color.BLACK;
 
+	public Paint getColor() {
+		if (error != 0) {
+			return ERROR_COLOR;
+		} else if (width == 0) {
+			return NIL_COLOR;
+		} else if (width == 1) {
+			if (this == UNKNOWN) return UNKNOWN_COLOR;
+			else if (this == TRUE) return TRUE_COLOR;
+			else return FALSE_COLOR;
+		} else {
+			return MULTI_COLOR;
+		}
+	}
+
 	public static char TRUECHAR = '1';
 	public static char FALSECHAR = '0';
 	public static char UNKNOWNCHAR = 'u';
@@ -429,20 +443,6 @@ public class Value {
 				this.error | this.unknown,
 				0,
 				~this.value);
-		}
-	}
-
-	public Paint getColor() {
-		if (error != 0) {
-			return ERROR_COLOR;
-		} else if (width == 0) {
-			return NIL_COLOR;
-		} else if (width == 1) {
-			if (this == UNKNOWN) return UNKNOWN_COLOR;
-			else if (this == TRUE) return TRUE_COLOR;
-			else return FALSE_COLOR;
-		} else {
-			return MULTI_COLOR;
 		}
 	}
 
