@@ -200,7 +200,7 @@ public class AddTool extends Tool {
 		ComponentFactory source = getFactory();
 
 		if (source != null) {
-			return source.getIcon(getAttributeSet());
+			return source.getIcon(getBaseAttributes());
 		}
 
 		return null;

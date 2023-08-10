@@ -423,7 +423,7 @@ public class WaveformController extends AbstractController {
                     } else {
 
                         setText(item.toString()+ " - " + item.getRadix());
-                        setGraphic(new ImageView(item.getComponent().getFactory().getIcon(((Component) item).getAttributeSet()).getImage()));
+                        setGraphic(new ImageView(item.getComponent().getFactory().getIcon(item.getComponent().getAttributeSet()).getImage()));
 
                     }
 
