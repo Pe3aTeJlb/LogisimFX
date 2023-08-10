@@ -90,7 +90,7 @@ class WireFactory extends AbstractComponentFactory {
 
 		g.setColor(color);
 		g.setLineWidth(3);
-		g.setLineExtras(StrokeLineCap.ROUND);
+		//g.setLineExtras(StrokeLineCap.ROUND);
 
 		if (dir == Wire.VALUE_HORZ) {
 			g.c.strokeLine(x, y, x + len, y);

@@ -157,7 +157,7 @@ public class WiringTool extends Tool {
 
 			g.setColor(Color.BLACK);
 			g.setLineWidth(3);
-			g.setLineExtras(StrokeLineCap.ROUND);
+			//g.setLineExtras(StrokeLineCap.ROUND);
 			if (direction == HORIZONTAL) {
 				if (x0 != x1) g.c.strokeLine(x0, y0, x1, y0);
 				if (y0 != y1) g.c.strokeLine(x1, y0, x1, y1);

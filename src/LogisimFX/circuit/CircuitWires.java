@@ -399,7 +399,7 @@ class CircuitWires {
 		Graphics g = context.getGraphics();
 		g.setColor(Color.BLACK);
 		g.setLineWidth(Wire.WIDTH);
-		g.setLineExtras(StrokeLineCap.ROUND);
+		//g.setLineExtras(StrokeLineCap.ROUND);
 
 		WireSet highlighted = context.getHighlightedWires();
 

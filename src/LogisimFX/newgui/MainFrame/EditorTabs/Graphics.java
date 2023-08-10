@@ -30,7 +30,7 @@ public class Graphics{
     public static double NORMAL_LINE_SIZE = 2;
     public static double THICK_LINE_SIZE = 2.5;
 
-    private StrokeLineCap DEFAULT_STROKELINECAP = StrokeLineCap.SQUARE;
+    private StrokeLineCap DEFAULT_STROKELINECAP = StrokeLineCap.ROUND;
     private StrokeLineJoin DEFAULT_STROKELINEJOIN = StrokeLineJoin.MITER;
 
     private final Font DEFAULT_FONT = Font.font("System", FontWeight.THIN, FontPosture.REGULAR, 12);
