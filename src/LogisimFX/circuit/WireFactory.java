@@ -17,7 +17,6 @@ import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
 import javafx.beans.binding.StringBinding;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.StrokeLineCap;
 
 class WireFactory extends AbstractComponentFactory {
 
@@ -29,7 +28,7 @@ class WireFactory extends AbstractComponentFactory {
 	public String getName() { return "Wire"; }
 
 	@Override
-	public ImageView getIcon() {
+	public ImageView getIcon(AttributeSet attrs) {
 		return null;
 	}
 

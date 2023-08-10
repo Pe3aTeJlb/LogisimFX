@@ -34,7 +34,7 @@ public class SplitterFactory extends AbstractComponentFactory {
 	public String getName() { return "Splitter"; }
 
 	@Override
-	public ImageView getIcon() {
+	public ImageView getIcon(AttributeSet attrs) {
 		return icon;
 	}
 

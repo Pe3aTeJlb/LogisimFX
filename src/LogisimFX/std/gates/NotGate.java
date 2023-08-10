@@ -154,7 +154,7 @@ class NotGate extends InstanceFactory {
 	//
 
 	@Override
-	public ImageView getIcon() {
+	public ImageView getIcon(AttributeSet attrs) {
 
 		ImageView ret = null;
 

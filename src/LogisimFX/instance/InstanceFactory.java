@@ -102,7 +102,7 @@ public abstract class InstanceFactory extends AbstractComponentFactory {
 	}
 
 	@Override
-	public ImageView getIcon(){
+	public ImageView getIcon(AttributeSet attrs){
 		return icon;
 	}
 

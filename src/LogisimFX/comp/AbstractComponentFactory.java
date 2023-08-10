@@ -44,7 +44,7 @@ public abstract class AbstractComponentFactory implements ComponentFactory {
 	public String toString() { return getName(); }
 
 	public abstract String getName();
-	public ImageView getIcon(){ return icon; }
+	public ImageView getIcon(AttributeSet attrs){ return icon; }
 	public StringBinding getDisplayName() { return getDisplayGetter(); }
 	public StringBinding getDisplayGetter() { return LC.createStringBinding(getName()); }
 	public abstract Component createComponent(Location loc, AttributeSet attrs);

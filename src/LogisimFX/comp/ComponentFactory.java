@@ -29,7 +29,7 @@ public interface ComponentFactory extends AttributeDefaultProvider {
 	
 	String getName();
 	StringBinding getDisplayName();
-	ImageView getIcon();
+	ImageView getIcon(AttributeSet attrs);
 	StringBinding getDisplayGetter();
 	Component createComponent(Location loc, AttributeSet attrs);
 	Bounds getOffsetBounds(AttributeSet attrs);

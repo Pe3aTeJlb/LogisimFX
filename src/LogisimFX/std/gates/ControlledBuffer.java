@@ -88,7 +88,7 @@ class ControlledBuffer extends InstanceFactory {
 	//
 
 	@Override
-	public ImageView getIcon(){
+	public ImageView getIcon(AttributeSet attrs){
 		return isInverter ? ICON_INVERTER : ICON_BUFFER;
 	}
 

@@ -5,7 +5,6 @@
 
 package LogisimFX.std.verifiers;
 
-import LogisimFX.IconsManager;
 import LogisimFX.data.*;
 import LogisimFX.instance.*;
 import LogisimFX.newgui.MainFrame.EditorTabs.Graphics;
@@ -14,8 +13,6 @@ import LogisimFX.std.LC;
 import LogisimFX.std.wiring.Clock;
 import LogisimFX.tools.key.BitWidthConfigurator;
 import LogisimFX.util.GraphicsUtil;
-
-import javafx.scene.image.ImageView;
 
 public class Verifier extends Clock {
 
@@ -31,8 +28,6 @@ public class Verifier extends Clock {
     private Attribute<AttributeOption> triggerAttribute;
     private Attribute<BitWidth> SEQUENCE_WIDTH =
             Attributes.forBitWidth("sequencewidth", LC.createStringBinding("stdSequenceWidthAttr"));
-
-    private static final ImageView icon = IconsManager.getIcon("projapp.gif");
 
     private final Bounds bounds;
 
@@ -194,11 +189,6 @@ public class Verifier extends Clock {
 
         g.toDefault();
 
-    }
-
-    @Override
-    public ImageView getIcon(){
-        return icon;
     }
 
     private static class VerifierData extends ClockState {

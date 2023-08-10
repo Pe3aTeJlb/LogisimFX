@@ -6,7 +6,6 @@
 
 package LogisimFX.std.wiring;
 
-import LogisimFX.IconsManager;
 import LogisimFX.comp.Component;
 import LogisimFX.data.*;
 import LogisimFX.instance.*;
@@ -17,7 +16,6 @@ import LogisimFX.circuit.CircuitState;
 import LogisimFX.circuit.RadixOption;
 
 import javafx.beans.binding.StringBinding;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 public class Clock extends InstanceFactory {
@@ -34,8 +32,6 @@ public class Clock extends InstanceFactory {
 			new DurationAttribute("phaseOffset", LC.createStringBinding("clockPhaseAttr"), 0, Integer.MAX_VALUE);
 
 	public static final Clock FACTORY = new Clock();
-
-	private static final ImageView icon = IconsManager.getIcon("clock.gif");
 
 	public static class ClockState implements InstanceData, Cloneable {
 
@@ -118,6 +114,7 @@ public class Clock extends InstanceFactory {
 	public Clock() {
 
 		super("Clock", LC.createStringBinding("clockComponent"), new ClockHdlGeneratorFactory());
+		setIcon("clock.gif");
 		setAttributes(new Attribute[] {
 					StdAttr.FPGA_SUPPORTED,
 					StdAttr.FACING, ATTR_HIGH, ATTR_LOW, ATTR_PHASE,
@@ -149,10 +146,6 @@ public class Clock extends InstanceFactory {
 	//
 	// graphics methods
 	//
-	@Override
-	public ImageView getIcon(){
-		return icon;
-	}
 
 	@Override
 	public void paintInstance(InstancePainter painter) {
