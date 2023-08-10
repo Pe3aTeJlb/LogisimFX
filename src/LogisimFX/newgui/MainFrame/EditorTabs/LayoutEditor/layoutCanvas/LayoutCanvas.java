@@ -181,7 +181,11 @@ public class LayoutCanvas extends Canvas {
 
         public void circuitChanged(CircuitEvent event) {
             int act = event.getAction();
-            if (act == CircuitEvent.ACTION_INVALIDATE) {
+            if (act == CircuitEvent.ACTION_ADD ||
+                    act == CircuitEvent.ACTION_REMOVE ||
+                    act == CircuitEvent.ACTION_CHANGE ||
+                    act == CircuitEvent.ACTION_INVALIDATE ||
+                    act == CircuitEvent.TRANSACTION_DONE) {
                 proj.getSimulator().requestPropagate();
             }
         }
