@@ -490,7 +490,7 @@ public class MainFrameController extends AbstractController {
         addCircLayoutEditor(proj.getCurrentCircuit());
         addCodeEditor(proj.getCurrentCircuit(), proj.getCurrentCircuit().getVerilogModel(proj));
 
-        selectCircLayoutEditor(proj.getCurrentCircuit());
+        //selectCircLayoutEditor(proj.getCurrentCircuit());
 
     }
 
