@@ -25,7 +25,7 @@ public class PythonConnector {
 	private static Path LOGISIMFX_VENV_BIN_LIN = Paths.get(LogisimFile.LOGISIMFX_RUNTIME + File.separator + "venv" + File.separator + "bin");
 	private static Path LOGISIMFX_VENV_LIBS_LIN = Paths.get(LogisimFile.LOGISIMFX_RUNTIME + File.separator + "venv" + File.separator + "lib");
 
-	public static final Pattern PYTHON_VERSION = Pattern.compile("Python\\s3[\\d\\.]+");
+	public static final Pattern PYTHON_VERSION = Pattern.compile("Python\\s3\\.?[\\d\\.]*");
 
 	public static boolean isPythonPresent(Project proj) {
 
@@ -33,14 +33,14 @@ public class PythonConnector {
 
 		try {
 
-			Process process = proj.getTerminal().executeAsNonPty("python --version");
+			Process process = proj.getTerminal().executeAsNonPty("python3 --version");
 			if (process == null) return false;
 			try (BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
 				version = input.readLine();
 			}
 
 			if (!PYTHON_VERSION.matcher(version).matches()) {
-				Process process2 = proj.getTerminal().executeAsNonPty("python3 --version");
+				Process process2 = proj.getTerminal().executeAsNonPty("python --version");
 				if (process == null) return false;
 				try (BufferedReader input = new BufferedReader(new InputStreamReader(process2.getInputStream()))) {
 					version = input.readLine();
@@ -109,7 +109,7 @@ public class PythonConnector {
 					);
 				} else {
 					FileUtils.copyDirectory(
-							Paths.get(PythonConnector.class.getResource("/venv/lin").toString().replace(protocol, "").substring(2)).toFile(),
+							Paths.get(PythonConnector.class.getResource("/venv/lin").toString().replace(protocol, "").substring(1)).toFile(),
 							LOGISIMFX_VENV.toFile()
 					);
 				}
