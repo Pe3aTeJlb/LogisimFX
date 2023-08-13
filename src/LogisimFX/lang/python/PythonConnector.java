@@ -18,8 +18,12 @@ import java.util.zip.ZipFile;
 public class PythonConnector {
 
 	private static Path LOGISIMFX_VENV = Paths.get(LogisimFile.LOGISIMFX_RUNTIME + File.separator + "venv");
-	private static Path LOGISIMFX_VENV_SCRIPTS = Paths.get(LogisimFile.LOGISIMFX_RUNTIME + File.separator + "venv" + File.separator + "Scripts");
-	private static Path LOGISIMFX_VENV_LIBS = Paths.get(LogisimFile.LOGISIMFX_RUNTIME + File.separator + "venv" + File.separator + "Lib");
+
+	private static Path LOGISIMFX_VENV_SCRIPTS_WIN = Paths.get(LogisimFile.LOGISIMFX_RUNTIME + File.separator + "venv" + File.separator + "Scripts");
+	private static Path LOGISIMFX_VENV_LIBS_WIN = Paths.get(LogisimFile.LOGISIMFX_RUNTIME + File.separator + "venv" + File.separator + "Lib");
+
+	private static Path LOGISIMFX_VENV_SCRIPTS_LIN = Paths.get(LogisimFile.LOGISIMFX_RUNTIME + File.separator + "venv" + File.separator + "bin");
+	private static Path LOGISIMFX_VENV_LIBS_LIN = Paths.get(LogisimFile.LOGISIMFX_RUNTIME + File.separator + "venv" + File.separator + "lib");
 
 	public static final Pattern PYTHON_VERSION = Pattern.compile("Python\\s3[\\d\\.]+");
 
@@ -53,17 +57,17 @@ public class PythonConnector {
 
 	public static Thread activateVenv(Project proj){
 		if (Platform.isWindows()) {
-			return proj.getTerminal().execute(LOGISIMFX_VENV_SCRIPTS + File.separator + "activate.bat");
+			return proj.getTerminal().execute(LOGISIMFX_VENV_SCRIPTS_WIN + File.separator + "activate.bat");
 		} else {
-			return proj.getTerminal().execute(LOGISIMFX_VENV_SCRIPTS + File.separator + "activate.bat");
+			return proj.getTerminal().execute("source " + LOGISIMFX_VENV_SCRIPTS_LIN + File.separator + "activate");
 		}
 	}
 
 	public static Thread deactivateVenv(Project proj){
 		if (Platform.isWindows()) {
-			return proj.getTerminal().execute(LOGISIMFX_VENV_SCRIPTS + File.separator + "deactivate.bat");
+			return proj.getTerminal().execute(LOGISIMFX_VENV_SCRIPTS_WIN + File.separator + "deactivate.bat");
 		} else {
-			return proj.getTerminal().execute(LOGISIMFX_VENV_SCRIPTS + File.separator + "deactivate.bat");
+			return proj.getTerminal().execute("deactivate");
 		}
 	}
 
@@ -73,7 +77,11 @@ public class PythonConnector {
 
 
 	public static String getLibPath(String name) {
-		return LOGISIMFX_VENV_LIBS + File.separator + name;
+		if (Platform.isWindows()) {
+			return LOGISIMFX_VENV_LIBS_WIN + File.separator + name;
+		} else {
+			return LOGISIMFX_VENV_LIBS_LIN + File.separator + name;
+		}
 	}
 
 
