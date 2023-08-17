@@ -128,6 +128,11 @@
             <version>2.0.7</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.elk</groupId>
+            <artifactId>org.eclipse.elk.core</artifactId>
+            <version>0.8.1</version>
+        </dependency>
     </dependencies>
 
 </project>
