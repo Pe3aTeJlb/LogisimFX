@@ -100,8 +100,7 @@ class SplitterPainter {
 
 	}
 
-	static void drawLabels(ComponentDrawContext context,
-			SplitterAttributes attrs, Location origin) {
+	static void drawLabels(ComponentDrawContext context, SplitterAttributes attrs, Location origin) {
 
 		// compute labels
 		String[] ends = new String[attrs.fanout + 1];
@@ -149,8 +148,8 @@ class SplitterPainter {
 		}
 		int halign = parms.getTextHorzAlign();
 		int valign = parms.getTextVertAlign();
-		x += (halign == GraphicsUtil.H_RIGHT ? -1.5 : 1) * (SPINE_WIDTH / 2 + 3);
-		y += valign == GraphicsUtil.V_TOP ? -5 : -9;
+		x += (halign == GraphicsUtil.H_RIGHT ? -1 : 1) * (SPINE_WIDTH / 2 + 1);
+		y += valign == GraphicsUtil.V_TOP ? 0 : -3;
 		for (int i = 0, n = attrs.fanout; i < n; i++) {
 			String text = ends[i + 1];
 			if (text != null) {
