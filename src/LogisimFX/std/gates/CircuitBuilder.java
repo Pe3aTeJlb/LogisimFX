@@ -416,7 +416,7 @@ public class CircuitBuilder {
 		ComponentFactory factory = Pin.FACTORY;
 		AttributeSet attrs = factory.createAttributeSet();
 		attrs.setValue(StdAttr.FACING, Direction.WEST);
-		attrs.setValue(Pin.ATTR_TYPE, Boolean.TRUE);
+		attrs.setValue(Pin.ATTR_TYPE, Pin.OUTPUT);
 		attrs.setValue(StdAttr.LABEL, name);
 		attrs.setValue(Pin.ATTR_LABEL_LOC, Direction.NORTH);
 		result.add(factory.createComponent(loc, attrs));
@@ -454,7 +454,7 @@ public class CircuitBuilder {
 			ComponentFactory factory = Pin.FACTORY;
 			AttributeSet attrs = factory.createAttributeSet();
 			attrs.setValue(StdAttr.FACING, Direction.EAST);
-			attrs.setValue(Pin.ATTR_TYPE, Boolean.FALSE);
+			attrs.setValue(Pin.ATTR_TYPE, Pin.INPUT);
 			attrs.setValue(Pin.ATTR_TRISTATE, Boolean.FALSE);
 			attrs.setValue(StdAttr.LABEL, name);
 			attrs.setValue(Pin.ATTR_LABEL_LOC, Direction.NORTH);

@@ -1,8 +1,8 @@
 /*
-* This file is part of LogisimFX. Copyright (c) 2022, Pplos Studio
-* Original code by Carl Burch (http://www.cburch.com), 2011.
-* License information is located in the Launch file
-*/
+ * This file is part of LogisimFX. Copyright (c) 2022, Pplos Studio
+ * Original code by Carl Burch (http://www.cburch.com), 2011.
+ * License information is located in the Launch file
+ */
 
 package LogisimFX.std.wiring;
 
@@ -20,13 +20,13 @@ class PinAttributes extends ProbeAttributes {
 	public static PinAttributes instance = new PinAttributes();
 
 	private static final List<Attribute<?>> ATTRIBUTES
-		= Arrays.asList(StdAttr.FPGA_SUPPORTED,
+			= Arrays.asList(StdAttr.FPGA_SUPPORTED,
 			StdAttr.FACING, Pin.ATTR_TYPE, StdAttr.WIDTH, RadixOption.ATTRIBUTE, Pin.ATTR_TRISTATE,
 			Pin.ATTR_PULL, StdAttr.LABEL, Pin.ATTR_LABEL_LOC, StdAttr.LABEL_FONT);
 
 	BitWidth width = BitWidth.ONE;
 	boolean threeState = true;
-	int type = EndData.INPUT_ONLY;
+	Integer type = EndData.INPUT_ONLY;
 	Object pull = Pin.PULL_NONE;
 
 	public PinAttributes() { }
@@ -43,18 +43,37 @@ class PinAttributes extends ProbeAttributes {
 		if (attr == StdAttr.FPGA_SUPPORTED) return (V) fpga;
 		if (attr == StdAttr.WIDTH) return (V) width;
 		if (attr == Pin.ATTR_TRISTATE) return (V) Boolean.valueOf(threeState);
-		if (attr == Pin.ATTR_TYPE) return (V) Boolean.valueOf(type == EndData.OUTPUT_ONLY);
+		if (attr == Pin.ATTR_TYPE) {
+			switch (type){
+				case EndData.INPUT_ONLY: return (V) Pin.INPUT;
+				case EndData.OUTPUT_ONLY: return (V) Pin.OUTPUT;
+				case EndData.INPUT_OUTPUT: return (V) Pin.INOUT;
+			}
+			return (V) type;
+		}
 		if (attr == Pin.ATTR_PULL) return (V) pull;
 		return super.getValue(attr);
 
 	}
-	
+
 	boolean isOutput() {
 		return type != EndData.INPUT_ONLY;
 	}
-	
+
+	boolean isOutputOnly() {
+		return type == EndData.OUTPUT_ONLY;
+	}
+
 	boolean isInput() {
 		return type != EndData.OUTPUT_ONLY;
+	}
+
+	boolean isInputOnly() {
+		return type == EndData.INPUT_ONLY;
+	}
+
+	boolean isInout() {
+		return type == EndData.INPUT_OUTPUT;
 	}
 
 	@Override
@@ -65,7 +84,13 @@ class PinAttributes extends ProbeAttributes {
 		} else if (attr == Pin.ATTR_TRISTATE) {
 			threeState = ((Boolean) value).booleanValue();
 		} else if (attr == Pin.ATTR_TYPE) {
-			type = ((Boolean) value).booleanValue() ? EndData.OUTPUT_ONLY : EndData.INPUT_ONLY;
+			if (value == Pin.INPUT){
+				type = EndData.INPUT_ONLY;
+			} else if (value == Pin.OUTPUT){
+				type = EndData.OUTPUT_ONLY;
+			} else if (value == Pin.INOUT){
+				type = EndData.INPUT_OUTPUT;
+			}
 		} else if (attr == Pin.ATTR_PULL) {
 			pull = value;
 		} else if (attr == StdAttr.FPGA_SUPPORTED){
