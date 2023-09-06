@@ -1,0 +1,33 @@
+FROM continuumio/miniconda3
+
+RUN apt-get update -y
+RUN apt-get install -y git wget xz-utils nano
+RUN apt-get upgrade -y
+
+ENV FPGA_FAM=xc7
+
+RUN git clone https://github.com/chipsalliance/f4pga-examples
+
+RUN cd f4pga-examples && \
+    conda env create -f ./${FPGA_FAM}/environment.yml
+
+ENV F4PGA_INSTALL_DIR=/opt/f4pga
+ENV F4PGA_PACKAGES='install-xc7 xc7a50t_test xc7a100t_test xc7a200t_test xc7z010_test'
+ENV F4PGA_TIMESTAMP='20230411-180123'
+ENV F4PGA_HASH='5e974a8'
+
+RUN mkdir -p $F4PGA_INSTALL_DIR/$FPGA_FAM
+
+RUN wget -qO- https://storage.googleapis.com/symbiflow-arch-defs/artifacts/prod/foss-fpga-tools/symbiflow-arch-defs/continuous/install/${F4PGA_TIMESTAMP}/symbiflow-arch-defs-install-xc7-${F4PGA_HASH}.tar.xz | tar -xJC $F4PGA_INSTALL_DIR/${FPGA_FAM}
+RUN wget -qO- https://storage.googleapis.com/symbiflow-arch-defs/artifacts/prod/foss-fpga-tools/symbiflow-arch-defs/continuous/install/${F4PGA_TIMESTAMP}/symbiflow-arch-defs-xc7a50t_test-${F4PGA_HASH}.tar.xz | tar -xJC $F4PGA_INSTALL_DIR/${FPGA_FAM}
+#RUN wget -qO- https://storage.googleapis.com/symbiflow-arch-defs/artifacts/prod/foss-fpga-tools/symbiflow-arch-defs/continuous/install/${F4PGA_TIMESTAMP}/symbiflow-arch-defs-xc7a100t_test-${F4PGA_HASH}.tar.xz | tar -xJC $F4PGA_INSTALL_DIR/${FPGA_FAM}
+#RUN wget -qO- https://storage.googleapis.com/symbiflow-arch-defs/artifacts/prod/foss-fpga-tools/symbiflow-arch-defs/continuous/install/${F4PGA_TIMESTAMP}/symbiflow-arch-defs-xc7z010_test-${F4PGA_HASH}.tar.xz | tar -xJC $F4PGA_INSTALL_DIR/${FPGA_FAM}
+#RUN wget -qO- https://storage.googleapis.com/symbiflow-arch-defs/artifacts/prod/foss-fpga-tools/symbiflow-arch-defs/continuous/install/${F4PGA_TIMESTAMP}/symbiflow-arch-defs-xc7a200t_test-${F4PGA_HASH}.tar.xz | tar -xJC $F4PGA_INSTALL_DIR/${FPGA_FAM}
+
+#ENV PATH="$F4PGA_INSTALL_DIR/$FPGA_FAM:$PATH"
+
+COPY ./docker-entrypoint.sh /
+RUN chmod +x docker-entrypoint.sh
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
+CMD ["bin/bash"]
