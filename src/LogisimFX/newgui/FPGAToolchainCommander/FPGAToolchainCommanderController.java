@@ -32,7 +32,7 @@ public class FPGAToolchainCommanderController extends AbstractController {
 	private Label DockerImageLbl;
 
 	@FXML
-	private TextField DockerImageTxtfld;
+	private ComboBox<String> DockerImageCmbbx;
 
 	@FXML
 	private Button DockerImageInfoBtn;
@@ -111,6 +111,9 @@ public class FPGAToolchainCommanderController extends AbstractController {
 	private ChoiceBox<Integer> Actionchbx;
 
 	@FXML
+	private CheckBox IsDockerToolboxUsedChckBx;
+
+	@FXML
 	private Button ExecuteBtn;
 
 
@@ -164,8 +167,11 @@ public class FPGAToolchainCommanderController extends AbstractController {
 
 
 		DockerImageLbl.textProperty().bind(LC.createStringBinding("dockerImage"));
-		DockerImageTxtfld.setPromptText("pe3atejlb/logisimfx-f4pga:latest");
-		DockerImageTxtfld.setText(orchestrator.getDockerImageName());
+		DockerImageCmbbx.setPromptText("pplosstudio/logisimfx-f4pga:xc7-complete");
+		DockerImageCmbbx.getItems().addAll(orchestrator.getDefaultImages());
+		DockerImageCmbbx.setValue(orchestrator.getDockerImageName());
+		DockerImageCmbbx.setEditable(true);
+		DockerImageCmbbx.setOnAction(event -> orchestrator.setDockerImageName(DockerImageCmbbx.getValue()));
 		DockerImageInfoBtn.setOnAction(event -> {
 			DialogManager.createInfoDialog(LC.get("dockerInfoHeader"), LC.get("dockerInfoBody"));
 		});
@@ -269,6 +275,12 @@ public class FPGAToolchainCommanderController extends AbstractController {
 		});
 		Actionchbx.setValue(orchestrator.getActionNum());
 		Actionchbx.setOnAction(event -> orchestrator.setActionNum(Actionchbx.getValue()));
+
+		IsDockerToolboxUsedChckBx.textProperty().bind(LC.createStringBinding("FpgaUsingDockerToolbox"));
+		IsDockerToolboxUsedChckBx.setSelected(orchestrator.isDockerToolboxUsed());
+		IsDockerToolboxUsedChckBx.setOnAction(event -> {
+			orchestrator.setDockerToolboxUsed(IsDockerToolboxUsedChckBx.isSelected());
+		});
 
 		ExecuteBtn.textProperty().bind(LC.createStringBinding("FpgaGuiExecute"));
 		ExecuteBtn.setOnAction(event -> orchestrator.execute(Actionchbx.getValue()));

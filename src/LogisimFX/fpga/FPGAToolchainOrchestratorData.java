@@ -14,6 +14,8 @@ public class FPGAToolchainOrchestratorData {
 	private boolean generateConstrains;
 	private double freq, div;
 	private boolean generateTopLevel;
+	private int actionNum;
+	private boolean isDockerToolboxUsed;
 
 	public FPGAToolchainOrchestratorData(){ }
 
@@ -81,6 +83,24 @@ public class FPGAToolchainOrchestratorData {
 
 	public boolean isGenerateTopLevel(){
 		return generateTopLevel;
+	}
+
+	public void setActionNum(int num){
+		actionNum = num;
+		isDefault = false;
+	}
+
+	public int getActionNum(){
+		return actionNum;
+	}
+
+	public void setDockerToolboxUsed(boolean bool){
+		isDockerToolboxUsed = bool;
+		isDefault = false;
+	}
+
+	public boolean isDockerToolboxUsed(){
+		return isDockerToolboxUsed;
 	}
 
 	public void copyFrom(FPGAToolchainOrchestratorData other, LogisimFile file) {

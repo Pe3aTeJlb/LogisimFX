@@ -2,6 +2,7 @@ package LogisimFX.fpga;
 
 import LogisimFX.FileSelector;
 import LogisimFX.circuit.Circuit;
+import LogisimFX.file.LogisimFile;
 import LogisimFX.fpga.data.*;
 import LogisimFX.fpga.designrulecheck.Netlist;
 import LogisimFX.fpga.file.BoardReaderClass;
@@ -10,6 +11,8 @@ import LogisimFX.fpga.hdlgenerator.Hdl;
 import LogisimFX.fpga.hdlgenerator.HdlGeneratorFactory;
 import LogisimFX.fpga.hdlgenerator.TickComponentHdlGeneratorFactory;
 import LogisimFX.fpga.hdlgenerator.ToplevelHdlGeneratorFactory;
+import LogisimFX.lang.python.PythonConnector;
+import LogisimFX.newgui.DialogManager;
 import LogisimFX.newgui.FrameManager;
 import LogisimFX.newgui.MainFrame.SystemTabs.TerminalTab.Terminal;
 import LogisimFX.newgui.MainFrame.SystemTabs.TerminalTab.TerminalMessageContainer;
@@ -19,6 +22,7 @@ import LogisimFX.util.LineBuffer;
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import terminalfx.helper.ThreadHelper;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -31,13 +35,20 @@ public class FPGAToolchainOrchestrator {
 
 	private Project proj;
 
-	private String dockerImageName = "pe3atejlb/logisimfx-f4pga:latest";
+	private String dockerImageName = "pplosstudio/logisimfx-f4pga:xc7-complete";
+	private List<String> defaultImages = Arrays.asList(
+			"pplosstudio/logisimfx-f4pga:xc7-complete",
+			"pplosstudio/logisimfx-f4pga:xc7a50t",
+			"pplosstudio/logisimfx-f4pga:xc7a100t",
+			"pplosstudio/logisimfx-f4pga:xc7a200t",
+			"pplosstudio/logisimfx-f4pga:xc7z010"
+	);
 
 	private FPGABoardsManager boardsManager;
 	private String selectedBoard = "BASYS3";
 	private BoardInformation boardInformation = null;
 	private MappableResourcesContainer mappableResourcesContainer;
-	/*  arty_35 arty_100 nexys4ddr basys3 nexys_video zybo */
+	/* arty_35 arty_100 nexys4ddr basys3 nexys_video zybo */
 
 
 	private ProjectConstrainsManager constrainsManager;
@@ -53,6 +64,8 @@ public class FPGAToolchainOrchestrator {
 	private int GENERATE_BIT_FILE = 1;
 	private boolean relableAll = false;
 
+	private boolean isDockerToolboxUsed = false;
+
 	private String makefilecontent =
 			"current_dir := ${CURDIR}\n\n" +
 			"# TopFile/TopLevelShell name\n" +
@@ -63,7 +76,7 @@ public class FPGAToolchainOrchestrator {
 			"SOURCES := {3}\n\n" +
 			"# XDC file\n" +
 			"XDC := {4}\n\n"+
-			"include /shared/f4pga-examples/common/common.mk";
+			"include /f4pga-examples/common/common.mk";
 
 
 	public FPGAToolchainOrchestrator(Project project) {
@@ -96,6 +109,8 @@ public class FPGAToolchainOrchestrator {
 			setGenerateConstrainsFile(data.isGenerateConstrains());
 			setFrequency(data.getFreq());
 			setDivider(data.getDiv());
+			setActionNum(data.getActionNum());
+			setDockerToolboxUsed(data.isDockerToolboxUsed());
 		}
 
 	}
@@ -109,6 +124,10 @@ public class FPGAToolchainOrchestrator {
 
 	public void setDockerImageName(String s){
 		dockerImageName = s;
+	}
+
+	public List<String> getDefaultImages(){
+		return defaultImages;
 	}
 
 	//2. Board settings
@@ -307,6 +326,15 @@ public class FPGAToolchainOrchestrator {
 		actionNum = i;
 	}
 
+
+	public void setDockerToolboxUsed(boolean bool){
+		isDockerToolboxUsed = bool;
+	}
+
+	public boolean isDockerToolboxUsed(){
+		return isDockerToolboxUsed;
+	}
+
 	//7. Execution
 
 	public void execute(int type){
@@ -344,7 +372,7 @@ public class FPGAToolchainOrchestrator {
 		processBoardConstrainsFile(destDir);
 
 		if (type == GENERATE_BIT_FILE){
-			executeDocker(bitOutdir.toString());
+			executeDocker(destDir.toString(), bitOutdir.toString());
 		}
 
 	}
@@ -660,12 +688,47 @@ public class FPGAToolchainOrchestrator {
 	}
 
 
-	private void executeDocker(String outdir){
+	private void executeDocker(String fpgaBuild, String outdir){
 
-		Terminal t = proj.getTerminal();
+		if (!DockerConnector.isDockerPresent(proj)){
+			DialogManager.createErrorDialog("No docker provided!", "");
+			return;
+		}
 
-		t.execute("docker --version");
-		t.execute("docker images");
+		ThreadHelper.start(() -> {
+
+			Terminal t = proj.getTerminal();
+
+			try {
+
+				t.execute("docker --version").join();
+				t.execute("docker images").join();
+
+				if (!DockerConnector.isImagePresent(proj, dockerImageName)){
+					t.execute("docker pull " + dockerImageName).join();
+				}
+
+				String containerName = "logisimfx-"+System.currentTimeMillis();
+
+				t.execute("cd " + fpgaBuild).join();
+				t.execute("docker run -it --rm -v " + "\"/$(pwd):/shared\" " + " --name " + containerName + " " + dockerImageName).join();
+/*
+				t.execute("conda activate $FPGA_FAM").join();
+				t.execute("cd /shared").join();
+				t.execute("make -C .").join();
+
+				t.execute("conda deactivate").join();
+
+				t.execute("exit").join();
+
+				t.execute("cd " + LogisimFile.LOGISIMFX_RUNTIME);
+*/
+
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+		});
 
 	}
 
@@ -723,7 +786,7 @@ public class FPGAToolchainOrchestrator {
 		board.setAttribute("name", selectedBoard);
 
 		Element generateConstrains = doc.createElement("generateConstrains");
-		generateConstrains.setAttribute("gen", Boolean.toString(isGenerateConstrainsFile()));
+		generateConstrains.setAttribute("val", Boolean.toString(isGenerateConstrainsFile()));
 
 		Element freq = doc.createElement("frequency");
 		freq.setAttribute("val", Double.toString(frequency));
@@ -731,7 +794,13 @@ public class FPGAToolchainOrchestrator {
 		div.setAttribute("val", Double.toString(divider));
 
 		Element generateTopLevel = doc.createElement("generateTopLevel");
-		generateTopLevel.setAttribute("gen", Boolean.toString(isGenerateTopLevel()));
+		generateTopLevel.setAttribute("val", Boolean.toString(isGenerateTopLevel()));
+
+		Element actionELm = doc.createElement("actionNum");
+		actionELm.setAttribute("val", Integer.toString(actionNum));
+
+		Element isDockerToolboxUsedElm = doc.createElement("isDockerToolboxUsed");
+		isDockerToolboxUsedElm.setAttribute("val", Boolean.toString(isDockerToolboxUsed));
 
 		fpga.appendChild(dockerImg);
 		fpga.appendChild(board);
@@ -739,6 +808,8 @@ public class FPGAToolchainOrchestrator {
 		fpga.appendChild(freq);
 		fpga.appendChild(div);
 		fpga.appendChild(generateTopLevel);
+		fpga.appendChild(actionELm);
+		fpga.appendChild(isDockerToolboxUsedElm);
 
 		return fpga;
 

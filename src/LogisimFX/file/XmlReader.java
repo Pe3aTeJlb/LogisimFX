@@ -672,13 +672,17 @@ class XmlReader {
 				} else if(name.equals("board")) {
 					fpga.setBoardName(sub_elt.getAttribute("name"));
 				} else if(name.equals("generateConstrains")) {
-					fpga.setGenerateConstrains(Boolean.parseBoolean(sub_elt.getAttribute("gen")));
+					fpga.setGenerateConstrains(Boolean.parseBoolean(sub_elt.getAttribute("val")));
 				} else if(name.equals("frequency")) {
 					fpga.setFreq(Double.parseDouble(sub_elt.getAttribute("val")));
 				} else if(name.equals("divider")) {
 					fpga.setDiv(Double.parseDouble(sub_elt.getAttribute("val")));
 				} else if(name.equals("generateTopLevel")){
-					fpga.setGenerateConstrains(Boolean.parseBoolean(sub_elt.getAttribute("gen")));
+					fpga.setGenerateConstrains(Boolean.parseBoolean(sub_elt.getAttribute("val")));
+				} else if (name.equals("actionNum")){
+					fpga.setActionNum(Integer.parseInt(sub_elt.getAttribute("val")));
+				} else if (name.equals("isDockerToolboxUsed")){
+					fpga.setDockerToolboxUsed(Boolean.parseBoolean(sub_elt.getAttribute("val")));
 				}
 			}
 			
