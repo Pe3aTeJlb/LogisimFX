@@ -130,7 +130,7 @@ public class LogisimFile extends Library implements LibraryEventSource {
 
 			if (!isLib) {
 
-				projectDir = Files.createTempDirectory(LOGISIMFX_TEMP_DIR, name.get() + "-");
+				projectDir = Files.createTempDirectory(LOGISIMFX_TEMP_DIR, name.get().replace(" ", "") + "-");
 
 				circuitDir = new File(projectDir + File.separator + CIRCUIT).toPath();
 				circuitDir.toFile().mkdirs();

@@ -19,6 +19,7 @@ import LogisimFX.newgui.MainFrame.SystemTabs.TerminalTab.TerminalMessageContaine
 import LogisimFX.proj.Project;
 import LogisimFX.std.io.LedArrayGenericHdlGeneratorFactory;
 import LogisimFX.util.LineBuffer;
+import com.sun.jna.Platform;
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -72,7 +73,7 @@ public class FPGAToolchainOrchestrator {
 			"TOP := {1}\n\n" +
 			"# Target\n"+
 			"TARGET := {2}\n\n"+
-			"# Sources" +
+			"# Sources\n" +
 			"SOURCES := {3}\n\n" +
 			"# XDC file\n" +
 			"XDC := {4}\n\n"+
@@ -105,7 +106,7 @@ public class FPGAToolchainOrchestrator {
 
 		if (!data.isDefault()) {
 			setDockerImageName(data.getDockerImg());
-			setSelectedBoard(data.getBoardName());
+			updateBoardInformation(data.getBoardName());
 			setGenerateConstrainsFile(data.isGenerateConstrains());
 			setFrequency(data.getFreq());
 			setDivider(data.getDiv());
@@ -542,25 +543,21 @@ public class FPGAToolchainOrchestrator {
 									path.toString().replace(destDir.toString(), "")
 											.replace("\\", "/")
 							)
-							.append(" \\ \n")
+							.append(" \\").append("\n")
 			);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		files.append(" \\");
-
-		files.replace(files.length()-4, files.length(), "");
-
 		String content  = makefilecontent.
-				replace("{1}", proj.getLogisimFile().getMainCircuit().getTopLevelShell(proj).getName()).
+				replace("{1}", "TopLevelShell").
 				replace("{2}", boardInformation.fpga.getF4pgatarget()).
 				replace("{3}", files.toString()).
 				replace("{4}", "${current_dir}/"+boardConstrainsFile.getName());
 
 
 		try {
-			FileUtils.write(new File(destDir+File.separator+"makefile.mk"), content);
+			FileUtils.write(new File(destDir+File.separator+"Makefile"), content);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -710,21 +707,44 @@ public class FPGAToolchainOrchestrator {
 
 				String containerName = "logisimfx-"+System.currentTimeMillis();
 
-				t.execute("cd " + fpgaBuild).join();
-				t.execute("docker run -it --rm -v " + "\"/$(pwd):/shared\" " + " --name " + containerName + " " + dockerImageName).join();
-/*
-				t.execute("conda activate $FPGA_FAM").join();
-				t.execute("cd /shared").join();
-				t.execute("make -C .").join();
+				if (isDockerToolboxUsed){
 
-				t.execute("conda deactivate").join();
+					t.execute("cd /d " + System.getenv("SystemDrive") + File.separator + "Users").join();
+					t.execute("docker run -it --rm -v " + "/" + System.getenv("SystemDrive").toLowerCase().charAt(0) + "/Users:/shared " + " --name " + containerName + " " + dockerImageName).join();
 
-				t.execute("exit").join();
+					String containerRelPath = "/shared/" + fpgaBuild.replace(System.getenv("SystemDrive") + File.separator + "Users" + File.separator, "").replace("\\", "/");
+					t.execute("cd " + "\""+containerRelPath+"\"").join();
 
-				t.execute("cd " + LogisimFile.LOGISIMFX_RUNTIME);
-*/
+				} else {
 
-			} catch (InterruptedException e) {
+					t.execute("cd " + fpgaBuild).join();
+
+					String relPath = fpgaBuild;
+					if (Platform.isWindows()) {
+						relPath = "/" + fpgaBuild.toLowerCase().charAt(0) + "/" + fpgaBuild.replace("\\", "/").substring(3);
+					}
+					t.execute("docker run -it --rm -v " + "\""+relPath+":/shared\" " + " --name " + containerName + " " + dockerImageName).join();
+					t.execute("cd /shared").join();
+
+				}
+
+				if (defaultImages.contains(dockerImageName)){
+
+					t.execute("conda activate $FPGA_FAM").join();
+
+					t.execute("make -C .").join();
+
+					t.execute("conda deactivate").join();
+
+					t.execute("exit").join();
+
+					t.execute("cd " + LogisimFile.LOGISIMFX_RUNTIME).join();
+
+					FileUtils.copyDirectoryToDirectory(Paths.get(fpgaBuild).toFile(), Paths.get(outdir).toFile());
+
+				}
+
+			} catch (InterruptedException | IOException e) {
 				e.printStackTrace();
 			}
 
