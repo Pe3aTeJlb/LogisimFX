@@ -537,7 +537,7 @@ public class Pin extends InstanceFactory {
 		} else if (attrs.isInputOnly()){
 			endType = Port.INPUT;
 		}*/
-		System.out.println(endType);
+		//System.out.println(endType);
 		Port port = new Port(0, 0, endType, StdAttr.WIDTH);
 		if (attrs.getValue(Pin.ATTR_TYPE) == Pin.OUTPUT) {
 			port.setToolTip(LC.createStringBinding("pinOutputToolTip"));
@@ -559,7 +559,7 @@ public class Pin extends InstanceFactory {
 		PinState q = getState(state);
 		//ToDo
 		if (attrs.type == EndData.OUTPUT_ONLY) {
-			System.out.println(val);
+			//System.out.println(val);
 			q.sending = val;
 			q.receiving = val;
 			state.setPort(0, Value.createUnknown(attrs.width), 1);
