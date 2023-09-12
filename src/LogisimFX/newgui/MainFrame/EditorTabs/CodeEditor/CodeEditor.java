@@ -14,6 +14,7 @@ import LogisimFX.newgui.MainFrame.EditorTabs.TextEditor.TextEditor;
 import LogisimFX.newgui.MainFrame.EditorTabs.TextEditor.TextEditorToolBar;
 import LogisimFX.proj.Project;
 import LogisimFX.lang.python.PythonConnector;
+import LogisimFX.yosys.YosysRTLParser;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -313,6 +314,7 @@ public class CodeEditor extends TextEditor {
 			}
 
 			File finalPython_yosys_runtime_file = python_yosys_runtime_file;
+			/*
 			ThreadHelper.start(() -> {
 
 				PythonConnector.activateVenv(proj);
@@ -320,7 +322,12 @@ public class CodeEditor extends TextEditor {
 				PythonConnector.executeFile(proj, finalPython_yosys_runtime_file);
 				PythonConnector.deactivateVenv(proj);
 
-			});
+				YosysParser.parse(proj, circ.getVerilogModel(proj),
+					Paths.get(circ.getSchematicsFile(proj).getParent()+File.separator+circ.getName() + ".json").toFile());
+
+			});*/
+
+			YosysRTLParser.parse(proj, null,null);
 
 		} else {
 			DialogManager.createErrorDialog("Error", "Python 3 required");

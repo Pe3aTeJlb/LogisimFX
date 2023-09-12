@@ -94,6 +94,14 @@ public class Port {
 			return new EndData(pt, (BitWidth) val, type, exclude);
 		}
 	}
+
+	public int getRelX(){
+		return dx;
+	}
+
+	public int getRelY(){
+		return dy;
+	}
 	
 	private static int toType(String s) {
 		if (s == null) throw new IllegalArgumentException("Null port type");

@@ -369,7 +369,7 @@ public class InstanceComponent implements Component, AttributeListener, ToolTipM
 		return instance;
 	}
 	
-	List<Port> getPorts() {
+	public List<Port> getPorts() {
 		return portList;
 	}
 	

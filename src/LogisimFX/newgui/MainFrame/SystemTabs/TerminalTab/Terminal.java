@@ -37,6 +37,8 @@ public class Terminal extends terminalfx.Terminal {
 		darkConfig.setBackgroundColor(Color.rgb(16, 16, 16));
 		darkConfig.setForegroundColor(Color.rgb(240, 240, 240));
 		darkConfig.setCursorColor(Color.rgb(255, 255, 255));
+		darkConfig.setScrollWhellMoveMultiplier(1);
+		darkConfig.setScrollbarVisible(true);
 		darkConfig.setCursorBlink(true);
 
 		this.setTerminalConfig(darkConfig);

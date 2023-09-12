@@ -14,8 +14,8 @@ public class YosysSpecial extends Library {
 
 	private static FactoryDescription[] DESCRIPTIONS = {
 
-			new FactoryDescription("Test", LC.createStringBinding("adderComponent"),
-					"adder.gif", "Test"),
+			new FactoryDescription("ReduceAnd", LC.createStringBinding("reduceAndComponent"),
+					"yosysReduceAnd.gif", "ReduceAnd")
 
 	};
 
