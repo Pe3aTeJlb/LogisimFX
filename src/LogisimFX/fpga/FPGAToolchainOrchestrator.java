@@ -25,11 +25,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import terminalfx.helper.ThreadHelper;
 
+import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class FPGAToolchainOrchestrator {
@@ -740,11 +742,38 @@ public class FPGAToolchainOrchestrator {
 
 					t.execute("cd " + LogisimFile.LOGISIMFX_RUNTIME).join();
 
-					FileUtils.copyDirectoryToDirectory(Paths.get(fpgaBuild).toFile(), Paths.get(outdir).toFile());
+					Thread.sleep(5000);
+
+					ThreadHelper.start(() ->
+							{
+
+								while (Files.notExists(Paths.get(fpgaBuild+
+																File.separator+"build"+
+																File.separator+selectedBoard.toLowerCase()+
+																File.separator+"TopLevelShell.bit"))){
+									try {
+										Thread.sleep(1000);
+									} catch (InterruptedException e) {
+										throw new RuntimeException(e);
+									}
+								}
+
+								try {
+									FileUtils.copyFileToDirectory(Paths.get(fpgaBuild+
+											File.separator+"build"+
+											File.separator+selectedBoard.toLowerCase()+
+											File.separator+"TopLevelShell.bit").toFile(), Paths.get(outdir).toFile());
+									Desktop.getDesktop().open(Paths.get(outdir).toFile());
+								} catch (IOException e) {
+									throw new RuntimeException(e);
+								}
+
+							}
+					).join();
 
 				}
 
-			} catch (InterruptedException | IOException e) {
+			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 
