@@ -34,16 +34,22 @@ public class PythonConnector {
 		try {
 
 			Process process = proj.getTerminal().executeAsNonPty("python3 --version");
-			if (process == null) return false;
-			try (BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-				version = input.readLine();
+			if (process != null) {
+				try (BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+					version = input.readLine();
+					System.out.println(version);
+				}
 			}
 
 			if (!PYTHON_VERSION.matcher(version).matches()) {
 				Process process2 = proj.getTerminal().executeAsNonPty("python --version");
-				if (process == null) return false;
-				try (BufferedReader input = new BufferedReader(new InputStreamReader(process2.getInputStream()))) {
-					version = input.readLine();
+				if (process2 != null) {
+					try (BufferedReader input = new BufferedReader(new InputStreamReader(process2.getInputStream()))) {
+						version = input.readLine();
+						System.out.println(version);
+					}
+				} else {
+					return false;
 				}
 			}
 
