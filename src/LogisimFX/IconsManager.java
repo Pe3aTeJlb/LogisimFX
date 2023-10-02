@@ -21,7 +21,10 @@ public class IconsManager {
     public static Node getLogisimFXPrompt() {
 
         Pane pane = new Pane();
+        pane.setMouseTransparent(true);
+
         ImageView img = new ImageView("LogisimFX/resources/logo/LogisimFXPrompt.png");
+        img.setMouseTransparent(true);
 
         pane.setMinSize(0, 0);
         pane.setPrefSize(img.getImage().getWidth(), img.getImage().getHeight());
