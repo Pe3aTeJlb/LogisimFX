@@ -6,6 +6,9 @@ UI moved from Swing to JavaFX
 
 # Showcase
 <img src="https://github.com/Pe3aTeJlb/Pe3aTeJlb/blob/main/ReadmeResources/LogisimFX/logisimfx1.png" width="450" height="350" /> <img src="https://github.com/Pe3aTeJlb/Pe3aTeJlb/blob/main/ReadmeResources/LogisimFX/logisimfx2.png" width="683" height="350" /> <img src="https://github.com/Pe3aTeJlb/Pe3aTeJlb/blob/main/ReadmeResources/LogisimFX/logisimfx5.gif" width="900" height="450" />
+<img src="https://github.com/Pe3aTeJlb/Pe3aTeJlb/blob/main/ReadmeResources/LogisimFX/logisimfx10.PNG"/>
+<img src="https://github.com/Pe3aTeJlb/Pe3aTeJlb/blob/main/ReadmeResources/LogisimFX/logisimfx11.PNG"/>
+<img src="https://github.com/Pe3aTeJlb/Pe3aTeJlb/blob/main/ReadmeResources/LogisimFX/logisimfx12.PNG"/>
 
 # Project Features
 * Multi-paltform
